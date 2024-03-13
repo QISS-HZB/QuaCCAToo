@@ -38,7 +38,6 @@ matplotlib.use("QtAgg")
 plt.rcParams.update({"font.size": 3})
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
-
 class tabby(QWidget):
     def __init__(self):
         super().__init__()
@@ -49,11 +48,6 @@ class tabby(QWidget):
 
     def zoinc(self):
         self.layout.addItem(QPushButton("I want to be last!"))
-
-
-    
-
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
