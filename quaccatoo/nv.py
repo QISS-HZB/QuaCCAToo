@@ -1,3 +1,5 @@
+#DEPRECATED
+
 import numpy as np
 from qutip import jmat, tensor, qeye, fock_dm
 import scipy as sp
