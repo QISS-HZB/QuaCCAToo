@@ -6,6 +6,7 @@ import sys
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from PyQt6 import QtGui
 from PyQt6.QtCore import QProcess
 from PyQt6.QtWidgets import (
     QApplication,
@@ -61,7 +62,8 @@ class MainWindow(QMainWindow):
         self.main_widget = QWidget()
         self.main_widget.setLayout(self.main_layout)
         self.setCentralWidget(self.main_widget)
-        self.setWindowTitle("NV dynamics")
+        self.setWindowTitle("QuaCCAToo")
+        self.setWindowIcon(QtGui.QIcon('QuaCCAToo_v2_white.png'))
         self.showMaximized()
 
         # self.horizontal_line = QFrame()
@@ -93,14 +95,14 @@ class MainWindow(QMainWindow):
         self.tab_sim.setLayout(self.tab_sim_layout)
 
         self.set_tab_theta()
-        self.set_tab_N14()
+        # self.set_tab_N14()
         # self.set_tab_13c()
         self.set_tab_sim()
 
-        self.tab_widget.addTab(self.tab_theta, "N15")
-        self.tab_widget.addTab(self.tab_N14, "N14")
+        self.tab_widget.addTab(self.tab_theta, "Analysis")
+        # self.tab_widget.addTab(self.tab_N14, "N14")
         # self.tab_widget.addTab(self.tab_13c, "13C")
-        self.tab_widget.addTab(self.tab_sim, "sim")
+        self.tab_widget.addTab(self.tab_sim, "Simulations")
 
 
         self.left_layout.addWidget(self.tab_widget)
@@ -518,7 +520,7 @@ class MainWindow(QMainWindow):
                     )
                 else:
                     self.ax.plot(self.tau, XY8, linewidth=1,
-                                 label=f"Simulated data")
+                                 label=f"Simulated data", color='#BD7D55', alpha=0.8)
             except KeyError:
                 idxerr = QMessageBox(self)
                 idxerr.setText(
@@ -542,7 +544,7 @@ class MainWindow(QMainWindow):
                     )
                 else:
                     self.ax.plot(self.tau, XY8, linewidth=1,
-                                 label="Simulated Data")
+                                 label="Simulated Data", color='#BD7D55', alpha=0.8)
             except KeyError:
                 idxerr = QMessageBox(self)
                 idxerr.setText(
@@ -557,8 +559,8 @@ class MainWindow(QMainWindow):
             p = exp_data[:, 1] - exp_data[:, 2] - \
                 min(exp_data[:, 1] - exp_data[:, 2])
 
-            self.ax.plot(
-                exp_data[:, 0] * 1e6, p, linewidth=1, label="Experimental Data"
+            self.ax.scatter(
+                exp_data[:, 0] * 1e6, p*np.max(XY8[0:int(len(XY8)/5)])/max(p), color='#557DBD', s=.2, alpha=0.7,  label="Experimental Data"
             )
 
         else:
@@ -585,7 +587,7 @@ class MainWindow(QMainWindow):
         self.ax.set_xlabel(r"$\tau$ ($\mu$s)")
         self.ax.set_ylabel("Transition Probability")
         self.ax.set_title(
-            rf"XY8-{selected_N} ; $\theta=${selected_theta}$^\circ$ ; $B_0=${selected_B0} G"
+            rf"XY8-{selected_N}, $B_0=${selected_B0} G, $\theta=${selected_theta}$^\circ$, $m_s={selected_ms}$"
         )
         self.ax.set_xlim(selected_tau[0], selected_tau[1])
 
@@ -1093,13 +1095,13 @@ class MainWindow(QMainWindow):
         if self.sim_task_widget.currentText()=='Rabi':
             simres = np.load('./data/rabi.npz', allow_pickle=True)
             self.ax.clear()
-            self.ax.plot(simres['t'],simres['r'],'.',label='Simulation (Rabi)')
-            self.ax.plot(simres['t'],simres['fit'][0]*np.cos(2*np.pi*simres['t']/simres['fit'][1])**2 + simres['fit'][2],label='Fit')
+            self.ax.plot(simres['t'],simres['r'],'.',label='Simulation (Rabi)',markersize=1)
+            self.ax.plot(simres['t'],simres['fit'][0]*np.cos(2*np.pi*simres['t']/simres['fit'][1])**2 + simres['fit'][2],label=fr"Fit, $t_\pi\sim$ {simres['fit'][1]/4:.3f}$\mu s$",lw=1)
             self.ax.legend(fancybox=True, framealpha=0.3)
             self.ax.set_xlabel(r"$\tau$ ($\mu$s)")
             self.ax.set_ylabel("Transition Probability")
             self.ax.set_title(
-            rf"{self.sim_task_widget.currentText()}; $\theta=${self.sim_theta_widget.currentText()}$^\circ$ ; $B_0=${self.sim_B0_widget.currentText()}G")
+            rf"{self.sim_task_widget.currentText()}, N-{self.sim_N_widget.currentText()}, $B_0=${self.sim_B0_widget.currentText()} G, $\theta=${self.sim_theta_widget.currentText()}$^\circ$, $m_s$={self.sim_ms_widget.currentText()}")
         
         elif self.sim_task_widget.currentText()=='Hahn':
             simres = np.load('./data/hahn.npz', allow_pickle=True)

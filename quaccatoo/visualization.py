@@ -54,7 +54,7 @@ def plot_energy_levels(H0, units='MHz', energy_min=None, energy_max=None):
 
     return H0_eig
 
-def plot_sim(p, t, exp=None, units='us', fit_function=None, fit_guess=None):
+def plot_rabi(p, t, exp=None, units='us', fit_function=None, fit_guess=None):
     """
     Plot the Rabi oscillation.
 
