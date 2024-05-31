@@ -8,7 +8,7 @@ def square_pulse(t, **pulse_params):
     -------
 
     """
-    return np.cos(pulse_params['w_pulse']*t + pulse_params['phi_t'])
+    return np.cos(pulse_params['omega_pulse']*t + pulse_params['phi_t'])
 
 def gaussian_pulse(t, **pulse_params):
     """
@@ -24,7 +24,7 @@ def gaussian_pulse(t, **pulse_params):
     -------
     calculated gaussian pulse function (float)
     """
-    return np.exp(-((t - pulse_params['tmid'])**2)/(2*pulse_params['sigma']**2))*np.cos(pulse_params['w_pulse']*t + pulse_params['phi_t'])
+    return np.exp(-((t - pulse_params['tmid'])**2)/(2*pulse_params['sigma']**2))*np.cos(pulse_params['omega_pulse']*t + pulse_params['phi_t'])
 
 def lorentzian_pulse(t, **pulse_params):
     """
@@ -40,4 +40,4 @@ def lorentzian_pulse(t, **pulse_params):
     -------
     calculated lorentzian pulse function (float)    
     """
-    return 1/(1 + ((t - pulse_params['tmid'])/['gamma'])**2)*np.cos(pulse_params['w_pulse']*t+ pulse_params['phi_t'])
+    return 1/(1 + ((t - pulse_params['tmid'])/['gamma'])**2)*np.cos(pulse_params['omega_pulse']*t+ pulse_params['phi_t'])
