@@ -226,7 +226,7 @@ def NV_observable(N):
     else:
         raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
 
-def NV_MW_freqs(B0, N, theta=0, phi_r=0, units_B0='G', units_freq='MHz'):
+def NV_MW_freqs(B0, N, units_B0='G', theta=0, phi_r=0, units_freq='MHz', units_angles='deg'):
     """
     Get the resonant frequencies of the NV center by calculating the energy difference between the different electronic spin states.
 
@@ -243,7 +243,7 @@ def NV_MW_freqs(B0, N, theta=0, phi_r=0, units_B0='G', units_freq='MHz'):
     -------
     MW_freqs (float): Microwave frequencies of the given Hamiltonian
     """
-    H0 = NV_H0(B0, N, units_B0, theta, phi_r, units_freq)
+    H0 = NV_H0(B0, N, units_B0, theta, phi_r, units_freq, units_angles)
     eigenvalues = H0.eigenenergies()
 
     if N == 15:

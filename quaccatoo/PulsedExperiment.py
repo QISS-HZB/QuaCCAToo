@@ -28,10 +28,10 @@ Class Methods
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, mesolve
-from types import FunctionType
+from qutip import Qobj, mesolve, parallel_map
+from types import FunctionType, MethodType
 from scipy.optimize import curve_fit
-from.PulsedLogic import square_pulse
+from.PulsedLogic import square_pulse, pulse, free_evolution
 
 class PulsedExperiment:
     def __init__(self, rho0, H0, H2 = None, c_ops = None):
@@ -74,6 +74,7 @@ class PulsedExperiment:
         self.sequence = [] # list of pulse and free evolution operations
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
+        self.parallel_sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedExperiments or defined by the user
 
     def add_pulse(self, duration, H1, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100):
         """
@@ -87,6 +88,11 @@ class PulsedExperiment:
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps for the pulses
         """
+        
+        # check if time_steps is a positive integer
+        if not isinstance(time_steps, int) or time_steps <= 0:
+            raise ValueError("time_steps must be a positive integer")
+        
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
@@ -121,16 +127,8 @@ class PulsedExperiment:
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
         
-        # check if time_steps is a positive integer
-        if not isinstance(time_steps, int) or time_steps <= 0:
-            raise ValueError("time_steps must be a positive integer")
-
-        # define the pulse operation as a function that returns the final state of the system after the pulse
-        def pulse():
-            return mesolve(Ht, self.rho, tarray, self.c_ops, [], options = self.options, args = pulse_params).states[-1]
-        
         # add the pulse operation to the sequence of operations
-        self.sequence.append( pulse )
+        self.sequence.append( pulse(Ht, self.rho, tarray, self.c_ops, self.options, pulse_params) )
         
     def add_free_evolution(self, duration):
         """
@@ -143,21 +141,18 @@ class PulsedExperiment:
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
-
-        # define a function to represent the free evolution of the system for a given duration
-        def free_evolution():
-            return (-1j*self.H0*duration).expm() * self.rho * ((-1j*self.H0*duration).expm()).dag()
         
         # add the free evolution to the pulse_profiles list
         self.pulse_profiles.append( [None, [self.total_time, duration + self.total_time], None, None] )
         # add the duration of the free evolution to the total time of the experiment
         self.total_time += duration
-        # add the free evolution operation to the sequence of operations
-        self.sequence.append( free_evolution )
 
-    def run(self, observable=None, options={}): #@TODO redefine the run method to be general for predifined pulsed experiments
+        # add the free evolution operation to the sequence of operations
+        self.sequence.append( free_evolution(self.H0, self.rho, duration) )
+
+    def run(self, observable=None, options={}): 
         """
-        Runs the pulsed experiment by performing each operation in the sequence list and saves the results in the results attribute. On PredefinedPulsedExperiments this method is overwritten in each sequence to perform the specific operations of the experiment in parallel.
+        Runs the pulsed experiment. If parallel_sequence is None it runs each operation in the sequence and calculates density matrix sequentially. Otherwise, if a parallel_sequence is given, it runs the operations in parallel using the parallel_map method of QuTip. Each PredefinedPulsedExperiment class attributes the correct parallel_sequence method.
 
         Parameters
         ----------
@@ -172,32 +167,67 @@ class PulsedExperiment:
 
         # initialize the density matrix of the system as the initial state density matrix
         self.rho = self.rho0.copy()
-
+        
+        # check if parallel_sequence is a python function or None
+        # if it is None, run the simulation sequentially by calculating the density matrices for each operation in the sequence
+        if self.parallel_sequence == None:
         # if no observable is given, calculate the final state of the system after the sequence of operations
-        if observable == None:
-            for operation in self.sequence:
-                self.rho = operation()
-            self.results = self.rho.copy() # the results are saved in the results attribute
+            if observable == None:
+                for operation in self.sequence:
+                    self.rho = operation()
+                self.results = self.rho.copy() # the results are saved in the results attribute
+            
+            # if an observable is given, calculate the final state and then take the expectation value of the observable
+            elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
+                self.observable = observable
+                for operation in self.sequence:
+                    self.rho = operation()
+                # analitically, any observable should be a hermitian operator with real expectation values, but numerically it may have a small imaginary part. Thus we take the absolute value of the trace
+                self.results = np.abs(( observable * self.rho ).tr() )
+            
+            # if a list of observables is given, calculate the final state and then take the expectation value of each observable
+            elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
+                self.observable = observable
+                for operation in self.sequence:
+                    self.rho = operation()
+                self.results = np.abs(( observable * self.rho ).tr() )
         
-        # if an observable is given, calculate the final state and then take the expectation value of the observable
-        elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
-            self.observable = observable
-            for operation in self.sequence:
-                self.rho = operation()
-            # analitically, any observable should be a hermitian operator with real expectation values, but numerically it may have a small imaginary part. Thus we take the absolute value of the trace
-            self.results = np.abs(( observable * self.rho ).tr() )
-        
-        # if a list of observables is given, calculate the final state and then take the expectation value of each observable
-        elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
-            self.observable = observable
-            for operation in self.sequence:
-                self.rho = operation()
-            self.results = np.abs(( observable * self.rho ).tr() )
+            else:
+                raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
+            
+        # if parallel_sequence is a python function, run the simulation in parallel using the parallel_map method of QuTip
+        elif isinstance(self.parallel_sequence, (FunctionType, MethodType)):
+            # run the simulation in parallel using the parallel_map method of QuTip to calculate the density matrices for the given free evolution times
+            self.rho = parallel_map(self.parallel_sequence, self.variable)
+            
+            # if no observable is given, store the calculated density matrices in the results attribute
+            if observable == None:
+                self.results = self.rho
+
+            # if an observable is given, check if it is a Qobj of the same shape as rho0, H0 and H1 and store the expectation values in the results attribute
+            elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
+                self.observable = observable
+                for rho in self.rho:
+                    self.results.append( np.abs(( observable * rho).tr() ) )
+            
+            # if the observable is a list of Qobjs of the same shape as rho0, H0 and H1, store the expectation values in the results attribute
+            elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
+                self.observable = observable
+
+                for itr_observable in range(len(observable)):
+                    results_array = np.empty(len(self.rho))
+
+                    for itr_rho in range(len(self.rho)):
+                        results_array[itr_rho] = np.abs(( observable[itr_observable] * self.rho[itr_rho]).tr() )
+
+                    self.results = results_array       
+            else:
+                raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
         
         else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
+            raise ValueError("parallel_sequence must be None, a python function or method to called by the parallel_map method of QuTip.")
             
-    def plot_pulses(self, figsize=(6, 6), xlabel='Time', ylabel='Expectation Value', title='Pulse Profiles'):
+    def plot_pulses(self, figsize=(6, 6), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
         Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evoltution.
 
@@ -275,7 +305,7 @@ class PulsedExperiment:
                 pass
             elif isinstance(fit_function, FunctionType): # if a function is given, performs a fit to the results with the predefined or user defined function.
                 #@TODO predefine some fit functions
-                params, cov = curve_fit(fit_function, self.variable, self.results, p0=fit_guess) # perform the fit using scipy.optimize.curve_fit and the fit_guess if provided
+                params, cov = curve_fit(fit_function, self.variable, self.results, p0=fit_guess, maxfev=10000000) # perform the fit using scipy.optimize.curve_fit and the fit_guess if provided
                 ax.plot(self.variable, fit_function(self.variable, *params), linestyle='--', lw=2, alpha=0.7, label = 'Fit')
 
                 print(f'Fit parameters: {params}')
@@ -298,7 +328,7 @@ class PulsedExperiment:
                 if all(isinstance(fit, FunctionType) for fit in fit_function) and len(fit_function) == len(self.observable) and len(fit_guess) == len(self.observable):
                     for itr in range(len(fit_function)):
                         # perform each fit and plot
-                        params, cov = curve_fit(fit_function[itr], self.variable, self.results[itr], p0=fit_guess[itr])
+                        params, cov = curve_fit(fit_function[itr], self.variable, self.results[itr], p0=fit_guess[itr], maxfev=10000000)
                         ax.plot(self.variable, fit_function[itr](self.variable, *params), linestyle='--', lw=2, alpha=0.7, label = f'Fit {itr}')
 
                         print(f'Fit parameters {itr}: {params}')
