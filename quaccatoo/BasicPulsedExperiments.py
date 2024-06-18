@@ -3,21 +3,23 @@ from qutip import Qobj, mesolve
 from types import FunctionType
 
 from.PulsedExperiment import PulsedExperiment
-from.PulsedLogic import square_pulse, pulse, free_evolution
+from.Analysis import Analysis
+from.PulsedLogic import square_pulse, pulse_operation, free_evolution
 
-class Rabi(PulsedExperiment):
+class Rabi(PulsedExperiment, Analysis):
     """
-    This class contains a Rabi experiments, inheriting from the PulsedExperiment class. A Rabi sequences is composed of a resonant of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
+    This class contains a Rabi experiments, inheriting from the PulsedExperiment class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
 
     Class Attributes
     ----------------
-    = PulsedExperiment
+    pulse_duration (numpy array): time array for the simulation representing the pulse duration to be used as the variable for the simulation
+    += PulsedExperiment
 
     Methods
     -------
     = PulsedExperiment    
     """
-    def __init__(self, pulse_duration, rho0, H0, H1, H2=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}):
+    def __init__(self, pulse_duration, rho0, H0, H1, H2=None, observable=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}, options={}):
         """
         Generator for the Rabi pulsed experiment class, taking a specific pulse_duration to run the simulation.
 
@@ -28,9 +30,11 @@ class Rabi(PulsedExperiment):
         H0 (Qobj): internal time independent Hamiltonian of the system
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
         c_ops (Qobj, list(Qobj)): list of collapse operators
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        options (dict): dictionary of solver options from Qutip
         """
         # call the parent class constructor
         super().__init__(rho0, H0, H2 = H2, c_ops = c_ops)
@@ -47,9 +51,7 @@ class Rabi(PulsedExperiment):
                 raise ValueError("All elements in pulse_duration must be real and positive.")
 
         # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
-        if isinstance(pulse_shape, FunctionType):
-            self.pulse_shape = pulse_shape
-        elif isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape):
+        if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape) ):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
@@ -71,45 +73,50 @@ class Rabi(PulsedExperiment):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
         else:
             self.pulse_params = pulse_params
+            # if phi_t is not in the pulse_params dictionary, assign it as 0
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # set the default xlabel attribute
-        self.xlabel = 'Pulse Duration'
-                
-    def run(self, observable=None, options={}):
-        """
-        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute.
-
-        Parameters
-        ----------
-        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
-        options (dict): dictionary of solver options from Qutip        
-        """
         # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
 
+        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
+        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)) or observable == None:
+            self.observable = observable
+        else:
+            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
+
+        # set the default xlabel attribute
+        self.xlabel = 'Pulse Duration'
+                
+    def run(self):
+        """
+        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.
+
+        Parameters
+        ----------
+        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
+        options (dict): dictionary of solver options from Qutip        
+        """
         # if no observable is given, run the simulation and store the the calculated density matrices in the results attribute
-        if observable == None:
+        if self.observable == None:
             self.results = mesolve(self.Ht, self.rho0, self.variable, self.c_ops, [], options = self.options, args = self.pulse_params).states
         
         # if an observable is given, check if it is a Qobj of the same shape as rho0, H0 and H1 and run the simulation storing the expectation values in the results attribute
-        elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
-            self.observable = observable
-            self.results = mesolve(self.Ht, self.rho0, self.variable, self.c_ops, observable, options = self.options, args = self.pulse_params).expect[0]
+        elif isinstance(self.observable, Qobj) and self.observable.shape == self.rho0.shape:
+            self.results = mesolve(self.Ht, self.rho0, self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect[0]
         
         # if the observable is a list of Qobjs of the same shape as rho0, H0 and H1, run the simulation storing the expectation values in the results attribute
-        elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
-            self.observable = observable
-            self.results =  mesolve(self.Ht, self.rho0, self.variable, self.c_ops, observable, options = self.options, args = self.pulse_params).expect
-        
+        elif isinstance(self.observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in self.observable):
+            self.results =  mesolve(self.Ht, self.rho0, self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect
+        # raise and error if the observable is not a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
 
-class PODMR(PulsedExperiment):
+class PODMR(PulsedExperiment, Analysis):
     """
     This class contains a Pulsed Optically Detected Magnetic Resonance (PODMR) experiments, inheriting from the PulsedExperiment class. The PODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidht usually limited by the pulse lenght.
 
@@ -125,7 +132,7 @@ class PODMR(PulsedExperiment):
     PODMR_sequence(f): defines the the Pulsed Optically Detected Magnetic Resonance (PODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
     += PulsedExperiment
     """
-    def __init__(self, frequencies, pulse_duration, rho0, H0, H1, H2=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, freqs_rad = True):
+    def __init__(self, frequencies, pulse_duration, rho0, H0, H1, H2=None, observable=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}, freqs_rad = True):
         """
         Generator for the PODMR pulsed experiment class
 
@@ -202,6 +209,18 @@ class PODMR(PulsedExperiment):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
         
+        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        if not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        else:
+            self.options = options
+
+        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
+        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)) or observable == None:
+            self.observable = observable
+        else:
+            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
+
         self.parallel_sequence = self.PODMR_sequence
 
     def PODMR_sequence(self, f):
@@ -222,9 +241,9 @@ class PODMR(PulsedExperiment):
             self.pulse_params['omega_pulse'] = 2*np.pi*f
 
         # return the final density matrix after pulse
-        return pulse(self.Ht, self.rho, np.linspace(0, self.pulse_duration, self.time_steps), self.c_ops, options = self.options, args = self.pulse_params)
+        return pulse_operation(self.Ht, self.rho0, np.linspace(0, self.pulse_duration, self.time_steps), self.c_ops, options = self.options, args = self.pulse_params)
 
-class Ramsey(PulsedExperiment):
+class Ramsey(PulsedExperiment, Analysis):
     """
     """
 
@@ -408,7 +427,7 @@ class Ramsey(PulsedExperiment):
         super().plot_pulses(figsize, xlabel, ylabel, title)
     
     
-class Hahn(PulsedExperiment):
+class Hahn(PulsedExperiment, Analysis):
     """
     This class contains a Hahn echo experiment, inheriting from the PulsedExperiment class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 

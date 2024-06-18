@@ -31,7 +31,7 @@ import numpy as np
 from qutip import Qobj, mesolve, parallel_map
 from types import FunctionType, MethodType
 from scipy.optimize import curve_fit
-from.PulsedLogic import square_pulse, pulse, free_evolution
+from.PulsedLogic import square_pulse, pulse_operation, free_evolution
 
 class PulsedExperiment:
     def __init__(self, rho0, H0, H2 = None, c_ops = None):
@@ -55,6 +55,7 @@ class PulsedExperiment:
             else:
                 self.H0 = H0 
                 self.rho0 = rho0
+                self.rho = rho0
         
         # check if c_ops is a list of Qobj with the same dimensions as H0
         if c_ops == None:
@@ -71,12 +72,11 @@ class PulsedExperiment:
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
         self.variable = None # variable of the experiment which the results depend on
-        self.sequence = [] # list of pulse and free evolution operations
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
-        self.parallel_sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedExperiments or defined by the user
+        self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedExperiments or defined by the user
 
-    def add_pulse(self, duration, H1, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100):
+    def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
         Adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse shape function and pulse parameters.
 
@@ -88,7 +88,12 @@ class PulsedExperiment:
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps for the pulses
         """
-        
+        # check if options is a dictionary of dynamic solver options from Qutip
+        if not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        else:
+            self.options = options
+
         # check if time_steps is a positive integer
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
@@ -102,12 +107,8 @@ class PulsedExperiment:
             # add the duration of the pulse to the total time of the experiment
             self.total_time += duration 
 
-        # check if the pulse_shape is a python function or a list of python functions
-        if isinstance(pulse_shape, FunctionType):
-            pass
-        elif isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape):
-            pass
-        else: 
+        # Check if pulse_shape is a single function or a list of functions
+        if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
@@ -126,9 +127,17 @@ class PulsedExperiment:
         # check if pulse_params is a dictionary to be passed to the pulse_shape function
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
+        else:
+            self.pulse_params = pulse_params
+
+        if not isinstance(phi_t, (int, float)):
+            raise ValueError("phi_t must be a real number")
+        else:
+            self.pulse_params['phi_t'] = phi_t
         
         # add the pulse operation to the sequence of operations
-        self.sequence.append( pulse(Ht, self.rho, tarray, self.c_ops, self.options, pulse_params) )
+        self.rho = pulse_operation(Ht, self.rho, tarray, self.c_ops, self.options, self.pulse_params)
+        return self.rho
         
     def add_free_evolution(self, duration):
         """
@@ -148,86 +157,39 @@ class PulsedExperiment:
         self.total_time += duration
 
         # add the free evolution operation to the sequence of operations
-        self.sequence.append( free_evolution(self.H0, self.rho, duration) )
-
-    def run(self, observable=None, options={}): 
+        self.rho = free_evolution(self.H0, self.rho, duration, self.c_ops, self.options)
+        return self.rho
+    
+    def measure(self, observable):
         """
-        Runs the pulsed experiment. If parallel_sequence is None it runs each operation in the sequence and calculates density matrix sequentially. Otherwise, if a parallel_sequence is given, it runs the operations in parallel using the parallel_map method of QuTip. Each PredefinedPulsedExperiment class attributes the correct parallel_sequence method.
-
-        Parameters
-        ----------
-        observable (Qobj, list(Qobj)): observables to be measured after the sequence of operations, if none is given, the final state of the system is returned
-        options (dict): dictionary of dynamic solver options from Qutip
         """
-        # check if options is a dictionary of dynamic solver options from Qutip
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        if ( (isinstance(observable, Qobj) and observable.shape == self.rho0.shape)
+            or 
+            (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)) ):
+            self.observable = observable
+            self.results = np.abs(( observable * self.rho ).tr() )
+            return self.results
         else:
-            self.options = options
+            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
 
-        # initialize the density matrix of the system as the initial state density matrix
-        self.rho = self.rho0.copy()
-        
-        # check if parallel_sequence is a python function or None
-        # if it is None, run the simulation sequentially by calculating the density matrices for each operation in the sequence
-        if self.parallel_sequence == None:
-        # if no observable is given, calculate the final state of the system after the sequence of operations
-            if observable == None:
-                for operation in self.sequence:
-                    self.rho = operation()
-                self.results = self.rho.copy() # the results are saved in the results attribute
-            
-            # if an observable is given, calculate the final state and then take the expectation value of the observable
-            elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
-                self.observable = observable
-                for operation in self.sequence:
-                    self.rho = operation()
-                # analitically, any observable should be a hermitian operator with real expectation values, but numerically it may have a small imaginary part. Thus we take the absolute value of the trace
-                self.results = np.abs(( observable * self.rho ).tr() )
-            
-            # if a list of observables is given, calculate the final state and then take the expectation value of each observable
-            elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
-                self.observable = observable
-                for operation in self.sequence:
-                    self.rho = operation()
-                self.results = np.abs(( observable * self.rho ).tr() )
-        
-            else:
-                raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
-            
-        # if parallel_sequence is a python function, run the simulation in parallel using the parallel_map method of QuTip
-        elif isinstance(self.parallel_sequence, (FunctionType, MethodType)):
-            # run the simulation in parallel using the parallel_map method of QuTip to calculate the density matrices for the given free evolution times
-            self.rho = parallel_map(self.parallel_sequence, self.variable)
-            
-            # if no observable is given, store the calculated density matrices in the results attribute
-            if observable == None:
-                self.results = self.rho
-
-            # if an observable is given, check if it is a Qobj of the same shape as rho0, H0 and H1 and store the expectation values in the results attribute
-            elif isinstance(observable, Qobj) and observable.shape == self.rho0.shape:
-                self.observable = observable
-                for rho in self.rho:
-                    self.results.append( np.abs(( observable * rho).tr() ) )
-            
-            # if the observable is a list of Qobjs of the same shape as rho0, H0 and H1, store the expectation values in the results attribute
-            elif isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable):
-                self.observable = observable
-
-                for itr_observable in range(len(observable)):
-                    results_array = np.empty(len(self.rho))
-
-                    for itr_rho in range(len(self.rho)):
-                        results_array[itr_rho] = np.abs(( observable[itr_observable] * self.rho[itr_rho]).tr() )
-
-                    self.results = results_array       
-            else:
-                raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
-        
+    def run(self, variable, sequence=None):
+        """
+        """
+        if sequence == None and self.sequence == None:
+            raise ValueError("sequence must be a python function with a list operations returning a number")
+        elif isinstance(sequence, FunctionType):
+            self.sequence = sequence
         else:
-            raise ValueError("parallel_sequence must be None, a python function or method to called by the parallel_map method of QuTip.")
+            raise ValueError("sequence must be a python function with a list operations returning a number")
+
+        if not isinstance(variable, np.ndarray):
+            raise ValueError("variable must be a numpy array")
+        else:
+            self.variable = variable
+
+        self.results = parallel_map(self.sequence, self.variable)
             
-    def plot_pulses(self, figsize=(6, 6), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
+    def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
         Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evoltution.
 
@@ -274,7 +236,7 @@ class PulsedExperiment:
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))  
 
-    def plot_results(self, figsize=(6, 6), fit_function=None, fit_guess=None, xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
+    def plot_results(self, figsize=(6, 4), fit_function=None, fit_guess=None, xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
         """
         Plots the results of the experiment and fits the results with predefined or user defined functions.
 

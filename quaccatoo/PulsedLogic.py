@@ -43,7 +43,7 @@ def lorentzian_pulse(t, **pulse_params):
     """
     return 1/(1 + ((t - pulse_params['tmid'])/['gamma'])**2)*np.cos(pulse_params['omega_pulse']*t+ pulse_params['phi_t'])
 
-def pulse(Ht, rho0, tarray, c_ops, options, pulse_params):
+def pulse_operation(Ht, rho0, tarray, c_ops, options, pulse_params):
     """
     Performs a pulse for the specified time-dependent Hamiltonian, initial density matrix, time step, number of steps, collapse operators, options and pulse parameters. Returns the final state of the system using the mesolve method from Qutip.
     
