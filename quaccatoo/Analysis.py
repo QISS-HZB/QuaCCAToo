@@ -17,39 +17,47 @@ def fit_hahn_mod(t, A, B, C, f1, f2):
 def fit_hahn_mod_decay(t, A, B, C, f1, f2, Tc, n):
     return np.exp(- (t/Tc)**n)*( A - B*np.sin(2*np.pi*f1*t/2)**2*np.sin(2*np.pi*f2*t/2)**2 ) + C
 
-class Analysis(PulsedExperiment):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class Analysis:
+    def __init__(self, experiment):
+        """
+        """
+        # check weather PulseExperiment is a PulsedExperiment object
+        if not isinstance(experiment, PulsedExperiment):
+            raise ValueError("PulsedExperiment must be a PulsedExperiment object")
         
+        # check if the results and variable attributes are not empty and have the same length
+        if len(experiment.results) == 0:
+            raise ValueError("Results attribute of PulsedExperiment object is empty, you must run the experiment first")
+        if len(experiment.variable) == 0:
+            raise ValueError("Variable attribute of PulsedExperiment object is empty, please define the variable of the experiment")
+        if len(experiment.results) != len(experiment.variable):
+            raise ValueError("Results and Variable attributes of PulsedExperiment object must have the same length")
+        else:
+            self.results = experiment.results
+            self.variable = experiment.variable
+         
         self.FFT_values = ()
         self.FFT_peaks = ()
 
     def run_FFT(self):
         """
         """
-        if self.results == []:
-            raise ValueError("No results to analyze, you must run the experiment first")
         
         y = np.abs(np.fft.rfft(self.results - np.mean(self.results)))
-        freqs = np.fft.fftfreq(len(self.variable), self.variable[1] - self.variable[0])
+        freqs = np.fft.rfftfreq(len(self.variable), self.variable[1] - self.variable[0])
 
         self.FFT_values = (freqs, y)
 
-        return freqs, y
+        return self.FFT_values
     
-    def get_peaks_FFT(self, height=0.1, distance=3):
+    def get_peaks_FFT(self, **find_peaks_args):
         """
         """
         if not isinstance(self.FFT_values, tuple):
             raise ValueError("No FFT values to analyze, you must run the FFT first")
         
-        if not isinstance(height, (int, float)):
-            raise ValueError("height must be a float or int")
-        if not isinstance(distance, (int, float)):
-            raise ValueError("distance must be a float or int")
-        
-        peaks_position = find_peaks(self.FFT_values[1], height=height, distance=distance)
-        self.FFT_peaks = self.FFT_values[0][peaks_position[0]]
+        self.FFT_peaks_index = find_peaks(self.FFT_values[1], **find_peaks_args)
+        self.FFT_peaks = self.FFT_values[0][self.FFT_peaks_index[0]]
         return self.FFT_peaks
     
     def plot_FFT(self, freq_lim = None, figsize=(6, 4), xlabel='Frequencies', ylabel='FFT Intensity', title='FFT of the Results'):
@@ -75,12 +83,13 @@ class Analysis(PulsedExperiment):
 
         ax.plot(self.FFT_values[0], self.FFT_values[1])
 
-        if self.FFT_peaks != ():
-            ax.scatter(self.FFT_peaks, self.FFT_values[1][self.FFT_peaks], color='red', label='Peaks', s=50)
+        # if peaks have been found, plot them as red points
+        if len(self.FFT_peaks) != 0:
+            ax.scatter(self.FFT_peaks, self.FFT_values[1][self.FFT_peaks_index[0]], color='red', label='Peaks', s=50)
 
         # set the x-axis limits to the total time of the experiment
         if freq_lim == None:
-            ax.set_xlim(self.FFT_values[0], self.FFT_values[-1])
+            ax.set_xlim(self.FFT_values[0][0], self.FFT_values[0][-1])
         elif len(freq_lim) == 2:
             ax.set_xlim(freq_lim[0], freq_lim[1])
         else:

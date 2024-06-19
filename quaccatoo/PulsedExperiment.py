@@ -31,7 +31,7 @@ import numpy as np
 from qutip import Qobj, mesolve, parallel_map
 from types import FunctionType, MethodType
 from scipy.optimize import curve_fit
-from.PulsedLogic import square_pulse, pulse_operation, free_evolution
+from.PulsedLogic import square_pulse
 
 class PulsedExperiment:
     def __init__(self, rho0, H0, H2 = None, c_ops = None):
@@ -75,24 +75,24 @@ class PulsedExperiment:
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
         self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedExperiments or defined by the user
-
+    
     def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
-        Adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse shape function and pulse parameters.
+        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse shape function and pulse parameters by calling the pulse method.
 
         Parameters
         ----------
         duration (float, int): duration of the pulse
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of t H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps for the pulses
+        options (dict): options for the Qutip solver
         """
         # check if options is a dictionary of dynamic solver options from Qutip
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
-            self.options = options
 
         # check if time_steps is a positive integer
         if not isinstance(time_steps, int) or time_steps <= 0:
@@ -104,44 +104,65 @@ class PulsedExperiment:
         else:
             # create a time array for the pulse, starting from the total time of the experiment up to the beginning of the pulse
             tarray = np.linspace(self.total_time, self.total_time + duration, time_steps) 
-            # add the duration of the pulse to the total time of the experiment
-            self.total_time += duration 
 
         # Check if pulse_shape is a single function or a list of functions
         if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
+        # check if pulse_params is a dictionary to be passed to the pulse_shape function
+        if not isinstance(pulse_params, dict):
+            raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
+        # if the user doesn't provide a phi_t, set it to 0
+        if 'phi_t' not in pulse_params:
+            pulse_params['phi_t'] = 0
+
+        # check if phi_t is a real number
+        if not isinstance(phi_t, (int, float)):
+            raise ValueError("phi_t must be a real number")
+        
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
-            # the hamiltonian during the pulse is the sum of H0 and H1 times the pulse_shape function
-            Ht = [self.H0, [H1, pulse_shape]] 
-            # add the pulse profile to the list of pulse profiles
+            # create the time independent + time dependent Hamiltonian
+            Ht = [self.H0, [H1, pulse_shape]]
+            # append it to the pulse_profiles list
             self.pulse_profiles.append( [H1, tarray, pulse_shape, pulse_params] )
-
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             self.pulse_profiles = [[H1[i], tarray, pulse_shape[i], pulse_params] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-
-        # check if pulse_params is a dictionary to be passed to the pulse_shape function
-        if not isinstance(pulse_params, dict):
-            raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
-        else:
-            self.pulse_params = pulse_params
-
-        if not isinstance(phi_t, (int, float)):
-            raise ValueError("phi_t must be a real number")
-        else:
-            self.pulse_params['phi_t'] = phi_t
         
         # add the pulse operation to the sequence of operations
-        self.rho = pulse_operation(Ht, self.rho, tarray, self.c_ops, self.options, self.pulse_params)
+        self.pulse(Ht, tarray, options, pulse_params, phi_t)
+
+    def pulse(self, Ht, tarray, options, pulse_params, phi_t):
+        """
+        Updates the total time of the experiment, adds H1 to the pulse profile for plotting, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation.
+
+        Parameters
+        ----------
+        Ht (list): list of Hamiltonians for the pulse operation
+        tarray (np.array): time array for the pulse operation
+        pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
+
+        Returns
+        -------
+        final state of the system (Qobj)
+        """
+        # update the total time
+        self.total_time = tarray[-1]
+       
+        # update the phase of the pulse
+        pulse_params['phi_t'] = pulse_params['phi_t'] + phi_t
+        # perform the pulse operation
+        self.rho = mesolve(Ht, self.rho, tarray, self.c_ops, [], options = options, args = pulse_params).states[-1]
+        # return the final state of the system
         return self.rho
         
     def add_free_evolution(self, duration):
         """
-        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution.
+        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.
 
         Parameters
         ----------
@@ -153,11 +174,27 @@ class PulsedExperiment:
         
         # add the free evolution to the pulse_profiles list
         self.pulse_profiles.append( [None, [self.total_time, duration + self.total_time], None, None] )
-        # add the duration of the free evolution to the total time of the experiment
-        self.total_time += duration
 
         # add the free evolution operation to the sequence of operations
-        self.rho = free_evolution(self.H0, self.rho, duration, self.c_ops, self.options)
+        self.free_evolution(duration)
+    
+    def free_evolution(self, duration):
+        """
+        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation.
+
+        Parameters
+        ----------
+        duration (float, int): duration of the free evolution
+
+        Returns
+        -------
+        final state of the system (Qobj)
+        """
+        # update the total time
+        self.total_time += duration
+        # perform the free evolution operation
+        self.rho = (-1j*self.H0*duration).expm() * self.rho * ((-1j*self.H0*duration).expm()).dag()
+        # return the final state of the system
         return self.rho
     
     def measure(self, observable):
@@ -172,20 +209,23 @@ class PulsedExperiment:
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
 
-    def run(self, variable, sequence=None):
+    def run(self, variable=None, sequence=None):
         """
         """
-        if sequence == None and self.sequence == None:
-            raise ValueError("sequence must be a python function with a list operations returning a number")
+        if sequence == None and self.sequence != None:
+            pass
         elif isinstance(sequence, FunctionType):
             self.sequence = sequence
         else:
             raise ValueError("sequence must be a python function with a list operations returning a number")
 
-        if not isinstance(variable, np.ndarray):
-            raise ValueError("variable must be a numpy array")
-        else:
+        # check if a variable was passed by the user, if it is numpy array overwrite the variable attribute
+        if isinstance(variable, np.ndarray):
             self.variable = variable
+        elif variable == None and len(self.variable) !=0:
+            pass
+        else:
+            raise ValueError("variable must be a numpy array")            
 
         self.results = parallel_map(self.sequence, self.variable)
             

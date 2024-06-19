@@ -62,6 +62,8 @@ def pulse_operation(Ht, rho0, tarray, c_ops, options, pulse_params):
     """
     return mesolve(Ht, rho0, tarray, c_ops, [], options = options, args = pulse_params).states[-1]
 
+    
+
 def free_evolution(H0, rho0, duration):
     """
     Performs a free evolution for the specified time-independent Hamiltonian, initial density matrix and duration. Returns the final state of the system by applying the time-evolution operator to the initial density matrix.

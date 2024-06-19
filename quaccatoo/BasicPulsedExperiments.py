@@ -4,9 +4,9 @@ from types import FunctionType
 
 from.PulsedExperiment import PulsedExperiment
 from.Analysis import Analysis
-from.PulsedLogic import square_pulse, pulse_operation, free_evolution
+from.PulsedLogic import square_pulse
 
-class Rabi(PulsedExperiment, Analysis):
+class Rabi(PulsedExperiment):
     """
     This class contains a Rabi experiments, inheriting from the PulsedExperiment class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
 
@@ -88,9 +88,6 @@ class Rabi(PulsedExperiment, Analysis):
             self.observable = observable
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
-
-        # set the default xlabel attribute
-        self.xlabel = 'Pulse Duration'
                 
     def run(self):
         """
@@ -116,7 +113,7 @@ class Rabi(PulsedExperiment, Analysis):
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
 
-class PODMR(PulsedExperiment, Analysis):
+class PODMR(PulsedExperiment):
     """
     This class contains a Pulsed Optically Detected Magnetic Resonance (PODMR) experiments, inheriting from the PulsedExperiment class. The PODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidht usually limited by the pulse lenght.
 
@@ -144,14 +141,18 @@ class PODMR(PulsedExperiment, Analysis):
         H0 (Qobj): internal time independent Hamiltonian of the system
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
         c_ops (Qobj, list(Qobj)): list of collapse operators
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps in the pulses for the simulation
+        options (dict): dictionary of solver options from Qutip
         freqs_rad (bool): boolean to determine if the frequencies are already in radians, if False it will convert them to radians
         """
+        # call the parent class constructor
         super().__init__(rho0, H0, H2, c_ops)
 
+        # check weather frequencies is a numpy array and if it is, assign it to the object
         if not isinstance(frequencies, np.ndarray):
             raise ValueError("frequencies must be a numpy array")
         else:
@@ -161,11 +162,11 @@ class PODMR(PulsedExperiment, Analysis):
             else:
                 raise ValueError("All elements in frequencies must be real and positive.")
             
+        # check weather freqs_rad is a boolean and if it is, assign it to the object representing if the frequencies should be converted to radians or not
         if not isinstance(freqs_rad, bool):
             raise ValueError("freqs_rad must be a boolean")
         else:
             self.freqs_rad = freqs_rad
-            self.xlabel = 'Frequency'
 
         # check weather pulse_duration is a numpy array and if it is, assign it to the object
         if not isinstance(pulse_duration, (float, int)) and pulse_duration <= 0:
@@ -188,18 +189,6 @@ class PODMR(PulsedExperiment, Analysis):
         else:
             self.time_steps = time_steps       
         
-        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
-            self.Ht = [self.H0, [H1, pulse_shape]]
-            self.pulse_profiles = [[H1, np.linspace(0, pulse_duration, time_steps), pulse_shape, pulse_params]]
-            
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            self.pulse_profiles = [[H1[i], np.linspace(0, pulse_duration, time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
-
-        else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
@@ -220,8 +209,21 @@ class PODMR(PulsedExperiment, Analysis):
             self.observable = observable
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
+        
+        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
+        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+            # create the time independent + time dependent Hamiltonian
+            self.Ht = [self.H0, [H1, pulse_shape]]
+            # append it to the pulse_profiles list
+            self.pulse_profiles.append( [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, pulse_params] )
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.pulse_profiles.append( [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))] )
+        else:
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
-        self.parallel_sequence = self.PODMR_sequence
+        # set the sequence attribute to the PODMR_sequence method
+        self.sequence = self.PODMR_sequence
 
     def PODMR_sequence(self, f):
         """
@@ -240,14 +242,52 @@ class PODMR(PulsedExperiment, Analysis):
         else:
             self.pulse_params['omega_pulse'] = 2*np.pi*f
 
-        # return the final density matrix after pulse
-        return pulse_operation(self.Ht, self.rho0, np.linspace(0, self.pulse_duration, self.time_steps), self.c_ops, options = self.options, args = self.pulse_params)
+        # run the simulation and return the final density matrix
+        self.pulse(self.Ht, np.linspace(0, self.pulse_duration, self.time_steps), self.options, self.pulse_params, self.pulse_params['phi_t'])
 
-class Ramsey(PulsedExperiment, Analysis):
-    """
-    """
+        if self.observable == None:
+            return self.rho
+        else:
+            return np.abs( (self.rho * self.observable).tr() )
+        
+    def plot_pulses(self, omega_pulse=None, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
+        """
+        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
 
-    def __init__(self, free_duration, pi_pulse_duration, rho0, H0, H1,  H2=None, c_ops=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100):
+        Parameters
+        ----------
+        omega_pulse (float, int): frequency of the pulse to be plotted
+        += PulsedExperiment.plot_pulses
+        """
+        # if omega_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
+        if omega_pulse == None:
+            self.pulse_params['omega_pulse'] = self.variable[0]
+        # if omega_pulse is a float or an integer, assign it to the pulse_params dictionary
+        elif isinstance(omega_pulse, (int, float)):
+            self.pulse_params['omega_pulse'] = omega_pulse
+        else:
+            raise ValueError("omega_pulse must be a float or an integer")
+
+        super().plot_pulses(figsize, xlabel, ylabel, title)
+
+class Ramsey(PulsedExperiment):
+    """
+    This class contains a Ramsey experiments, inheriting from the PulsedExperiment class.
+
+    Class Attributes
+    ----------------
+    free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable atritbute for the simulation
+    pi_pulse_duration (float, int): duration of the pi pulse
+    projection_pulses (Boolean): boolean to determine if an initial pi/2 and final pi/2 pulses are to be included in order to project the measurement in the Sz basis
+    += PulsedExperiment
+
+    Class Methods
+    -------------
+    ramsey_sequence(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
+    ramsey_sequence_proj(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution plus an initial and final pi/2 pulses to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
+    += PulsedExperiment
+    """
+    def __init__(self, free_duration, pi_pulse_duration, rho0, H0, H1, H2=None, observable=None, c_ops=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
         Class generator for the Ramsey pulsed experiment class
 
@@ -301,18 +341,6 @@ class Ramsey(PulsedExperiment, Analysis):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
-        
-        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
-            self.H1 = H1
-            self.Ht = [self.H0, [self.H1, pulse_shape]]
-
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.H1 = H1       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            
-        else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
@@ -321,17 +349,38 @@ class Ramsey(PulsedExperiment, Analysis):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # If projection_pulses is True, the parallel_sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses
+        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        if not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        else:
+            self.options = options
+
+        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
+        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+            # create the time independent + time dependent Hamiltonian
+            self.H1 = H1
+            self.Ht = [self.H0, [H1, pulse_shape]]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.H1 = H1
+            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+        else:
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+
+        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
+        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)) or observable == None:
+            self.observable = observable
+        else:
+            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
+
+        # If projection_pulses is True, the sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses
         if projection_pulses:
-            self.parallel_sequence = self.ramsey_sequence_proj
+            self.sequence = self.ramsey_sequence_proj
         elif not projection_pulses:
-            self.parallel_sequence = self.ramsey_sequence
+            self.sequence = self.ramsey_sequence
         else:
             raise ValueError("projection_pulses must be a boolean")
+        
         self.projection_pulses = projection_pulses
-
-        # set the default xlabel attribute
-        self.xlabel = 'Free Evolution Time'
 
     def ramsey_sequence(self, tau):
         """
@@ -345,7 +394,12 @@ class Ramsey(PulsedExperiment, Analysis):
         -------
         rho (Qobj): final density matrix        
         """
-        return free_evolution(self.H0, self.rho0, tau)
+        self.free_evolution(tau)
+
+        if self.observable == None:
+            return self.rho
+        else:
+            return np.abs( (self.rho * self.observable).tr() )
 
     def ramsey_sequence_proj(self, tau):
         """
@@ -359,18 +413,16 @@ class Ramsey(PulsedExperiment, Analysis):
         -------
         rho (Qobj): final density matrix        
         """
-        # perform the first pi/2 pulse
-        rho = pulse(self.Ht, self.rho0, np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.c_ops, self.options, self.pulse_params)
-        # perform the free evolution
-        rho = free_evolution(self.H0, rho, tau)
-        # append the time to the initial time for the next pulse 
-        t0 = tau + self.pi_pulse_duration/2
-        # perform the third pi/2 pulse
-        rho = pulse(self.Ht, rho, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, self.options, self.pulse_params)
-        # return the final density matrix
-        return rho
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
+        self.free_evolution(tau)
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
+
+        if self.observable == None:
+            return self.rho
+        else:
+            return np.abs( (self.rho * self.observable).tr() )
     
-    def plot_pulses(self, tau, figsize=(6, 6), xlabel=None, ylabel='Expectation Value', title='Pulse Profiles'):
+    def plot_pulses(self, tau=None, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles of Ramsey Sequence'):
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
 
@@ -382,52 +434,44 @@ class Ramsey(PulsedExperiment, Analysis):
         ylabel (str): label of the y-axis
         title (str): title of the plot
         """
-        # check weather tau is a positive real number and if it is, assign it to the object
-        if not isinstance(tau, (int, float)) and tau <= 0 and tau > self.pi_pulse_duration/2:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration/2")
+        # if tau is None, assign the first element of the variable attribute to tau
+        if tau == None:
+            tau = self.variable[0]
+        # if tau is not a float or an integer, raise an error
+        elif not isinstance(tau, (int, float)):
+            raise ValueError("tau must be a float or an integer")
         
         # if projection_pulses is True, include initial and final pi/2 pulses in the pulse_profiles
         if self.projection_pulses:
-            # if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method
+            # if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence
             if isinstance(self.H1, Qobj):
-                t0 = 0
-                self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params] )
-                t0 += self.pi_pulse_duration/2
-                self.pulse_profiles.append( [None, [t0, t0 + tau], None, None] )
+                self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params])
+                t0 = self.pi_pulse_duration/2
+                self.pulse_profiles.append( [None, [t0, tau + t0], None, None] )
                 t0 += tau
-                self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params] )
+                self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params])
                 t0 += self.pi_pulse_duration/2
 
-            # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
+            # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles
             elif isinstance(self.H1, list):
-                t0 = 0
-                self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params] for i in range(len(self.H1))] )
-                t0 += self.pi_pulse_duration/2
-                self.pulse_profiles.append( [None, [t0, t0 + tau], None, None] )
+                self.pulse_profiles.append( [[self.H1[i], np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params] for i in range(len(self.H1))] )
+                t0 = self.pi_pulse_duration/2
+                self.pulse_profiles.append( [None, [t0, tau + t0], None, None] )
                 t0 += tau
                 self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params] for i in range(len(self.H1))] )
                 t0 += self.pi_pulse_duration/2
 
         # if projection_pulses is false, do not include initial and final pi/2 pulses in the pulse_profiles
         else:
-            self.pulse_profiles.append( [None, [0, tau], None, None] )
-            
-        # set the total_time attribute to the total time of the pulse sequence
+            self.pulse_profiles.append( [None, [t0, tau + t0], None, None] )
+            t0 = tau
+
+        # set the total time to t0
         self.total_time = t0
-
-        # if no xlabel is given, set the xlabel to the default value
-        if xlabel == None:
-            pass
-        elif isinstance(xlabel, str):
-            self.xlabel = xlabel
-        else:
-            raise ValueError("xlabel must be a string or None")
-
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
     
-    
-class Hahn(PulsedExperiment, Analysis):
+class Hahn(PulsedExperiment):
     """
     This class contains a Hahn echo experiment, inheriting from the PulsedExperiment class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 
@@ -519,18 +563,15 @@ class Hahn(PulsedExperiment, Analysis):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # If projection_pulses is True, the parallel_sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
+        # If projection_pulses is True, the sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulses:
-            self.parallel_sequence = self.hahn_sequence_proj
+            self.sequence = self.hahn_sequence_proj
         elif not projection_pulses:
-            self.parallel_sequence = self.hahn_sequence
+            self.sequence = self.hahn_sequence
             
         else:
             raise ValueError("projection_pulses must be a boolean")
         self.projection_pulses = projection_pulses
-
-        # set the default xlabel attribute
-        self.xlabel = 'Free Evolution Time'  
         
     def hahn_sequence(self, tau):
         """
@@ -595,7 +636,6 @@ class Hahn(PulsedExperiment, Analysis):
         ----------
         tau (float): free evolution time for the Hahn echo sequence. Contrary to the run method, the free evoluiton must be a single number in order to plot the pulse profiles.
         figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        self.xlabel = 'Free Evolution Time'
         xlabel (str): label of the x-axis
         ylabel (str): label of the y-axis
         title (str): title of the plot
@@ -654,14 +694,6 @@ class Hahn(PulsedExperiment, Analysis):
         
         # set the total_time attribute to the total time of the pulse sequence
         self.total_time = t0
-
-        # if no xlabel is given, set the xlabel to the default value
-        if xlabel == None:
-            pass
-        elif isinstance(xlabel, str):
-            self.xlabel = xlabel
-        else:
-            raise ValueError("xlabel must be a string or None")
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
