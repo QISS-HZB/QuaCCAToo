@@ -4,6 +4,7 @@ import numpy as np
 from.PulsedExp import PulsedExp
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
+from scipy.optimize import curve_fit
 
 def fit_rabi(t, A, Tpi, C, phi):
     return A*np.cos(np.pi*t/Tpi + phi) + C
@@ -25,6 +26,8 @@ class Analysis:
         if not isinstance(experiment, PulsedExp):
             raise ValueError("PulsedExperiment must be a PulsedExperiment object")
         
+        self.experiment = experiment
+        
         # check if the results and variable attributes are not empty and have the same length
         if len(experiment.results) == 0:
             raise ValueError("Results attribute of PulsedExperiment object is empty, you must run the experiment first")
@@ -38,7 +41,6 @@ class Analysis:
          
         self.FFT_values = []
         self.FFT_peaks = []
-        self.fit = None
 
     def run_FFT(self):
         """
@@ -100,3 +102,25 @@ class Analysis:
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_title(title)
+
+    def run_fit(self, fit_function, guess=None, bounds=(-np.inf, np.inf)):
+        """
+        """
+        if not callable(fit_function):
+            raise ValueError("fit_function must be a callable function")
+        
+        self.fit_function = fit_function
+        
+        fit, fit_cov = curve_fit(fit_function, self.variable, self.results, p0=guess, bounds=bounds, maxfev=100000)
+
+        self.fit = fit
+        self.fit_cov = fit_cov
+
+        return self.fit, self.fit_cov
+    
+    def plot_fit(self, figsize=(6, 4), xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
+        """
+        """
+        self.experiment.plot_results(figsize, xlabel, ylabel, title)
+
+        plt.plot(self.variable, self.fit_function(self.variable, *self.fit), label='Fit')

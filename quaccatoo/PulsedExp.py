@@ -1,28 +1,5 @@
 """
-This files contains the PulsedExp class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
-
-Class Attributes
-----------------
-- system: QSys object representing the quantum system
-- H1: control Hamiltonian of the system
-- H2: time dependent Hamiltonian of the system
-- total_time: total time of the experiment
-- variable: variable of the experiment which the results depend on
-- sequence: list of pulse and free evolution operations as functions
-- pulse_profiles: list of pulse profiles for plotting purposes. Eeach element is a list [H1, tarray, pulse_shape, pulse_params], where H1 is the control Hamiltonian, tarray is the time array of the pulse, pulse_shape is the pulse time modulation function and pulse_params is the dictionary of parameters for the pulse_shape function
-- results: results of the experiment from the run method
-- options: dictionary of dynamic solver options from Qutip
-- observable: observable to be measured after the sequence of operations
-
-Class Methods
--------------
-- add_pulse: adds a pulse operation to the sequence of operations of the experiment
-- pulse: updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
-- add_free_evolution: adds a free evolution operation to the sequence of operations of the experiment
-- free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation
-- run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable atrribute
-- plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
-- plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
+This module contains the PulsedExp class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
 """
 
 # import the necessary libraries
@@ -35,6 +12,32 @@ from.PulseShapes import square_pulse
 from.QSys import QSys
 
 class PulsedExp:
+    """
+    The PulsedExp class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations. The class contains methods to add pulses and free evolution operations to the sequence of operations, run the experiment, plot the pulse profiles and results of the experiment.
+
+    Class Attributes
+    ----------------
+    - system: QSys object representing the quantum system
+    - H1: control Hamiltonian of the system
+    - H2: time dependent Hamiltonian of the system
+    - total_time: total time of the experiment
+    - variable: variable of the experiment which the results depend on
+    - sequence: list of pulse and free evolution operations as functions
+    - pulse_profiles: list of pulse profiles for plotting purposes. Eeach element is a list [H1, tarray, pulse_shape, pulse_params], where H1 is the control Hamiltonian, tarray is the time array of the pulse, pulse_shape is the pulse time modulation function and pulse_params is the dictionary of parameters for the pulse_shape function
+    - results: results of the experiment from the run method
+    - options: dictionary of dynamic solver options from Qutip
+    - observable: observable to be measured after the sequence of operations
+
+    Class Methods
+    -------------
+    - add_pulse: adds a pulse operation to the sequence of operations of the experiment
+    - pulse: updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
+    - add_free_evolution: adds a free evolution operation to the sequence of operations of the experiment
+    - free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation
+    - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable atrribute
+    - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
+    - plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
+    """
     def __init__(self, system, H2 = None):
         """
         Initializes a general PulsedExp object with a quantum system, time dependent Hamiltonian and collapse operators.
@@ -49,11 +52,11 @@ class PulsedExp:
             raise ValueError("system must be a QSys object")
         
         # get the attributes of the system
-        self.rho0 = system.rho0.copy()
+        self.rho0 = system.rho0
         self.rho = system.rho0.copy()
-        self.H0 = system.H0.copy()
-        self.observable = system.observable.copy()
-        self.c_ops = system.c_ops.copy()
+        self.H0 = system.H0
+        self.observable = system.observable
+        self.c_ops = system.c_ops
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -121,7 +124,7 @@ class PulsedExp:
         # add the pulse operation to the sequence of operations by calling the pulse method
         self.pulse(Ht, tarray, options, pulse_params, phi_t)
 
-    def pulse(self, Ht, tarray, options, pulse_params, phi_t):
+    def pulse(self, Ht, tarray, options, core_pulse_params, phi_t):
         """
         Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
@@ -132,20 +135,15 @@ class PulsedExp:
         options (dict): options for the Qutip solver
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
-
-        Returns
-        -------
-        final state of the system (Qobj)
         """
+        # update the phase of the pulse
+        core_pulse_params['phi_t'] += phi_t
+
+        # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
+        self.rho = mesolve(Ht, self.rho, 2*np.pi*tarray, self.c_ops, [], options = options, args = core_pulse_params).states[-1]
+
         # update the total time
         self.total_time = tarray[-1]
-       
-        # update the phase of the pulse
-        pulse_params['phi_t'] = pulse_params['phi_t'] + phi_t
-        # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
-        self.rho = mesolve(Ht, self.rho, 2*np.pi*tarray, self.c_ops, [], options = options, args = pulse_params).states[-1]
-        # return the final state of the system
-        return self.rho
         
     def add_free_evolution(self, duration):
         """
@@ -172,17 +170,11 @@ class PulsedExp:
         Parameters
         ----------
         duration (float, int): duration of the free evolution
-
-        Returns
-        -------
-        final state of the system (Qobj)
         """
         # update the total time
         self.total_time += duration
         # perform the free evolution operation
         self.rho = (-1j*2*np.pi*self.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.H0*duration).expm()).dag()
-        # return the final state of the system
-        return self.rho
     
     def measure(self, observable=None):
         """
@@ -245,7 +237,7 @@ class PulsedExp:
             raise ValueError("variable must be a numpy array")
                     
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
-        self.results = parallel_map(self.sequence, self.variable)
+        self.results = parallel_map(self.sequence, self.variable, num_cpus=1)
             
     def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """

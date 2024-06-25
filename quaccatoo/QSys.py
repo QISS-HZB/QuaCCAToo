@@ -116,7 +116,7 @@ class QSys:
             raise ValueError("freq_lim must be a tuple of two floats")
 
 class NV(QSys):
-    def __init__(self, B0, N, units_B0='mT', theta=0, phi_r=0, units_angles='deg'):
+    def __init__(self, B0, N, c_ops=None, units_B0='mT', theta=0, phi_r=0, units_angles='deg'):
         """
         """
         # converts the magnetic field to Gauss
@@ -131,7 +131,18 @@ class NV(QSys):
                 B0 = B0*1e-3
             else:
                 raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
-            
+
+        # check if c_ops is a list of Qobj with the same dimensions as H0
+        if c_ops == None:
+            self.c_ops = c_ops
+        elif isinstance(c_ops, list):
+            if not all(isinstance(op, Qobj) and op.shape == self.H0.shape for op in c_ops):
+                raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
+            else:
+                self.c_ops = c_ops
+        else:
+            raise ValueError("c_ops must be a list of Qobj or None")
+
         if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
             raise ValueError(f"Invalid value for theta or phi_r. Expected a number, got {theta} or {phi_r}.")
         else:
