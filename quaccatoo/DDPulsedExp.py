@@ -4,8 +4,8 @@ import numpy as np
 from qutip import Qobj
 from types import FunctionType
 
-from.PulsedExperiment import PulsedExperiment
-from.PulsedLogic import square_pulse, pulse, mesolve
+from.PulsedExp import PulsedExp
+from.PulseShapes import square_pulse
 
 class CPMG(PulsedExperiment):
     """

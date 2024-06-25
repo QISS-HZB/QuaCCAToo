@@ -1,7 +1,7 @@
 #TODO FFT
 
 import numpy as np
-from.PulsedExperiment import PulsedExperiment
+from.PulsedExp import PulsedExp
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
@@ -22,7 +22,7 @@ class Analysis:
         """
         """
         # check weather PulseExperiment is a PulsedExperiment object
-        if not isinstance(experiment, PulsedExperiment):
+        if not isinstance(experiment, PulsedExp):
             raise ValueError("PulsedExperiment must be a PulsedExperiment object")
         
         # check if the results and variable attributes are not empty and have the same length

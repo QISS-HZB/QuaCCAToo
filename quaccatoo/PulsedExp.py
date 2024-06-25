@@ -31,10 +31,11 @@ import numpy as np
 from qutip import Qobj, mesolve, parallel_map
 from types import FunctionType, MethodType
 from scipy.optimize import curve_fit
-from.PulsedLogic import square_pulse
+from.PulseShapes import square_pulse
+from.QSys import QSys
 
-class PulsedExperiment:
-    def __init__(self, rho0, H0, H2 = None, c_ops = None):
+class PulsedExp:
+    def __init__(self, system, H2 = None, c_ops = None):
         """
         Initializes a general PulsedExperiment object with the initial state density matrix, the time independent Hamiltonian, the time dependent Hamiltonian and the collapse operators.
 
@@ -45,24 +46,20 @@ class PulsedExperiment:
         H2 (Qobj): time dependent sensing Hamiltonian of the system
         c_ops (list(Qobj)): list of collapse operators
         """
-        # check if rho0 and H0 are Qobj and if they have the same dimensions
-        if not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
-            raise ValueError("H0 and rho0 must be a Qobj")
-        else:
-            if H0.shape != rho0.shape:
-                raise ValueError("H0 and rho0 must have the same dimensions")
-                # if they are correct, assign them to the objects
-            else:
-                self.H0 = H0 
-                self.rho0 = rho0
-                self.rho = rho0
+        if not isinstance(system, QSys):
+            raise ValueError("system must be a QSys object")
+        
+        self.rho0 = system.rho0.copy()
+        self.rho = system.rho0.copy()
+        self.H0 = system.H0.copy()
+        self.observable = system.observable.copy()
         
         # check if c_ops is a list of Qobj with the same dimensions as H0
         if c_ops == None:
             self.c_ops = c_ops
 
         elif isinstance(c_ops, list):
-            if not all(isinstance(op, Qobj) and op.shape == H0.shape for op in c_ops):
+            if not all(isinstance(op, Qobj) and op.shape == self.H0.shape for op in c_ops):
                 raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
             else:
                 self.c_ops = c_ops
@@ -156,7 +153,7 @@ class PulsedExperiment:
         # update the phase of the pulse
         pulse_params['phi_t'] = pulse_params['phi_t'] + phi_t
         # perform the pulse operation
-        self.rho = mesolve(Ht, self.rho, tarray, self.c_ops, [], options = options, args = pulse_params).states[-1]
+        self.rho = mesolve(Ht, self.rho, 2*np.pi*tarray, self.c_ops, [], options = options, args = pulse_params).states[-1]
         # return the final state of the system
         return self.rho
         
@@ -193,21 +190,24 @@ class PulsedExperiment:
         # update the total time
         self.total_time += duration
         # perform the free evolution operation
-        self.rho = (-1j*self.H0*duration).expm() * self.rho * ((-1j*self.H0*duration).expm()).dag()
+        self.rho = (-1j*2*np.pi*self.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.H0*duration).expm()).dag()
         # return the final state of the system
         return self.rho
     
-    def measure(self, observable):
+    def measure(self, observable=None):
         """
         """
-        if ( (isinstance(observable, Qobj) and observable.shape == self.rho0.shape)
-            or 
-            (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)) ):
+        if observable == None and self.observable == None:
+            self.results = self.rho.copy()
+        elif observable == None and self.observable != None:
+            self.results = np.abs(( self.observable * self.rho ).tr() )
+        elif observable != None and (isinstance(observable, Qobj) and observable.shape == self.rho0.shape):
             self.observable = observable
-            self.results = np.abs(( observable * self.rho ).tr() )
-            return self.results
+            self.results = np.abs(( observable * self.rho ).tr() )   
         else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
+            raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
+
+        return self.results
 
     def run(self, variable=None, sequence=None):
         """
