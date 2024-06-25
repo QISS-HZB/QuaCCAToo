@@ -1,13 +1,11 @@
 """
-This files contains the PulsedExperiment class that is used to define a general pulsed experiment with a sequence of pulse and free evolution operations.
+This files contains the PulsedExp class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
 
 Class Attributes
 ----------------
-- rho0: initial state density matrix
-- H0: time independent Hamiltonian of the system
+- system: QSys object representing the quantum system
 - H1: control Hamiltonian of the system
 - H2: time dependent Hamiltonian of the system
-- c_ops: list of collapse operators
 - total_time: total time of the experiment
 - variable: variable of the experiment which the results depend on
 - sequence: list of pulse and free evolution operations as functions
@@ -16,55 +14,46 @@ Class Attributes
 - options: dictionary of dynamic solver options from Qutip
 - observable: observable to be measured after the sequence of operations
 
-
 Class Methods
 -------------
 - add_pulse: adds a pulse operation to the sequence of operations of the experiment
+- pulse: updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
 - add_free_evolution: adds a free evolution operation to the sequence of operations of the experiment
-- run: runs the pulsed experiment by performing each operation in the sequence list and saves the results in the results attribute
+- free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation
+- run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable atrribute
 - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
 - plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
 """
 
+# import the necessary libraries
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, mesolve, parallel_map
-from types import FunctionType, MethodType
+from types import FunctionType
 from scipy.optimize import curve_fit
 from.PulseShapes import square_pulse
 from.QSys import QSys
 
 class PulsedExp:
-    def __init__(self, system, H2 = None, c_ops = None):
+    def __init__(self, system, H2 = None):
         """
-        Initializes a general PulsedExperiment object with the initial state density matrix, the time independent Hamiltonian, the time dependent Hamiltonian and the collapse operators.
+        Initializes a general PulsedExp object with a quantum system, time dependent Hamiltonian and collapse operators.
 
         Parameters
         ----------
-        rho0 (Qobj): initial state density matrix
-        H0 (Qobj): time independent Hamiltonian of the system 
+        system (QSys): quantum system object representing the quantum system
         H2 (Qobj): time dependent sensing Hamiltonian of the system
-        c_ops (list(Qobj)): list of collapse operators
         """
+        # check if system is a QSys object
         if not isinstance(system, QSys):
             raise ValueError("system must be a QSys object")
         
+        # get the attributes of the system
         self.rho0 = system.rho0.copy()
         self.rho = system.rho0.copy()
         self.H0 = system.H0.copy()
         self.observable = system.observable.copy()
-        
-        # check if c_ops is a list of Qobj with the same dimensions as H0
-        if c_ops == None:
-            self.c_ops = c_ops
-
-        elif isinstance(c_ops, list):
-            if not all(isinstance(op, Qobj) and op.shape == self.H0.shape for op in c_ops):
-                raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
-            else:
-                self.c_ops = c_ops
-        else:
-            raise ValueError("c_ops must be a list of Qobj or None")
+        self.c_ops = system.c_ops.copy()
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -75,7 +64,7 @@ class PulsedExp:
     
     def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
-        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse shape function and pulse parameters by calling the pulse method.
+        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
 
         Parameters
         ----------
@@ -129,17 +118,18 @@ class PulsedExp:
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
-        # add the pulse operation to the sequence of operations
+        # add the pulse operation to the sequence of operations by calling the pulse method
         self.pulse(Ht, tarray, options, pulse_params, phi_t)
 
     def pulse(self, Ht, tarray, options, pulse_params, phi_t):
         """
-        Updates the total time of the experiment, adds H1 to the pulse profile for plotting, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation.
+        Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
         ----------
-        Ht (list): list of Hamiltonians for the pulse operation
+        Ht (list): list of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
         tarray (np.array): time array for the pulse operation
+        options (dict): options for the Qutip solver
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
 
@@ -152,7 +142,7 @@ class PulsedExp:
        
         # update the phase of the pulse
         pulse_params['phi_t'] = pulse_params['phi_t'] + phi_t
-        # perform the pulse operation
+        # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
         self.rho = mesolve(Ht, self.rho, 2*np.pi*tarray, self.c_ops, [], options = options, args = pulse_params).states[-1]
         # return the final state of the system
         return self.rho
@@ -177,7 +167,7 @@ class PulsedExp:
     
     def free_evolution(self, duration):
         """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation.
+        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
         ----------
@@ -196,26 +186,53 @@ class PulsedExp:
     
     def measure(self, observable=None):
         """
+        Measures the observable after the sequence of operations and returns the expectation value of the observable.
+
+        Parameters
+        ----------
+        observable (Qobj): observable to be measured after the sequence of operations
+
+        Returns
+        -------
+        results of the experiment
         """
+        # if no observable is passed and the QSys doesn't have one, returns the final density matrix
         if observable == None and self.observable == None:
             self.results = self.rho.copy()
+        # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
         elif observable == None and self.observable != None:
             self.results = np.abs(( self.observable * self.rho ).tr() )
+        # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
         elif observable != None and (isinstance(observable, Qobj) and observable.shape == self.rho0.shape):
             self.observable = observable
-            self.results = np.abs(( observable * self.rho ).tr() )   
+            self.results = np.abs(( observable * self.rho ).tr() )
+        # else raises an error   
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
 
+        # return the results of the experiment
         return self.results
 
     def run(self, variable=None, sequence=None):
         """
+        Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.
+
+        Parameters
+        ----------
+        variable (np.array): xaxis variable of the plot representing the parameter being changed in the experiment
+        sequence (FunctionType): sequence of operations to be performed in the experiment
+
+        Returns
+        -------
+        results of the experiment
         """
+        # if no sequence is passed but the PulsedExp has one, uses the attribute sequence
         if sequence == None and self.sequence != None:
             pass
+        # if a sequence is passed, checks if it is a python function and overwrites the attribute
         elif isinstance(sequence, FunctionType):
             self.sequence = sequence
+        # else raises an error
         else:
             raise ValueError("sequence must be a python function with a list operations returning a number")
 
@@ -225,8 +242,9 @@ class PulsedExp:
         elif variable == None and len(self.variable) !=0:
             pass
         else:
-            raise ValueError("variable must be a numpy array")            
-
+            raise ValueError("variable must be a numpy array")
+                    
+        # run the experiment by calling the parallel_map function from QuTip over the variable attribute
         self.results = parallel_map(self.sequence, self.variable)
             
     def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
@@ -276,21 +294,17 @@ class PulsedExp:
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))  
 
-    def plot_results(self, figsize=(6, 4), fit_function=None, fit_guess=None, xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
+    def plot_results(self, figsize=(6, 4), xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
         """
-        Plots the results of the experiment and fits the results with predefined or user defined functions.
+        Plots the results of the experiment
 
         Parameters
         ----------
-        variable (np.array): xaxis variable of the plot representing the parameter being changed in the experiment
         figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        fit_function (FunctionType): function or list of functions to fit the results of the experiment, if None, no fit is performed
-        fit_guess (list): initial guess or list of initial guesses for the fit_function
         xlabel (str): label of the x-axis
         ylabel (str): label of the y-axis
         title (str): title of the plot        
         """
-        
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
@@ -301,47 +315,16 @@ class PulsedExp:
         # check if the observable is a Qobj or a list of Qobj
         if isinstance(self.observable, Qobj):
             ax.plot(self.variable, self.results, lw=2, alpha=0.7, label = 'Observable')
-
-            # check if fit_function is a python function or None
-            if fit_function == None: # if no function is given, fit is not performed
-                pass
-            elif isinstance(fit_function, FunctionType): # if a function is given, performs a fit to the results with the predefined or user defined function.
-                #@TODO predefine some fit functions
-                params, cov = curve_fit(fit_function, self.variable, self.results, p0=fit_guess, maxfev=10000000) # perform the fit using scipy.optimize.curve_fit and the fit_guess if provided
-                ax.plot(self.variable, fit_function(self.variable, *params), linestyle='--', lw=2, alpha=0.7, label = 'Fit')
-
-                print(f'Fit parameters: {params}')
-                print(f'Covariance matrix: {cov}')
-
-            else:
-                raise ValueError("fit_function must be a python function or None")
                     
-        else:
+        elif isinstance(self.observable, list):
             # if it is a list, iterate over the observables and plot each one
             for itr in range(len(self.observable)):
                 # plot all observables in the results
                 ax.plot(self.variable, self.results[itr], label = f'Observable {itr}', lw=2, alpha=0.7)
             
-            if fit_function == None:
-                pass
-
-            elif isinstance(fit_function, list):
-                # check if the fit_function is a list of python functions and has the same length as the observables
-                if all(isinstance(fit, FunctionType) for fit in fit_function) and len(fit_function) == len(self.observable) and len(fit_guess) == len(self.observable):
-                    for itr in range(len(fit_function)):
-                        # perform each fit and plot
-                        params, cov = curve_fit(fit_function[itr], self.variable, self.results[itr], p0=fit_guess[itr], maxfev=10000000)
-                        ax.plot(self.variable, fit_function[itr](self.variable, *params), linestyle='--', lw=2, alpha=0.7, label = f'Fit {itr}')
-
-                        print(f'Fit parameters {itr}: {params}')
-                        print(f'Covariance matrix {itr}: {cov}')
-                else:
-                    raise ValueError("fit_function must be a list of python functions or None")
-            else:
-                raise ValueError("fit_function must be a list of python functions or None")
-            
         # set the x-axis limits to the variable of the experiment
         ax.set_xlim(self.variable[0], self.variable[-1])
+
         # set the axes labels according to the parameters
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)

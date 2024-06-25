@@ -1,10 +1,11 @@
+"""
+
+"""
+
 import numpy as np
 from qutip import Qobj, mesolve
 from types import FunctionType
-
 from.PulsedExp import PulsedExp
-from.QSys import QSys
-# from.Analysis import Analysis
 from.PulseShapes import square_pulse
 
 class Rabi(PulsedExp):
@@ -20,28 +21,25 @@ class Rabi(PulsedExp):
     -------
     = PulsedExperiment    
     """
-    def __init__(self, pulse_duration, system, H1, H2=None, observable=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}, options={}):
+    def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, options={}):
         """
         Generator for the Rabi pulsed experiment class, taking a specific pulse_duration to run the simulation.
 
         Parameters
         ----------
         pulse_duration (numpy array):time array for the simulation representing to be used as the variable for the simulation
-        rho0 (Qobj): initial density matrix
-        H0 (Qobj): internal time independent Hamiltonian of the system
+        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
-        c_ops (Qobj, list(Qobj)): list of collapse operators
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         options (dict): dictionary of solver options from Qutip
         """
         # call the parent class constructor
-        super().__init__(system, H2, c_ops)
+        super().__init__(system, H2)
 
         # check weather pulse_duration is a numpy array and if it is, assign it to the object
-        if not isinstance(pulse_duration, np.ndarray):
+        if not isinstance(pulse_duration, (np.ndarray, list)):
             raise ValueError("pulse_duration must be a numpy array")
         else:
             # Check if all elements are real and positive
@@ -83,50 +81,34 @@ class Rabi(PulsedExp):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
-        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)):
-            self.observable = observable
-        # if no observable but the observable attribute is not None, pass
-        elif observable == None and self.observable != None:
-            pass
-        # othrwise raise an error
-        else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
                 
     def run(self):
         """
-        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.
-
-        Parameters
-        ----------
-        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
-        options (dict): dictionary of solver options from Qutip        
+        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.      
         """
-        # if no observable is given, run the simulation and store the the calculated density matrices in the results attribute
+        # if no observable is given in QSys, run the simulation and store the the calculated density matrices in the results attribute
         if self.observable == None:
             self.results = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, [], options = self.options, args = self.pulse_params).states
         
-        # if an observable is given, check if it is a Qobj of the same shape as rho0, H0 and H1 and run the simulation storing the expectation values in the results attribute
-        elif isinstance(self.observable, Qobj) and self.observable.shape == self.rho0.shape:
+        # if one observable is given in QSys, run the simulation and store the expectation values in the results attribute
+        elif len(self.observable) == 1:
             self.results = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect[0]
         
-        # if the observable is a list of Qobjs of the same shape as rho0, H0 and H1, run the simulation storing the expectation values in the results attribute
-        elif isinstance(self.observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in self.observable):
+        # if more than one observable is given in QSys, run the simulation and store the expectation values in the results attribute
+        elif len(self.observable) > 1:
             self.results =  mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect
-        # raise and error if the observable is not a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1
+        # otherwise raise an error
         else:
             raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
 
 class PODMR(PulsedExp):
     """
-    This class contains a Pulsed Optically Detected Magnetic Resonance (PODMR) experiments, inheriting from the PulsedExperiment class. The PODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidht usually limited by the pulse lenght.
+    This class contains a Pulsed Optically Detected Magnetic Resonance (PODMR) experiments where the frequency is the variable being changed, inheriting from the PulsedExp class. The PODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidht usually limited by the pulse lenght. Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers, however the method can be more general. 
 
     Class Attributes
     ----------------
     frequencies (numpy array): array of frequencies to run the simulation
     pulsed_duration (float, int): duration of the pulse
-    freqs_rad (bool): boolean to determine if the frequencies are already in radians, if False it will convert them to radians
     += PulsedExperiment
 
     Class Methods
@@ -134,7 +116,7 @@ class PODMR(PulsedExp):
     PODMR_sequence(f): defines the the Pulsed Optically Detected Magnetic Resonance (PODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
     += PulsedExperiment
     """
-    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, observable=None, c_ops=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
+    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
         Generator for the PODMR pulsed experiment class
 
@@ -142,24 +124,20 @@ class PODMR(PulsedExp):
         ----------
         frequencies (numpy array): array of frequencies to run the simulation
         pulse_duration (float, int): duration of the pulse
-        rho0 (Qobj): initial density matrix
-        H0 (Qobj): internal time independent Hamiltonian of the system
+        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        observable (Qobj, list(Qobj)): observable to calculate the expectation value of. If none are given, the density matrices are stored in the results attribute
-        c_ops (Qobj, list(Qobj)): list of collapse operators
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps in the pulses for the simulation
         options (dict): dictionary of solver options from Qutip
-        freqs_rad (bool): boolean to determine if the frequencies are already in radians, if False it will convert them to radians
         """
         # call the parent class constructor
-        super().__init__(system, H2, c_ops)
+        super().__init__(system, H2)
 
-        # check weather frequencies is a numpy array and if it is, assign it to the object
-        if not isinstance(frequencies, np.ndarray):
-            raise ValueError("frequencies must be a numpy array")
+        # check weather frequencies is a numpy array or list and if it is, assign it to the object
+        if not isinstance(frequencies, (np.ndarray, list)):
+            raise ValueError("frequencies must be a numpy array or list")
         else:
             # Check if all elements are real and positive
             if np.all(np.isreal(frequencies)) and np.all(np.greater_equal(frequencies, 0)):
@@ -171,7 +149,6 @@ class PODMR(PulsedExp):
         if not isinstance(pulse_duration, (float, int)) and pulse_duration <= 0:
             raise ValueError("pulse_duration must be a positive real number")
         else:
-            self.total_time = pulse_duration
             self.pulse_duration = pulse_duration
 
         # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
@@ -202,16 +179,6 @@ class PODMR(PulsedExp):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
-        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)):
-            self.observable = observable
-        # if no observable but the observable attribute is not None, pass
-        elif observable == None and self.observable != None:
-            pass
-        # othrwise raise an error
-        else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
@@ -239,6 +206,7 @@ class PODMR(PulsedExp):
         -------
         rho (Qobj): final density matrix   
         """
+        self.rho = self.rho0.copy()
         self.pulse_params['omega_pulse'] = f
 
         # run the simulation and return the final density matrix
@@ -266,6 +234,8 @@ class PODMR(PulsedExp):
             self.pulse_params['omega_pulse'] = omega_pulse
         else:
             raise ValueError("omega_pulse must be a float or an integer")
+        
+        self.total_time = self.pulse_duration
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
@@ -286,7 +256,7 @@ class Ramsey(PulsedExp):
     ramsey_sequence_proj(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution plus an initial and final pi/2 pulses to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
     += PulsedExperiment
     """
-    def __init__(self, free_duration, pi_pulse_duration, system, H1, H2=None, observable=None, c_ops=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
+    def __init__(self, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
         Class generator for the Ramsey pulsed experiment class
 
@@ -298,17 +268,16 @@ class Ramsey(PulsedExp):
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         pi_pulse_duration (float, int): duration of the pi pulse
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        c_ops (Qobj, list(Qobj)): list of collapse operators
         projection_pulses (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not. If True, a initial pi/2 pulse and a final pi/2 pulse are included in order to project into the Sz basis, as in most color centers.
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps in the pulses for the simulation
         """
         # call the parent class constructor
-        super().__init__(system, H2, c_ops)
+        super().__init__(system, H2)
 
         # check weather free_duration is a numpy array of real and positive elements and if it is, assign it to the object
-        if not isinstance(free_duration, np.ndarray):
+        if not isinstance(free_duration, (np.ndarray, list)):
             raise ValueError("free_duration must be a numpy array")
         else:
             # Check if all elements are real and positive
@@ -365,16 +334,6 @@ class Ramsey(PulsedExp):
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
-        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
-        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)):
-            self.observable = observable
-        # if no observable but the observable attribute is not None, pass
-        elif observable == None and self.observable != None:
-            pass
-        # othrwise raise an error
-        else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
-
         # If projection_pulses is True, the sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses
         if projection_pulses:
             self.sequence = self.ramsey_sequence_proj
@@ -397,6 +356,8 @@ class Ramsey(PulsedExp):
         -------
         rho (Qobj): final density matrix        
         """
+        self.total_time = 0
+        self.rho = self.rho0.copy()
         self.free_evolution(tau)
 
         if self.observable == None:
@@ -416,6 +377,9 @@ class Ramsey(PulsedExp):
         -------
         rho (Qobj): final density matrix        
         """
+        self.total_time = 0
+        self.rho = self.rho0.copy()
+        
         self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
         self.free_evolution(tau)
         self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
@@ -494,7 +458,7 @@ class Hahn(PulsedExp):
     += PulsedExperiment    
     """
 
-    def __init__(self, free_duration, pi_pulse_duration, system, H1,  H2=None, observable=None, c_ops=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100):
+    def __init__(self, free_duration, pi_pulse_duration, system, H1,  H2=None, projection_pulses = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
         Generator for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.
 
@@ -506,17 +470,16 @@ class Hahn(PulsedExp):
         H1 (Qobj, list(Qobj)): control Hamiltonian of the system
         pi_pulse_duration (float, int): duration of the pi pulse
         H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        c_ops (Qobj, list(Qobj)): list of collapse operators
         projection_pulses (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not. If True, a initial pi/2 pulse and a final pi/2 pulse are included in order to project into the Sz basis, as in most color centers.
         pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params (dict): dictionary of parameters for the pulse_shape functions
         time_steps (int): number of time steps in the pulses for the simulation
         """
         # call the parent class constructor
-        super().__init__(system, H2, c_ops)
+        super().__init__(system, H2)
 
         # check weather free_duration is a numpy array of real and positive elements and if it is, assign it to the object
-        if not isinstance(free_duration, np.ndarray):
+        if not isinstance(free_duration, (np.ndarray, list)):
             raise ValueError("free_duration must be a numpy array")
         else:
             # Check if all elements are real and positive
@@ -568,24 +531,20 @@ class Hahn(PulsedExp):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # check weather observable is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 and if it is, assign it to the object
-        if (isinstance(observable, Qobj) and observable.shape == self.rho0.shape) or (isinstance(observable, list) and all(isinstance(q, Qobj) and q.shape == self.rho0.shape for q in observable)):
-            self.observable = observable
-        # if no observable but the observable attribute is not None, pass
-        elif observable == None and self.observable != None:
-            pass
-        # othrwise raise an error
+        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        if not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 or None")
+            self.options = options
 
         # If projection_pulses is True, the sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulses:
             self.sequence = self.hahn_sequence_proj
         elif not projection_pulses:
             self.sequence = self.hahn_sequence
-            
         else:
             raise ValueError("projection_pulses must be a boolean")
+        
         self.projection_pulses = projection_pulses
         
     def hahn_sequence(self, tau):
@@ -600,17 +559,22 @@ class Hahn(PulsedExp):
         -------
         rho (Qobj): final density matrix        
         """
-        # perform the first free evolution
-        rho = free_evolution(self.H0, self.rho0, tau - self.pi_pulse_duration/2)
-        # set the initial time
-        t0 = tau - self.pi_pulse_duration/2
-        # perform the second pi pulse
-        rho = pulse(self.Ht, rho, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.c_ops, options = self.options, pulse_params = self.pulse_params)
-        # perform the second free evolution
-        rho = free_evolution(self.H0, rho, tau - self.pi_pulse_duration/2)
+        self.total_time = 0
+        self.rho = self.rho0.copy()
 
-        # return the final density matrix
-        return rho
+        # perform the first free evolution
+        self.free_evolution(tau - self.pi_pulse_duration/2)
+
+        # perform the second pi pulse
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration, self.time_steps), self.options, self.pulse_params, 0)
+
+        # perform the second free evolution
+        self.free_evolution(tau - self.pi_pulse_duration/2)
+
+        if self.observable == None:
+            return self.rho
+        else:
+            return np.abs( (self.rho * self.observable).tr() )
     
     def hahn_sequence_proj(self, tau):
         """
@@ -624,24 +588,19 @@ class Hahn(PulsedExp):
         -------
         rho (Qobj): final density matrix        
         """
-        # set the initial time to 0
-        t0 = 0
-        # perform the first pi/2 pulse
-        rho = pulse(self.Ht, self.rho0, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, self.options, self.pulse_params)
-        # perform the first free evolution
-        rho = free_evolution(self.H0, rho, tau - self.pi_pulse_duration/2)
-        # append the time to the initial time for the next pulse 
-        t0 += tau
-        # perform the second pi pulse
-        rho = pulse(self.Ht, rho, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.c_ops, options = self.options, args = self.pulse_params)
-        # perform the second free evolution
-        rho = free_evolution(self.H0, rho, tau - self.pi_pulse_duration/2)
-        # append the time to the initial time for the next pulse
-        t0 += tau
-        # perform the third pi/2 pulse
-        rho = pulse(self.Ht, rho, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, options = self.options, args = self.pulse_params)
-        # return the final density matrix
-        return rho   
+        self.total_time = 0
+        self.rho = self.rho0.copy()
+
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
+        self.free_evolution(tau - self.pi_pulse_duration/2)
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration, self.time_steps), self.options, self.pulse_params, 0)
+        self.free_evolution(tau - self.pi_pulse_duration/2)
+        self.pulse(self.Ht, np.linspace(self.total_time, self.total_time + self.pi_pulse_duration/2, self.time_steps), self.options, self.pulse_params, 0)
+
+        if self.observable == None:
+            return self.rho
+        else:
+            return np.abs( (self.rho * self.observable).tr() )
         
     def plot_pulses(self, tau, figsize=(6, 6), xlabel=None, ylabel='Expectation Value', title='Pulse Profiles'):
         """
@@ -659,6 +618,8 @@ class Hahn(PulsedExp):
         if not isinstance(tau, (int, float)) and tau <= 0 and tau > self.pi_pulse_duration/2:
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration/2")
         
+        self.pulse_profiles = []
+        
         # if projection_pulses is True, include initial and final pi/2 pulses in the pulse_profiles
         if self.projection_pulses:
             # if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method
@@ -673,6 +634,7 @@ class Hahn(PulsedExp):
                 self.pulse_profiles.append( [None, [t0, t0 + tau - self.pi_pulse_duration/2], None, None] )
                 t0 += tau - self.pi_pulse_duration/2
                 self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params] )
+                t0 += self.pi_pulse_duration/2
 
             # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
             elif isinstance(self.H1, list):
@@ -686,6 +648,7 @@ class Hahn(PulsedExp):
                 self.pulse_profiles.append( [None, [t0, t0 + tau - self.pi_pulse_duration/2], None, None] )
                 t0 += tau - self.pi_pulse_duration/2
                 self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params] for i in range(len(self.H1))] )
+                t0 += self.pi_pulse_duration/2
 
         # if projection_pulses is False, do not include initial and final pi/2 pulses in the pulse_profiles
         else:
@@ -697,6 +660,7 @@ class Hahn(PulsedExp):
                 self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params] )
                 t0 += self.pi_pulse_duration
                 self.pulse_profiles.append( [None, [t0, t0 + tau - self.pi_pulse_duration/2], None, None] )
+                t0 += tau - self.pi_pulse_duration/2
 
             # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
             elif isinstance(self.H1, list):
@@ -706,6 +670,7 @@ class Hahn(PulsedExp):
                 self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params] for i in range(len(self.H1))] )
                 t0 += self.pi_pulse_duration
                 self.pulse_profiles.append( [None, [t0, t0 + tau - self.pi_pulse_duration/2], None, None] )
+                t0 += tau - self.pi_pulse_duration/2
         
         # set the total_time attribute to the total time of the pulse sequence
         self.total_time = t0

@@ -36,8 +36,9 @@ class Analysis:
             self.results = experiment.results
             self.variable = experiment.variable
          
-        self.FFT_values = ()
-        self.FFT_peaks = ()
+        self.FFT_values = []
+        self.FFT_peaks = []
+        self.fit = None
 
     def run_FFT(self):
         """

@@ -4,7 +4,7 @@ import scipy.constants as cte
 import matplotlib.pyplot as plt
 import warnings
 
-def plot_energy_levels_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic Field', ylabel='Energy (MHz)'):
+def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic Field', ylabel='Energy (MHz)'):
     """
     
     """
@@ -43,7 +43,7 @@ def plot_energy_levels_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Mag
 
 
 class QSys:
-    def __init__(self, H0, rho0, observable=None, units_H0='MHz'):
+    def __init__(self, H0, rho0, c_ops=None, observable=None, units_H0='MHz'):
 
         # check if rho0 and H0 are Qobj and if they have the same dimensions
         if not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
@@ -63,6 +63,17 @@ class QSys:
         else:
             raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0.")
         
+        # check if c_ops is a list of Qobj with the same dimensions as H0
+        if c_ops == None:
+            self.c_ops = c_ops
+        elif isinstance(c_ops, list):
+            if not all(isinstance(op, Qobj) and op.shape == self.H0.shape for op in c_ops):
+                raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
+            else:
+                self.c_ops = c_ops
+        else:
+            raise ValueError("c_ops must be a list of Qobj or None")
+        
         # if the units are in frequency, assign the Hamiltonian as it is
         if not isinstance(units_H0, str):
             raise ValueError("units_H0 must be a string")
@@ -79,7 +90,7 @@ class QSys:
         # substracts the ground state energy from all the eigenstates to get the lowest level at 0
         self.energy_levels = H_eig - H_eig[0]
         
-    def plot_energy_levels(self, figsize=(2, 6), energy_lim = None):
+    def plot_energy(self, figsize=(2, 6), energy_lim = None):
         """
         """
         # check if figsize is a tuple of two positive floats
