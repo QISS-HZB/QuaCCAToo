@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, mesolve, parallel_map
 from types import FunctionType
-from scipy.optimize import curve_fit
 from.PulseShapes import square_pulse
 from.QSys import QSys
 
@@ -86,13 +85,12 @@ class PulsedExp:
         # check if time_steps is a positive integer
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
+        else:
+            self.time_steps = time_steps
         
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
-        else:
-            # create a time array for the pulse, starting from the total time of the experiment up to the beginning of the pulse
-            tarray = np.linspace(self.total_time, self.total_time + duration, time_steps) 
 
         # Check if pulse_shape is a single function or a list of functions
         if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
@@ -114,17 +112,17 @@ class PulsedExp:
             # create the time independent + time dependent Hamiltonian
             Ht = [self.H0, [H1, pulse_shape]]
             # append it to the pulse_profiles list
-            self.pulse_profiles.append( [H1, tarray, pulse_shape, pulse_params] )
+            self.pulse_profiles.append( [H1, np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape, pulse_params] )
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            self.pulse_profiles = [[H1[i], tarray, pulse_shape[i], pulse_params] for i in range(len(H1))]
+            self.pulse_profiles = [[H1[i], np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
         # add the pulse operation to the sequence of operations by calling the pulse method
-        self.pulse(Ht, tarray, options, pulse_params, phi_t)
+        self.pulse(Ht, duration, options, pulse_params, phi_t)
 
-    def pulse(self, Ht, tarray, options, core_pulse_params, phi_t):
+    def pulse(self, Ht, duration, options, core_pulse_params, phi_t):
         """
         Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
@@ -140,10 +138,10 @@ class PulsedExp:
         core_pulse_params['phi_t'] += phi_t
 
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
-        self.rho = mesolve(Ht, self.rho, 2*np.pi*tarray, self.c_ops, [], options = options, args = core_pulse_params).states[-1]
+        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.c_ops, [], options = options, args = core_pulse_params).states[-1]
 
         # update the total time
-        self.total_time = tarray[-1]
+        self.total_time += duration
         
     def add_free_evolution(self, duration):
         """
@@ -237,7 +235,7 @@ class PulsedExp:
             raise ValueError("variable must be a numpy array")
                     
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
-        self.results = parallel_map(self.sequence, self.variable, num_cpus=1)
+        self.results = parallel_map(self.sequence, self.variable)
             
     def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
