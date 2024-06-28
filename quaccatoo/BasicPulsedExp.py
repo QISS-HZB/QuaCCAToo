@@ -71,13 +71,13 @@ class Rabi(PulsedExp):
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
         # check weather pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
-        else:
+        if isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
             # if phi_t is not in the pulse_params dictionary, assign it as 0
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
 
         # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
@@ -191,28 +191,6 @@ class PODMR(PulsedExp):
 
         # set the sequence attribute to the PODMR_sequence method
         self.sequence = self.PODMR_sequence
-
-    # def PODMR_sequence(self, f):
-    #     """
-    #     Defines the the Pulsed Optically Detected Magnetic Resonance (PODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
-    #     Parameters
-    #     ----------
-    #     f (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix   
-    #     """
-    #     self.rho = self.rho0.copy()
-    #     self.pulse_params['omega_pulse'] = f
-
-    #     # run the simulation and return the final density matrix
-    #     self.pulse(self.Ht, self.pulse_duration, self.options, self.pulse_params, self.pulse_params['phi_t'])
-
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
         
     def PODMR_sequence(self, f):
         """
@@ -233,7 +211,7 @@ class PODMR(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
         
     def plot_pulses(self, omega_pulse=None, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
@@ -352,64 +330,6 @@ class Ramsey(PulsedExp):
         
         self.projection_pulses = projection_pulses
 
-    # def ramsey_sequence(self, tau):
-    #     """
-    #     Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-
-    #     # perform the free evolution
-    #     self.free_evolution(tau)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     # if an observable is given, return the expectation value of the observable
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
-
-    # def ramsey_sequence_proj(self, tau):
-    #     """
-    #     Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution plus an initial and final pi/2 pulses to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # calculate the pulse separation time 
-    #     ps = tau - self.pi_pulse_duration
-    #     # set the total time to 0
-    #     self.total_time = 0
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-        
-    #     # perform initial pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-    #     # perform the free evolution
-    #     self.free_evolution(ps)
-    #     # perform final pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     # if an observable is given, return the expectation value of the observable
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
-
     def ramsey_sequence(self, tau):
         """
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
@@ -430,7 +350,7 @@ class Ramsey(PulsedExp):
             return rho
         # if an observable is given, return the expectation value of the observable
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
 
     def ramsey_sequence_proj(self, tau):
         """
@@ -462,7 +382,7 @@ class Ramsey(PulsedExp):
             return rho
         # if an observable is given, return the expectation value of the observable
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
         
     def get_pulse_profiles(self, tau=None):
         """
@@ -623,84 +543,19 @@ class Hahn(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulses:
-            self.sequence = self.hahn_sequence_proj
+            if H2 != None or self.c_ops != []:
+                self.sequence = self.hahn_sequence_proj_H2
+            else:
+                self.sequence = self.hahn_sequence_proj
         elif not projection_pulses:
-            self.sequence = self.hahn_sequence
+            if H2 != None or self.c_ops != []:
+                self.sequence = self.hahn_sequence_H2
+            else:
+                self.sequence = self.hahn_sequence
         else:
             raise ValueError("projection_pulses must be a boolean")
         
         self.projection_pulses = projection_pulses
-        
-    # def hahn_sequence(self, tau):
-    #     """
-    #     Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of two free evolutions with a pi pulse between them. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # calculate pulse separation time
-    #     ps = tau - self.pi_pulse_duration/2
-    #     # set the total time to 0
-    #     self.total_time = 0
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-
-    #     # perform the first free evolution
-    #     self.free_evolution(ps)
-
-    #     # perform the pi pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, 0)
-
-    #     # perform the second free evolution
-    #     self.free_evolution(ps)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     # if an observable is given, return the expectation value of the observable
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
-    
-    # def hahn_sequence_proj(self, tau):
-    #     """
-    #     Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # calculate pulse separation time
-    #     ps = tau - self.pi_pulse_duration
-    #     # set the total time to 0
-    #     self.total_time = 0
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-
-    #     # perform the initial pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-    #     # perform the first free evolution
-    #     self.free_evolution(ps)
-    #     # perform the pi pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, 0)
-    #     # perform the second free evolution
-    #     self.free_evolution(ps)
-    #     # perform the final pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
 
     def hahn_sequence(self, tau):
         """
@@ -731,7 +586,7 @@ class Hahn(PulsedExp):
             return rho
         # if an observable is given, return the expectation value of the observable
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
     
     def hahn_sequence_proj(self, tau):
         """
@@ -769,7 +624,80 @@ class Hahn(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
+        
+    def hahn_sequence_H2(self, tau):
+        """
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of two free evolutions with a pi pulse between them. The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau (float): free evolution time
+
+        Returns
+        -------
+        rho (Qobj): final density matrix        
+        """
+        # calculate pulse separation time
+        ps = tau - self.pi_pulse_duration/2
+
+        # perform the first free evolution
+        rho = mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 = ps
+
+        # perform the pi pulse
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 += self.pi_pulse_duration
+
+        # perform the second free evolution
+        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+
+        # if no observable is given, return the final density matrix
+        if self.observable == None:
+            return rho
+        # if an observable is given, return the expectation value of the observable
+        else:
+            return np.real( (rho * self.observable).tr() )
+    
+    def hahn_sequence_proj_H2(self, tau):
+        """
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse. The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau (float): free evolution time
+
+        Returns
+        -------
+        rho (Qobj): final density matrix        
+        """
+        # calculate pulse separation time
+        ps = tau - self.pi_pulse_duration
+
+        # perform the initial pi/2 pulse
+        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 = self.pi_pulse_duration/2
+
+        # perform the first free evolution
+        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 += ps
+
+        # perform the pi pulse
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 += self.pi_pulse_duration
+
+        # perform the second free evolution
+        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 += ps
+
+        # perform the final pi/2 pulse
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+
+        # if no observable is given, return the final density matrix
+        if self.observable == None:
+            return rho
+        else:
+            return np.real( (rho * self.observable).tr() )
 
     def get_pulse_profiles(self, tau=None):
         """

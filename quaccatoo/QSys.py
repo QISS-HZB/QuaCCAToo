@@ -41,9 +41,8 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic F
 
     fig.suptitle('Energy Levels')
 
-
 class QSys:
-    def __init__(self, H0, rho0, c_ops=None, observable=None, units_H0='MHz'):
+    def __init__(self, H0, rho0, c_ops=None, observable=None, units_H0=None):
 
         # check if rho0 and H0 are Qobj and if they have the same dimensions
         if not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
@@ -75,7 +74,9 @@ class QSys:
             raise ValueError("c_ops must be a list of Qobj or None")
         
         # if the units are in frequency, assign the Hamiltonian as it is
-        if not isinstance(units_H0, str):
+        if units_H0 == None:
+            pass
+        elif not isinstance(units_H0, str) :
             raise ValueError("units_H0 must be a string")
         elif units_H0 == 'MHz' or units_H0 == 'GHz' or units_H0 == 'kHz' or units_H0 == 'Hz' or units_H0 == 'eV':
             pass
@@ -97,21 +98,25 @@ class QSys:
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
-        fig, ax = plt.subplots(figsize)
+        fig, ax = plt.subplots(1,1, figsize=figsize)
 
         for itr in range(self.energy_levels.size):
-            ax.axhline(y=self.energy_levels[itr])
+            ax.axhline(y=self.energy_levels[itr], lw=2)
 
-        ax.set_ylabel(f'Energy ({self.units_H0})')
+        if self.units_H0 != None:
+            ax.set_ylabel(f'Energy ({self.units_H0})')
+        else:
+            ax.set_ylabel('Energy')
+
         ax.get_xaxis().set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
 
         if energy_lim == None:
-            pass
+            ax.set_ylim(-.05*self.energy_levels[-1], 1.05*self.energy_levels[-1])
         elif len(energy_lim) == 2:
-            ax.set_xlim(energy_lim[0], energy_lim[1])
+            ax.set_ylim(energy_lim[0], energy_lim[1])
         else:
             raise ValueError("freq_lim must be a tuple of two floats")
 

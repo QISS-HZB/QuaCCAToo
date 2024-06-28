@@ -191,11 +191,11 @@ class PulsedExp:
             self.results = self.rho.copy()
         # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
         elif observable == None and self.observable != None:
-            self.results = np.abs(( self.observable * self.rho ).tr() )
+            self.results = np.real(( self.observable * self.rho ).tr() )
         # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
         elif observable != None and (isinstance(observable, Qobj) and observable.shape == self.rho0.shape):
             self.observable = observable
-            self.results = np.abs(( observable * self.rho ).tr() )
+            self.results = np.real(( observable * self.rho ).tr() )
         # else raises an error   
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
@@ -264,12 +264,12 @@ class PulsedExp:
 
             # if the pulse has only one operator, plot the pulse profile
             elif isinstance(self.pulse_profiles[itr_pulses][0], Qobj):
-                ax.plot(self.pulse_profiles[itr_pulses][1], self.pulse_profiles[itr_pulses][2](self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]), label = f'H1', lw=2, alpha=0.7, color = 'C1')
+                ax.plot(self.pulse_profiles[itr_pulses][1], self.pulse_profiles[itr_pulses][2](2*np.pi*self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]), label = f'H1', lw=2, alpha=0.7, color = 'C1')
 
             # if the pulse has multiple operators, plot each pulse profile
             elif isinstance(self.pulse_profiles[itr_pulses][0], list):
                 for itr_op in range(len(self.pulse_profiles[itr_pulses])):
-                    ax.plot(self.pulse_profiles[itr_pulses][itr_op][1], self.pulse_profiles[itr_pulses][itr_op][2](self.pulse_profiles[itr_pulses][itr_op][1], **self.pulse_profiles[itr_pulses][itr_op][3]), label = f'H1_{itr_op}', lw=2, alpha=0.7, color = f'C{2+itr_op}')
+                    ax.plot(self.pulse_profiles[itr_pulses][itr_op][1], self.pulse_profiles[itr_pulses][itr_op][2](2*np.pi*self.pulse_profiles[itr_pulses][itr_op][1], **self.pulse_profiles[itr_pulses][itr_op][3]), label = f'H1_{itr_op}', lw=2, alpha=0.7, color = f'C{2+itr_op}')
 
         # set the x-axis limits to the total time of the experiment
         ax.set_xlim(0, self.total_time)

@@ -96,7 +96,7 @@ class CPMG(PulsedExp):
             self.pulse_params = np.empty(2, dtype=dict)
             # X pulse parameters are the first element in the list and Y pulses are the second element
             self.pulse_params[0] = {**pulse_params, **{'phi_t': 0}}
-            self.pulse_params[1] = {**pulse_params, **{'phi_t': np.pi/2}}
+            self.pulse_params[1] = {**pulse_params, **{'phi_t': -np.pi/2}}
         
         # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
@@ -113,81 +113,6 @@ class CPMG(PulsedExp):
             raise ValueError("projection_pulses must be a boolean")
         
         self.projection_pulses = projection_pulses
-
-    # def CPMG_sequence(self, tau):
-    #     """
-    #     Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a pi pulse and free evolution time tau repeated M times. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     results attribute  
-    #     """
-    #     # calculate the pulse spacing
-    #     ps = tau - self.pi_pulse_duration/2
-    #     # set the total time to 0
-    #     self.total_time = 0
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-
-    #     # repeat M times the pi pulse and free evolution of tau
-    #     for itr_M in range(self.M):
-    #         # perform free evolution of tau
-    #         self.free_evolution(ps/2)
-    #         # perform pi pulse
-    #         self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, 0)
-    #         # perform free evolution of tau
-    #         self.free_evolution(ps/2)
-        
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
-    
-    
-    # def CPMG_sequence_proj(self, tau):
-    #     """
-    #     Defines the CPMG sequence, but with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     results attribute     
-    #     """
-    #     # calculate the pulse spacing
-    #     ps = tau - self.pi_pulse_duration/2       
-    #     # set the total time to 0
-    #     self.total_time = 0
-    #     # initialize the density matrix to the initial density matrix
-    #     self.rho = self.rho0.copy()
-
-    #     # perform the first pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-
-    #     # repeat M times the pi pulse and free evolution of tau
-    #     for itr_M in range(self.M):
-    #         # perform free evolution of tau
-    #         self.free_evolution((tau - self.pi_pulse_duration)/2)
-    #         # perform pi pulse
-    #         self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, 0)
-    #         # perform free evolution of tau
-    #         self.free_evolution((tau - self.pi_pulse_duration)/2)
-        
-    #     # perform the last pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-        
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
 
     def CPMG_sequence(self, tau):
         """
@@ -225,7 +150,7 @@ class CPMG(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
     
     
     def CPMG_sequence_proj(self, tau):
@@ -271,7 +196,7 @@ class CPMG(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
     
     def get_pulse_profiles(self, tau):
         """
@@ -310,9 +235,9 @@ class CPMG(PulsedExp):
         for itr_M in range(self.M-1):
             # add a pi pulse
             if isinstance(self.H1, Qobj):
-                self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[0]] )
+                self.pulse_profiles.append( [self.H1, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[0]] )
             elif isinstance(self.H1, list):
-                self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))] )
+                self.pulse_profiles.append( [[self.H1[i], 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))] )
             t0 += self.pi_pulse_duration
             # add a free evolution of ps
             self.pulse_profiles.append( [None, [t0, t0 + ps], None, None] )
@@ -320,9 +245,9 @@ class CPMG(PulsedExp):
 
         # add another pi pulse
         if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[0]] )
+            self.pulse_profiles.append( [self.H1, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[0]] )
         elif isinstance(self.H1, list):
-            self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))] )
+            self.pulse_profiles.append( [[self.H1[i], 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))] )
         t0 += self.pi_pulse_duration
         # add half ps free evolution
         self.pulse_profiles.append( [None, [t0, t0 + ps/2], None, None] )
@@ -331,10 +256,10 @@ class CPMG(PulsedExp):
         if self.projection_pulses:
             if isinstance(self.H1, Qobj):
                 # add the last pi/2 pulse
-                self.pulse_profiles.append( [self.H1, np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params[1]] )
+                self.pulse_profiles.append( [self.H1, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape, self.pulse_params[1]] )
             elif isinstance(self.H1, list):
                 # add the first pi/2 pulse
-                self.pulse_profiles.append( [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params[1]] for i in range(len(self.H1))] )
+                self.pulse_profiles.append( [[self.H1[i], 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.pulse_shape[i], self.pulse_params[1]] for i in range(len(self.H1))] )
 
             t0 += self.pi_pulse_duration/2
 
@@ -445,7 +370,7 @@ class XY(PulsedExp):
             self.pulse_params = np.empty(2, dtype=dict)
             # X pulse parameters are the first element in the list and Y pulses are the second element
             self.pulse_params[0] = {**pulse_params, **{'phi_t': 0}}
-            self.pulse_params[1] = {**pulse_params, **{'phi_t': np.pi/2}}
+            self.pulse_params[1] = {**pulse_params, **{'phi_t': -np.pi/2}}
         
         # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
@@ -461,93 +386,6 @@ class XY(PulsedExp):
         else:
             raise ValueError("projection_pulses must be a boolean")
         self.projection_pulses = projection_pulses
-
-        # defines the sequence of phases for the XY sequence: X-Y
-        self.phi_t = [0, np.pi/2]
-
-    # def XY_sequence(self, tau):
-    #     """
-    #     Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # calculate the pulse spacing
-    #     ps = tau - self.pi_pulse_duration
-    #     # initialize the total time and state
-    #     self.total_time = 0
-    #     self.rho = self.rho0.copy()
-
-    #     # perform half ps evolution
-    #     self.free_evolution(ps/2)
-
-    #     # repeat 2*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
-    #     for itr_M in range(2*self.M - 1):
-    #         # perform pi pulse
-    #         self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, self.phi_t[itr_M%2])
-    #         # perform free evolution of tau
-    #         self.free_evolution(ps)
-
-    #     # perform pi pulse on Y axis
-    #     self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, np.pi/2)
-    #     # perform free evolution of ps/2
-    #     self.free_evolution(ps/2)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
-
-    # def XY_sequence_proj(self, tau):
-    #     """
-    #     Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
-
-    #     Parameters
-    #     ----------
-    #     tau (float): free evolution time
-
-    #     Returns
-    #     -------
-    #     rho (Qobj): final density matrix        
-    #     """
-    #     # calculate the pulse spacing
-    #     ps = tau - self.pi_pulse_duration
-    #     # initialize the total time and state
-    #     self.total_time = 0
-    #     self.rho = self.rho0.copy()
-
-    #     # perform the first pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-
-    #     # perform half ps evolution
-    #     self.free_evolution(ps/2)
-
-    #     # repeat 2*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
-    #     for itr_M in range(2*self.M - 1):
-    #         # perform pi pulse
-    #         self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, self.phi_t[itr_M%2])
-    #         # perform free evolution of tau
-    #         self.free_evolution(ps)
-
-    #     # perform pi pulse on Y axis
-    #     self.pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params, np.pi/2)
-    #     # perform free evolution of ps/2
-    #     self.free_evolution(ps/2)
-
-    #     # perform the final pi/2 pulse
-    #     self.pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params, 0)
-
-    #     # if no observable is given, return the final density matrix
-    #     if self.observable == None:
-    #         return self.rho
-    #     else:
-    #         return np.abs( (self.rho * self.observable).tr() )
 
     def XY_sequence(self, tau):
         """
@@ -586,7 +424,7 @@ class XY(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
 
     def XY_sequence_proj(self, tau):
         """
@@ -631,7 +469,7 @@ class XY(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
     
     def get_pulse_profiles(self, tau=None):
         """
@@ -806,7 +644,7 @@ class XY8(PulsedExp):
             self.pulse_params = np.empty(8, dtype=dict)
             # define XY8 pulse parameters for the sequence: X-Y-X-Y-Y-X-Y-X
             self.pulse_params[0] = {**pulse_params, **{'phi_t': 0}}
-            self.pulse_params[1] = {**pulse_params, **{'phi_t': np.pi/2}}
+            self.pulse_params[1] = {**pulse_params, **{'phi_t': -np.pi/2}}
             self.pulse_params[2] = self.pulse_params[0]
             self.pulse_params[3] = self.pulse_params[1]
             self.pulse_params[4] = self.pulse_params[1]
@@ -866,7 +704,7 @@ class XY8(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
         
     def XY8_sequence_proj(self, tau):
         """
@@ -912,7 +750,7 @@ class XY8(PulsedExp):
         if self.observable == None:
             return rho
         else:
-            return np.abs( (rho * self.observable).tr() )
+            return np.real( (rho * self.observable).tr() )
     
     def get_pulse_profiles(self, tau):
         """
