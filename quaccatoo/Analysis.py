@@ -1,16 +1,21 @@
-#TODO FFT
-
 import numpy as np
 from.PulsedExp import PulsedExp
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
+from qutip import Bloch
 
 def fit_rabi(t, A, Tpi, C, phi):
     return A*np.cos(np.pi*t/Tpi + phi) + C
 
 def fit_rabi_decay(t, A, T, phi, C, Tc, n):
     return A*np.cos(2*np.pi*t/T + phi)*np.exp(-(t/Tc)**n) + C
+
+def fit_exp_decay(t, A, C, Tc):
+    return A*np.exp(-t/Tc) + C
+
+def fit_exp_decay_n(t, A, C, Tc, n):
+    return A*np.exp(-(t/Tc)**n) + C
 
 def fit_hahn_mod(t, A, B, C, f1, f2):
     return ( A - B*np.sin(2*np.pi*f1*t/2)**2*np.sin(2*np.pi*f2*t/2)**2 ) + C
@@ -38,6 +43,7 @@ class Analysis:
         else:
             self.results = experiment.results
             self.variable = experiment.variable
+            self.rho = experiment.rho
          
         self.FFT_values = []
         self.FFT_peaks = []
@@ -124,3 +130,26 @@ class Analysis:
         self.experiment.plot_results(figsize, xlabel, ylabel, title)
 
         plt.plot(self.variable, self.fit_function(self.variable, *self.fit), label='Fit')
+
+    def plot_bloch(self, figsize=(6, 4)):
+        """
+        """
+        if len(self.rho) == 1:
+            raise ValueError('Density matrices were not calculated, please run experiment first.')
+        elif isinstance(self.rho, list) and all(rho.shape == (2,2) for rho in self.rho):
+            pass
+        else:
+            raise ValueError('QSys must have dimesion of two be able to plot a Bloch sphere')
+
+        # check if figsize is a tuple of two positive floats
+        if not (isinstance(figsize, tuple) or len(figsize) == 2):
+            raise ValueError("figsize must be a tuple of two positive floats")
+
+        fig, axs = plt.subplots(1, 1, figsize=figsize, subplot_kw={'projection': '3d'})
+
+        colors = plt.cm.viridis(np.linspace(0, 1, len(self.rho))) 
+
+        bloch = Bloch(fig)
+        bloch.add_states(self.rho, kind='point', colors=colors)
+        bloch.frame_alpha = 0
+        bloch.render()

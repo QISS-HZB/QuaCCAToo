@@ -89,20 +89,17 @@ class Rabi(PulsedExp):
         """
         Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.      
         """
-        # if no observable is given in QSys, run the simulation and store the the calculated density matrices in the results attribute
-        if self.observable == None:
-            self.results = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, [], options = self.options, args = self.pulse_params).states
+        # calculates the density matrices in sequence using mesolve
+        self.rho = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, [], options = self.options, args = self.pulse_params).states
         
-        # if one observable is given in QSys, run the simulation and store the expectation values in the results attribute
-        elif isinstance(self.observable, Qobj):
-            self.results = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect[0]
-        
-        # if more than one observable is given in QSys, run the simulation and store the expectation values in the results attribute
+        # if an observable is given, calculate the expectation values
+        if isinstance(self.observable, Qobj):
+            self.results = [ np.real( (rho*self.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
         elif isinstance(self.observable, list):
-            self.results =  mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, self.observable, options = self.options, args = self.pulse_params).expect
-        # otherwise raise an error
+            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.observable]
+        # otherwise the results attribute is the density matrices
         else:
-            raise ValueError("observable must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1.")
+            self.results = self.rho
 
 class PODMR(PulsedExp):
     """
@@ -208,10 +205,7 @@ class PODMR(PulsedExp):
         # run the simulation and return the final density matrix
         rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pulse_duration, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
-        if self.observable == None:
-            return rho
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
         
     def plot_pulses(self, omega_pulse=None, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
@@ -279,7 +273,7 @@ class Ramsey(PulsedExp):
             self.variable = free_duration
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[-1]:
+        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
             raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
@@ -319,12 +313,18 @@ class Ramsey(PulsedExp):
             self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-
-        # If projection_pulses is True, the sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses
+        
+        # If projection_pulses is True, the sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulses:
-            self.sequence = self.ramsey_sequence_proj
+            if H2 != None or self.c_ops != None:
+                self.sequence = self.ramsey_sequence_proj_H2
+            else:
+                self.sequence = self.ramsey_sequence_proj
         elif not projection_pulses:
-            self.sequence = self.ramsey_sequence
+            if H2 != None or self.c_ops != None:
+                self.sequence = self.ramsey_sequence_H2
+            else:
+                self.sequence = self.ramsey_sequence
         else:
             raise ValueError("projection_pulses must be a boolean")
         
@@ -345,12 +345,7 @@ class Ramsey(PulsedExp):
         # perform the free evolution
         rho = (-1j*2*np.pi*self.H0*tau).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*tau).expm()).dag()
 
-        # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        # if an observable is given, return the expectation value of the observable
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
 
     def ramsey_sequence_proj(self, tau):
         """
@@ -377,12 +372,52 @@ class Ramsey(PulsedExp):
         t0 = self.pi_pulse_duration/2 + ps
         rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
-        # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        # if an observable is given, return the expectation value of the observable
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
+
+    def ramsey_sequence_H2(self, tau):
+        """
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau (float): free evolution time
+
+        Returns
+        -------
+        rho (Qobj): final density matrix        
+        """
+        # perform the free evolution
+        rho =  mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, tau, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+
+        return rho
+
+    def ramsey_sequence_proj_H2(self, tau):
+        """
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a single free evolution plus an initial and final pi/2 pulses to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau (float): free evolution time
+
+        Returns
+        -------
+        rho (Qobj): final density matrix        
+        """
+        # calculate the pulse separation time 
+        ps = tau - self.pi_pulse_duration
+        
+        # perform initial pi/2 pulse
+        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 = self.pi_pulse_duration/2
+
+        # perform the free evolution
+        rho =  mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        t0 += ps
+
+        # perform final pi/2 pulse
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+
+        return rho
         
     def get_pulse_profiles(self, tau=None):
         """
@@ -394,7 +429,7 @@ class Ramsey(PulsedExp):
         """
         # check if tau is None and if it is, assign the first element of the variable attribute to tau
         if tau == None:
-            tau = self.variable[0]
+            tau = self.variable[-1]
         # else if it is not a float or an integer, raise an error
         elif not isinstance(tau, (int, float)):
             raise ValueError("tau must be a float or an integer")
@@ -499,7 +534,7 @@ class Hahn(PulsedExp):
             self.variable = free_duration
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration/2 > free_duration[-1]:
+        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration/2 > free_duration[0]:
             raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration/2 must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
@@ -543,12 +578,12 @@ class Hahn(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulses:
-            if H2 != None or self.c_ops != []:
+            if H2 != None or self.c_ops != None:
                 self.sequence = self.hahn_sequence_proj_H2
             else:
                 self.sequence = self.hahn_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != []:
+            if H2 != None or self.c_ops != None:
                 self.sequence = self.hahn_sequence_H2
             else:
                 self.sequence = self.hahn_sequence
@@ -581,12 +616,8 @@ class Hahn(PulsedExp):
         # perform the second free evolution
         rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
 
-        # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        # if an observable is given, return the expectation value of the observable
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
+
     
     def hahn_sequence_proj(self, tau):
         """
@@ -621,10 +652,7 @@ class Hahn(PulsedExp):
         rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
         
     def hahn_sequence_H2(self, tau):
         """
@@ -652,12 +680,7 @@ class Hahn(PulsedExp):
         # perform the second free evolution
         rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
-        # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        # if an observable is given, return the expectation value of the observable
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
     
     def hahn_sequence_proj_H2(self, tau):
         """
@@ -693,11 +716,7 @@ class Hahn(PulsedExp):
         # perform the final pi/2 pulse
         rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
-        # if no observable is given, return the final density matrix
-        if self.observable == None:
-            return rho
-        else:
-            return np.real( (rho * self.observable).tr() )
+        return rho
 
     def get_pulse_profiles(self, tau=None):
         """
@@ -709,7 +728,7 @@ class Hahn(PulsedExp):
         """
         # check if tau is None and if it is, assign the first element of the variable attribute to tau
         if tau == None:
-            tau = self.variable[0]
+            tau = self.variable[-1]
         # else if it is not a float or an integer, raise an error
         elif not isinstance(tau, (int, float)) and tau <= 0 and tau > self.pi_pulse_duration/2:
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration/2")

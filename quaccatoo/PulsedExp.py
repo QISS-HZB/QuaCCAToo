@@ -56,6 +56,7 @@ class PulsedExp:
         self.H0 = system.H0
         self.observable = system.observable
         self.c_ops = system.c_ops
+        self.H2 = H2
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -235,7 +236,16 @@ class PulsedExp:
             raise ValueError("variable must be a numpy array")
                     
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
-        self.results = parallel_map(self.sequence, self.variable)
+        self.rho = parallel_map(self.sequence, self.variable)
+
+        # if an observable is given, calculate the expectation values
+        if isinstance(self.observable, Qobj):
+            self.results = [ np.real( (rho*self.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
+        elif isinstance(self.observable, list):
+            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.observable]
+        # otherwise the results attribute is the density matrices
+        else:
+            self.results = self.rho
             
     def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
