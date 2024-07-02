@@ -23,6 +23,9 @@ def fit_hahn_mod(t, A, B, C, f1, f2):
 def fit_hahn_mod_decay(t, A, B, C, f1, f2, Tc, n):
     return np.exp(- (t/Tc)**n)*( A - B*np.sin(2*np.pi*f1*t/2)**2*np.sin(2*np.pi*f2*t/2)**2 ) + C
 
+def fit_two_lorentz_sym(x, A, gamma, f1, f2, C ):
+    return C - A*(gamma**2)/((x-f1)**2 + gamma**2) - A*(gamma**2)/((x-f2)**2 + gamma**2)
+
 class Analysis:
     def __init__(self, experiment):
         """

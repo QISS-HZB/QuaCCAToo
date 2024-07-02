@@ -21,10 +21,12 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic F
         raise ValueError("H0 must be a list of Qobj of the same size as B0")
     
     energy_levels = []
+
+    H0_0 = H0[0].eigenenergies()[0]
     
     for itr_B0 in range(len(B0)):
         H0_eig = H0[itr_B0].eigenenergies()
-        energy_levels.append(H0_eig - H0_eig[0])
+        energy_levels.append(H0_eig - H0_0)
 
     fig, ax = plt.subplots(1, 1, figsize=figsize)
 
