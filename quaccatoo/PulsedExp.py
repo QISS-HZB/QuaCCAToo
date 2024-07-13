@@ -50,12 +50,11 @@ class PulsedExp:
         if not isinstance(system, QSys):
             raise ValueError("system must be a QSys object")
         
+        self.system = system
+        
         # get the attributes of the system
-        self.rho0 = system.rho0
         self.rho = system.rho0.copy()
-        self.H0 = system.H0
-        self.observable = system.observable
-        self.c_ops = system.c_ops
+        self.system.c_ops = system.c_ops
         self.H2 = H2
 
         # initialize the rest of the variables and attributes
@@ -109,13 +108,13 @@ class PulsedExp:
             raise ValueError("phi_t must be a real number")
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             # create the time independent + time dependent Hamiltonian
-            Ht = [self.H0, [H1, pulse_shape]]
+            Ht = [self.system.H0, [H1, pulse_shape]]
             # append it to the pulse_profiles list
             self.pulse_profiles.append( [H1, np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape, pulse_params] )
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             self.pulse_profiles = [[H1[i], np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
@@ -139,7 +138,7 @@ class PulsedExp:
         core_pulse_params['phi_t'] += phi_t
 
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
-        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.c_ops, [], options = options, args = core_pulse_params).states[-1]
+        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options = options, args = core_pulse_params).states[-1]
 
         # update the total time
         self.total_time += duration
@@ -162,7 +161,7 @@ class PulsedExp:
         # add the free evolution operation to the sequence of operations
         self.free_evolution(duration)
     
-    def free_evolution(self, duration):
+    def free_evolution(self, duration, options={}):
         """
         Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
@@ -170,10 +169,18 @@ class PulsedExp:
         ----------
         duration (float, int): duration of the free evolution
         """
+        # if a H2 or collapse operators are given, use the mesolve function from QuTip to perform the free evolution, otherwise use the matrix exponential
+        if self.H2 != None or self.system.c_ops != None:
+            # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+            if not isinstance(options, dict):
+                raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+            
+            self.rho = mesolve(self.system.H0, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
+        else:
+            self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
+
         # update the total time
         self.total_time += duration
-        # perform the free evolution operation
-        self.rho = (-1j*2*np.pi*self.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.H0*duration).expm()).dag()
     
     def measure(self, observable=None):
         """
@@ -188,14 +195,14 @@ class PulsedExp:
         results of the experiment
         """
         # if no observable is passed and the QSys doesn't have one, returns the final density matrix
-        if observable == None and self.observable == None:
+        if observable == None and self.system.observable == None:
             self.results = self.rho.copy()
         # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
-        elif observable == None and self.observable != None:
-            self.results = np.real(( self.observable * self.rho ).tr() )
+        elif observable == None and self.system.observable != None:
+            self.results = np.real(( self.system.observable * self.rho ).tr() )
         # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
-        elif observable != None and (isinstance(observable, Qobj) and observable.shape == self.rho0.shape):
-            self.observable = observable
+        elif observable != None and (isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape):
+            self.system.observable = observable
             self.results = np.real(( observable * self.rho ).tr() )
         # else raises an error   
         else:
@@ -239,10 +246,10 @@ class PulsedExp:
         self.rho = parallel_map(self.sequence, self.variable)
 
         # if an observable is given, calculate the expectation values
-        if isinstance(self.observable, Qobj):
-            self.results = [ np.real( (rho*self.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
-        elif isinstance(self.observable, list):
-            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.observable]
+        if isinstance(self.system.observable, Qobj):
+            self.results = [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
+        elif isinstance(self.system.observable, list):
+            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.system.observable]
         # otherwise the results attribute is the density matrices
         else:
             self.results = self.rho
@@ -313,12 +320,12 @@ class PulsedExp:
         fig, ax = plt.subplots(1, 1, figsize=figsize)
         
         # check if the observable is a Qobj or a list of Qobj
-        if isinstance(self.observable, Qobj):
+        if isinstance(self.system.observable, Qobj):
             ax.plot(self.variable, self.results, lw=2, alpha=0.7, label = 'Observable')
                     
-        elif isinstance(self.observable, list):
+        elif isinstance(self.system.observable, list):
             # if it is a list, iterate over the observables and plot each one
-            for itr in range(len(self.observable)):
+            for itr in range(len(self.system.observable)):
                 # plot all observables in the results
                 ax.plot(self.variable, self.results[itr], label = f'Observable {itr}', lw=2, alpha=0.7)
             

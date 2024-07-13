@@ -1,3 +1,11 @@
+# TODO: add_spin method for QSys class
+# TODO: include new systems
+# TODO: think on a better strategy for the plot_energy_B0 function
+
+"""
+This module contains the plot_energy_B0 function, the QSys class and the NV subclass.
+"""
+
 from qutip import tensor, jmat, qeye, fock_dm, Qobj, basis
 import numpy as np
 import scipy.constants as cte
@@ -6,7 +14,16 @@ import warnings
 
 def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic Field', ylabel='Energy (MHz)'):
     """
-    
+    Plots the energy levels of a Hamiltonian as a function of a magnetic field B0.
+
+    Parameters
+    ----------
+    B0 (list): list of magnetic fields
+    H0 (list of Qobj): list of Hamiltonians
+    figsize (tuple): size of the figure
+    energy_lim (tuple): limits of the energy levels
+    xlabel (str): label of the x-axis
+    ylabel (str): label of the y-axis
     """
     # check if figsize is a tuple of two positive floats
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
@@ -43,8 +60,37 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim = None, xlabel='Magnetic F
 
     fig.suptitle('Energy Levels')
 
+####################################################################################################
+
 class QSys:
+    """
+    The QSys class is a general class to define a quantum system. It contains the Hamiltonian, the initial state, the collapse operators and the observable of the system. It also contains a method to plot the energy levels of the Hamiltonian. It is latter used by pulsed experiment simulations.
+
+    Class Attributes
+    ----------------
+    - H0 (Qobj): time-independent internal Hamiltonian of the system
+    - rho0 (Qobj): initial state of the system
+    - c_ops (list of Qobj): list of collapse operators
+    - observable (Qobj or list of Qobj): observable to be measured
+    - units_H0 (str): units of the Hamiltonian
+    - energy_levels (np.array): energy levels of the Hamiltonian
+
+    Methods
+    -------
+    - plot_energy: plots the energy levels of the Hamiltonian
+    """
     def __init__(self, H0, rho0, c_ops=None, observable=None, units_H0=None):
+        """
+        Generator for the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable, checking all inputs and calculating the energy levels of the Hamiltonian.
+
+        Parameters
+        ----------
+        H0 (Qobj): time-independent internal Hamiltonian of the system
+        rho0 (Qobj): initial state of the system
+        c_ops (list of Qobj): list of collapse operators
+        observable (Qobj or list of Qobj): observable to be measured
+        units_H0 (str): units of the Hamiltonian
+        """
 
         # check if rho0 and H0 are Qobj and if they have the same dimensions
         if not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
@@ -95,6 +141,12 @@ class QSys:
         
     def plot_energy(self, figsize=(2, 6), energy_lim = None):
         """
+        Plots the energy levels of the Hamiltonian defined in the system.
+
+        Parameters
+        ----------
+        figsize (tuple): size of the figure.
+        energy_lim (list): limits of the energy levels.
         """
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
@@ -122,9 +174,22 @@ class QSys:
         else:
             raise ValueError("freq_lim must be a tuple of two floats")
 
+####################################################################################################
+
 class NV(QSys):
     def __init__(self, B0, N, c_ops=None, units_B0='mT', theta=0, phi_r=0, units_angles='deg'):
         """
+        Generator for the NV class. Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
+
+        Parameters
+        ----------
+        B0 (float): magnetic field
+        N (int): nitrogen isotope (14 or 15)
+        c_ops (list of Qobj): list of collapse operators
+        units_B0 (str): units of the magnetic field (T, mT or G)
+        theta (float): angle of the magnetic field with respect to the NV axis
+        phi_r (float): angle of the magnetic field in the xy plane
+        units_angles (str): units of the angles (deg or rad)
         """
         # converts the magnetic field to Gauss
         if not isinstance(B0, (int, float)):
@@ -162,7 +227,7 @@ class NV(QSys):
             else:
                 raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
             
-        # 
+        # standard untis for NV Hamiltonian
         self.units_H0 = 'MHz'
             
         # calculates the Hamiltonian for the given field and nitrogen isotope
@@ -193,8 +258,18 @@ class NV(QSys):
         self.energy_levels = H0_eig[0] - H0_eig[0][0]
     
     def rho0_lowT(self, T, units_T='K'):
+        """
+        Calculates the initial state of the system at low temperatures using the Boltzmann distribution. At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
 
-        
+        Parameters
+        ----------
+        T (float): temperature
+        units_T (str): units of the temperature (K or C)
+
+        Returns
+        -------
+        rho0 (Qobj): initial state of the system
+        """
         # check the units and convert the temperature to Kelvin
         if units_T == 'K':
             pass
@@ -253,7 +328,12 @@ class NV(QSys):
 
     def MW_freqs(self):
         """
-        
+        Gets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.
+
+        Returns
+        -------
+        f1 (float): first resonant frequency
+        f2 (float): second resonant frequency
         """
 
         if self.N == 15:
@@ -267,7 +347,11 @@ class NV(QSys):
         
     def RF_freqs(self):
         """
-        
+        Gets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
+
+        Returns
+        -------
+        fi (float): resonant frequencies
         """
 
         if self.N == 15:
@@ -286,6 +370,7 @@ class NV(QSys):
         
     def MW_H1(self):
         """
+        Gets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         """
         if self.N == 15:
             return tensor(jmat(1, 'x'), qeye(2))*2**.5
@@ -294,6 +379,7 @@ class NV(QSys):
         
     def RF_H1(self):
         """
+        Gets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         """
         if self.N == 15:
             return tensor(qeye(3), jmat(1/2, 'x'))*2

@@ -15,6 +15,8 @@ from types import FunctionType
 from.PulsedExp import PulsedExp
 from.PulseShapes import square_pulse
 
+####################################################################################################
+
 class Rabi(PulsedExp):
     """
     This class contains a Rabi experiments, inheriting from the PulsedExperiment class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
@@ -59,12 +61,12 @@ class Rabi(PulsedExp):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
-            self.Ht = [self.H0, [H1, pulse_shape]]
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+            self.Ht = [self.system.H0, [H1, pulse_shape]]
             self.pulse_profiles = [[H1, pulse_duration, pulse_shape, pulse_params]]
             
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             self.pulse_profiles = [[H1[i], pulse_duration, pulse_shape[i], pulse_params] for i in range(len(H1))]
 
         else:
@@ -90,16 +92,18 @@ class Rabi(PulsedExp):
         Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.      
         """
         # calculates the density matrices in sequence using mesolve
-        self.rho = mesolve(self.Ht, self.rho0, 2*np.pi*self.variable, self.c_ops, [], options = self.options, args = self.pulse_params).states
+        self.rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*self.variable, self.system.c_ops, [], options = self.options, args = self.pulse_params).states
         
         # if an observable is given, calculate the expectation values
-        if isinstance(self.observable, Qobj):
-            self.results = [ np.real( (rho*self.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
-        elif isinstance(self.observable, list):
-            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.observable]
+        if isinstance(self.system.observable, Qobj):
+            self.results = [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
+        elif isinstance(self.system.observable, list):
+            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.system.observable]
         # otherwise the results attribute is the density matrices
         else:
             self.results = self.rho
+
+####################################################################################################
 
 class PODMR(PulsedExp):
     """
@@ -175,13 +179,13 @@ class PODMR(PulsedExp):
             self.options = options
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             # create the time independent + time dependent Hamiltonian
-            self.Ht = [self.H0, [H1, pulse_shape]]
+            self.Ht = [self.system.H0, [H1, pulse_shape]]
             # append it to the pulse_profiles list
             self.pulse_profiles.append( [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, pulse_params] )
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             self.pulse_profiles.append( [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))] )
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
@@ -203,7 +207,7 @@ class PODMR(PulsedExp):
         self.pulse_params['omega_pulse'] = f
 
         # run the simulation and return the final density matrix
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pulse_duration, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pulse_duration, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
         
@@ -228,6 +232,8 @@ class PODMR(PulsedExp):
         self.total_time = self.pulse_duration
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
+
+####################################################################################################
 
 class Ramsey(PulsedExp):
     """
@@ -304,24 +310,24 @@ class Ramsey(PulsedExp):
             self.options = options
 
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             # create the time independent + time dependent Hamiltonian
             self.H1 = H1
-            self.Ht = [self.H0, [H1, pulse_shape]]
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.Ht = [self.system.H0, [H1, pulse_shape]]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
         # If projection_pulses is True, the sequence is set to the ramsey_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the ramsey_sequence method without the projection pulses. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.ramsey_sequence_proj_H2
             else:
                 self.sequence = self.ramsey_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.ramsey_sequence_H2
             else:
                 self.sequence = self.ramsey_sequence
@@ -343,7 +349,7 @@ class Ramsey(PulsedExp):
         rho (Qobj): final density matrix        
         """
         # perform the free evolution
-        rho = (-1j*2*np.pi*self.H0*tau).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*tau).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*tau).expm() * self.system.rho0 * ((-1j*2*np.pi*self.system.H0*tau).expm()).dag()
 
         return rho
 
@@ -363,14 +369,14 @@ class Ramsey(PulsedExp):
         ps = tau - self.pi_pulse_duration
         
         # perform initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # perform the free evolution
-        rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
 
         # perform final pi/2 pulse
         t0 = self.pi_pulse_duration/2 + ps
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
 
@@ -387,7 +393,7 @@ class Ramsey(PulsedExp):
         rho (Qobj): final density matrix        
         """
         # perform the free evolution
-        rho =  mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, tau, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho =  mesolve(self.system.H0, self.system.rho0, 2*np.pi*np.linspace(0, tau, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
 
@@ -407,15 +413,15 @@ class Ramsey(PulsedExp):
         ps = tau - self.pi_pulse_duration
         
         # perform initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 = self.pi_pulse_duration/2
 
         # perform the free evolution
-        rho =  mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho =  mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform final pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
         
@@ -490,6 +496,8 @@ class Ramsey(PulsedExp):
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
     
+####################################################################################################
+
 class Hahn(PulsedExp):
     """
     This class contains a Hahn echo experiment, inheriting from the PulsedExperiment class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
@@ -552,12 +560,12 @@ class Hahn(PulsedExp):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.H0, [self.H1, pulse_shape]]
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
@@ -578,12 +586,12 @@ class Hahn(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the hahn_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.hahn_sequence_proj_H2
             else:
                 self.sequence = self.hahn_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.hahn_sequence_H2
             else:
                 self.sequence = self.hahn_sequence
@@ -608,13 +616,13 @@ class Hahn(PulsedExp):
         ps = tau - self.pi_pulse_duration/2
 
         # perform the first free evolution
-        rho = (-1j*2*np.pi*self.H0*ps).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps).expm() * self.system.rho0 * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
 
         # perform the pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(ps, ps + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(ps, ps + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # perform the second free evolution
-        rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
 
         return rho
 
@@ -635,21 +643,21 @@ class Hahn(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform the initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # perform the first free evolution
-        rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
 
         # perform the pi pulse
         t0 = self.pi_pulse_duration/2 + ps
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # perform the second free evolution
-        rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
 
         # perform the final pi/2 pulse
         t0 += tau
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         # if no observable is given, return the final density matrix
         return rho
@@ -670,15 +678,15 @@ class Hahn(PulsedExp):
         ps = tau - self.pi_pulse_duration/2
 
         # perform the first free evolution
-        rho = mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.system.H0, self.system.rho0, 2*np.pi*np.linspace(0, ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 = ps
 
         # perform the pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform the second free evolution
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
     
@@ -698,23 +706,23 @@ class Hahn(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform the initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 = self.pi_pulse_duration/2
 
         # perform the first free evolution
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform the pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform the second free evolution
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform the final pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
 

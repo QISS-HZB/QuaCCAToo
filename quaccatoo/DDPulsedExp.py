@@ -8,6 +8,8 @@ from types import FunctionType
 from.PulsedExp import PulsedExp
 from.PulseShapes import square_pulse
 
+####################################################################################################
+
 class CPMG(PulsedExp):
     """
     This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedExp class. The CPMG sequence consists of a series of pi pulses and free evolution times, such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.
@@ -77,13 +79,13 @@ class CPMG(PulsedExp):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.H0, [self.H1, pulse_shape]]
+            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
@@ -106,12 +108,12 @@ class CPMG(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the CPMG_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the CPMG_sequence method without the projection pulses
         if projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.CPMG_sequence_proj_H2
             else:
                 self.sequence = self.CPMG_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.CPMG_sequence_H2
             else:
                 self.sequence = self.CPMG_sequence
@@ -136,21 +138,21 @@ class CPMG(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform free evolution of ps/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * self.system.rho0 * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = ps/2
 
         # repeat M times the pi pulse and free evolution of ps
         for itr_M in range(self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
             # perform free evolution of ps
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         # perform free evolution of ps/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         
         return rho
     
@@ -171,28 +173,28 @@ class CPMG(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # initial pi/2 pulse on x 
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
 
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = tau/2
 
         # repeat M times the pi pulse and free evolution of tau
         for itr_M in range(self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
             # perform free evolution of tau
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 += self.pi_pulse_duration + ps/2
 
         # final pi/2 pulse on x
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
 
         return rho
 
@@ -212,23 +214,23 @@ class CPMG(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform free evolution of ps/2
-        rho = mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, self.system.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 = ps/2
 
         # repeat M times the pi pulse and free evolution of ps
         for itr_M in range(self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of ps
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
         # perform free evolution of ps/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         
         return rho
     
@@ -249,31 +251,31 @@ class CPMG(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # initial pi/2 pulse on x 
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
         t0 = self.pi_pulse_duration/2
 
         # perform free evolution of tau/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # repeat M times the pi pulse and free evolution of ps
         for itr_M in range(self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of ps
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
         # perform free evolution of ps/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # final pi/2 pulse on x
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
 
         return rho
     
@@ -364,6 +366,8 @@ class CPMG(PulsedExp):
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
+####################################################################################################
+
 class XY(PulsedExp):
     """
     This class contains the XY-M pulse sequence, inhereting from PulsedExp class. The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times. It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
@@ -432,13 +436,13 @@ class XY(PulsedExp):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.H0, [self.H1, pulse_shape]]
+            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
@@ -461,12 +465,12 @@ class XY(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the XY_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the XY_sequence method without the projection pulses
         if projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.XY_sequence_proj_H2
             else:
                 self.sequence = self.XY_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.XY_sequence_H2
             else:
                 self.sequence = self.XY_sequence
@@ -491,22 +495,22 @@ class XY(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform half free evolution
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * self.system.rho0 * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = ps/2
 
         # repeat M times the pi X pulse, free evolution of tau pi Y pulse and free evolution of tau
         for itr_M in range(2*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
             # perform free evolution of tau
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
 
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
 
         return rho
 
@@ -526,28 +530,28 @@ class XY(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         # perform half free evolution
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = tau/2
 
         # repeat M times the pi X pulse, free evolution of tau pi Y pulse and free evolution of tau
         for itr_M in range(2*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
             # perform free evolution of tau
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 += self.pi_pulse_duration + ps/2
 
         # final pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -567,24 +571,24 @@ class XY(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform half free evolution
-        rho = mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, self.system.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 = ps/2
 
         # repeat M times the pi X pulse, free evolution of tau pi Y pulse and free evolution of tau
         for itr_M in range(2*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of tau
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform free evolution of tau/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
 
         return rho
 
@@ -604,32 +608,32 @@ class XY(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # initial pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 = self.pi_pulse_duration/2
 
         # perform half free evolution
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # repeat M times the pi X pulse, free evolution of tau pi Y pulse and free evolution of tau
         for itr_M in range(2*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%2]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of tau
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[1]).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform free evolution of tau/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # final pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         return rho
     
@@ -720,6 +724,8 @@ class XY(PulsedExp):
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
+####################################################################################################
+
 class XY8(PulsedExp):
     """
     This contains the XY8-M sequence, inhereting from Pulsed Experiment. The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X, in order to improve noise suppression and pulse errors.
@@ -788,13 +794,13 @@ class XY8(PulsedExp):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.rho0.shape:
+        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.H0, [self.H1, pulse_shape]]
+            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
@@ -824,12 +830,12 @@ class XY8(PulsedExp):
 
         # If projection_pulses is True, the sequence is set to the XY8_sequence_proj method with the intial and final projection pulses into the Sz basis, otherwise it is set to the XY8_sequence method without the projection pulses
         if projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.XY8_sequence_proj_H2
             else:
                 self.sequence = self.XY8_sequence_proj
         elif not projection_pulses:
-            if H2 != None or self.c_ops != None:
+            if H2 != None or self.system.c_ops != None:
                 self.sequence = self.XY8_sequence_H2
             else:
                 self.sequence = self.XY8_sequence
@@ -854,22 +860,22 @@ class XY8(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform half free evolution
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * self.rho0 * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * self.system.rho0 * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = ps/2
 
         # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
         for itr_M in range(8*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
             # perform free evolution of tau
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
 
         return rho
         
@@ -889,29 +895,29 @@ class XY8(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         # perform half free evolution
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 = tau/2 
 
         # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
         for itr_M in range(8*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
             # perform free evolution of tau
-            rho = (-1j*2*np.pi*self.H0*ps).expm() * rho * ((-1j*2*np.pi*self.H0*ps).expm()).dag()
+            rho = (-1j*2*np.pi*self.system.H0*ps).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps).expm()).dag()
             t0 += tau
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         # perform free evolution of tau/2
-        rho = (-1j*2*np.pi*self.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.H0*ps/2).expm()).dag()
+        rho = (-1j*2*np.pi*self.system.H0*ps/2).expm() * rho * ((-1j*2*np.pi*self.system.H0*ps/2).expm()).dag()
         t0 += self.pi_pulse_duration + ps/2
 
         # perform pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         return rho   
     
@@ -931,24 +937,24 @@ class XY8(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform half free evolution
-        rho = mesolve(self.H0, self.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, self.system.rho0, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 = ps/2
 
         # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
         for itr_M in range(8*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of tau
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform free evolution of tau/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
 
         return rho
         
@@ -968,32 +974,32 @@ class XY8(PulsedExp):
         ps = tau - self.pi_pulse_duration
 
         # perform pi/2 pulse
-        rho = mesolve(self.Ht, self.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*np.linspace(0, self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 = self.pi_pulse_duration/2
 
         # perform half free evolution
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(0, ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of tau
         for itr_M in range(8*self.M-1):
             # perform pi pulse
-            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
+            rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[itr_M%8]).states[-1]
             t0 += self.pi_pulse_duration
             # perform free evolution of tau
-            rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform free evolution of tau/2
-        rho = mesolve(self.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps/2, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps/2
 
         # perform pi/2 pulse
-        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2*np.pi*np.linspace(t0, t0 + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params[0]).states[-1]
 
         return rho
     
