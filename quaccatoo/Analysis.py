@@ -26,7 +26,7 @@ def fit_rabi(t, A, Tpi, C, phi):
     ----------
     t (array): time values
     A (float): amplitude of the cosine function
-    Tpi (float): period of the cosine function
+    Tpi (float): pi-pulse duration (half the period of the cosine function)
     C (float): offset of the cosine function
     phi (float): phase of the cosine function
     """
@@ -40,7 +40,7 @@ def fit_rabi_decay(t, A, Tpi, phi, C, Tc, n):
     ----------
     t (array): time values
     A (float): amplitude of the cosine function
-    Tpi (float): period of the cosine function
+    Tpi (float): pi-pulse duration (half the period of the cosine function)
     phi (float): phase of the cosine function
     C (float): offset of the cosine function
     Tc (float): decay time constant
@@ -63,7 +63,7 @@ def fit_exp_decay(t, A, C, Tc):
 
 def fit_exp_decay_n(t, A, C, Tc, n):
     """
-    Expontial decay function with power n
+    Exponential decay function with power n
 
     Parameters
     ----------
@@ -231,7 +231,7 @@ class Analysis:
     
     def plot_FFT(self, freq_lim = None, figsize=(6, 4), xlabel='Frequencies', ylabel='FFT Intensity', title='FFT of the Results'):
         """
-        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evoltution.
+        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.
 
         Parameters
         ----------
@@ -271,7 +271,7 @@ class Analysis:
 
     def run_fit(self, fit_function, guess=None, bounds=(-np.inf, np.inf)):
         """
-        Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function, guess for the inital parameters and bounds for the parameters.
+        Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function, guess for the initial parameters and bounds for the parameters.
 
         Parameters
         ----------
@@ -310,6 +310,7 @@ class Analysis:
         self.experiment.plot_results(figsize, xlabel, ylabel, title)
 
         plt.plot(self.experiment.variable, self.fit_function(self.experiment.variable, *self.fit), label='Fit')
+        plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1)) # updates the legend adding the fit label
 
     def plot_bloch(self, figsize=(6, 4)):
         """
@@ -324,7 +325,7 @@ class Analysis:
         elif isinstance(self.experiment.rho, list) and all(rho.shape == (2,2) for rho in self.experiment.rho):
             pass
         else:
-            raise ValueError('QSys must have dimesion of two be able to plot a Bloch sphere')
+            raise ValueError('QSys must have dimension of two be able to plot a Bloch sphere')
 
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
