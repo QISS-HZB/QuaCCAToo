@@ -1,6 +1,7 @@
 # TODO: add_spin method for QSys class
 # TODO: include new systems
 # TODO: think on a better strategy for the plot_energy_B0 function
+# TODO: implement eV units conversion to frequencies
 
 """
 This module contains the plot_energy_B0 function, the QSys class and the NV subclass.
@@ -127,16 +128,17 @@ class QSys:
         elif not isinstance(units_H0, str) :
             raise ValueError("units_H0 must be a string")
         elif units_H0 == 'MHz' or units_H0 == 'GHz' or units_H0 == 'kHz' or units_H0 == 'Hz' or units_H0 == 'eV':
-            pass
+            pass # !!! Units are used only when plotting energy. It is needed to add the conversion to frequencies in case of eV !!!
         else:
-            warnings.warn(f"Warning: Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
+            warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got '{units_H0}'. The Hamiltonian will be considered in MHz.")
+
 
         self.H0 = H0
         self.units_H0 = units_H0
         
-        # calculate the eigenstates of the Hamiltonian
+        # calculate the eigenenergies of the Hamiltonian
         H_eig = H0.eigenenergies()
-        # substracts the ground state energy from all the eigenstates to get the lowest level at 0
+        # subtracts the ground state energy from all the eigenenergies to get the lowest level at 0
         self.energy_levels = H_eig - H_eig[0]
         
     def plot_energy(self, figsize=(2, 6), energy_lim = None):
@@ -227,7 +229,7 @@ class NV(QSys):
             else:
                 raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
             
-        # standard untis for NV Hamiltonian
+        # standard units for NV Hamiltonian
         self.units_H0 = 'MHz'
             
         # calculates the Hamiltonian for the given field and nitrogen isotope
@@ -253,9 +255,9 @@ class NV(QSys):
             raise ValueError(f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}.")
         
         self.N = N
-        # get the eigenstates of the Hamiltonian
-        H0_eig = self.H0.eigenstates()
-        self.energy_levels = H0_eig[0] - H0_eig[0][0]
+        # get the eigenenergies of the Hamiltonian
+        H0_eig = self.H0.eigenenergies()
+        self.energy_levels = H0_eig - H0_eig[0]
     
     def rho0_lowT(self, T, units_T='K'):
         """

@@ -12,7 +12,7 @@ from.QSys import QSys
 
 class PulsedExp:
     """
-    The PulsedExp class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations. The class contains methods to add pulses and free evolution operations to the sequence of operations, run the experiment, plot the pulse profiles and results of the experiment.
+    The PulsedExp class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations. The class contains methods to add pulses and free evolution operations to the sequence of operations, run the experiment, plot the pulse profiles and results of the experiment. By default the Hamiltonian is in frequency units and the time is in time units.
 
     Class Attributes
     ----------------
@@ -22,7 +22,7 @@ class PulsedExp:
     - total_time: total time of the experiment
     - variable: variable of the experiment which the results depend on
     - sequence: list of pulse and free evolution operations as functions
-    - pulse_profiles: list of pulse profiles for plotting purposes. Eeach element is a list [H1, tarray, pulse_shape, pulse_params], where H1 is the control Hamiltonian, tarray is the time array of the pulse, pulse_shape is the pulse time modulation function and pulse_params is the dictionary of parameters for the pulse_shape function
+    - pulse_profiles: list of pulse profiles for plotting purposes. Each element is a list [H1, tarray, pulse_shape, pulse_params], where H1 is the control Hamiltonian, tarray is the time array of the pulse, pulse_shape is the pulse time modulation function and pulse_params is the dictionary of parameters for the pulse_shape function
     - results: results of the experiment from the run method
     - options: dictionary of dynamic solver options from Qutip
     - observable: observable to be measured after the sequence of operations
@@ -33,7 +33,7 @@ class PulsedExp:
     - pulse: updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
     - add_free_evolution: adds a free evolution operation to the sequence of operations of the experiment
     - free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation
-    - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable atrribute
+    - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
     - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     - plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
     """
@@ -56,6 +56,8 @@ class PulsedExp:
         self.rho = system.rho0.copy()
         self.system.c_ops = system.c_ops
         self.H2 = H2
+        # if self.H2 is not None:
+        #     self.H0 = [self.H0, H2]
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -152,7 +154,7 @@ class PulsedExp:
         duration (float, int): duration of the free evolution
         """
         # check if duration of the pulse is a positive real number
-        if not isinstance(duration, (int, float)) and duration <= 0:
+        if not isinstance(duration, (int, float)) or duration < 0:
             raise ValueError("duration must be a positive real number")
         
         # add the free evolution to the pulse_profiles list
@@ -256,7 +258,7 @@ class PulsedExp:
             
     def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
-        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evoltution.
+        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.
 
         Parameters
         ----------
