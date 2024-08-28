@@ -1,6 +1,7 @@
 # TODO: add_spin method for QSys class
 # TODO: include new systems
 # TODO: think on a better strategy for the plot_energy_B0 function
+# TODO: implement eV units conversion to frequencies
 
 """
 This module contains the plot_energy_B0 function, the QSys class and the NV subclass.
