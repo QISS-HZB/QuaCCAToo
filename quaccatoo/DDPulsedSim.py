@@ -5,15 +5,15 @@ This module contains dynamical decoupling pulse sequences, used in quantum sensi
 import numpy as np
 from qutip import Qobj, mesolve
 from types import FunctionType
-from.PulsedExp import PulsedExp
+from.PulsedSim import PulsedSim
 from.PulseShapes import square_pulse
 import warnings
 
 ####################################################################################################
 
-class CPMG(PulsedExp):
+class CPMG(PulsedSim):
     """
-    This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedExp class. The CPMG sequence consists of a series of pi pulses and free evolution times, such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.
+    This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedSim class. The CPMG sequence consists of a series of pi pulses and free evolution times, such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.
 
     Class Attributes
     ----------------
@@ -21,14 +21,14 @@ class CPMG(PulsedExp):
     free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
-    += PulsedExp
+    += PulsedSim
 
     Class Methods
     -------------
     CPMG_sequence(tau): defines the Carr-Purcell-Meiboom-Gill sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
     CPMG_sequence_proj(tau): defines the Carr-Purcell-Meiboom-Gill sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip. An initial pi/2 pulse and final pi/2 pulse are included, in order to perform the measurement in the Sz basis.
     get_pulse_profiles(tau): generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-    += PulsedExp
+    += PulsedSim
     """
     def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options = {}, time_steps = 100):
         """
@@ -432,9 +432,9 @@ class CPMG(PulsedExp):
 
 ####################################################################################################
 
-class XY(PulsedExp):
+class XY(PulsedSim):
     """
-    This class contains the XY-M pulse sequence, inheriting from PulsedExp class. The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times. It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
+    This class contains the XY-M pulse sequence, inheriting from PulsedSim class. The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times. It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
 
     Class Attributes
     ----------------
@@ -442,14 +442,14 @@ class XY(PulsedExp):
     free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
-    += PulsedExp
+    += PulsedSim
 
     Class Methods
     -------------
     XY_sequence(tau): defines the XY sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
     XY_sequence_proj(tau): defines the XY sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip. An initial pi/2 pulse and final pi/2 pulse are included, in order to perform the measurement in the Sz basis.
     get_pulse_profiles(tau): generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-    += PulsedExp
+    += PulsedSim
     """
     def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options = {}, time_steps = 100):
         """
@@ -851,9 +851,9 @@ class XY(PulsedExp):
 
 ####################################################################################################
 
-class XY8(PulsedExp):
+class XY8(PulsedSim):
     """
-    This contains the XY8-M sequence, inheriting from Pulsed Experiment. The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X, in order to improve noise suppression and pulse errors.
+    This contains the XY8-M sequence, inheriting from Pulsed Simulation. The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X, in order to improve noise suppression and pulse errors.
 
     Class Attributes
     ----------------
@@ -861,14 +861,14 @@ class XY8(PulsedExp):
     free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
-    += PulsedExp
+    += PulsedSim
 
     Class Methods
     -------------
     XY8_sequence(tau): defines the XY8 sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
     XY8_sequence_proj(tau): defines the XY8 sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip. An initial pi/2 pulse and final pi/2 pulse are included, in order to perform the measurement in the Sz basis.
     get_pulse_profiles(tau): generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-    += PulsedExp
+    += PulsedSim
     """
     def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options = {}, time_steps = 100):
         """

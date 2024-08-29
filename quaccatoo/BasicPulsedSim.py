@@ -1,5 +1,5 @@
 """
-This module contains predefined basic pulsed experiments inheriting from the PulsedExp class.
+This module contains predefined basic pulsed experiments inheriting from the PulsedSim class.
 
 Classes
 -------
@@ -12,24 +12,24 @@ Classes
 import numpy as np
 from qutip import Qobj, mesolve
 from types import FunctionType
-from.PulsedExp import PulsedExp
+from.PulsedSim import PulsedSim
 from.PulseShapes import square_pulse
 import warnings
 
 ####################################################################################################
 
-class Rabi(PulsedExp):
+class Rabi(PulsedSim):
     """
-    This class contains a Rabi experiments, inheriting from the PulsedExperiment class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
+    This class contains a Rabi experiments, inheriting from the PulsedSimulation class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
 
     Class Attributes
     ----------------
     pulse_duration (numpy array): time array for the simulation representing the pulse duration to be used as the variable for the simulation
-    += PulsedExperiment
+    += PulsedSimulation
 
     Methods
     -------
-    = PulsedExperiment    
+    = PulsedSimulation    
     """
     def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, options={}):
         """
@@ -111,20 +111,20 @@ class Rabi(PulsedExp):
 
 ####################################################################################################
 
-class PODMR(PulsedExp):
+class PODMR(PulsedSim):
     """
-    This class contains a Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed, inheriting from the PulsedExp class. The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length. Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers, however the method can be more general. 
+    This class contains a Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed, inheriting from the PulsedSim class. The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length. Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers, however the method can be more general. 
 
     Class Attributes
     ----------------
     frequencies (numpy array): array of frequencies to run the simulation
     pulsed_duration (float, int): duration of the pulse
-    += PulsedExperiment
+    += PulsedSimulation
 
     Class Methods
     -------------
     PODMR_sequence(f): defines the the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
-    += PulsedExperiment
+    += PulsedSimulation
     """
     def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
@@ -229,7 +229,7 @@ class PODMR(PulsedExp):
         Parameters
         ----------
         f_pulse (float, int): frequency of the pulse to be plotted
-        += PulsedExperiment.plot_pulses
+        += PulsedSimulation.plot_pulses
         """
         # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
         if f_pulse == None:
@@ -244,7 +244,7 @@ class PODMR(PulsedExp):
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
-    def plot_results(self, figsize=(6, 4), xlabel='Frequency', ylabel='Expectation Value', title='Pulsed Experiment Result'):
+    def plot_results(self, figsize=(6, 4), xlabel='Frequency', ylabel='Expectation Value', title='Pulsed Simulation Result'):
         """
         Overwrites the plot_results method of the parent class in order to change the x-axis label.
 
@@ -259,23 +259,23 @@ class PODMR(PulsedExp):
 
 ####################################################################################################
 
-class Ramsey(PulsedExp):
+class Ramsey(PulsedSim):
     """
-    This class contains a Ramsey experiments, inheriting from the PulsedExperiment class.
+    This class contains a Ramsey experiments, inheriting from the PulsedSimulation class.
 
     Class Attributes
     ----------------
     free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
-    += PulsedExperiment
+    += PulsedSimulation
 
     Class Methods
     -------------
     ramsey_sequence(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
     ramsey_sequence_proj(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
     get_pulse_profiles(tau): generates the pulse profiles for the Ramsey sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-    += PulsedExperiment
+    += PulsedSimulation
     """
     def __init__(self, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
@@ -559,22 +559,22 @@ class Ramsey(PulsedExp):
     
 ####################################################################################################
 
-class Hahn(PulsedExp):
+class Hahn(PulsedSim):
     """
-    This class contains a Hahn echo experiment, inheriting from the PulsedExperiment class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
+    This class contains a Hahn echo experiment, inheriting from the PulsedSimulation class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 
     Class Attributes
     ----------------
     free_duration (numpy array): time array of the free evolution times to run the simulation
     pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
-    += PulsedExperiment
+    += PulsedSimulation
 
     Class Methods
     -------------
     hahn_sequence(tau): defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
     hahn_sequence_proj(tau): defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip. A final pi/2 pulse is included, in order to project the result into the Sz basis.
-    += PulsedExperiment    
+    += PulsedSimulation    
     """
 
     def __init__(self, free_duration, pi_pulse_duration, system, H1,  H2=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):

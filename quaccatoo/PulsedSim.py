@@ -1,5 +1,5 @@
 """
-This module contains the PulsedExp class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
+This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
 """
 
 # import the necessary libraries
@@ -10,9 +10,9 @@ from types import FunctionType
 from.PulseShapes import square_pulse
 from.QSys import QSys
 
-class PulsedExp:
+class PulsedSim:
     """
-    The PulsedExp class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations. The class contains methods to add pulses and free evolution operations to the sequence of operations, run the experiment, plot the pulse profiles and results of the experiment. By default the Hamiltonian is in frequency units and the time is in time units.
+    The PulsedSim class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations. The class contains methods to add pulses and free evolution operations to the sequence of operations, run the experiment, plot the pulse profiles and results of the experiment. By default the Hamiltonian is in frequency units and the time is in time units.
 
     Class Attributes
     ----------------
@@ -40,7 +40,7 @@ class PulsedExp:
     """
     def __init__(self, system, H2 = None):
         """
-        Initializes a general PulsedExp object with a quantum system, time dependent Hamiltonian and collapse operators.
+        Initializes a general PulsedSim object with a quantum system, time dependent Hamiltonian and collapse operators.
 
         Parameters
         ----------
@@ -73,7 +73,7 @@ class PulsedExp:
         self.variable = None # variable of the experiment which the results depend on
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
-        self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedExperiments or defined by the user
+        self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedSimulations or defined by the user
     
     def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
@@ -255,7 +255,7 @@ class PulsedExp:
         -------
         results of the experiment
         """
-        # if no sequence is passed but the PulsedExp has one, uses the attribute sequence
+        # if no sequence is passed but the PulsedSim has one, uses the attribute sequence
         if sequence == None and self.sequence != None:
             pass
         # if a sequence is passed, checks if it is a python function and overwrites the attribute
@@ -332,7 +332,7 @@ class PulsedExp:
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))  
 
-    def plot_results(self, figsize=(6, 4), xlabel='Time', ylabel='Expectation Value', title='Pulsed Experiment Result'):
+    def plot_results(self, figsize=(6, 4), xlabel='Time', ylabel='Expectation Value', title='Pulsed Simulation Result'):
         """
         Plots the results of the experiment
 
