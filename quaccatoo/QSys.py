@@ -175,6 +175,9 @@ class QSys:
             ax.set_ylim(energy_lim[0], energy_lim[1])
         else:
             raise ValueError("freq_lim must be a tuple of two floats")
+        
+    def save():
+        pass
 
 ####################################################################################################
 

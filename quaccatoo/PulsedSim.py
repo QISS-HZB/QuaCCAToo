@@ -368,3 +368,6 @@ class PulsedSim:
         ax.set_ylabel(ylabel)
         ax.legend(loc='upper right', bbox_to_anchor=(1.2, 1))
         ax.set_title(title)
+
+    def save():
+        pass

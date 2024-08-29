@@ -198,3 +198,6 @@ class Analysis:
         bloch.add_states(self.experiment.rho, kind='point', colors=colors)
         bloch.frame_alpha = 0
         bloch.render()
+    
+    def save():
+        pass   
