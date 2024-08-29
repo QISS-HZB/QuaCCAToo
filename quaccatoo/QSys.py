@@ -130,7 +130,7 @@ class QSys:
         elif units_H0 == 'MHz' or units_H0 == 'GHz' or units_H0 == 'kHz' or units_H0 == 'Hz' or units_H0 == 'eV':
             pass # !!! Units are used only when plotting energy. It is needed to add the conversion to frequencies in case of eV !!!
         else:
-            warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got '{units_H0}'. The Hamiltonian will be considered in MHz.")
+            warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
 
 
         self.H0 = H0

@@ -32,7 +32,8 @@ class PulsedExp:
     - add_pulse: adds a pulse operation to the sequence of operations of the experiment
     - pulse: updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
     - add_free_evolution: adds a free evolution operation to the sequence of operations of the experiment
-    - free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation
+    - free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
+    - free_evolution_H2: same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
     - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     - plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
@@ -54,11 +55,18 @@ class PulsedExp:
         
         # get the attributes of the system
         self.rho = system.rho0.copy()
-        self.system.c_ops = system.c_ops
-        self.H2 = H2
 
-        if self.H2 is not None and (self.H2[0].shape != self.system.rho0.shape or not isinstance(self.H2[1], FunctionType)):
-                raise ValueError("H2 must be None or a list of one Qobj of the same shape as rho0 and a one time dependent function")
+        # if collapse operators are given, the H0_H2 attributed needs to be set with H0 for the mesolve function
+        if self.system.c_ops != None:
+            self.H0_H2 = self.system.H0
+
+        if H2 == None:
+            self.H2 = None
+        elif H2[0].shape != self.system.rho0.shape or not isinstance(H2[1], FunctionType):
+            raise ValueError("H2 must be None or a list of one Qobj of the same shape as rho0 and a one time dependent function")
+        else:
+            self.H2 = H2
+            self.H0_H2 = [self.system.H0, self.H2]
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -112,13 +120,20 @@ class PulsedExp:
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
-            # create the time independent + time dependent Hamiltonian
-            Ht = [self.system.H0, [H1, pulse_shape]]
             # append it to the pulse_profiles list
             self.pulse_profiles.append( [H1, np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape, pulse_params] )
+            if self.H2 == None:
+                Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             self.pulse_profiles = [[H1[i], np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
+            if self.H2 == None:
+                Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
@@ -146,7 +161,7 @@ class PulsedExp:
         # update the total time
         self.total_time += duration
         
-    def add_free_evolution(self, duration):
+    def add_free_evolution(self, duration, options={}):
         """
         Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.
 
@@ -161,27 +176,39 @@ class PulsedExp:
         # add the free evolution to the pulse_profiles list
         self.pulse_profiles.append( [None, [self.total_time, duration + self.total_time], None, None] )
 
-        # add the free evolution operation to the sequence of operations
-        self.free_evolution(duration)
-    
-    def free_evolution(self, duration, options={}):
-        """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
-
-        Parameters
-        ----------
-        duration (float, int): duration of the free evolution
-        """
-        # if a H2 or collapse operators are given, use the mesolve function from QuTip to perform the free evolution, otherwise use the matrix exponential
+        # if a H2 or collapse operators are given, use free_evolution_H2 method, otherwise use free_evolution method
         if self.H2 != None or self.system.c_ops != None:
             # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
             if not isinstance(options, dict):
                 raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
             
-            H0_H2 = [self.system.H0, self.H2]
-            self.rho = mesolve(H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
+            self.free_evolution_H2(duration, options)
         else:
-            self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
+            self.free_evolution(duration)
+    
+    def free_evolution(self, duration):
+        """
+        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+
+        Parameters
+        ----------
+        duration (float, int): duration of the free evolution
+        """            
+        self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
+
+        # update the total time
+        self.total_time += duration
+
+    def free_evolution_H2(self, duration, options={}):
+        """
+        Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.
+
+        Parameters
+        ----------
+        duration (float, int): duration of the free evolution
+        options (dict): options for the Qutip solver
+        """           
+        self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
 
         # update the total time
         self.total_time += duration

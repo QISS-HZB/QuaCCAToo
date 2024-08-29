@@ -82,18 +82,22 @@ class CPMG(PulsedExp):
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                self.H0_H2 = [self.system.H0, self.H2]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
-        if self.H2 != None:
-            self.H0_H2 = [self.system.H0, self.H2]
-            self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -498,19 +502,23 @@ class XY(PulsedExp):
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                self.H0_H2 = [self.system.H0, self.H2]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
-        if self.H2 != None:
-            self.H0_H2 = [self.system.H0, self.H2]
-            self.Ht = [self.Ht] + [self.H2]
-
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
@@ -913,18 +921,22 @@ class XY8(PulsedExp):
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                self.H0_H2 = [self.system.H0, self.H2]
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
-        # if self.H2 != None:
-        #     self.H0_H2 = [self.system.H0, self.H2]
-        #     self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):

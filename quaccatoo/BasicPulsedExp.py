@@ -60,22 +60,23 @@ class Rabi(PulsedExp):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
-        
+
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
-            self.Ht = [self.system.H0, [H1, pulse_shape]]
             self.pulse_profiles = [[H1, pulse_duration, pulse_shape, pulse_params]]
-            
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            self.pulse_profiles = [[H1[i], pulse_duration, pulse_shape[i], pulse_params] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
 
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):       
+            self.pulse_profiles = [[H1[i], pulse_duration, pulse_shape[i], pulse_params] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
-        if self.H2 != None:
-            self.H0_H2 = [self.system.H0, self.H2]
-            self.Ht = [self.Ht] + [self.H2]
         
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if isinstance(pulse_params, dict):
@@ -185,20 +186,21 @@ class PODMR(PulsedExp):
         
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
-            # create the time independent + time dependent Hamiltonian
-            self.Ht = [self.system.H0, [H1, pulse_shape]]
-            # append it to the pulse_profiles list
-            self.pulse_profiles.append( [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, pulse_params] )
+            self.pulse_profiles = [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, pulse_params] 
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            self.pulse_profiles.append( [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))] )
+            self.pulse_profiles = [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))] 
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
-        # if self.H2 != None:
-        #     self.H0_H2 = [self.system.H0, self.H2]
-        #     self.Ht = np.append(self.Ht, [self.H2]
-
         # set the sequence attribute to the PODMR_sequence method
         self.sequence = self.PODMR_sequence
         
@@ -331,20 +333,24 @@ class Ramsey(PulsedExp):
         else:
             self.options = options
 
-        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
+        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
-            # create the time independent + time dependent Hamiltonian
             self.H1 = H1
-            self.Ht = [self.system.H0, [H1, pulse_shape]]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
+
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.H1 = H1
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            self.H1 = H1       
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                self.H0_H2 = [self.system.H0, self.H2]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
-        if self.H2 != None:
-            self.H0_H2 = [self.system.H0, self.H2]
-            self.Ht = [self.Ht] + [self.H2]
         
         # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse, otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulse:
@@ -617,16 +623,21 @@ class Hahn(PulsedExp):
         # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
-            self.Ht = [self.system.H0, [self.H1, pulse_shape]]
+            if self.H2 == None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
+        
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1       
-            self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            if self.H2 == None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
-        
-        if self.H2 != None:
-            self.H0_H2 = [self.system.H0, self.H2]
-            self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
