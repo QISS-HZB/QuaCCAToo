@@ -179,7 +179,7 @@ class QSys:
 ####################################################################################################
 
 class NV(QSys):
-    def __init__(self, B0, N, c_ops=None, units_B0='mT', theta=0, phi_r=0, units_angles='deg'):
+    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles='deg'):
         """
         Generator for the NV class. Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
 
@@ -196,15 +196,17 @@ class NV(QSys):
         # converts the magnetic field to Gauss
         if not isinstance(B0, (int, float)):
             raise ValueError(f"B0 must be a real number, got {B0}.")
+
+        if units_B0 == None:
+            warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
+        elif units_B0 == 'T':
+            B0 = B0*1e3
+        elif units_B0 == 'mT':
+            pass
+        elif units_B0 == 'G':
+            B0 = B0*1e-3
         else:
-            if units_B0 == 'T':
-                B0 = B0*1e3
-            elif units_B0 == 'mT':
-                B0 = B0
-            elif units_B0 == 'G':
-                B0 = B0*1e-3
-            else:
-                raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
+            raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
 
         # check if c_ops is a list of Qobj with the same dimensions as H0
         if c_ops == None:
@@ -277,6 +279,8 @@ class NV(QSys):
             pass
         elif units_T == 'C':
             T += 273.15
+        elif units_T == 'F':
+            raise ValueError(f"'F' is not a valid unit for temperature, learn the metric system.")
         else:
             raise ValueError(f"Invalid value for units_T. Expected either 'K' or 'C', got {units_T}.")
 

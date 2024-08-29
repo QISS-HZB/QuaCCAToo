@@ -56,8 +56,9 @@ class PulsedExp:
         self.rho = system.rho0.copy()
         self.system.c_ops = system.c_ops
         self.H2 = H2
-        # if self.H2 is not None:
-        #     self.H0 = [self.H0, H2]
+
+        if self.H2 is not None and (self.H2[0].shape != self.system.rho0.shape or not isinstance(self.H2[1], FunctionType)):
+                raise ValueError("H2 must be None or a list of one Qobj of the same shape as rho0 and a one time dependent function")
 
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
@@ -177,7 +178,8 @@ class PulsedExp:
             if not isinstance(options, dict):
                 raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
             
-            self.rho = mesolve(self.system.H0, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
+            H0_H2 = [self.system.H0, self.H2]
+            self.rho = mesolve(H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
         else:
             self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
 

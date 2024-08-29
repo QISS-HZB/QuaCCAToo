@@ -7,6 +7,7 @@ from qutip import Qobj, mesolve
 from types import FunctionType
 from.PulsedExp import PulsedExp
 from.PulseShapes import square_pulse
+import warnings
 
 ####################################################################################################
 
@@ -62,7 +63,7 @@ class CPMG(PulsedExp):
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration/2 must be smaller than the free evolution time, otherwise pulses will overlap")
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
@@ -89,6 +90,10 @@ class CPMG(PulsedExp):
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        if self.H2 != None:
+            self.H0_H2 = [self.system.H0, self.H2]
+            self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -240,7 +245,7 @@ class CPMG(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -253,7 +258,7 @@ class CPMG(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform the last pi pulse on X
@@ -264,7 +269,7 @@ class CPMG(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration/2
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         
         return rho
     
@@ -290,7 +295,7 @@ class CPMG(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -303,7 +308,7 @@ class CPMG(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform the last pi pulse on X
@@ -314,7 +319,7 @@ class CPMG(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # final pi/2 pulse on Y
@@ -474,7 +479,7 @@ class XY(PulsedExp):
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration/2 must be smaller than the free evolution time, otherwise pulses will overlap")
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
@@ -501,6 +506,10 @@ class XY(PulsedExp):
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        if self.H2 != None:
+            self.H0_H2 = [self.system.H0, self.H2]
+            self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -651,7 +660,7 @@ class XY(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -664,7 +673,7 @@ class XY(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
@@ -675,7 +684,7 @@ class XY(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration/2
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
 
         return rho
 
@@ -700,7 +709,7 @@ class XY(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -713,7 +722,7 @@ class XY(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
@@ -724,7 +733,7 @@ class XY(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # final pi/2 pulse on X axis
@@ -885,7 +894,7 @@ class XY8(PulsedExp):
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration/2 must be smaller than the free evolution time, otherwise pulses will overlap")
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
@@ -912,6 +921,10 @@ class XY8(PulsedExp):
             
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        # if self.H2 != None:
+        #     self.H0_H2 = [self.system.H0, self.H2]
+        #     self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -1069,7 +1082,7 @@ class XY8(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1082,7 +1095,7 @@ class XY8(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
@@ -1093,7 +1106,7 @@ class XY8(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration/2
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
 
         return rho
         
@@ -1118,7 +1131,7 @@ class XY8(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1131,7 +1144,7 @@ class XY8(PulsedExp):
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
@@ -1142,7 +1155,7 @@ class XY8(PulsedExp):
         ps = tau/2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options).states[-1]
         t0 += ps
 
         # perform pi/2 pulse on X axis

@@ -14,6 +14,7 @@ from qutip import Qobj, mesolve
 from types import FunctionType
 from.PulsedExp import PulsedExp
 from.PulseShapes import square_pulse
+import warnings
 
 ####################################################################################################
 
@@ -71,6 +72,10 @@ class Rabi(PulsedExp):
 
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        if self.H2 != None:
+            self.H0_H2 = [self.system.H0, self.H2]
+            self.Ht = [self.Ht] + [self.H2]
         
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if isinstance(pulse_params, dict):
@@ -189,6 +194,10 @@ class PODMR(PulsedExp):
             self.pulse_profiles.append( [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))] )
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        # if self.H2 != None:
+        #     self.H0_H2 = [self.system.H0, self.H2]
+        #     self.Ht = np.append(self.Ht, [self.H2]
 
         # set the sequence attribute to the PODMR_sequence method
         self.sequence = self.PODMR_sequence
@@ -293,7 +302,7 @@ class Ramsey(PulsedExp):
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
@@ -332,6 +341,10 @@ class Ramsey(PulsedExp):
             self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        if self.H2 != None:
+            self.H0_H2 = [self.system.H0, self.H2]
+            self.Ht = [self.Ht] + [self.H2]
         
         # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse, otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulse:
@@ -418,7 +431,7 @@ class Ramsey(PulsedExp):
         t0 = self.pi_pulse_duration/2
 
         # perform the free evolution
-        rho =  mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho =  mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
 
@@ -442,7 +455,7 @@ class Ramsey(PulsedExp):
         t0 = self.pi_pulse_duration/2
 
         # perform the free evolution
-        rho =  mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho =  mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform final pi/2 pulse
@@ -585,7 +598,7 @@ class Hahn(PulsedExp):
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            raise ValueError("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
@@ -610,6 +623,10 @@ class Hahn(PulsedExp):
             self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+        
+        if self.H2 != None:
+            self.H0_H2 = [self.system.H0, self.H2]
+            self.Ht = [self.Ht] + [self.H2]
 
         # check weather pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -730,7 +747,7 @@ class Hahn(PulsedExp):
         t0 = self.pi_pulse_duration/2
 
         # perform the first free evolution
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform the pi pulse
@@ -738,7 +755,7 @@ class Hahn(PulsedExp):
         t0 += self.pi_pulse_duration
 
         # perform the second free evolution
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps + self.pi_pulse_duration/2, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
 
         return rho
     
@@ -762,7 +779,7 @@ class Hahn(PulsedExp):
         t0 = self.pi_pulse_duration/2
 
         # perform the first free evolution
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform the pi pulse
@@ -770,7 +787,7 @@ class Hahn(PulsedExp):
         t0 += self.pi_pulse_duration
 
         # perform the second free evolution
-        rho = mesolve(self.system.H0, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2*np.pi*np.linspace(t0, t0 + ps, self.time_steps) , self.system.c_ops, [], options = self.options, args = self.pulse_params).states[-1]
         t0 += ps
 
         # perform the final pi/2 pulse
