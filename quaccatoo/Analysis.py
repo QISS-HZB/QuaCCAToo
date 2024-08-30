@@ -12,7 +12,7 @@ from.PulsedSim import PulsedSim
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
-from qutip import Bloch
+from qutip import Bloch, Qobj
 
 class Analysis:
     """
@@ -52,11 +52,58 @@ class Analysis:
             raise ValueError("Results attribute of PulsedSimulation object is empty, you must run the experiment first")
         if len(experiment.variable) == 0:
             raise ValueError("Variable attribute of PulsedSimulation object is empty, please define the variable of the experiment")
-        if len(experiment.results) != len(experiment.variable):
+        if len(experiment.results) != len(experiment.variable) and any( len(experiment.variable) != len(res) for res in experiment.results):        
             raise ValueError("Results and Variable attributes of PulsedSimulation object must have the same length")
          
         self.FFT_values = []
         self.FFT_peaks = []
+
+    def plot_results(self, figsize=(6, 4), xlabel=None, ylabel='Observable', title='Results'):
+        """
+        Plots the results of the experiment
+
+        Parameters
+        ----------
+        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        xlabel (str): label of the x-axis
+        ylabel (str): label of the y-axis
+        title (str): title of the plot        
+        """
+        # check if figsize is a tuple of two positive floats
+        if not (isinstance(figsize, tuple) or len(figsize) == 2):
+            raise ValueError("figsize must be a tuple of two positive floats")
+        
+        if not isinstance(ylabel, str) or not isinstance(title, str):
+            raise ValueError("ylabel and title must be strings")
+        
+        if xlabel == None:
+            xlabel = self.experiment.variable_name
+        elif not isinstance(xlabel, str):
+            raise ValueError("xlabel must be a string")
+
+        # initialize the figure and axis for the plot
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        
+        # check if the observable is a Qobj or a list of Qobj
+        if isinstance(self.experiment.system.observable, Qobj):
+            ax.plot(self.experiment.variable, self.experiment.results, lw=2, alpha=0.7, label = 'Observable')
+                    
+        elif isinstance(self.experiment.system.observable, list):
+            # if it is a list, iterate over the observables and plot each one
+            for itr in range(len(self.experiment.system.observable)):
+                # plot all observables in the results
+                ax.plot(self.experiment.variable, self.experiment.results[itr], label = f'Observable {itr}', lw=2, alpha=0.7)
+            
+        # set the x-axis limits to the variable of the experiment
+        ax.set_xlim(self.experiment.variable[0], self.experiment.variable[-1])
+
+        # set the axes labels according to the parameters
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.legend(loc='upper right', bbox_to_anchor=(1.2, 1))
+        ax.set_title(title)
+
+######################################################## FFT Methods ########################################################
 
     def run_FFT(self):
         """
@@ -128,6 +175,8 @@ class Analysis:
         ax.set_ylabel(ylabel)
         ax.set_title(title)
 
+######################################################## FIT Methods ########################################################
+
     def run_fit(self, fit_function, guess=None, bounds=(-np.inf, np.inf)):
         """
         Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function, guess for the initial parameters and bounds for the parameters.
@@ -166,7 +215,7 @@ class Analysis:
         ylabel (str): label of the y-axis
         title (str): title of the plot
         """
-        self.experiment.plot_results(figsize, xlabel, ylabel, title)
+        self.plot_results(figsize, xlabel, ylabel, title)
 
         plt.plot(self.experiment.variable, self.fit_function(self.experiment.variable, *self.fit), label='Fit')
         plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1)) # updates the legend adding the fit label

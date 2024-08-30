@@ -130,6 +130,7 @@ class CPMG(PulsedSim):
             raise ValueError("projection_pulse must be a boolean")
         
         self.projection_pulse = projection_pulse
+        self.variable_name = f'Tau (1/{self.system.units_H0})'
 
     def CPMG_sequence(self, tau):
         """
@@ -549,7 +550,8 @@ class XY(PulsedSim):
         else:
             raise ValueError("projection_pulse must be a boolean")
 
-        self.projection_pulse = projection_pulse   
+        self.projection_pulse = projection_pulse
+        self.variable_name = f'Tau (1/{self.system.units_H0})'   
 
     def XY_sequence(self, tau):
         """
@@ -976,6 +978,7 @@ class XY8(PulsedSim):
             raise ValueError("projection_pulse must be a boolean")
 
         self.projection_pulse = projection_pulse
+        self.variable_name = f'Tau (1/{self.system.units_H0})'
     
     def XY8_sequence(self, tau):
         """

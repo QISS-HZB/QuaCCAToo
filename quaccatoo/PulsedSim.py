@@ -71,6 +71,7 @@ class PulsedSim:
         # initialize the rest of the variables and attributes
         self.total_time = 0 # total time of the experiment
         self.variable = None # variable of the experiment which the results depend on
+        self.variable_name = None # name of the variable
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
         self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedSimulations or defined by the user
@@ -330,44 +331,7 @@ class PulsedSim:
         # Adapted from user Julien J in https://stackoverflow.com/questions/19385639/duplicate-items-in-legend-in-matplotlib/40870637#40870637
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
-        ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))  
-
-    def plot_results(self, figsize=(6, 4), xlabel='Time', ylabel='Expectation Value', title='Pulsed Simulation Result'):
-        """
-        Plots the results of the experiment
-
-        Parameters
-        ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot        
-        """
-        # check if figsize is a tuple of two positive floats
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
-
-        # initialize the figure and axis for the plot
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
-        
-        # check if the observable is a Qobj or a list of Qobj
-        if isinstance(self.system.observable, Qobj):
-            ax.plot(self.variable, self.results, lw=2, alpha=0.7, label = 'Observable')
-                    
-        elif isinstance(self.system.observable, list):
-            # if it is a list, iterate over the observables and plot each one
-            for itr in range(len(self.system.observable)):
-                # plot all observables in the results
-                ax.plot(self.variable, self.results[itr], label = f'Observable {itr}', lw=2, alpha=0.7)
-            
-        # set the x-axis limits to the variable of the experiment
-        ax.set_xlim(self.variable[0], self.variable[-1])
-
-        # set the axes labels according to the parameters
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.legend(loc='upper right', bbox_to_anchor=(1.2, 1))
-        ax.set_title(title)
+        ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
 
     def save():
         pass

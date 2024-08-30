@@ -54,6 +54,7 @@ class Rabi(PulsedSim):
         else:
             self.total_time = pulse_duration[-1]
             self.variable = pulse_duration
+            self.variable_name = f'Pulse Duration (1/{self.system.units_H0})'
 
         # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape) ):
@@ -149,7 +150,8 @@ class PODMR(PulsedSim):
         if not isinstance(frequencies, (np.ndarray, list)) or not np.all(np.isreal(frequencies)) or not np.all(np.greater_equal(frequencies, 0)):
             raise ValueError("frequencies must be a numpy array or list of real positive elements")
         else:
-            self.variable = frequencies
+            self.variable = frequencies           
+            self.variable_name = f'Frequency ({self.system.units_H0})'
 
         # check weather pulse_duration is a numpy array and if it is, assign it to the object
         if not isinstance(pulse_duration, (float, int)) or pulse_duration <= 0:
@@ -244,19 +246,6 @@ class PODMR(PulsedSim):
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
-    def plot_results(self, figsize=(6, 4), xlabel='Frequency', ylabel='Expectation Value', title='Pulsed Simulation Result'):
-        """
-        Overwrites the plot_results method of the parent class in order to change the x-axis label.
-
-        Parameters
-        ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot        
-        """
-        super().plot_results(figsize, xlabel, ylabel, title)
-
 ####################################################################################################
 
 class Ramsey(PulsedSim):
@@ -301,6 +290,7 @@ class Ramsey(PulsedSim):
             raise ValueError("free_duration must be a numpy array with real positive elements")
         else:
             self.variable = free_duration
+            self.variable_name = f'Tau (1/{self.system.units_H0})'
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
@@ -601,6 +591,7 @@ class Hahn(PulsedSim):
             raise ValueError("free_duration must be a numpy array with real positive elements")
         else:
             self.variable = free_duration
+            self.variable_name = f'Tau (1/{self.system.units_H0})'
 
         # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
