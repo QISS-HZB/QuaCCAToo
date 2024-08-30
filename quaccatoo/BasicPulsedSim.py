@@ -103,9 +103,9 @@ class Rabi(PulsedSim):
         
         # if an observable is given, calculate the expectation values
         if isinstance(self.system.observable, Qobj):
-            self.results = [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
+            self.results = np.array([ np.real( (rho*self.system.observable).tr() ) for rho in self.rho]) # np.real is used to ensure no imaginary components will be attributed to results
         elif isinstance(self.system.observable, list):
-            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.system.observable]
+            self.results = [ np.array( [ np.real( (rho*observable).tr() ) for rho in self.rho] ) for observable in self.system.observable]
         # otherwise the results attribute is the density matrices
         else:
             self.results = self.rho

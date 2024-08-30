@@ -413,7 +413,7 @@ class CPMG(PulsedSim):
 
         self.total_time = t0
     
-    def plot_pulses(self, tau=None, figsize=(6, 6), xlabel='Pulse Separation', ylabel='Expectation Value', title='Pulse Profiles'):
+    def plot_pulses(self, tau=None, figsize=(6, 6), xlabel=None, ylabel='Expectation Value', title='Pulse Profiles'):
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.
 
@@ -833,7 +833,7 @@ class XY(PulsedSim):
 
         self.total_time = t0
     
-    def plot_pulses(self, tau=None, figsize=(6, 6), xlabel='Pulse Separation', ylabel='Expectation Value', title='Pulse Profiles'):
+    def plot_pulses(self, tau=None, figsize=(6, 6), xlabel=None, ylabel='Expectation Value', title='Pulse Profiles'):
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.
 
@@ -1273,19 +1273,8 @@ class XY8(PulsedSim):
         ylabel (str): label of the y-axis
         title (str): title of the plot
         """
-        # check weather tau is a positive real number and if it is, assign it to the object
-        if not isinstance(tau, (int, float)) and tau <= 0 and tau > self.pi_pulse_duration/2:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration/2")
         
         self.get_pulse_profiles(tau)
-
-        # if no xlabel is given, set the xlabel to the default value
-        if xlabel == None:
-            pass
-        elif isinstance(xlabel, str):
-            self.xlabel = xlabel
-        else:
-            raise ValueError("xlabel must be a string or None")
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)

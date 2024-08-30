@@ -1,3 +1,5 @@
+# TODO: units in plot_pulses
+
 """
 This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
 """
@@ -36,7 +38,6 @@ class PulsedSim:
     - free_evolution_H2: same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
     - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
-    - plot_results: plots the results of the experiment and fits the results with predefined or user defined functions
     """
     def __init__(self, system, H2 = None):
         """
@@ -74,7 +75,7 @@ class PulsedSim:
         self.variable_name = None # name of the variable
         self.pulse_profiles = [] # list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
         self.results = [] # results of the experiment to be later generated in the run method
-        self.sequence = None # parallel sequence of operations to be overwritten in PredefinedPulsedSimulations or defined by the user
+        self.sequence = None # parallel sequence of operations to be overwritten in BasicPulsedSim and DDPulsedSim, or defined by the user
     
     def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
@@ -279,14 +280,14 @@ class PulsedSim:
 
         # if an observable is given, calculate the expectation values
         if isinstance(self.system.observable, Qobj):
-            self.results = [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] # np.real is used to ensure no imaginary components will be attributed to results
+            self.results = np.array( [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] )# np.real is used to ensure no imaginary components will be attributed to results
         elif isinstance(self.system.observable, list):
-            self.results = [ [ np.real( (rho*observable).tr() ) for rho in self.rho] for observable in self.system.observable]
+            self.results = [ np.array( [ np.real( (rho*observable).tr() ) for rho in self.rho] ) for observable in self.system.observable]
         # otherwise the results attribute is the density matrices
         else:
             self.results = self.rho
             
-    def plot_pulses(self, figsize=(6, 4), xlabel='Time', ylabel='Pulse Intensity', title='Pulse Profiles'):
+    def plot_pulses(self, figsize=(6, 4), xlabel=None, ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
         Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.
 
@@ -300,6 +301,11 @@ class PulsedSim:
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
+        
+        if xlabel == None:
+            xlabel = self.variable_name
+        elif not isinstance(xlabel, str):
+            raise ValueError("xlabel must be a string")
 
         # initialize the figure and axis for the plot
         fig, ax = plt.subplots(1, 1, figsize=figsize)

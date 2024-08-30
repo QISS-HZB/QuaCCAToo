@@ -132,7 +132,6 @@ class QSys:
         else:
             warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
 
-
         self.H0 = H0
         self.units_H0 = units_H0
         
