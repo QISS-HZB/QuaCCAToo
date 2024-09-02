@@ -252,10 +252,6 @@ class PulsedSim:
         ----------
         variable (np.array): xaxis variable of the plot representing the parameter being changed in the experiment
         sequence (FunctionType): sequence of operations to be performed in the experiment
-
-        Returns
-        -------
-        results of the experiment
         """
         # if no sequence is passed but the PulsedSim has one, uses the attribute sequence
         if sequence == None and self.sequence != None:
