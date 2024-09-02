@@ -119,15 +119,21 @@ class QSys:
         if rho0 == None:
             self.rho0 = self.eigenstates[0] # In this case the initial state is the lowest energy state
             warnings.warn(f"The initial state rho0 is set to be the lowest energy state")
+
+        # check if rho0 is a number
+        elif rho0 in range(0, len(self.eigenstates) + 1):
+            self.rho0 = self.eigenstates[i] # In this case the initial state is the i-th energy state
+            
         # check if rho0 and H0 are Qobj and if they have the same dimensions
-        elif not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
-            raise ValueError("H0 and rho0 must be a Qobj")
-        else:
+        elif isinstance(rho0, Qobj) and isinstance(H0, Qobj):
             if H0.shape != rho0.shape:
                 raise ValueError("H0 and rho0 must have the same dimensions")
-                # if they are correct, assign them to the objects
+            # if they are correct, assign them to the objects
             else:
                 self.rho0 = rho0
+
+        else:
+            raise ValueError("H0 and rho0 must be a Qobj or an index number indicating the system eigenstates")
         
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 and rho0, or a list of Qobj
         if observable is None:
