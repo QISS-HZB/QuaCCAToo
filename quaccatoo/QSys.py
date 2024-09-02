@@ -433,4 +433,5 @@ class NV(QSys):
         elif self.N == 14:
             return tensor(qeye(3), jmat(1, 'x'))*2**.5
         elif self.N == 0 or self.N == None:
-            return jmat(1, 'x')*2**.5
+            warnings.warn("Without nuclear spin N=0, the RF Hamiltonian is not defined. Returning identity matrix.")
+            return qeye(3)
