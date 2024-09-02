@@ -1,7 +1,8 @@
 # TODO: units in plot_pulses
+# TODO: implement save method
 
 """
-This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
+This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations, part of the QuaCAAToo package.
 """
 
 # import the necessary libraries
@@ -18,16 +19,15 @@ class PulsedSim:
 
     Class Attributes
     ----------------
-    - system: QSys object representing the quantum system
-    - H1: control Hamiltonian of the system
-    - H2: time dependent Hamiltonian of the system
-    - total_time: total time of the experiment
-    - variable: variable of the experiment which the results depend on
-    - sequence: list of pulse and free evolution operations as functions
-    - pulse_profiles: list of pulse profiles for plotting purposes. Each element is a list [H1, tarray, pulse_shape, pulse_params], where H1 is the control Hamiltonian, tarray is the time array of the pulse, pulse_shape is the pulse time modulation function and pulse_params is the dictionary of parameters for the pulse_shape function
-    - results: results of the experiment from the run method
-    - options: dictionary of dynamic solver options from Qutip
-    - observable: observable to be measured after the sequence of operations
+    - system (QSys): quantum system object representing the quantum system
+    - H2 ((list(Qobj, function))): time dependent sensing Hamiltonian of the system in the form [Qobj, function]
+    - H0_H2 (list): list of Hamiltonians for the pulse operation in the form [H0, H2]
+    - total_time (float): total time of the experiment
+    - variable (np.array): variable of the experiment which the results depend on
+    - variable_name (str): name of the variable
+    - pulse_profiles (list): list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
+    - results (list): results of the experiment to be later generated in the run method
+    - sequence (FunctionType): parallel sequence of operations to be overwritten in BasicPulsedSim and DDPulsedSim, or defined by the user
 
     Class Methods
     -------------
@@ -37,7 +37,9 @@ class PulsedSim:
     - free_evolution: updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
     - free_evolution_H2: same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     - run: runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
+    - measure: measures the observable after the sequence of operations and returns the expectation value of the observable
     - plot_pulses: plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
+    - save: saves the experiment
     """
     def __init__(self, system, H2 = None):
         """
@@ -45,8 +47,8 @@ class PulsedSim:
 
         Parameters
         ----------
-        system (QSys): quantum system object representing the quantum system
-        H2 (Qobj): time dependent sensing Hamiltonian of the system
+        - system (QSys): quantum system object representing the quantum system
+        - H2 (Qobj): time dependent sensing Hamiltonian of the system
         """
         # check if system is a QSys object
         if not isinstance(system, QSys):
@@ -79,17 +81,18 @@ class PulsedSim:
     
     def add_pulse(self, duration, H1, phi_t=0, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
-        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
+        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
+        control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
 
         Parameters
         ----------
-        duration (float, int): duration of the pulse
-        H1 (Qobj, list(Qobj)): control Hamiltonian of the system
-        phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
-        pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of t H1
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        time_steps (int): number of time steps for the pulses
-        options (dict): options for the Qutip solver
+        - duration (float, int): duration of the pulse
+        - H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        - phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
+        - pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of t H1
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - time_steps (int): number of time steps for the pulses
+        - options (dict): options for the Qutip solver
         """
         # check if options is a dictionary of dynamic solver options from Qutip
         if not isinstance(options, dict):
@@ -144,15 +147,16 @@ class PulsedSim:
 
     def pulse(self, Ht, duration, options, core_pulse_params, phi_t):
         """
-        Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+        Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation.
+        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
         ----------
-        Ht (list): list of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
-        tarray (np.array): time array for the pulse operation
-        options (dict): options for the Qutip solver
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
+        - Ht (list): list of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
+        - tarray (np.array): time array for the pulse operation
+        - options (dict): options for the Qutip solver
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - phi_t (float): time phase of the pulse representing the rotation axis in the rotating frame
         """
         # update the phase of the pulse
         core_pulse_params['phi_t'] += phi_t
@@ -169,7 +173,8 @@ class PulsedSim:
 
         Parameters
         ----------
-        duration (float, int): duration of the free evolution
+        - duration (float, int): duration of the free evolution
+        - options (dict): options for the Qutip solver
         """
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) or duration < 0:
@@ -190,11 +195,12 @@ class PulsedSim:
     
     def free_evolution(self, duration):
         """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator. This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.
+        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
         ----------
-        duration (float, int): duration of the free evolution
+        - duration (float, int): duration of the free evolution
         """            
         self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
 
@@ -207,8 +213,8 @@ class PulsedSim:
 
         Parameters
         ----------
-        duration (float, int): duration of the free evolution
-        options (dict): options for the Qutip solver
+        - duration (float, int): duration of the free evolution
+        - options (dict): options for the Qutip solver
         """           
         self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
 
@@ -221,15 +227,15 @@ class PulsedSim:
 
         Parameters
         ----------
-        observable (Qobj): observable to be measured after the sequence of operations
+        - observable (Qobj): observable to be measured after the sequence of operations
 
         Returns
         -------
-        results of the experiment
+        - results of the experiment
         """
         # if no observable is passed and the QSys doesn't have one, returns the final density matrix
         if observable == None and self.system.observable == None:
-            self.results = self.rho.copy()
+            return self.rho.copy()
         # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
         elif observable == None and self.system.observable != None:
             self.results = np.real(( self.system.observable * self.rho ).tr() )
@@ -250,12 +256,12 @@ class PulsedSim:
 
         Parameters
         ----------
-        variable (np.array): xaxis variable of the plot representing the parameter being changed in the experiment
-        sequence (FunctionType): sequence of operations to be performed in the experiment
+        - variable (np.array): xaxis variable of the plot representing the parameter being changed in the experiment
+        - sequence (FunctionType): sequence of operations to be performed in the experiment
 
         Returns
         -------
-        results of the experiment
+        - results of the experiment
         """
         # if no sequence is passed but the PulsedSim has one, uses the attribute sequence
         if sequence == None and self.sequence != None:
@@ -283,9 +289,6 @@ class PulsedSim:
             self.results = np.array( [ np.real( (rho*self.system.observable).tr() ) for rho in self.rho] )# np.real is used to ensure no imaginary components will be attributed to results
         elif isinstance(self.system.observable, list):
             self.results = [ np.array( [ np.real( (rho*observable).tr() ) for rho in self.rho] ) for observable in self.system.observable]
-        # otherwise the results attribute is the density matrices
-        else:
-            self.results = self.rho
             
     def plot_pulses(self, figsize=(6, 4), xlabel=None, ylabel='Pulse Intensity', title='Pulse Profiles'):
         """
@@ -293,10 +296,10 @@ class PulsedSim:
 
         Parameters
         ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot
         """
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):

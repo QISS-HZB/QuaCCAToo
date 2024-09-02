@@ -1,5 +1,5 @@
 """
-This module contains predefined basic pulsed experiments inheriting from the PulsedSim class.
+This module contains predefined basic pulsed experiments inheriting from the PulsedSim class as part of the QuaCCAToo package.
 
 Classes
 -------
@@ -20,11 +20,13 @@ import warnings
 
 class Rabi(PulsedSim):
     """
-    This class contains a Rabi experiments, inheriting from the PulsedSimulation class. A Rabi sequences is composed of a resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
+    This class contains a Rabi experiments, inheriting from the PulsedSimulation class.
+    A Rabi sequences is composed of a resonant pulse of varying duration,
+    such that the quantum system will undergo periodical transitions between the excited and ground states.
 
     Class Attributes
     ----------------
-    pulse_duration (numpy array): time array for the simulation representing the pulse duration to be used as the variable for the simulation
+    - pulse_duration (numpy array): time array for the simulation representing the pulse duration to be used as the variable for the simulation
     += PulsedSimulation
 
     Methods
@@ -33,17 +35,17 @@ class Rabi(PulsedSim):
     """
     def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, options={}):
         """
-        Generator for the Rabi pulsed experiment class, taking a specific pulse_duration to run the simulation.
+        constructor for the Rabi pulsed experiment class, taking a specific pulse_duration to run the simulation.
 
         Parameters
         ----------
-        pulse_duration (numpy array):time array for the simulation representing to be used as the variable for the simulation
-        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
-        H1 (Qobj, list(Qobj)): control Hamiltonian of the system
-        H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        options (dict): dictionary of solver options from Qutip
+        - pulse_duration (numpy array): time array for the simulation representing to be used as the variable for the simulation
+        - system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
+        - H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        - H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        - pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - options (dict): dictionary of solver options from Qutip
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -96,7 +98,10 @@ class Rabi(PulsedSim):
                 
     def run(self):
         """
-        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute. If an observable is given, the expectation values are stored in the results attribute. For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths, thus the run method from the parent class is overwritten.      
+        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.
+        If an observable is given, the expectation values are stored in the results attribute.
+        For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths,
+        thus the run method from the parent class is overwritten.      
         """
         # calculates the density matrices in sequence using mesolve
         self.rho = mesolve(self.Ht, self.system.rho0, 2*np.pi*self.variable, self.system.c_ops, [], options = self.options, args = self.pulse_params).states
@@ -106,42 +111,45 @@ class Rabi(PulsedSim):
             self.results = np.array([ np.real( (rho*self.system.observable).tr() ) for rho in self.rho]) # np.real is used to ensure no imaginary components will be attributed to results
         elif isinstance(self.system.observable, list):
             self.results = [ np.array( [ np.real( (rho*observable).tr() ) for rho in self.rho] ) for observable in self.system.observable]
-        # otherwise the results attribute is the density matrices
-        else:
-            self.results = self.rho
 
 ####################################################################################################
 
 class PODMR(PulsedSim):
     """
-    This class contains a Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed, inheriting from the PulsedSim class. The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system, it will go some transition which will affect the observable. This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length. Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers, however the method can be more general. 
+    This class contains a Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed,
+    inheriting from the PulsedSim class.
+    The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
+    it will go some transition which will affect the observable.
+    This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.
+    Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,
+    however the method can be more general. 
 
     Class Attributes
     ----------------
-    frequencies (numpy array): array of frequencies to run the simulation
+    - frequencies (numpy array): array of frequencies to run the simulation
     pulsed_duration (float, int): duration of the pulse
     += PulsedSimulation
 
     Class Methods
     -------------
-    PODMR_sequence(f): defines the the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
+    - PODMR_sequence(f): defines the the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
     += PulsedSimulation
     """
     def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape = square_pulse, pulse_params = {}, time_steps = 100, options={}):
         """
-        Generator for the pODMR pulsed experiment class
+        constructor for the pODMR pulsed experiment class
 
         Parameters
         ----------
-        frequencies (numpy array): array of frequencies to run the simulation
-        pulse_duration (float, int): duration of the pulse
-        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
-        H1 (Qobj, list(Qobj)): control Hamiltonian of the system
-        H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        time_steps (int): number of time steps in the pulses for the simulation
-        options (dict): dictionary of solver options from Qutip
+        - frequencies (numpy array): array of frequencies to run the simulation
+        - pulse_duration (float, int): duration of the pulse
+        - system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
+        - H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        - H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        - pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - time_steps (int): number of time steps in the pulses for the simulation
+        - options (dict): dictionary of solver options from Qutip
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -208,14 +216,16 @@ class PODMR(PulsedSim):
         
     def PODMR_sequence(self, f):
         """
-        Defines the the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.
+        Defines the the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.
+        To be called by the parallel_map in run method.
+
         Parameters
         ----------
-        f (float): free evolution time
+        - f (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix   
+        - rho (Qobj): final density matrix   
         """
         self.pulse_params['f_pulse'] = f
 
@@ -230,7 +240,7 @@ class PODMR(PulsedSim):
 
         Parameters
         ----------
-        f_pulse (float, int): frequency of the pulse to be plotted
+        - f_pulse (float, int): frequency of the pulse to be plotted
         += PulsedSimulation.plot_pulses
         """
         # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
@@ -254,33 +264,37 @@ class Ramsey(PulsedSim):
 
     Class Attributes
     ----------------
-    free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
-    pi_pulse_duration (float, int): duration of the pi pulse
+    - free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+    - pi_pulse_duration (float, int): duration of the pi pulse
     projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
     += PulsedSimulation
 
     Class Methods
     -------------
-    ramsey_sequence(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
-    ramsey_sequence_proj(tau): defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
-    get_pulse_profiles(tau): generates the pulse profiles for the Ramsey sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+    - ramsey_sequence: defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+    The sequence consists of an initial pi/2 pulse and a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
+    - ramsey_sequence_proj: defines the Ramsey sequence with final pi/2 pulse to project into the Sz basis.
+    - ramsey_sequence_H2: defines the Ramsey sequence considering time-dependent H2 or collapse operators.
+    - ramsey_sequence_proj_H2: defines the Ramsey sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.
+    - get_pulse_profiles: generates the pulse profiles for the Ramsey sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     += PulsedSimulation
     """
     def __init__(self, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
-        Class generator for the Ramsey pulsed experiment class
+        Class constructor for the Ramsey pulsed experiment class
 
         Parameters
         ----------
-        free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
-        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
-        H1 (Qobj, list(Qobj)): control Hamiltonian of the system
-        pi_pulse_duration (float, int): duration of the pi pulse
-        H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        projection_pulse (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not. If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as for most color centers.
-        pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        time_steps (int): number of time steps in the pulses for the simulation
+        - free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+        - system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
+        - H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        - pi_pulse_duration (float, int): duration of the pi pulse
+        - H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        - projection_pulse (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not.
+        If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as for most color centers.
+        - pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - time_steps (int): number of time steps in the pulses for the simulation
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -360,15 +374,17 @@ class Ramsey(PulsedSim):
 
     def ramsey_sequence(self, tau):
         """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse and a single free evolution.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate the pulse separation time 
         ps = tau - self.pi_pulse_duration/2
@@ -383,15 +399,17 @@ class Ramsey(PulsedSim):
 
     def ramsey_sequence_proj(self, tau):
         """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate the pulse separation time 
         ps = tau - self.pi_pulse_duration
@@ -410,15 +428,17 @@ class Ramsey(PulsedSim):
 
     def ramsey_sequence_H2(self, tau):
         """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and a single free evolution. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse and a single free evolution.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         ps = tau - self.pi_pulse_duration/2
         
@@ -433,15 +453,17 @@ class Ramsey(PulsedSim):
 
     def ramsey_sequence_proj_H2(self, tau):
         """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate the pulse separation time 
         ps = tau - self.pi_pulse_duration
@@ -465,7 +487,7 @@ class Ramsey(PulsedSim):
 
         Parameters
         ----------
-        tau (float): free evolution variable or pulse spacing for the Hahn echo sequence
+        - tau (float): free evolution variable or pulse spacing for the Hahn echo sequence
         """
         # check if tau is None and if it is, assign the first element of the variable attribute to tau
         if tau == None:
@@ -535,11 +557,11 @@ class Ramsey(PulsedSim):
 
         Parameters
         ----------
-        tau (float): free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot
+        - tau (float): free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot
         """
         # generate the pulse profiles for the Ramsey sequence for a given tau
         self.get_pulse_profiles(tau)
@@ -551,37 +573,43 @@ class Ramsey(PulsedSim):
 
 class Hahn(PulsedSim):
     """
-    This class contains a Hahn echo experiment, inheriting from the PulsedSimulation class. The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
+    This class contains a Hahn echo experiment, inheriting from the PulsedSimulation class.
+    The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.
+    The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 
     Class Attributes
     ----------------
-    free_duration (numpy array): time array of the free evolution times to run the simulation
-    pi_pulse_duration (float, int): duration of the pi pulse
-    projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
+    - free_duration (numpy array): time array of the free evolution times to run the simulation
+    - pi_pulse_duration (float, int): duration of the pi pulse
+    - projection_pulse (Boolean): boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
     += PulsedSimulation
 
     Class Methods
     -------------
-    hahn_sequence(tau): defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
-    hahn_sequence_proj(tau): defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip. A final pi/2 pulse is included, in order to project the result into the Sz basis.
+    - hahn_sequence(tau): defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,
+    returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
+    - hahn_sequence_proj(tau): defines the Hahn echo sequence with a final pi/2 pulse, in order to project the result into the Sz basis.
+    - hahn_sequence_H2(tau): defines the Hahn echo sequence considering time-dependent H2 or collapse operators.
+    - hahn_sequence_proj_H2(tau): defines the Hahn echo sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.
     += PulsedSimulation    
     """
 
     def __init__(self, free_duration, pi_pulse_duration, system, H1,  H2=None, projection_pulse = True, pulse_shape = square_pulse, pulse_params = {}, options={}, time_steps = 100):
         """
-        Generator for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.
+        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.
 
         Parameters
         ----------
-        free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
-        system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
-        H1 (Qobj, list(Qobj)): control Hamiltonian of the system
-        pi_pulse_duration (float, int): duration of the pi pulse
-        H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
-        projection_pulse (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not. If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
-        pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
-        pulse_params (dict): dictionary of parameters for the pulse_shape functions
-        time_steps (int): number of time steps in the pulses for the simulation
+        - free_duration (numpy array): time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+        - system (QSys): quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators
+        - H1 (Qobj, list(Qobj)): control Hamiltonian of the system
+        - pi_pulse_duration (float, int): duration of the pi pulse
+        - H2 (Qobj, list(Qobj)): time dependent sensing Hamiltonian of the system
+        - projection_pulse (Boolean): boolean to determine if the measurement is to be performed in the Sz basis or not.
+        If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
+        - pulse_shape (FunctionType, list(FunctionType)): pulse shape function or list of pulse shape functions representing the time modulation of H1
+        - pulse_params (dict): dictionary of parameters for the pulse_shape functions
+        - time_steps (int): number of time steps in the pulses for the simulation
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -645,7 +673,8 @@ class Hahn(PulsedSim):
         else:
             self.options = options
 
-        # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis, otherwise it is set to the hahn_sequence method without the projection pulses
+        # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis
+        # otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulse:
             if H2 != None or self.system.c_ops != None:
                 self.sequence = self.hahn_sequence_proj_H2
@@ -663,15 +692,17 @@ class Hahn(PulsedSim):
 
     def hahn_sequence(self, tau):
         """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate pulse separation time
         ps = tau - self.pi_pulse_duration
@@ -696,15 +727,17 @@ class Hahn(PulsedSim):
     
     def hahn_sequence_proj(self, tau):
         """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate pulse separation time
         ps = tau - self.pi_pulse_duration
@@ -731,15 +764,17 @@ class Hahn(PulsedSim):
         
     def hahn_sequence_H2(self, tau):
         """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate pulse separation time
         ps = tau - self.pi_pulse_duration
@@ -763,15 +798,17 @@ class Hahn(PulsedSim):
     
     def hahn_sequence_proj_H2(self, tau):
         """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the generator. The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
-        tau (float): free evolution time
+        - tau (float): free evolution time
 
         Returns
         -------
-        rho (Qobj): final density matrix        
+        - rho (Qobj): final density matrix        
         """
         # calculate pulse separation time
         ps = tau - self.pi_pulse_duration
@@ -803,7 +840,7 @@ class Hahn(PulsedSim):
 
         Parameters
         ----------
-        tau (float): free evolution variable or pulse spacing for the Hahn echo sequence 
+        - tau (float): free evolution variable or pulse spacing for the Hahn echo sequence 
         """
         # check if tau is None and if it is, assign the last element of the variable attribute to tau
         if tau == None:
@@ -877,11 +914,11 @@ class Hahn(PulsedSim):
 
         Parameters
         ----------
-        tau (float): free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot
+        - tau (float): free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot
         """
         # generate the pulse profiles for the Hahn echo sequence for a given tau
         self.get_pulse_profiles(tau)

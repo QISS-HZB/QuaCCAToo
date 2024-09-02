@@ -1,11 +1,7 @@
-# TODO: add baseline correction
-# TODO: improve/rework the fit method with easier guess and bounds inputs
-# TODO: add comparisions with experiments
-# TODO: add option for more than one observable in the quantum system
-# TODO: implement analysis of ExpData objects
+# TODO: improve/rework the fit method with easier guess and bounds inputs inspired on qudi
 
 """
-This module contains the Analysis class to process and analyze the results from PulsedSim and ExpData.
+This module contains the Analysis class as part of the QuaCCAToo package.
 """
 
 import numpy as np
@@ -14,6 +10,7 @@ from.ExpData import ExpData
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
+from scipy.stats import linregress, pearsonr
 from qutip import Bloch
 
 class Analysis:
@@ -22,15 +19,19 @@ class Analysis:
 
     Class Attributes
     ----------
-    - experiment: PulsedSimulation object to be analyzed
-    - FFT_values: tuple with the frequency values and the FFT values
-    - FFT_peaks: array with the peaks of the FFT values
-    - fit_function: function to be used to fit the results
-    - fit: array with the fitted parameters
-    - fit_cov: array with the covariance of the fitted parameters
+    - experiment (PulsedSim or ExpData): experiment object to be analyzed containing the results and variable attributes
+    - FFT_values (tuple): tuple with the frequency values and the FFT values
+    - FFT_peaks (array): array with the peaks of the FFT values
+    - fit_function (list): list with the fit function for each result
+    - fit (list): list with the fitted parameters for each result
+    - fit_cov (list): list with the covariance of the fitted parameters for each result
+    - pearson (float): Pearson correlation coefficient between two experiments
+    - exp_comparison (PulsedSim or ExpData): experiment to be compared with the first one
 
     Class Methods
     -------------
+    - compare_with: loads a second experiment to compare with the first one
+    - plot_comparison: plots the results of the experiment and the comparison experiment
     - run_FFT: run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object
     - get_peaks_FFT: find the peaks of the FFT values calculated by the run_FFT method
     - plot_FFT: plot the FFT values calculated by the run_FFT method
@@ -45,11 +46,10 @@ class Analysis:
 
         Parameters
         ----------
-        experiment (PulsedSim or ExpData): experiment object to be analyzed containing the results and variable attributes
+        - experiment (PulsedSim or ExpData): experiment object to be analyzed containing the results and variable attributes
         """
-        # check weather experiment is a PulsedSimulation object
-        if not isinstance(experiment, PulsedSim):
-            raise ValueError("experiment must be a PulsedSimulation object")
+        if not isinstance(experiment, PulsedSim) and not isinstance(experiment, ExpData):
+            raise ValueError("experiment must be a PulsedSimulation or ExpData object")
         
         self.experiment = experiment
                 
@@ -65,6 +65,84 @@ class Analysis:
         self.fit_function = [None] * len(self.experiment.results)
         self.fit = [None] * len(self.experiment.results)
         self.fit_cov = [None] * len(self.experiment.results)
+        self.pearson = None
+        self.exp_comparison = None
+
+    def compare_with(self, exp_comparison, results_index=0, comparison_index=0, linear_fit=True):
+        """
+        Loads a second experiment to compare with the first one.
+        If linear_fit is True, a linear fit is performed between the two data sets, which is commom for optical experiments.
+        Otherwise the Pearson correlation coefficient without linear fit is calculated between the two data sets.
+
+        Parameters
+        ----------
+        - exp_comparison (PulsedSim or ExpData): experiment to be compared with the first one
+        - results_index (int): index of the results to be compared if the results attribute is a list
+        - comparison_index (int): index of the results to be compared if the results attribute of the exp_comparison is a list
+        - linear_fit (bool): boolean indicating weather or not to perform a linear fit between the two data sets
+
+        Returns
+        -------
+        - r (float): pearson correlation coefficient between the two experiments
+        """
+        if not isinstance(exp_comparison, PulsedSim) and not isinstance(exp_comparison, ExpData):
+            raise ValueError("experiment_2 must be a PulsedSim or ExpData object")
+
+        if not isinstance(results_index, int) or not isinstance(comparison_index, int):
+            raise ValueError("results_index and comparison_index must be integers")
+        elif results_index > len(self.experiment.results) - 1 or comparison_index > len(exp_comparison.results) - 1:
+            raise ValueError("results_index and comparison_index must be less than the number of results")
+        
+        if not isinstance(linear_fit, bool):
+            raise ValueError("linear_fit must be a boolean indicating weather or not to perform a linear fit between the two data sets.")
+        
+        if len(self.experiment.variable) != len(exp_comparison.variable):
+            raise ValueError("The variable attributes of the experiments must have the same length")
+        
+        self.exp_comparison = exp_comparison
+
+        # if linear_fit is True, perform a linear fit between the two data sets, otherwise calculate the Pearson correlation coefficient
+        if linear_fit:
+            if isinstance(exp_comparison.results, np.ndarray):
+                r = linregress(exp_comparison.results, self.experiment.results)
+                self.exp_comparison.results = r[0] * exp_comparison.results + r[1]
+            else:
+                # if the results are a list, index the results and perform the linear fit
+                r = linregress(exp_comparison.results[comparison_index], self.experiment.results[results_index])
+                self.exp_comparison.results = r[0] * exp_comparison.results[comparison_index] + r[1]
+
+            self.pearson = r[2]
+
+        else:
+            if isinstance(exp_comparison.results, np.ndarray):
+                r = pearsonr(exp_comparison.results, self.experiment.results)
+            else:
+                r = pearsonr(exp_comparison.results[comparison_index], self.experiment.results[results_index])
+
+            self.exp_comparison.results = exp_comparison.results
+            self.pearson = r[0]
+
+        self.pearson = r
+        return r
+        
+    def plot_comparison(self, figsize=(6, 4), xlabel=None, ylabel='Observable', title='Results Comparisions'):
+        """
+        Plots the results of the experiment and the comparison experiment.
+
+        Parameters
+        ----------
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot 
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot        
+        """
+        self.plot_results(figsize, xlabel, ylabel, title)
+
+        if self.pearson == None:
+            raise ValueError("You must run the compare_with method before plotting the comparison")
+        
+        plt.plot(self.exp_comparison.variable, self.exp_comparison.results, label='Compared Experiment', lw=2, alpha=0.7)
+        plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1))       
 
 ######################################################## FFT Methods ########################################################
 
@@ -74,7 +152,7 @@ class Analysis:
 
         Returns
         -------
-        FFT_values (tuple): tuple with the frequency values and the FFT values
+        - FFT_values (tuple): tuple with the frequency values and the FFT values
         """
         if isinstance(self.experiment.results, np.ndarray):
             y = np.abs(np.fft.rfft(self.experiment.results - np.mean(self.experiment.results)))
@@ -97,7 +175,11 @@ class Analysis:
 
         Parameters
         ----------
-        find_peaks_args (dict): dictionary with the arguments to be passed to the scipy.signal.find_peaks function
+        - find_peaks_args (dict): dictionary with the arguments to be passed to the scipy.signal.find_peaks function
+
+        Returns
+        -------
+        - FFT_peaks (array): array with the peaks of the FFT values
         """
         if len(self.FFT_values) == 0:
             raise ValueError("No FFT values to analyze, you must run the FFT first")
@@ -120,10 +202,10 @@ class Analysis:
 
         Parameters
         ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot
         """
         if len(self.FFT_values) == 0:
             raise ValueError("No FFT values to plot, you must run the FFT first")
@@ -175,19 +257,20 @@ class Analysis:
 
     def run_fit(self, fit_function, results_index=0, guess=None, bounds=(-np.inf, np.inf)):
         """
-        Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function, guess for the initial parameters and bounds for the parameters.
+        Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function,
+        guess for the initial parameters and bounds for the parameters.
 
         Parameters
         ----------
-        fit_function (function): function to be used to fit the results
-        results_index (int): index of the results to be fitted if the results attribute is a list
-        guess (list): initial guess for the parameters of the fit function
-        bounds (list): bounds for the parameters of the fit function
+        - fit_function (function): function to be used to fit the results
+        - results_index (int): index of the results to be fitted if the results attribute is a list
+        - guess (list): initial guess for the parameters of the fit function
+        - bounds (list): bounds for the parameters of the fit function
 
         Returns
         -------
-        fit (array): array with the fitted parameters
-        fit_cov (array): array with the covariance of the fitted parameters
+        - fit (array): array with the fitted parameters
+        - fit_cov (array): array with the covariance of the fitted parameters
         """
         if not callable(fit_function):
             raise ValueError("fit_function must be a callable function")  
@@ -215,10 +298,10 @@ class Analysis:
 
         Parameters
         ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot
         """
         self.plot_results(figsize, xlabel, ylabel, title)
 
@@ -240,10 +323,10 @@ class Analysis:
 
         Parameters
         ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
-        xlabel (str): label of the x-axis
-        ylabel (str): label of the y-axis
-        title (str): title of the plot        
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - xlabel (str): label of the x-axis
+        - ylabel (str): label of the y-axis
+        - title (str): title of the plot        
         """
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
@@ -285,7 +368,7 @@ class Analysis:
 
         Parameters
         ----------
-        figsize (tuple): size of the figure to be passed to matplotlib.pyplot
+        - figsize (tuple): size of the figure to be passed to matplotlib.pyplot
         """
         if not isinstance(self.experiment, PulsedSim):
             raise ValueError("experiment must be a PulsedSim object")
