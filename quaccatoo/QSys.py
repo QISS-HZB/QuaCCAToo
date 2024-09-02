@@ -2,7 +2,7 @@
 # TODO: include new systems
 # TODO: think on a better strategy for the plot_energy_B0 function
 # TODO: implement eV units conversion to frequencies
-# TODO: add N=0 option for NV class, where the nuclear spin is not considered
+# TODO: add N=0 option in rho0_lowT method
 
 """
 This module contains the plot_energy_B0 function, the QSys class and the NV subclass as part of QuaCCAToo package.
@@ -77,12 +77,13 @@ class QSys:
     - observable (Qobj or list(Qobj)): observable to be measured
     - units_H0 (str): units of the Hamiltonian
     - energy_levels (np.array): energy levels of the Hamiltonian
+    - eigenstates (np.array(Qobj)): eigenstates of the Hamiltonian
 
     Methods
     -------
     - plot_energy: plots the energy levels of the Hamiltonian
     """
-    def __init__(self, H0, rho0, c_ops=None, observable=None, units_H0=None):
+    def __init__(self, H0, rho0=None, c_ops=None, observable=None, units_H0=None):
         """
         Generator for the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable, checking all inputs and calculating the energy levels of the Hamiltonian.
 
@@ -94,15 +95,47 @@ class QSys:
         - observable (Qobj or list(Qobj)): observable to be measured
         - units_H0 (str): units of the Hamiltonian
         """
-        # check if rho0 and H0 are Qobj and if they have the same dimensions
-        if not isinstance(rho0, Qobj) or not isinstance(H0, Qobj):
-            raise ValueError("H0 and rho0 must be a Qobj")
+
+        # if the units are in frequency, assign the Hamiltonian as it is
+        if units_H0 == None:
+            pass
+        elif not isinstance(units_H0, str) :
+            raise ValueError("units_H0 must be a string")
+        elif units_H0 == 'MHz' or units_H0 == 'GHz' or units_H0 == 'kHz' or units_H0 == 'Hz' or units_H0 == 'eV':
+            pass # !!! Units are used only when plotting energy. It is needed to add the conversion to frequencies in case of eV !!!
         else:
+            warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
+
+        self.H0 = H0
+        self.units_H0 = units_H0
+        
+        # calculate the eigenenergies of the Hamiltonian
+        H_eig = H0.eigenenergies()
+        # subtracts the ground state energy from all the eigenenergies to get the lowest level at 0
+        self.energy_levels = H_eig - H_eig[0]
+
+        # calculate the eigenstates of the Hamiltonian
+        self.eigenstates = np.array([psi*psi.dag() for psi in H0.eigenstates()[1]])
+
+        # check if rho0 is None
+        if rho0 == None:
+            self.rho0 = self.eigenstates[0] # In this case the initial state is the lowest energy state
+            warnings.warn(f"The initial state rho0 is set to be the lowest energy state")
+
+        # check if rho0 is a number
+        elif rho0 in range(0, len(self.eigenstates) + 1):
+            self.rho0 = self.eigenstates[rho0] # In this case the initial state is the i-th energy state
+            
+        # check if rho0 and H0 are Qobj and if they have the same dimensions
+        elif isinstance(rho0, Qobj) and isinstance(H0, Qobj):
             if H0.shape != rho0.shape:
                 raise ValueError("H0 and rho0 must have the same dimensions")
-                # if they are correct, assign them to the objects
+            # if they are correct, assign them to the objects
             else:
                 self.rho0 = rho0
+
+        else:
+            raise ValueError("H0 and rho0 must be a Qobj or an index number indicating the system eigenstates")
         
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 and rho0, or a list of Qobj
         if observable is None:
@@ -122,25 +155,8 @@ class QSys:
                 self.c_ops = c_ops
         else:
             raise ValueError("c_ops must be a list of Qobj or None")
-        
-        # if the units are in frequency, assign the Hamiltonian as it is
-        if units_H0 == None:
-            pass
-        elif not isinstance(units_H0, str) :
-            raise ValueError("units_H0 must be a string")
-        elif units_H0 == 'MHz' or units_H0 == 'GHz' or units_H0 == 'kHz' or units_H0 == 'Hz' or units_H0 == 'eV':
-            pass # !!! Units are used only when plotting energy. It is needed to add the conversion to frequencies in case of eV !!!
-        else:
-            warnings.warn(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
 
-        self.H0 = H0
-        self.units_H0 = units_H0
-        
-        # calculate the eigenenergies of the Hamiltonian
-        H_eig = H0.eigenenergies()
-        # subtracts the ground state energy from all the eigenenergies to get the lowest level at 0
-        self.energy_levels = H_eig - H_eig[0]
-        
+
     def plot_energy(self, figsize=(2, 6), energy_lim = None):
         """
         Plots the energy levels of the Hamiltonian defined in the system.
@@ -253,10 +269,18 @@ class NV(QSys):
                     + 28.025*B0*tensor( np.sin(theta)*np.cos(phi_r)*jmat(1, 'x') + np.sin(theta)*np.sin(phi_r)*jmat(1, 'y') + np.cos(theta)*jmat(1,'z'), qeye(3)) # Electron Zeeman                   
                     - 2.7*tensor(jmat(1,'z'), jmat(1,'z')) -2.14*(tensor(jmat(1,'x'), jmat(1,'x')) + tensor(jmat(1,'y'), jmat(1,'y'))) # Hyperfine Coupling                                    
                     - 5.01*tensor(qeye(3), jmat(1,'z')**2) # Quadrupole Interaction
-                    - 3.077e-3*B0*tensor(qeye(3), np.cos(theta)*jmat(1,'z') + np.sin(theta)*jmat(1,'x'))) # 14N Nuclear Zeeman
+                    - 3.077e-3*B0*tensor(qeye(3), np.sin(theta)*np.cos(phi_r)*jmat(1,'x') + np.sin(theta)*np.sin(phi_r)*jmat(1, 'y') + np.cos(theta)*jmat(1,'z'))) # 14N Nuclear Zeeman
             
             self.rho0 = tensor(fock_dm(3,1), qeye(3)).unit()
             self.observable = tensor(fock_dm(3,1), qeye(3))
+
+        elif N == 0 or N == None:
+            self.H0 = (  2.87e3*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) # Zero Field Splitting                
+                    + 28.025*B0*( np.sin(theta)*np.cos(phi_r)*jmat(1, 'x') + np.sin(theta)*np.sin(phi_r)*jmat(1, 'y') + np.cos(theta)*jmat(1,'z')) )# Electron Zeeman
+            
+            self.rho0 = fock_dm(3,1).unit()
+            self.observable = fock_dm(3,1)
+
         else:
             raise ValueError(f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}.")
         
@@ -353,7 +377,9 @@ class NV(QSys):
         elif self.N == 14:
             f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[0:3]))/3
             f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[0:3]))/3
-        
+        elif self.N == 0 or self.N == None:
+            f1 = self.energy_levels[1] - self.energy_levels[0]
+            f2 = self.energy_levels[2] - self.energy_levels[0]
         return f1, f2
         
     def RF_freqs(self):
@@ -391,6 +417,8 @@ class NV(QSys):
             return tensor(jmat(1, 'x'), qeye(2))*2**.5
         elif self.N == 14:
             return tensor(jmat(1, 'x'), qeye(3))*2**.5
+        elif self.N == 0 or self.N == None:
+            return tensor(jmat(1, 'x'))*2**.5
         
     def RF_H1(self):
         """
@@ -403,4 +431,6 @@ class NV(QSys):
         if self.N == 15:
             return tensor(qeye(3), jmat(1/2, 'x'))*2
         elif self.N == 14:
-            return tensor(qeye(3), jmat(1/2, 'x'))*2
+            return tensor(qeye(3), jmat(1, 'x'))*2**.5
+        elif self.N == 0 or self.N == None:
+            return jmat(1, 'x')*2**.5
