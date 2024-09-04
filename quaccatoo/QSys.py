@@ -1,6 +1,8 @@
 # TODO: add_spin and save methods for QSys class
+# TODO: include new systems
 # TODO: think on a better strategy for the plot_energy_B0 function
 # TODO: implement eV units conversion to frequencies
+# TODO: add electric and crystal stress hamiltonians for NV
 
 """
 This module contains the plot_energy_B0 function, the QSys class and the NV subclass as part of QuaCCAToo package.
@@ -15,8 +17,7 @@ from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
 
 gamma_e = cte.value('electron gyromag. ratio in MHz/T')
 gamma_e = gamma_e/1e3       # MHz/mT
-
-gamma_N14 = -3.077/1e3      # MHz/mT
+gamma_N14 = -3.077/1e3      
 gamma_N15 = 4.316/1e3
 
 def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel='Magnetic Field', ylabel='Energy (MHz)'):
@@ -25,8 +26,8 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel='Magnetic Fie
 
     Parameters
     ----------
-    - B0 (list or np.array): list of magnetic fields
-    - H0 (list of Qobj): list of Hamiltonians
+    - B0 (list/np.array): list of magnetic fields
+    - H0 (list(Qobj)): list of Hamiltonians
     - figsize (tuple): size of the figure
     - energy_lim (tuple): limits of the energy levels
     - xlabel (str): label of the x-axis
@@ -78,9 +79,9 @@ class QSys:
     Class Attributes
     ----------------
     - H0 (Qobj/array): time-independent internal Hamiltonian of the system
-    - rho0 (Qobj/array): initial state of the system
-    - c_ops (Qobj or list(Qobj)): list of collapse operators
-    - observable (Qobj or list(Qobj)): observable to be measured
+    - rho0 (Qobj/array/int): initial state of the system
+    - c_ops (Qobj/list(Qobj)): list of collapse operators
+    - observable (Qobj/list(Qobj)): observable to be measured
     - units_H0 (str): units of the Hamiltonian
     - energy_levels (np.array): energy levels of the Hamiltonian
     - eigenstates (np.array(Qobj)): eigenstates of the Hamiltonian
@@ -98,7 +99,7 @@ class QSys:
         Parameters
         ----------
         - H0 (Qobj/array): time-independent internal Hamiltonian of the system
-        - rho0 (Qobj/array): initial state of the system
+        - rho0 (Qobj/array/int): initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
         - c_ops (list(Qobj)): list of collapse operators
         - observable (Qobj or list(Qobj)): observable to be measured
         - units_H0 (str): units of the Hamiltonian
@@ -112,10 +113,10 @@ class QSys:
         else:
             raise ValueError(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
 
-        if Qobj(H0).isherm:
-            self.H0 = Qobj(H0)
-        else:
-            raise ValueError("Passed H0 is not a hermitian object.")
+        if not Qobj(H0).isherm:
+            warnings.warn("Passed H0 is not a hermitian object.")
+            
+        self.H0 = Qobj(H0)
 
         # calculate the eigenenergies of the Hamiltonian
         H_eig = H0.eigenenergies()
@@ -132,7 +133,7 @@ class QSys:
 
         # check if rho0 is a number
         elif rho0 in range(0, len(self.eigenstates)):
-            self.rho0 = self.eigenstates[rho0]  # In this case the initial state is the i-th energy state
+            self.rho0 = self.eigenstates[rho0]*self.eigenstates[rho0].dag()  # In this case the initial state is the i-th energy state
 
         elif Qobj(rho0).isket and Qobj(rho0).shape[0] == H0.shape[0]:
             rho0 = Qobj(rho0)
@@ -213,7 +214,7 @@ class NV(QSys):
         Parameters
         ----------
         - B0 (float): magnetic field
-        - N (int): nitrogen isotope (14 or 15)
+        - N (15/14/0/None): nitrogen isotope, or 0 for no nuclear spin
         - c_ops (list(Qobj)): list of collapse operators
         - units_B0 (str): units of the magnetic field (T, mT or G)
         - theta (float): angle of the magnetic field with respect to the NV axis
@@ -226,6 +227,8 @@ class NV(QSys):
         # convert the magnetic field to mTesla
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
+        
+        self.B0 = B0
 
         if units_B0 is None:
             warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
@@ -249,35 +252,47 @@ class NV(QSys):
                 pass
             else:
                 raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
+            
+        self.theta = theta
+        self.phi_r = phi_r
+        self.N = N
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-            Hzf = self._ZeroField(N)
-            Hez = self._ElectronZeeman(N, B0, theta, phi_r)
-            Hhf = self._HyperFineN(N)
-            Hnz = self._NuclearZeeman(N, B0, theta, phi_r)
+            Hzf = self._ZeroField()
+            Hez = self._ElectronZeeman()
+            Hhf = self._HyperFineN()
+            Hnz = self._NuclearZeeman()
 
             H0 = Hzf+Hez+Hhf+Hnz
 
-            rho0 = tensor(fock_dm(3, 1), qeye(2)).unit() if not temp else self.rho0_lowT(temp, units_T)
+            if not temp:
+                rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
+            else:
+                self.rho0_lowT(temp, units_T)
+
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
-            Hzf = self._ZeroField(N)
-            Hez = self._ElectronZeeman(N, B0, theta, phi_r)
-            Hhf = self._HyperFineN(N)
-            Hnz = self._NuclearZeeman(N, B0, theta, phi_r)
+            Hzf = self._ZeroField()
+            Hez = self._ElectronZeeman()
+            Hhf = self._HyperFineN()
+            Hnz = self._NuclearZeeman()
             #  also add the Quadrupole Interaction for N14
             H0 = Hzf+Hez+Hhf+Hnz-5.01*tensor(qeye(3), jmat(1, 'z')**2)
 
-            rho0 = tensor(fock_dm(3, 1), qeye(3)).unit() if not temp else self.rho0_lowT(temp, units_T)
+            if not temp:
+                rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
+            else:
+                self.rho0_lowT(temp, units_T)
+
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
-            Hzf = self._ZeroField(N)
-            Hez = self._ElectronZeeman(N, B0, theta, phi_r)
-            Hhf = self._HyperFineN(N)
-            Hnz = self._NuclearZeeman(N, B0, theta, phi_r)
+            Hzf = self._ZeroField()
+            Hez = self._ElectronZeeman()
+            Hhf = self._HyperFineN()
+            Hnz = self._NuclearZeeman()
 
             H0 = Hzf+Hez+Hhf+Hnz
 
@@ -289,16 +304,12 @@ class NV(QSys):
 
         super().__init__(H0, rho0, c_ops, observable, units_H0='MHz')
 
-        self.N = N
-        # get the eigenenergies of the Hamiltonian
-        H0_eig = self.H0.eigenenergies()
-        self.energy_levels = H0_eig - H0_eig[0]
         self.set_MW_freqs()
         self.set_RF_freqs()
         self.set_MW_H1()
         self.set_RF_H1()
 
-    def rho0_lowT(self, T, units_T='K'):
+    def rho0_lowT(self, temp, units_T='K'):
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
@@ -316,14 +327,14 @@ class NV(QSys):
         if units_T == 'K':
             pass
         elif units_T == 'C':
-            T += 273.15
+            temp += 273.15
         elif units_T == 'F':
             raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
         else:
             raise ValueError(f"Invalid value for units_T. Expected either 'K' or 'C', got {units_T}.")
 
         # check if the temperature is a positive real number
-        if not isinstance(T, (int, float)) and T > 0:
+        if not isinstance(temp, (int, float)) and temp > 0:
             raise ValueError("T must be a positive real number.")
 
         # a loop to find the |0,1/2> and |0,-1/2> states
@@ -355,7 +366,7 @@ class NV(QSys):
                 max_2 = proj_2
                 index_2 = itr
 
-        beta = -1/cte.Boltzmann*T
+        beta = -1/cte.Boltzmann*temp
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
@@ -437,116 +448,76 @@ class NV(QSys):
             warnings.warn("Without nuclear spin N=0, the RF Hamiltonian is not defined. Returning identity matrix.")
             self.RF_H1 = qeye(3)
 
-    def _ZeroField(self, N, D=2.87e3, E=0):
+    def _ZeroField(self, D=2.87e3, E=0):
         """Get the NV Hamiltonian term accounting for zero field splitting.
+
         Parameters
         ----------
-        N : int
-            Mass number of Nitrogen (either 14 (spin 1) or 15 (spin 1/2))
-        D : float, optional
-            Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)
-        E : float, optional
-            Non axial compononet, by default 0. Usually much (1000x) smaller than `D`
+        - D (float): Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)
+        - E (float): Non axial compononet, by default 0. Usually much (1000x) smaller than `D`
+
         Returns
         -------
-        qobj / ndarray
-            The zero field hamiltonian term for the NV as a `qutip.qobj`
-        Raises
-        ------
-        ValueError
-            If the value of `N` isn't `14` or `15`
+        - Zero Field Hamiltonian (Qobj)
         """
-        if N == 14:
+        if self.N == 14:
             return tensor(D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2), qeye(3))
-        elif N == 15:
+        elif self.N == 15:
             return tensor(D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2), qeye(2))
-        elif N == 0:
+        elif self.N == 0:
             return D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2)
         else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _ElectronZeeman(self, N, B0, theta=0, phi=0):
-        """Get the NV hamiltonian term accounting for the electron Zeeman effect.
-        Parameters
-        ----------
-        N : int
-            Mass number of Nitrogen (either 14 (spin 1) or 15 (spin 1/2))
-        B0 : float
-            Magnitude of the magnetic field (mTesla)
-        theta : float, optional
-            Misalignment of the magnetic field in **radians** with the z axis. The default is 0, which implies no misalignment.
-        phi : float, optional
-            Misalignment of the magnetic field in **radians** with the x axis. The default is 0, which implies no field along y axis.
+    def _ElectronZeeman(self):
+        """
+        Get the NV hamiltonian term accounting for the electron Zeeman effect.
+
         Returns
         -------
-        qobj / ndarray
-            The electron zeeman hamiltonian term for the NV as a `qutip.qobj`
-        Raises
-        ------
-        ValueError
-            If the value of `N` isn't `14` or `15`
+        - Electron Zeeman Hamiltonian (Qobj)       
         """
 
-        if N == 14:
-            return tensor(gamma_e*B0*(np.cos(theta)*jmat(1,'z') + np.sin(theta)*np.cos(phi)*jmat(1,'x') + np.sin(theta)*np.sin(phi)*jmat(1,'y')), qeye(3))
-        if N == 15:
-            return tensor(gamma_e*B0*(np.cos(theta)*jmat(1,'z') + np.sin(theta)*np.cos(phi)*jmat(1,'x') + np.sin(theta)*np.sin(phi)*jmat(1,'y')), qeye(2))
-        if N == 0 or N is None:
-            return gamma_e*B0*(np.cos(theta)*jmat(1,'z') + np.sin(theta)*np.cos(phi)*jmat(1,'x') + np.sin(theta)*np.sin(phi)*jmat(1,'y'))
+        if self.N == 14:
+            return tensor(gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(3))
+        if self.N == 15:
+            return tensor(gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(2))
+        if self.N == 0 or self.N is None:
+            return gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.theta)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y'))
         else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _NuclearZeeman(self, N, B0, theta=0, phi=0):
-        """Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
-        Parameters
-        ----------
-        N : int
-            Mass number of Nitrogen (either 14 (spin 1) or 15 (spin 1/2))
-        B0 : float
-            Magnitude of the magnetic field (mTesla)
-        theta : float, optional
-            Misalignment of the magnetic field in **radians** with the z axis. The default is 0, which implies no misalignment.
-        phi : float, optional
-            Misalignment of the magnetic field in **radians** with the x axis. The default is 0, which implies no field along y axis.
+    def _NuclearZeeman(self):
+        """
+        Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
+
         Returns
         -------
-        qobj / ndarray
-            The nuclear (Nitrogen) zeeman hamiltonian term for the NV as a `qutip.qobj`
-        Raises
-        ------
-        ValueError
-            If the value of `N` isn't `14` or `15`
+        - Nuclear Zeeman Hamiltonian (Qobj)
         """
 
-        if N == 14:
-            return tensor(gamma_N14*B0*(np.cos(theta)*jmat(1,'z') + np.sin(theta)*np.cos(phi)*jmat(1,'x') + np.sin(theta)*np.sin(phi)*jmat(1,'y')), qeye(3))
-        elif N == 15:
-            return tensor(gamma_N15*B0*(np.cos(theta)*jmat(1,'z') + np.sin(theta)*np.cos(phi)*jmat(1,'x') + np.sin(theta)*np.sin(phi)*jmat(1,'y')), qeye(2))
-        if N == 0 or N is None:
+        if self.N == 14:
+            return tensor(gamma_N14*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(3))
+        elif self.N == 15:
+            return tensor(gamma_N15*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(2))
+        if self.N == 0 or self.N is None:
             return 0
         else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _HyperFineN(self, N):
-        """Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
-        Parameters
-        ----------
-        N : int
-            Mass number of Nitrogen (either 14 (spin 1) or 15 (spin 1/2))
+    def _HyperFineN(self):
+        """
+        Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
+
         Returns
         -------
-        qobj / ndarray
-            The Nitrogen hyperfine coupling hamiltonian term for the NV as a `qutip.qobj`
-        Raises
-        ------
-        ValueError
-            If the value of `N` isn't `14` or `15`
+        - Hyperfine Hamiltonian (Qobj)
         """
-        if N == 14:
+        if self.N == 14:
             return -2.7*tensor(jmat(1,'z'), jmat(1,'z')) - 2.14*(tensor(jmat(1,'x'), jmat(1,'x')) + tensor(jmat(1,'y'), jmat(1,'y')))
-        elif N == 15:
+        elif self.N == 15:
             return +3.03*tensor(jmat(1,'z'), jmat(1/2,'z')) + 3.65*(tensor(jmat(1,'x'), jmat(1/2,'x')) + tensor(jmat(1,'y'), jmat(1/2,'y')))
-        if N == 0 or N is None:
+        if self.N == 0 or self.N is None:
             return 0
         else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
