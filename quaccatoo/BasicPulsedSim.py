@@ -50,7 +50,7 @@ class Rabi(PulsedSim):
         # call the parent class constructor
         super().__init__(system, H2)
 
-        # check weather pulse_duration is a numpy array and if it is, assign it to the object
+        # check whether pulse_duration is a numpy array and if it is, assign it to the object
         if not isinstance(pulse_duration, (np.ndarray, list)) or not np.all(np.isreal(pulse_duration)) or not np.all(np.greater_equal(pulse_duration, 0)):
             raise ValueError("pulse_duration must be a numpy array of real positive elements")
         else:
@@ -58,13 +58,13 @@ class Rabi(PulsedSim):
             self.variable = pulse_duration
             self.variable_name = f'Pulse Duration (1/{self.system.units_H0})'
 
-        # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
+        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape) ):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.pulse_profiles = [[H1, pulse_duration, pulse_shape, pulse_params]]
             if self.H2 == None:
@@ -81,7 +81,7 @@ class Rabi(PulsedSim):
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
         
-        # check weather pulse_params is a dictionary and if it is, assign it to the object
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
         if isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
             # if phi_t is not in the pulse_params dictionary, assign it as 0
@@ -90,7 +90,7 @@ class Rabi(PulsedSim):
         else:
             raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
 
-        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
@@ -154,41 +154,41 @@ class PODMR(PulsedSim):
         # call the parent class constructor
         super().__init__(system, H2)
 
-        # check weather frequencies is a numpy array or list and if it is, assign it to the object
+        # check whether frequencies is a numpy array or list and if it is, assign it to the object
         if not isinstance(frequencies, (np.ndarray, list)) or not np.all(np.isreal(frequencies)) or not np.all(np.greater_equal(frequencies, 0)):
             raise ValueError("frequencies must be a numpy array or list of real positive elements")
         else:
             self.variable = frequencies           
             self.variable_name = f'Frequency ({self.system.units_H0})'
 
-        # check weather pulse_duration is a numpy array and if it is, assign it to the object
+        # check whether pulse_duration is a numpy array and if it is, assign it to the object
         if not isinstance(pulse_duration, (float, int)) or pulse_duration <= 0:
             raise ValueError("pulse_duration must be a positive real number")
         else:
             self.pulse_duration = pulse_duration
 
-        # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
+        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape)):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
-        # check weather time_steps is a positive integer and if it is, assign it to the object
+        # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
         else:
             self.time_steps = time_steps       
         
-        # check weather pulse_params is a dictionary and if it is, assign it to the object
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
         else:
             self.pulse_params = pulse_params
-            # check weather phi_t is in the pulse_params dictionary and if it is not, assign it to the object as 0
+            # check whether phi_t is in the pulse_params dictionary and if it is not, assign it to the object as 0
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
         
-        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
@@ -299,26 +299,26 @@ class Ramsey(PulsedSim):
         # call the parent class constructor
         super().__init__(system, H2)
 
-        # check weather free_duration is a numpy array of real and positive elements and if it is, assign it to the object
+        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
         if not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
             raise ValueError("free_duration must be a numpy array with real positive elements")
         else:
             self.variable = free_duration
             self.variable_name = f'Tau (1/{self.system.units_H0})'
 
-        # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
+        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
             warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
-        # check weather time_steps is a positive integer and if it is, assign it to the object
+        # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
         else:
             self.time_steps = time_steps       
 
-        # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
+        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape)):
             self.pulse_shape = pulse_shape
         else: 
@@ -331,13 +331,13 @@ class Ramsey(PulsedSim):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
 
-        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
             if self.H2 == None:
@@ -614,32 +614,32 @@ class Hahn(PulsedSim):
         # call the parent class constructor
         super().__init__(system, H2)
 
-        # check weather free_duration is a numpy array of real and positive elements and if it is, assign it to the object
+        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
         if not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
             raise ValueError("free_duration must be a numpy array with real positive elements")
         else:
             self.variable = free_duration
             self.variable_name = f'Tau (1/{self.system.units_H0})'
 
-        # check weather pi_pulse_duration is a positive real number and if it is, assign it to the object
+        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
             warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
-        # check weather time_steps is a positive integer and if it is, assign it to the object
+        # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) and time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
         else:
             self.time_steps = time_steps       
 
-        # check weather pulse_shape is a python function or a list of python functions and if it is, assign it to the object
+        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if isinstance(pulse_shape, FunctionType) or (isinstance(pulse_shape, list) and all(isinstance(pulse_shape, FunctionType) for pulse_shape in pulse_shape)):
             self.pulse_shape = pulse_shape
         else: 
             raise ValueError("pulse_shape must be a python function or a list of python functions")
         
-        # check weather H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
             self.H1 = H1
             if self.H2 == None:
@@ -658,7 +658,7 @@ class Hahn(PulsedSim):
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
-        # check weather pulse_params is a dictionary and if it is, assign it to the object
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
         else:
@@ -667,7 +667,7 @@ class Hahn(PulsedSim):
             if 'phi_t' not in pulse_params:
                 self.pulse_params['phi_t'] = 0
 
-        # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
         if not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
