@@ -8,8 +8,9 @@ This module contains the PulsedSim class that is used to define a general pulsed
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, mesolve, parallel_map
-from.PulseShapes import square_pulse
-from.QSys import QSys
+from .PulseShapes import square_pulse
+from .QSys import QSys
+
 
 class PulsedSim:
     """
@@ -173,9 +174,9 @@ class PulsedSim:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
         # add the pulse operation to the sequence of operations by calling the pulse method
-        self.pulse(Ht, duration, options, pulse_params, phi_t)
+        self._pulse(Ht, duration, options, pulse_params, phi_t)
 
-    def pulse(self, Ht, duration, options, core_pulse_params, phi_t):
+    def _pulse(self, Ht, duration, options, core_pulse_params, phi_t):
         """
         Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
