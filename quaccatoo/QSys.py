@@ -15,23 +15,30 @@ import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
 
-gamma_e = cte.value('electron gyromag. ratio in MHz/T')
-gamma_e = gamma_e/1e3       # MHz/mT
-gamma_N14 = -3.077/1e3      
-gamma_N15 = 4.316/1e3
+gamma_e = cte.value("electron gyromag. ratio in MHz/T")
+gamma_e = gamma_e / 1e3  # MHz/mT
+gamma_N14 = -3.077 / 1e3
+gamma_N15 = 4.316 / 1e3
 
-def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel='Magnetic Field', ylabel='Energy (MHz)'):
+
+def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Field", ylabel="Energy (MHz)"):
     """
     Plots the energy levels of a Hamiltonian as a function of a magnetic field B0.
 
     Parameters
     ----------
-    - B0 (list/np.array): list of magnetic fields
-    - H0 (list(Qobj)): list of Hamiltonians
-    - figsize (tuple): size of the figure
-    - energy_lim (tuple): limits of the energy levels
-    - xlabel (str): label of the x-axis
-    - ylabel (str): label of the y-axis
+    B0 : list or numpy.ndarray
+        List of magnetic fields.
+    H0 : list of Qobj
+        List of Hamiltonians.
+    figsize : tuple
+        Size of the figure.
+    energy_lim : tuple
+        Limits of the energy levels.
+    xlabel : str
+        Label of the x-axis.
+    ylabel : str
+        Label of the y-axis.
     """
     # check if figsize is a tuple of two positive floats
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
@@ -67,28 +74,37 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel='Magnetic Fie
     if isinstance(ylabel, str):
         ax.set_ylabel(ylabel)
 
-    fig.suptitle('Energy Levels')
+    fig.suptitle("Energy Levels")
+
 
 ####################################################################################################
 
 
 class QSys:
     """
-    The QSys class defines a general quantum system and contains a method for ploting the energy levels of the Hamiltonian.
+    The QSys class defines a general quantum system and contains a method for plotting the energy levels of the Hamiltonian.
 
-    Class Attributes
-    ----------------
-    - H0 (Qobj/array): time-independent internal Hamiltonian of the system
-    - rho0 (Qobj/array/int): initial state of the system
-    - c_ops (Qobj/list(Qobj)): list of collapse operators
-    - observable (Qobj/list(Qobj)): observable to be measured
-    - units_H0 (str): units of the Hamiltonian
-    - energy_levels (np.array): energy levels of the Hamiltonian
-    - eigenstates (np.array(Qobj)): eigenstates of the Hamiltonian
+    Attributes
+    ----------
+    H0 : Qobj or numpy.ndarray
+        Time-independent internal Hamiltonian of the system.
+    rho0 : Qobj, numpy.ndarray, or int
+        Initial state of the system.
+    c_ops : Qobj or list of Qobj
+        List of collapse operators.
+    observable : Qobj or list of Qobj
+        Observable to be measured.
+    units_H0 : str
+        Units of the Hamiltonian.
+    energy_levels : numpy.ndarray
+        Energy levels of the Hamiltonian.
+    eigenstates : numpy.ndarray of Qobj
+        Eigenstates of the Hamiltonian.
 
     Methods
     -------
-    - plot_energy: plots the energy levels of the Hamiltonian
+    plot_energy : method
+        Plots the energy levels of the Hamiltonian.
     """
 
     def __init__(self, H0, rho0=None, c_ops=None, observable=None, units_H0=None):
@@ -98,24 +114,29 @@ class QSys:
 
         Parameters
         ----------
-        - H0 (Qobj/array): time-independent internal Hamiltonian of the system
-        - rho0 (Qobj/array/int): initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
-        - c_ops (list(Qobj)): list of collapse operators
-        - observable (Qobj or list(Qobj)): observable to be measured
-        - units_H0 (str): units of the Hamiltonian
+        H0 : Qobj/array
+            time-independent internal Hamiltonian of the system
+        rho0 : Qobj/array/int
+            initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
+        c_ops : list(Qobj)
+            list of collapse operators
+        observable : Qobj or list(Qobj)
+            observable to be measured
+        units_H0 : str
+            units of the Hamiltonian
         """
         # if the units are in frequency, assign the Hamiltonian as it is
         if units_H0 is None:
-            self.units_H0 = 'MHz'
+            self.units_H0 = "MHz"
             warnings.warn("No units supplied, assuming default value of MHz.")
-        elif units_H0 in ['MHz', 'GHz', 'kHz', 'eV']:
+        elif units_H0 in ["MHz", "GHz", "kHz", "eV"]:
             self.units_H0 = units_H0
         else:
             raise ValueError(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
 
         if not Qobj(H0).isherm:
             warnings.warn("Passed H0 is not a hermitian object.")
-            
+
         self.H0 = Qobj(H0)
 
         # calculate the eigenenergies of the Hamiltonian
@@ -124,7 +145,7 @@ class QSys:
         self.energy_levels = H_eig - H_eig[0]
 
         # calculate the eigenstates of the Hamiltonian
-        self.eigenstates = np.array([psi*psi.dag() for psi in H0.eigenstates()[1]])
+        self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
 
         # check if rho0 is None
         if rho0 is None:
@@ -133,11 +154,11 @@ class QSys:
 
         # check if rho0 is a number
         elif rho0 in range(0, len(self.eigenstates)):
-            self.rho0 = self.eigenstates[rho0]*self.eigenstates[rho0].dag()  # In this case the initial state is the i-th energy state
+            self.rho0 = self.eigenstates[rho0] * self.eigenstates[rho0].dag()  # In this case the initial state is the i-th energy state
 
         elif Qobj(rho0).isket and Qobj(rho0).shape[0] == H0.shape[0]:
             rho0 = Qobj(rho0)
-            self.rho0 = rho0*rho0.dag()
+            self.rho0 = rho0 * rho0.dag()
 
         elif Qobj(rho0).isherm and Qobj(rho0).shape == H0.shape:
             self.rho0 = Qobj(rho0)
@@ -148,7 +169,9 @@ class QSys:
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 and rho0, or a list of Qobj
         if observable is None:
             self.observable = None
-        elif (isinstance(observable, (Qobj, np.ndarray)) and observable.shape == H0.shape) or (isinstance(observable, list) and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable) and all(obs.shape == H0.shape for obs in observable)):
+        elif (isinstance(observable, (Qobj, np.ndarray)) and observable.shape == H0.shape) or (
+            isinstance(observable, list) and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable) and all(obs.shape == H0.shape for obs in observable)
+        ):
             self.observable = observable
         else:
             raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0.")
@@ -170,8 +193,10 @@ class QSys:
 
         Parameters
         ----------
-        - figsize (tuple): size of the figure.
-        - energy_lim (list): limits of the energy levels.
+        figsize : tuple
+            size of the figure.
+        energy_lim : list
+            limits of the energy levels.
         """
         # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
@@ -183,17 +208,17 @@ class QSys:
             ax.axhline(y=self.energy_levels[itr], lw=2)
 
         if self.units_H0 is not None:
-            ax.set_ylabel(f'Energy ({self.units_H0})')
+            ax.set_ylabel(f"Energy ({self.units_H0})")
         else:
-            ax.set_ylabel('Energy')
+            ax.set_ylabel("Energy")
 
         ax.get_xaxis().set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["bottom"].set_visible(False)
 
         if energy_lim is None:
-            ax.set_ylim(-.05*self.energy_levels[-1], 1.05*self.energy_levels[-1])
+            ax.set_ylim(-0.05 * self.energy_levels[-1], 1.05 * self.energy_levels[-1])
         elif len(energy_lim) == 2:
             ax.set_ylim(energy_lim[0], energy_lim[1])
         else:
@@ -202,42 +227,52 @@ class QSys:
     def save():
         pass
 
+
 ####################################################################################################
 
 
 class NV(QSys):
-    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles='deg', temp=None, units_T='K'):
+    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_T="K"):
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
 
         Parameters
         ----------
-        - B0 (float): magnetic field
-        - N (15/14/0/None): nitrogen isotope, or 0 for no nuclear spin
-        - c_ops (list(Qobj)): list of collapse operators
-        - units_B0 (str): units of the magnetic field (T, mT or G)
-        - theta (float): angle of the magnetic field with respect to the NV axis
-        - phi_r (float): angle of the magnetic field in the xy plane
-        - units_angles (str): units of the angles (deg or rad)
-        - temp (float): temperature
-        - units_T (str): temperature units ('C'/'K')
+        B0 : float
+            magnetic field
+        N : 15/14/0/None
+            nitrogen isotope, or 0 for no nuclear spin
+        c_ops : list(Qobj)
+            list of collapse operators
+        units_B0 : str
+            units of the magnetic field (T, mT or G)
+        theta : float
+            angle of the magnetic field with respect to the NV axis
+        phi_r : float
+            angle of the magnetic field in the xy plane
+        units_angles : str
+            units of the angles (deg or rad)
+        temp : float
+            temperature
+        units_T : str
+            temperature units ('C'/'K')
         """
 
         # convert the magnetic field to mTesla
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
-        
+
         self.B0 = B0
 
         if units_B0 is None:
             warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
-        elif units_B0 == 'T':
-            B0 = B0*1e3
-        elif units_B0 == 'mT':
+        elif units_B0 == "T":
+            B0 = B0 * 1e3
+        elif units_B0 == "mT":
             pass
-        elif units_B0 == 'G':
-            B0 = B0*1e-3
+        elif units_B0 == "G":
+            B0 = B0 * 1e-3
         else:
             raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
 
@@ -245,14 +280,14 @@ class NV(QSys):
             raise TypeError(f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}.")
         else:
             # converts the angles to radians
-            if units_angles == 'deg':
+            if units_angles == "deg":
                 theta = np.deg2rad(theta)
                 phi_r = np.deg2rad(phi_r)
-            elif units_angles == 'rad':
+            elif units_angles == "rad":
                 pass
             else:
                 raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
-            
+
         self.theta = theta
         self.phi_r = phi_r
         self.N = N
@@ -264,7 +299,7 @@ class NV(QSys):
             Hhf = self._HyperFineN()
             Hnz = self._NuclearZeeman()
 
-            H0 = Hzf+Hez+Hhf+Hnz
+            H0 = Hzf + Hez + Hhf + Hnz
 
             if not temp:
                 rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
@@ -279,7 +314,7 @@ class NV(QSys):
             Hhf = self._HyperFineN()
             Hnz = self._NuclearZeeman()
             #  also add the Quadrupole Interaction for N14
-            H0 = Hzf+Hez+Hhf+Hnz-5.01*tensor(qeye(3), jmat(1, 'z')**2)
+            H0 = Hzf + Hez + Hhf + Hnz - 5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
 
             if not temp:
                 rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
@@ -294,7 +329,7 @@ class NV(QSys):
             Hhf = self._HyperFineN()
             Hnz = self._NuclearZeeman()
 
-            H0 = Hzf+Hez+Hhf+Hnz
+            H0 = Hzf + Hez + Hhf + Hnz
 
             rho0 = fock_dm(3, 1).unit()
             observable = fock_dm(3, 1)
@@ -302,33 +337,36 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}.")
 
-        super().__init__(H0, rho0, c_ops, observable, units_H0='MHz')
+        super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
         self.set_MW_freqs()
         self.set_RF_freqs()
         self.set_MW_H1()
         self.set_RF_H1()
 
-    def rho0_lowT(self, temp, units_T='K'):
+    def rho0_lowT(self, temp, units_T="K"):
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
 
         Parameters
         ----------
-        - T (float): temperature
-        - units_T (str): units of the temperature (K or C)
+        T : float
+            temperature
+        units_T : str
+            units of the temperature (K or C)
 
         Returns
         -------
-        - rho0 (Qobj): initial state of the system
+        rho0 : Qobj
+            initial state of the system
         """
         # check the units and convert the temperature to Kelvin
-        if units_T == 'K':
+        if units_T == "K":
             pass
-        elif units_T == 'C':
+        elif units_T == "C":
             temp += 273.15
-        elif units_T == 'F':
+        elif units_T == "F":
             raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
         else:
             raise ValueError(f"Invalid value for units_T. Expected either 'K' or 'C', got {units_T}.")
@@ -366,30 +404,32 @@ class NV(QSys):
                 max_2 = proj_2
                 index_2 = itr
 
-        beta = -1/cte.Boltzmann*temp
+        beta = -1 / cte.Boltzmann * temp
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
-            Z = np.exp(beta*self.energy_levels[index_1]) + np.exp(beta*self.energy_levels[index_2])
+            Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2])
 
-            self.rho0 = tensor(fock_dm(3, 1), Qobj([[np.exp(beta*self.energy_levels[index_1]), 0], [0, np.exp(beta*self.energy_levels[index_2])]]) / Z)
+            self.rho0 = tensor(fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0], [0, np.exp(beta * self.energy_levels[index_2])]]) / Z)
 
         elif self.N == 14:
-            Z = np.exp(beta*self.energy_levels[index_1]) + np.exp(beta*self.energy_levels[index_2]) + np.exp(beta*self.energy_levels[index_3])
+            Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2]) + np.exp(beta * self.energy_levels[index_3])
 
-            self.rho0 = tensor(fock_dm(3, 1), Qobj([[np.exp(beta*self.energy_levels[index_1]), 0, 0], [0, np.exp(beta*self.energy_levels[index_2]), 0], [0, 0, np.exp(beta*self.energy_levels[index_3])]]) / Z)
+            self.rho0 = tensor(
+                fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0, 0], [0, np.exp(beta * self.energy_levels[index_2]), 0], [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
+            )
 
     def set_MW_freqs(self):
         """
         Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.
         """
         if self.N == 15:
-            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[0:2]))/2
-            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[0:2]))/2
+            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[0:2])) / 2
+            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[0:2])) / 2
             self.MW_freqs = np.array([f1, f2])
         elif self.N == 14:
-            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[0:3]))/3
-            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[0:3]))/3
+            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[0:3])) / 3
+            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[0:3])) / 3
             self.MW_freqs = np.array([f1, f2])
         elif self.N == 0 or self.N is None:
             f1 = self.energy_levels[1] - self.energy_levels[0]
@@ -419,31 +459,23 @@ class NV(QSys):
 
     def set_MW_H1(self):
         """
-        Gets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
-
-        Returns
-        -------
-        - H1 (Qobj): microwave Hamiltonian
+        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         """
         if self.N == 15:
-            self.MW_H1 = tensor(jmat(1, 'x'), qeye(2))*2**.5
+            self.MW_H1 = tensor(jmat(1, "x"), qeye(2)) * 2**0.5
         elif self.N == 14:
-            self.MW_H1 = tensor(jmat(1, 'x'), qeye(3))*2**.5
+            self.MW_H1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
         elif self.N == 0 or self.N is None:
-            self.MW_H1 = tensor(jmat(1, 'x'))*2**.5
+            self.MW_H1 = tensor(jmat(1, "x")) * 2**0.5
 
     def set_RF_H1(self):
         """
-        Gets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
-
-        Returns
-        -------
-        - H1 (Qobj): RF Hamiltonian
+        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         """
         if self.N == 15:
-            self.RF_H1 = tensor(qeye(3), jmat(1/2, 'x'))*2
+            self.RF_H1 = tensor(qeye(3), jmat(1 / 2, "x")) * 2
         elif self.N == 14:
-            self.RF_H1 = tensor(qeye(3), jmat(1, 'x'))*2**.5
+            self.RF_H1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
         elif self.N == 0 or self.N is None:
             warnings.warn("Without nuclear spin N=0, the RF Hamiltonian is not defined. Returning identity matrix.")
             self.RF_H1 = qeye(3)
@@ -453,19 +485,21 @@ class NV(QSys):
 
         Parameters
         ----------
-        - D (float): Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)
-        - E (float): Non axial compononet, by default 0. Usually much (1000x) smaller than `D`
+        D : float
+            Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)
+        E : float
+            Non axial compononet, by default 0. Usually much (1000x) smaller than `D`
 
         Returns
         -------
-        - Zero Field Hamiltonian (Qobj)
+        Zero Field Hamiltonian : Qobj
         """
         if self.N == 14:
-            return tensor(D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2), qeye(3))
+            return tensor(D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3))
         elif self.N == 15:
-            return tensor(D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2), qeye(2))
+            return tensor(D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2))
         elif self.N == 0:
-            return D*(jmat(1,'z')**2 - (jmat(1,'x')**2 + jmat(1,'y')**2 + jmat(1,'z')**2)/3) + E*(jmat(1,'x')**2  - jmat(1,'y')**2)
+            return D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -475,15 +509,19 @@ class NV(QSys):
 
         Returns
         -------
-        - Electron Zeeman Hamiltonian (Qobj)       
+        Electron Zeeman Hamiltonian : Qobj
         """
 
         if self.N == 14:
-            return tensor(gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(3))
+            return tensor(
+                gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(3)
+            )
         if self.N == 15:
-            return tensor(gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(2))
+            return tensor(
+                gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(2)
+            )
         if self.N == 0 or self.N is None:
-            return gamma_e*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.theta)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y'))
+            return gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.theta) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -493,13 +531,17 @@ class NV(QSys):
 
         Returns
         -------
-        - Nuclear Zeeman Hamiltonian (Qobj)
+        Nuclear Zeeman Hamiltonian : Qobj
         """
 
         if self.N == 14:
-            return tensor(gamma_N14*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(3))
+            return tensor(
+                gamma_N14 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(3)
+            )
         elif self.N == 15:
-            return tensor(gamma_N15*self.B0*(np.cos(self.theta)*jmat(1,'z') + np.sin(self.theta)*np.cos(self.phi_r)*jmat(1,'x') + np.sin(self.theta)*np.sin(self.phi_r)*jmat(1,'y')), qeye(2))
+            return tensor(
+                gamma_N15 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(2)
+            )
         if self.N == 0 or self.N is None:
             return 0
         else:
@@ -511,12 +553,12 @@ class NV(QSys):
 
         Returns
         -------
-        - Hyperfine Hamiltonian (Qobj)
+        Hyperfine Hamiltonian : Qobj
         """
         if self.N == 14:
-            return -2.7*tensor(jmat(1,'z'), jmat(1,'z')) - 2.14*(tensor(jmat(1,'x'), jmat(1,'x')) + tensor(jmat(1,'y'), jmat(1,'y')))
+            return -2.7 * tensor(jmat(1, "z"), jmat(1, "z")) - 2.14 * (tensor(jmat(1, "x"), jmat(1, "x")) + tensor(jmat(1, "y"), jmat(1, "y")))
         elif self.N == 15:
-            return +3.03*tensor(jmat(1,'z'), jmat(1/2,'z')) + 3.65*(tensor(jmat(1,'x'), jmat(1/2,'x')) + tensor(jmat(1,'y'), jmat(1/2,'y')))
+            return +3.03 * tensor(jmat(1, "z"), jmat(1 / 2, "z")) + 3.65 * (tensor(jmat(1, "x"), jmat(1 / 2, "x")) + tensor(jmat(1, "y"), jmat(1 / 2, "y")))
         if self.N == 0 or self.N is None:
             return 0
         else:

@@ -223,7 +223,7 @@ class PulsedSim:
 
         # if a H2 or collapse operators are given, use free_evolution_H2 method, otherwise use free_evolution method
         if self.H2 is not None or self.system.c_ops is not None:
-            # check weather options is a dictionary of solver options from Qutip and if it is, assign it to the object
+            # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
             if not isinstance(options, dict):
                 raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 

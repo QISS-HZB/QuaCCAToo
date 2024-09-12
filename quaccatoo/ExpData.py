@@ -33,7 +33,8 @@ class ExpData:
     baseline_correction
     save
     """
-    def __init__(self, file_path, variable_column=0, results_columns=1, variable_name='Time', result_name='Expectation value', **loadtxt_args):
+
+    def __init__(self, file_path, variable_column=0, results_columns=1, variable_name="Time", result_name="Expectation value", **loadtxt_args):
         """
         Constructor of the ExpData class.
         It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.
@@ -134,9 +135,7 @@ class ExpData:
             self.results = [result * rescale_value for result in self.results]
 
     def baseline_correction(self):
-        """
-
-        """
+        """ """
         pass
 
     def save():
