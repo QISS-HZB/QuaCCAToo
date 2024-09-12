@@ -38,8 +38,9 @@ class PulsedSim:
     results : list
         results of the experiment to be later generated in the run method
     sequence : callable
-        parallel sequence of operations to be overwritten in BasicPulsedSim and DDPulsedSim, or defined by the user
-    time_steps :
+        parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
+    time_steps : int
+        number of time steps for the pulses
 
     Methods
     -------
