@@ -1,4 +1,5 @@
 # QUAntum Color Centers Analysis TOOlbox
+![Logo](./docs/QuaCCAToo_logo.svg)
 
 ## Installation
 We strongly recommend using a virtual environment so that the system Python remains untouched.
