@@ -1,15 +1,31 @@
 # QUAntum Color Centers Analysis TOOlbox
 
 ## Installation
-First, create a `conda` virtual environment with:
+We strongly recommend using a virtual environment so that the system Python remains untouched.
+
+You can create a `conda` virtual environment as follows:
 
 ```sh
 conda create --name quaccatoo-env python
 conda activate quaccatoo-env
 conda install numpy matplotlib scipy qutip
 ```
+**OR**
 
-Clone the repository and check the notebooks for examples.
+You can use a native Python venv (you'll need `pip` as well)
+
+``` sh
+python -m venv quaccatoo-env
+source quaccatoo-env/bin/activate
+```
+
+After the virtual environment has been setup, clone the repository and run (from inside the repo) 
+
+``` sh
+pip install .
+```
+
+Check the notebooks in the `docs` subdirectory for examples.
 
 ## Class Hierarchy
 
