@@ -1,4 +1,4 @@
-# QUAntum Color Centers Analysis TOOlbox
+# Quantum Color Centers Analysis Toolbox
 ![Logo](./docs/QuaCCAToo_logo.svg)
 
 ## Installation
