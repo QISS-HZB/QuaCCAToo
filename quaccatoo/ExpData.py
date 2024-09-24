@@ -23,7 +23,7 @@ class ExpData:
         name of the results
 
     Methods
-    -------------
+    -------
     subtract_results_columns(pos_col=0, neg_col=1)
         subtracts the results of the negative column from the positive column
     background_correction(background_value)

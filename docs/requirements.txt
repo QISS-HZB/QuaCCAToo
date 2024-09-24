@@ -1,0 +1,4 @@
+numpydoc
+sphinx
+sphinxawesome-theme
+..
