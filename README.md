@@ -38,3 +38,6 @@ Check the notebooks in the `docs` subdirectory for examples.
 - Properly _document everything_ in details following the `numpy` [docstring format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
 - Test your branch by running notebooks Ex01 and Ex02. Before making the pull request, _clear the outputs_.
 - Use _US-English_, not British-English. Eg: analyze instead of analyse, color instead of colour, center instead of centre.
+
+## Documentation
+The current documentation is available at https://qiss-hzb.github.io/QuaCCAToo/
