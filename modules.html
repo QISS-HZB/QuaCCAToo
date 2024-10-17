@@ -11,7 +11,7 @@
 <meta content="QuaCCAToo Modules | QuaCCAToo  documentation" property="og:title"/>
 <meta content="QuaCCAToo Modules | QuaCCAToo  documentation" name="twitter:title"/>
 <link href="_static/pygments.css?v=68902938" rel="stylesheet" type="text/css"/>
-<link href="_static/theme.css?v=ecdfb4fc" rel="stylesheet" type="text/css"/>
+<link href="_static/theme.css?v=edd7d3d2" rel="stylesheet" type="text/css"/>
 <link href="https://qiss-hzb.github.io/quaccatoo/modules.html" rel="canonical"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
@@ -29,7 +29,7 @@
       if (!userPreference) {localStorage.setItem('darkMode', mode)}
     </script>
 </head>
-<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false }">
+<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false, showScrollTop: false }">
 <div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
@@ -97,109 +97,7 @@
 <h1>QuaCCAToo Modules<a class="headerlink" href="#quaccatoo-modules" title="Link to this heading"><span>#</span></a></h1>
 <section id="module-quaccatoo.QSys">
 <span id="qsys"></span><h2>QSys<a class="headerlink" href="#module-quaccatoo.QSys" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#module-quaccatoo.QSys'"><span>#</span></a></h2>
-<p>This module contains the plot_energy_B0 function, the QSys class and the NV subclass as part of QuaCCAToo package.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.QSys.</span></span><span class="sig-name descname"><span class="pre">NV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">B0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_B0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'K'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV'"><span>#</span></a></dt>
-<dd><p>Constructor for the NV class.
-Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>B0</strong><span class="classifier">float</span></dt><dd><p>magnetic field</p>
-</dd>
-<dt><strong>N</strong><span class="classifier">15/14/0/None</span></dt><dd><p>nitrogen isotope, or 0 for no nuclear spin</p>
-</dd>
-<dt><strong>c_ops</strong><span class="classifier">list(Qobj)</span></dt><dd><p>list of collapse operators</p>
-</dd>
-<dt><strong>units_B0</strong><span class="classifier">str</span></dt><dd><p>units of the magnetic field (T, mT or G)</p>
-</dd>
-<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>angle of the magnetic field with respect to the NV axis</p>
-</dd>
-<dt><strong>phi_r</strong><span class="classifier">float</span></dt><dd><p>angle of the magnetic field in the xy plane</p>
-</dd>
-<dt><strong>units_angles</strong><span class="classifier">str</span></dt><dd><p>units of the angles (deg or rad)</p>
-</dd>
-<dt><strong>temp</strong><span class="classifier">float</span></dt><dd><p>temperature</p>
-</dd>
-<dt><strong>units_T</strong><span class="classifier">str</span></dt><dd><p>temperature units (‘C’/’K’)</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code>([figsize, energy_lim])</p></td>
-<td><p>Plots the energy levels of the Hamiltonian defined in the system.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.QSys.NV.rho0_lowT" title="quaccatoo.QSys.NV.rho0_lowT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho0_lowT</span></code></a>(temp[, units_T])</p></td>
-<td><p>Calculates the initial state of the system at low temperatures using the Boltzmann distribution.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.QSys.NV.set_MW_H1" title="quaccatoo.QSys.NV.set_MW_H1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_MW_H1</span></code></a>()</p></td>
-<td><p>Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.QSys.NV.set_MW_freqs" title="quaccatoo.QSys.NV.set_MW_freqs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_MW_freqs</span></code></a>()</p></td>
-<td><p>Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.QSys.NV.set_RF_H1" title="quaccatoo.QSys.NV.set_RF_H1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_RF_H1</span></code></a>()</p></td>
-<td><p>Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.QSys.NV.set_RF_freqs" title="quaccatoo.QSys.NV.set_RF_freqs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_RF_freqs</span></code></a>()</p></td>
-<td><p>Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><strong>save</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV.rho0_lowT">
-<span class="sig-name descname"><span class="pre">rho0_lowT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'K'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV.rho0_lowT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV.rho0_lowT" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV.rho0_lowT'"><span>#</span></a></dt>
-<dd><p>Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
-At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>temperature</p>
-</dd>
-<dt><strong>units_T</strong><span class="classifier">str</span></dt><dd><p>units of the temperature (K or C)</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho0</strong><span class="classifier">Qobj</span></dt><dd><p>initial state of the system</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV.set_MW_H1">
-<span class="sig-name descname"><span class="pre">set_MW_H1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV.set_MW_H1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV.set_MW_H1" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV.set_MW_H1'"><span>#</span></a></dt>
-<dd><p>Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV.set_MW_freqs">
-<span class="sig-name descname"><span class="pre">set_MW_freqs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV.set_MW_freqs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV.set_MW_freqs" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV.set_MW_freqs'"><span>#</span></a></dt>
-<dd><p>Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV.set_RF_H1">
-<span class="sig-name descname"><span class="pre">set_RF_H1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV.set_RF_H1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV.set_RF_H1" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV.set_RF_H1'"><span>#</span></a></dt>
-<dd><p>Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.QSys.NV.set_RF_freqs">
-<span class="sig-name descname"><span class="pre">set_RF_freqs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#NV.set_RF_freqs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.NV.set_RF_freqs" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.NV.set_RF_freqs'"><span>#</span></a></dt>
-<dd><p>Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.</p>
-</dd></dl>
-</dd></dl>
+<p>This module contains the plot_energy_B0 function, the QSys class part of QuaCCAToo package.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.QSys.QSys">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.QSys.</span></span><span class="sig-name descname"><span class="pre">QSys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#QSys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.QSys" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.QSys'"><span>#</span></a></dt>
@@ -253,7 +151,10 @@ Checking all inputs and calculating the energy levels of the Hamiltonian.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.QSys.QSys.plot_energy" title="quaccatoo.QSys.QSys.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>([figsize, energy_lim])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.QSys.QSys.add_spin" title="quaccatoo.QSys.QSys.add_spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_spin</span></code></a>(H_spin)</p></td>
+<td><p>Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.QSys.QSys.plot_energy" title="quaccatoo.QSys.QSys.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>([figsize, energy_lim])</p></td>
 <td><p>Plots the energy levels of the Hamiltonian defined in the system.</p></td>
 </tr>
 </tbody>
@@ -265,6 +166,20 @@ Checking all inputs and calculating the energy levels of the Hamiltonian.</p>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.QSys.QSys.add_spin">
+<span class="sig-name descname"><span class="pre">add_spin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H_spin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#QSys.add_spin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.QSys.add_spin" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.QSys.add_spin'"><span>#</span></a></dt>
+<dd><p>Adds another spin to the system’s Hamiltonian,
+given a Hamiltonian for the new spin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>H_spin</strong><span class="classifier">Qobj</span></dt><dd><p>Hamiltonian of the new spin</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.QSys.QSys.plot_energy">
 <span class="sig-name descname"><span class="pre">plot_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_lim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/QSys.html#QSys.plot_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.QSys.QSys.plot_energy" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.QSys.QSys.plot_energy'"><span>#</span></a></dt>
@@ -2380,15 +2295,8 @@ It loads experimental data from a file and sets the variable and results attribu
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
 <li><a :data-current="activeSection === '#module-quaccatoo.QSys'" class="reference internal" href="#module-quaccatoo.QSys">QSys</a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV'" class="reference internal" href="#quaccatoo.QSys.NV"><code class="docutils literal notranslate"><span class="pre">NV</span></code></a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV.rho0_lowT'" class="reference internal" href="#quaccatoo.QSys.NV.rho0_lowT"><code class="docutils literal notranslate"><span class="pre">NV.rho0_lowT()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV.set_MW_H1'" class="reference internal" href="#quaccatoo.QSys.NV.set_MW_H1"><code class="docutils literal notranslate"><span class="pre">NV.set_MW_H1()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV.set_MW_freqs'" class="reference internal" href="#quaccatoo.QSys.NV.set_MW_freqs"><code class="docutils literal notranslate"><span class="pre">NV.set_MW_freqs()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV.set_RF_H1'" class="reference internal" href="#quaccatoo.QSys.NV.set_RF_H1"><code class="docutils literal notranslate"><span class="pre">NV.set_RF_H1()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.QSys.NV.set_RF_freqs'" class="reference internal" href="#quaccatoo.QSys.NV.set_RF_freqs"><code class="docutils literal notranslate"><span class="pre">NV.set_RF_freqs()</span></code></a></li>
-</ul>
-</li>
 <li><a :data-current="activeSection === '#quaccatoo.QSys.QSys'" class="reference internal" href="#quaccatoo.QSys.QSys"><code class="docutils literal notranslate"><span class="pre">QSys</span></code></a><ul>
+<li><a :data-current="activeSection === '#quaccatoo.QSys.QSys.add_spin'" class="reference internal" href="#quaccatoo.QSys.QSys.add_spin"><code class="docutils literal notranslate"><span class="pre">QSys.add_spin()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.QSys.QSys.plot_energy'" class="reference internal" href="#quaccatoo.QSys.QSys.plot_energy"><code class="docutils literal notranslate"><span class="pre">QSys.plot_energy()</span></code></a></li>
 </ul>
 </li>
@@ -2506,14 +2414,14 @@ It loads experimental data from a file and sets the variable and results attribu
 </div><footer class="py-6 border-t border-border md:py-0">
 <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
 <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2024, Lucas Tsunaki, Anmol Singh, Sergei Trofimov Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 7.3.7</a></p>
+<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2024, Lucas Tsunaki, Anmol Singh, Sergei Trofimov Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 8.1.3</a></p>
 </div>
 </div>
 </footer>
 </div>
 <script src="_static/documentation_options.js?v=5929fcd5"></script>
-<script src="_static/doctools.js?v=9a2dae69"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
 <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-<script defer="defer" src="_static/theme.js?v=e82a16a3"></script>
+<script defer="defer" src="_static/theme.js?v=1808ab49"></script>
 </body>
 </html>
