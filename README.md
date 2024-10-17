@@ -36,14 +36,18 @@ pip install .
 ## Class Hierarchy
 
 The package is organized as follows:
-- `QSys` defines the quantum system of the problem. It has an obligatory intrinsic internal Hamiltonian $H_0$, optional initial state, observable and a set of collapse operators. On QSys, one can calculate the eigenstates and eigenvalues of the system.
-
+- `QSys` defines the quantum system of the problem. It has an obligatory intrinsic internal Hamiltonian $H_0$, optional initial state, observable and a set of collapse operators. On QSys, one can calculate the eigenstates and eigenvalues of the system. QuaCCAToo provides NVSys as a predefined system for nitrogen vacancy centers in diamonds, more systems will be provided soon.
+- `PulsedSim` contains the logic for perfoming the simulation of pulsed experiments upon a QSys object. It has attributes of a pulse sequence containing a set of pulses and free evolutions, control Hamiltonian $H_1$, experiment variable and simulation results. Many predefined commom pulse sequences are given in `PredefSeqs` and `PredefDDSeqs`.
+- `ExpData` is a class to load experimental data and perform basic data processing.
+- `Analysis` can be used either on simulation or experimental results, with a series of methods like FFT, fits, data comparison and plotting.
 
 ![Class diagram](./docs/class_diagram.svg)
 
 ## Contribution guidelines
 
+Any contritubation or bug report are welcome.
+
 - To contribute, fork the main branch and make a pull request.
 - Properly _document everything_ in details following the `numpy` [docstring format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
-- Test your branch by running notebooks Ex01 and Ex02. Before making the pull request, _clear the outputs_.
+- Test your branch by running notebooks Ex01 and Ex02.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center instead of centre.

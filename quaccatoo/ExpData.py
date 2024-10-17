@@ -6,7 +6,6 @@ This module contains the ExpData class as part of the QuaCCAToo package.
 
 import numpy as np
 
-
 class ExpData:
     """
     Class to load experimental data and perform basic data processing.
