@@ -12,10 +12,9 @@ import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
 from .QSys import QSys
 
-gamma_e = cte.value("electron gyromag. ratio in MHz/T")
-gamma_e = gamma_e / 1e3  # MHz/mT
-gamma_N14 = -3.077 / 1e3
-gamma_N15 = 4.316 / 1e3
+gamma_e = cte.value("electron gyromag. ratio in MHz/T")*1e-3  # MHz/mT
+gamma_N14 = -3.077e-3
+gamma_N15 = 4.316e-3
 
 class NV(QSys):
     """
@@ -374,12 +373,12 @@ class NV(QSys):
         """
 
         if self.N == 14:
-            return tensor(
-                gamma_N14 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(3)
+            return tensor(qeye(3), 
+                gamma_N14 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
             )
         elif self.N == 15:
-            return tensor(
-                gamma_N15 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(2)
+            return tensor(qeye(3),
+                gamma_N15 * self.B0 * (np.cos(self.theta) * jmat(1/2, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1/2, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1/2, "y"))
             )
         if self.N == 0 or self.N is None:
             return 0
