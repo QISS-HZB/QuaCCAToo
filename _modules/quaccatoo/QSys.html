@@ -392,11 +392,20 @@
 </span><span id="line-235">        <span class="k">if</span> <span class="n">dim_spin</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="line-236">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H_spin must be a Qobj with a dimension higher than H0.&quot;</span><span class="p">)</span>
 </span><span id="line-237">        
-</span><span id="line-238">        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">))</span> <span class="o">+</span>  <span class="n">H_spin</span></div>
+</span><span id="line-238">        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">))</span> <span class="o">+</span>  <span class="n">H_spin</span>
+</span><span id="line-239">        
+</span><span id="line-240">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-241">            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">))</span>
+</span><span id="line-242">
+</span><span id="line-243">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-244">            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">))</span>
+</span><span id="line-245">
+</span><span id="line-246">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-247">            <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="n">dim_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">]</span></div>
 
-</span><span id="line-239">
-</span><span id="line-240">    <span class="k">def</span> <span class="nf">save</span><span class="p">():</span>
-</span><span id="line-241">        <span class="k">pass</span></div>
+</span><span id="line-248">
+</span><span id="line-249">    <span class="k">def</span> <span class="nf">save</span><span class="p">():</span>
+</span><span id="line-250">        <span class="k">pass</span></div>
 
 </span></code></pre></div>
     </div></div>
