@@ -236,6 +236,15 @@ class QSys:
             raise ValueError("H_spin must be a Qobj with a dimension higher than H0.")
         
         self.H0 = tensor(self.H0, qeye(dim_spin)) +  H_spin
+        
+        if self.rho0 is not None:
+            self.rho0 = tensor(self.rho0, qeye(dim_spin))
+
+        if self.observable is not None:
+            self.observable = tensor(self.observable, qeye(dim_spin))
+
+        if self.c_ops is not None:
+            self.c_ops = [tensor(op, qeye(dim_spin)) for op in self.c_ops]
 
     def save():
         pass

@@ -13,8 +13,8 @@ from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
 from .QSys import QSys
 
 gamma_e = cte.value("electron gyromag. ratio in MHz/T")*1e-3  # MHz/mT
-gamma_N14 = -3.077e-3
-gamma_N15 = 4.316e-3
+gamma_N14 = 3.077e-3
+gamma_N15 = -4.316e-3
 
 class NV(QSys):
     """
@@ -164,10 +164,8 @@ class NV(QSys):
         elif N == 0 or N is None:
             Hzf = self._ZeroField()
             Hez = self._ElectronZeeman()
-            Hhf = self._HyperFineN()
-            Hnz = self._NuclearZeeman()
 
-            H0 = Hzf + Hez + Hhf + Hnz
+            H0 = Hzf + Hez
 
             rho0 = fock_dm(3, 1).unit()
             observable = fock_dm(3, 1)
@@ -256,6 +254,10 @@ class NV(QSys):
             self.rho0 = tensor(
                 fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0, 0], [0, np.exp(beta * self.energy_levels[index_2]), 0], [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
             )
+        elif self.N ==0 or self.N is None:
+            self.rho0 = fock_dm(3, 1)
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
     def set_MW_freqs(self):
         """
@@ -273,6 +275,8 @@ class NV(QSys):
             f1 = self.energy_levels[1] - self.energy_levels[0]
             f2 = self.energy_levels[2] - self.energy_levels[0]
             self.MW_freqs = np.array([f1, f2])
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
     def set_RF_freqs(self):
         """
@@ -294,6 +298,8 @@ class NV(QSys):
         elif self.N == 0 or self.N is None:
             warnings.warn("N=0, RF frequencies set to None.")
             self.RF_freqs = None
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
     def set_MW_H1(self):
         """
@@ -305,6 +311,8 @@ class NV(QSys):
             self.MW_H1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
         elif self.N == 0 or self.N is None:
             self.MW_H1 = tensor(jmat(1, "x")) * 2**0.5
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
     def set_RF_H1(self):
         """
@@ -317,6 +325,8 @@ class NV(QSys):
         elif self.N == 0 or self.N is None:
             warnings.warn("Without nuclear spin N=0, the RF Hamiltonian is not defined. Returning identity matrix.")
             self.RF_H1 = qeye(3)
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
     def _ZeroField(self, D=2.87e3, E=0):
         """Get the NV Hamiltonian term accounting for zero field splitting.
@@ -354,11 +364,11 @@ class NV(QSys):
             return tensor(
                 gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(3)
             )
-        if self.N == 15:
+        elif self.N == 15:
             return tensor(
                 gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(2)
             )
-        if self.N == 0 or self.N is None:
+        elif self.N == 0 or self.N is None:
             return gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.theta) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
@@ -373,14 +383,14 @@ class NV(QSys):
         """
 
         if self.N == 14:
-            return tensor(qeye(3), 
+            return -tensor(qeye(3), 
                 gamma_N14 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
             )
         elif self.N == 15:
-            return tensor(qeye(3),
+            return -tensor(qeye(3),
                 gamma_N15 * self.B0 * (np.cos(self.theta) * jmat(1/2, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1/2, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1/2, "y"))
             )
-        if self.N == 0 or self.N is None:
+        elif self.N == 0 or self.N is None:
             return 0
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
