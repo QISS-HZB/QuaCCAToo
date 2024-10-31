@@ -6,6 +6,8 @@ This module contains dynamical decoupling pulse sequences, used in quantum sensi
 
 import numpy as np
 from qutip import Qobj, mesolve
+
+from .PulseShapes import square_pulse
 from .PulsedSim import PulsedSim
 from .PulseShapes import square_pulse
 import warnings
@@ -267,7 +269,9 @@ class CPMG(PulsedSim):
     def CPMG_sequence_H2(self, tau):
         """
         Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-        The sequence consists of a pi pulse and free evolution time tau repeated M times. The sequence is to be called by the parallel_map method of QuTip.
+        The sequence consists of a pi pulse and free evolution time tau repeated M times.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
+        The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
         ----------
@@ -321,6 +325,7 @@ class CPMG(PulsedSim):
     def CPMG_sequence_proj_H2(self, tau):
         """
         Defines the CPMG sequence, but with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -738,6 +743,7 @@ class XY(PulsedSim):
     def XY_sequence_H2(self, tau):
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -793,6 +799,7 @@ class XY(PulsedSim):
     def XY_sequence_proj_H2(self, tau):
         """
         Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -958,9 +965,7 @@ class XY(PulsedSim):
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
-
 ####################################################################################################
-
 
 class XY8(PulsedSim):
     """
@@ -1223,6 +1228,7 @@ class XY8(PulsedSim):
     def XY8_sequence_H2(self, tau):
         """
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -1279,6 +1285,7 @@ class XY8(PulsedSim):
     def XY8_sequence_proj_H2(self, tau):
         """
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        With H2, the free evolutions are calculated with mesolve method instead of the expm method.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -1443,3 +1450,294 @@ class XY8(PulsedSim):
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
+
+####################################################################################################
+
+class RXY8(XY8):
+    """
+    This contains the RXY8-M sequence, inheriting from XY8. The RXY8-M is a further improvement from the XY8-M sequence,
+    where a random phase is added in each XY8 block in order to improve noise suppression and pulse errors.
+
+    Attributes
+    ----------
+    same as XY8
+
+    Methods
+    -------
+    RXY8_sequence(tau)
+        Defines the RXY8 sequence for a given free evolution time tau and the set of attributes defined in the constructor,
+        returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
+    RXY8_sequence_proj(tau)
+        RXY8 sequence with projection pulse.
+    RXY8_sequence_H2(tau)
+        RXY8 sequence with time dependent H2 or collapse operators.
+    RXY8_sequence_proj_H2(tau)
+        RXY8 sequence with time dependent H2 or collapse operators and a final pi/2 pulse.
+    
+
+    """
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+        """
+        Class constructor for the RXY8 sequence
+
+        Parameters
+        ----------
+        same as XY8
+        """
+        super().__init__(M, free_duration, pi_pulse_duration, system, H1, H2, c_ops, projection_pulse, pulse_shape, pulse_params, options, time_steps)
+
+        if projection_pulse:
+            if H2 is not None or self.system.c_ops is not None:
+                self.sequence = self.RXY8_sequence_proj_H2
+            else:
+                self.sequence = self.RXY8_sequence_proj
+        elif not projection_pulse:
+            if H2 is not None or self.system.c_ops is not None:
+                self.sequence = self.RXY8_sequence_H2
+            else:
+                self.sequence = self.RXY8_sequence
+        else:
+            raise ValueError("projection_pulse must be a boolean")
+        
+    def RXY8_sequence(self, tau):
+        """
+        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        A random phase is added in each XY8 block.
+        The sequence is to be called by the parallel_map method of QuTip.
+
+
+        Parameters
+        ----------
+        tau : float
+            Free evolution time
+
+        Returns
+        -------
+        rho : Qobj
+            Final density matrix
+        """
+
+        # initial pi/2 pulse on X axis
+        rho = mesolve(
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+        ).states[-1]
+
+        # calculate the first pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+        t0 = ps + self.pi_pulse_duration / 2
+
+        # calculate the pulse spacing between pi pulses
+        ps = tau - self.pi_pulse_duration
+
+        random_phase = np.random.rand(self.M)*2*np.pi
+
+        # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of ps
+        for itr_M in range(8 * self.M - 1):
+            # perform pi pulse
+            rho = mesolve(
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+            ).states[-1]
+
+            # perform free evolution of ps
+            rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+            t0 += tau
+
+        # perform pi pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+
+        # calculate the last pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration / 2
+
+        # perform free evolution of ps
+        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+
+        return rho
+
+    def RXY8_sequence_proj(self, tau):
+        """
+        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+        plus the projection pulse.
+        A random phase is added in each XY8 block.
+        The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau : float
+            Free evolution time
+
+        Returns
+        -------
+        rho : Qobj
+            Final density matrix
+        """
+
+        # perform pi/2 pulse on X axis
+        rho = mesolve(
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+        ).states[-1]
+
+        # calculate the first pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+        t0 = ps + self.pi_pulse_duration / 2
+
+        # calculate the pulse spacing between pi pulses
+        ps = tau - self.pi_pulse_duration
+
+        random_phase = np.random.rand(self.M)*2*np.pi
+
+        # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of ps
+        for itr_M in range(8 * self.M - 1):
+            # perform pi pulse
+            rho = mesolve(
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+            ).states[-1]
+
+            # perform free evolution of ps
+            rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+            t0 += tau
+
+        # perform pi pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+
+        # calculate the last pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+        t0 += self.pi_pulse_duration + ps
+
+        # perform pi/2 pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+
+        return rho
+
+    def RXY8_sequence_H2(self, tau):
+        """
+        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+        in the precence of H2 the free evolutions are called with mesolve instead of the expm method.
+        A random phase is added in each XY8 block.
+        The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau : float
+            Free evolution time
+
+        Returns
+        -------
+        rho : Qobj
+            Final density matrix
+        """
+
+        # initial pi/2 pulse on X axis
+        rho = mesolve(
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+        ).states[-1]
+        t0 = self.pi_pulse_duration / 2
+
+        # calculate the first pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        t0 += ps
+
+        # calculate the pulse spacing between pi pulses
+        ps = tau - self.pi_pulse_duration
+
+        random_phase = np.random.rand(self.M)*2*np.pi
+
+        # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of ps
+        for itr_M in range(8 * self.M - 1):
+            # perform pi pulse
+            rho = mesolve(
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+            ).states[-1]
+            t0 += self.pi_pulse_duration
+
+            # perform free evolution of ps
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            t0 += ps
+
+        # perform pi pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        t0 += self.pi_pulse_duration
+
+        # calculate the last pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration / 2
+
+        # perform free evolution of ps
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+
+        return rho
+
+    def RXY8_sequence_proj_H2(self, tau):
+        """
+        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+        plus the projection pulse.
+        A random phase is added in each XY8 block.
+        In the presence of the H2 term, the free evolutions are called with mesolve instead of the expm method.
+        The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tau : float
+            Free evolution time
+
+        Returns
+        -------
+        rho : Qobj
+            Final density matrix
+        """
+
+        # perform pi/2 pulse on X axis
+        rho = mesolve(
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+        ).states[-1]
+        t0 = self.pi_pulse_duration / 2
+
+        # calculate the first pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        t0 += ps
+
+        # calculate the pulse spacing between pi pulses
+        ps = tau - self.pi_pulse_duration
+
+        random_phase = np.random.rand(self.M)*2*np.pi
+
+        # repeat 8*M-1 times alternated pi pulses on X and Y axis and free evolutions of ps
+        for itr_M in range(8 * self.M - 1):
+            # perform pi pulse
+            rho = mesolve(
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+            ).states[-1]
+            t0 += self.pi_pulse_duration
+
+            # perform free evolution of ps
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            t0 += ps
+
+        # perform pi pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        t0 += self.pi_pulse_duration
+
+        # calculate the last pulse spacing
+        ps = tau / 2 - self.pi_pulse_duration
+
+        # perform free evolution of ps
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        t0 += ps
+
+        # perform pi/2 pulse on X axis
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+
+        return rho

@@ -6,7 +6,7 @@ QuaCCAToo is a Python software for simulating and analyzing spin dynamics of col
 To see examples of utilization, check the notebooks in the `docs` subdirectory. They contain:
 - Ex01: simplest two-level system, where we first define the system and plot the energy levels. Following that, a Rabi oscillation is simulated for two different pulse vectors, with the results being fitted and plotted in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a modelled collapse operator.
 - Ex02: simulation of nitrogen vacancy centers in diamond, first calculating the energy levels, then performing Rabi and comparing with experimental data. Ramsey and PODMR are also simulated.
-- Ex03: Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers.
+- Ex03: simulation of [Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers](https://arxiv.org/abs/2407.09411).
 
 To see the documentation, check [https://qiss-hzb.github.io/QuaCCAToo/](https://qiss-hzb.github.io/QuaCCAToo/).
 
@@ -17,9 +17,8 @@ We strongly recommend using a virtual environment so that the system Python rema
 You can create a `conda` virtual environment as follows:
 
 ```sh
-conda create --name quaccatoo-env python
+conda create --name quaccatoo-env python qutip matplotlib
 conda activate quaccatoo-env
-conda install numpy matplotlib scipy qutip
 ```
 **OR**
 
