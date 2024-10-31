@@ -238,7 +238,7 @@ class QSys:
         self.H0 = tensor(self.H0, qeye(dim_spin)) +  H_spin
         
         if self.rho0 is not None:
-            self.rho0 = tensor(self.rho0, qeye(dim_spin))
+            self.rho0 = tensor(self.rho0, qeye(dim_spin)).unit()
 
         if self.observable is not None:
             self.observable = tensor(self.observable, qeye(dim_spin))
