@@ -1053,7 +1053,9 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_H2">
 <span class="sig-name descname"><span class="pre">CPMG_sequence_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#CPMG.CPMG_sequence_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_H2'"><span>#</span></a></dt>
 <dd><p>Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-The sequence consists of a pi pulse and free evolution time tau repeated M times. The sequence is to be called by the parallel_map method of QuTip.</p>
+The sequence consists of a pi pulse and free evolution time tau repeated M times.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
+The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -1093,6 +1095,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_proj_H2">
 <span class="sig-name descname"><span class="pre">CPMG_sequence_proj_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#CPMG.CPMG_sequence_proj_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_proj_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_proj_H2'"><span>#</span></a></dt>
 <dd><p>Defines the CPMG sequence, but with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1138,6 +1141,192 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
 <dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.RXY8">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.PredefDDSeqs.</span></span><span class="sig-name descname"><span class="pre">RXY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#RXY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.RXY8" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.RXY8'"><span>#</span></a></dt>
+<dd><p>This contains the RXY8-M sequence, inheriting from XY8. The RXY8-M is a further improvement from the XY8-M sequence,
+where a random phase is added in each XY8 block in order to improve noise suppression and pulse errors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>same as XY8</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>RXY8_sequence(tau)</strong></p></td>
+<td><p>Defines the RXY8 sequence for a given free evolution time tau and the set of attributes defined in the constructor, returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>RXY8_sequence_proj(tau)</strong></p></td>
+<td><p>RXY8 sequence with projection pulse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>RXY8_sequence_H2(tau)</strong></p></td>
+<td><p>RXY8 sequence with time dependent H2 or collapse operators.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>RXY8_sequence_proj_H2(tau)</strong></p></td>
+<td><p>RXY8 sequence with time dependent H2 or collapse operators and a final pi/2 pulse.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Class constructor for the RXY8 sequence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>same as XY8</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence" title="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence</span></code></a>(tau)</p></td>
+<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2" title="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence_H2</span></code></a>(tau)</p></td>
+<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times, in the precence of H2 the free evolutions are called with mesolve instead of the expm method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj" title="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence_proj</span></code></a>(tau)</p></td>
+<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times, plus the projection pulse.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2" title="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence_proj_H2</span></code></a>(tau)</p></td>
+<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times, plus the projection pulse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence</span></code>(tau)</p></td>
+<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence_H2</span></code>(tau)</p></td>
+<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence_proj</span></code>(tau)</p></td>
+<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence_proj_H2</span></code>(tau)</p></td>
+<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
+<td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
+<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
+<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code>([tau])</p></td>
+<td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
+<td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence])</p></td>
+<td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>save</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence">
+<span class="sig-name descname"><span class="pre">RXY8_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#RXY8.RXY8_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence'"><span>#</span></a></dt>
+<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+A random phase is added in each XY8 block.
+The sequence is to be called by the parallel_map method of QuTip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final density matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2">
+<span class="sig-name descname"><span class="pre">RXY8_sequence_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#RXY8.RXY8_sequence_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2'"><span>#</span></a></dt>
+<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+in the precence of H2 the free evolutions are called with mesolve instead of the expm method.
+A random phase is added in each XY8 block.
+The sequence is to be called by the parallel_map method of QuTip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final density matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj">
+<span class="sig-name descname"><span class="pre">RXY8_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#RXY8.RXY8_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj'"><span>#</span></a></dt>
+<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+plus the projection pulse.
+A random phase is added in each XY8 block.
+The sequence is to be called by the parallel_map method of QuTip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final density matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2">
+<span class="sig-name descname"><span class="pre">RXY8_sequence_proj_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#RXY8.RXY8_sequence_proj_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2'"><span>#</span></a></dt>
+<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
+plus the projection pulse.
+A random phase is added in each XY8 block.
+In the presence of the H2 term, the free evolutions are called with mesolve instead of the expm method.
+The sequence is to be called by the parallel_map method of QuTip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final density matrix</p>
 </dd>
 </dl>
 </dd>
@@ -1281,6 +1470,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.XY.XY_sequence_H2">
 <span class="sig-name descname"><span class="pre">XY_sequence_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#XY.XY_sequence_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.XY.XY_sequence_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.XY.XY_sequence_H2'"><span>#</span></a></dt>
 <dd><p>Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1321,6 +1511,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.XY.XY_sequence_proj_H2">
 <span class="sig-name descname"><span class="pre">XY_sequence_proj_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#XY.XY_sequence_proj_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.XY.XY_sequence_proj_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.XY.XY_sequence_proj_H2'"><span>#</span></a></dt>
 <dd><p>Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1510,6 +1701,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.XY8.XY8_sequence_H2">
 <span class="sig-name descname"><span class="pre">XY8_sequence_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#XY8.XY8_sequence_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.XY8.XY8_sequence_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.XY8.XY8_sequence_H2'"><span>#</span></a></dt>
 <dd><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1550,6 +1742,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="sig sig-object py" id="quaccatoo.PredefDDSeqs.XY8.XY8_sequence_proj_H2">
 <span class="sig-name descname"><span class="pre">XY8_sequence_proj_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefDDSeqs.html#XY8.XY8_sequence_proj_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefDDSeqs.XY8.XY8_sequence_proj_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefDDSeqs.XY8.XY8_sequence_proj_H2'"><span>#</span></a></dt>
 <dd><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+With H2, the free evolutions are calculated with mesolve method instead of the expm method.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2342,6 +2535,13 @@ It loads experimental data from a file and sets the variable and results attribu
 <li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_proj_H2'" class="reference internal" href="#quaccatoo.PredefDDSeqs.CPMG.CPMG_sequence_proj_H2"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence_proj_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.CPMG.get_pulse_profiles'" class="reference internal" href="#quaccatoo.PredefDDSeqs.CPMG.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">CPMG.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.CPMG.plot_pulses'" class="reference internal" href="#quaccatoo.PredefDDSeqs.CPMG.plot_pulses"><code class="docutils literal notranslate"><span class="pre">CPMG.plot_pulses()</span></code></a></li>
+</ul>
+</li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.RXY8'" class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8"><code class="docutils literal notranslate"><span class="pre">RXY8</span></code></a><ul>
+<li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence'" class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2'" class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_H2"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence_H2()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj'" class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence_proj()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2'" class="reference internal" href="#quaccatoo.PredefDDSeqs.RXY8.RXY8_sequence_proj_H2"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence_proj_H2()</span></code></a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#quaccatoo.PredefDDSeqs.XY'" class="reference internal" href="#quaccatoo.PredefDDSeqs.XY"><code class="docutils literal notranslate"><span class="pre">XY</span></code></a><ul>
