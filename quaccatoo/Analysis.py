@@ -69,10 +69,10 @@ class Analysis:
         experiment : PulsedSim or ExpData
             experiment object to be analyzed containing the results and variable attributes
         """
-        if not isinstance(experiment, PulsedSim) and not isinstance(experiment, ExpData):
+        if isinstance(experiment, PulsedSim) or isinstance(experiment, ExpData):
+            self.experiment = experiment
+        else:
             raise ValueError("experiment must be a PulsedSimulation or ExpData object")
-
-        self.experiment = experiment
 
         if not isinstance(experiment.results, np.ndarray) and not (isinstance(experiment.results, list) and all(isinstance(res, np.ndarray) for res in experiment.results)):
             raise ValueError("Results attribute of the experiment must be a numpy array or a list of numpy arrays")
