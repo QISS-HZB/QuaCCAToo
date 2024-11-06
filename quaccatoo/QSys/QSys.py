@@ -66,9 +66,7 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Fie
 
     fig.suptitle("Energy Levels")
 
-
 ####################################################################################################
-
 
 class QSys:
     """

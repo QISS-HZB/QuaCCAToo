@@ -11,8 +11,8 @@ from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
 
-from .ExpData import ExpData
-from .PulsedSim import PulsedSim
+from ..ExpData.ExpData import ExpData
+from ..PulsedSim.PulsedSim import PulsedSim
 
 
 class Analysis:

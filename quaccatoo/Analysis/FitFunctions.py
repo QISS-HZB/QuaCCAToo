@@ -6,7 +6,6 @@ Fit functions to be used in the Analysis class as part of the QuaCAAToo package.
 
 import numpy as np
 
-
 def fit_rabi(t, A, Tpi, C, phi):
     """
     Fit a cosine function to Rabi oscillations.
