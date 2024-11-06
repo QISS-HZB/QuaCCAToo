@@ -227,7 +227,7 @@ given a Hamiltonian for the new spin.</p>
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#classes'"><span>#</span></a></h3>
 <ul class="simple">
 <li><p>Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.</p></li>
-<li><p>pODMR: Pulsed Optically Detected Magnetic Resonance (pODMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.</p></li>
+<li><p>PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.</p></li>
 <li><p>Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.</p></li>
 <li><p>Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</p></li>
 </ul>
@@ -465,11 +465,11 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PODMR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.PredefSeqs.</span></span><span class="sig-name descname"><span class="pre">PODMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PODMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PODMR" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PODMR'"><span>#</span></a></dt>
-<dd><p>A class containing Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed,
+<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PMR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.PredefSeqs.</span></span><span class="sig-name descname"><span class="pre">PMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PMR" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PMR'"><span>#</span></a></dt>
+<dd><p>A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,
 inheriting from the PulsedSim class.</p>
-<p>The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
+<p>The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
 it will undergo some transition which will affect the observable.
 This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.
 Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,
@@ -487,15 +487,15 @@ however the method can be more general.</p>
 <p class="rubric">Methods</p>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>PODMR_sequence(f)</strong></p></td>
-<td><p>Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.</p></td>
+<tr class="row-odd"><td><p><strong>PMR_sequence(f)</strong></p></td>
+<td><p>Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse. To be called by the parallel_map in run method.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>(Inherited from PulsedSimulation)</strong></p></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<p>Constructor for the pODMR pulsed experiment class.</p>
+<p>Constructor for the PMR pulsed experiment class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -523,8 +523,8 @@ however the method can be more general.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefSeqs.PODMR.PODMR_sequence" title="quaccatoo.PredefSeqs.PODMR.PODMR_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PODMR_sequence</span></code></a>(f)</p></td>
-<td><p>Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefSeqs.PMR.PMR_sequence" title="quaccatoo.PredefSeqs.PMR.PMR_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PMR_sequence</span></code></a>(f)</p></td>
+<td><p>Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
@@ -541,7 +541,7 @@ however the method can be more general.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefSeqs.PODMR.plot_pulses" title="quaccatoo.PredefSeqs.PODMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.PredefSeqs.PMR.plot_pulses" title="quaccatoo.PredefSeqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence])</p></td>
@@ -557,9 +557,9 @@ however the method can be more general.</p>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PODMR.PODMR_sequence">
-<span class="sig-name descname"><span class="pre">PODMR_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PODMR.PODMR_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PODMR.PODMR_sequence" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PODMR.PODMR_sequence'"><span>#</span></a></dt>
-<dd><p>Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.
+<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PMR.PMR_sequence">
+<span class="sig-name descname"><span class="pre">PMR_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PMR.PMR_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PMR.PMR_sequence" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PMR.PMR_sequence'"><span>#</span></a></dt>
+<dd><p>Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
 To be called by the parallel_map in run method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -577,8 +577,8 @@ To be called by the parallel_map in run method.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PODMR.plot_pulses">
-<span class="sig-name descname"><span class="pre">plot_pulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Intensity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Profiles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_pulse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PODMR.plot_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PODMR.plot_pulses" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PODMR.plot_pulses'"><span>#</span></a></dt>
+<dt class="sig sig-object py" id="quaccatoo.PredefSeqs.PMR.plot_pulses">
+<span class="sig-name descname"><span class="pre">plot_pulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Intensity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Profiles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_pulse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/PredefSeqs.html#PMR.plot_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.PredefSeqs.PMR.plot_pulses" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.PredefSeqs.PMR.plot_pulses'"><span>#</span></a></dt>
 <dd><p>Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2507,9 +2507,9 @@ It loads experimental data from a file and sets the variable and results attribu
 <li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.Hahn.plot_pulses'" class="reference internal" href="#quaccatoo.PredefSeqs.Hahn.plot_pulses"><code class="docutils literal notranslate"><span class="pre">Hahn.plot_pulses()</span></code></a></li>
 </ul>
 </li>
-<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PODMR'" class="reference internal" href="#quaccatoo.PredefSeqs.PODMR"><code class="docutils literal notranslate"><span class="pre">PODMR</span></code></a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PODMR.PODMR_sequence'" class="reference internal" href="#quaccatoo.PredefSeqs.PODMR.PODMR_sequence"><code class="docutils literal notranslate"><span class="pre">PODMR.PODMR_sequence()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PODMR.plot_pulses'" class="reference internal" href="#quaccatoo.PredefSeqs.PODMR.plot_pulses"><code class="docutils literal notranslate"><span class="pre">PODMR.plot_pulses()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PMR'" class="reference internal" href="#quaccatoo.PredefSeqs.PMR"><code class="docutils literal notranslate"><span class="pre">PMR</span></code></a><ul>
+<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PMR.PMR_sequence'" class="reference internal" href="#quaccatoo.PredefSeqs.PMR.PMR_sequence"><code class="docutils literal notranslate"><span class="pre">PMR.PMR_sequence()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.PMR.plot_pulses'" class="reference internal" href="#quaccatoo.PredefSeqs.PMR.plot_pulses"><code class="docutils literal notranslate"><span class="pre">PMR.plot_pulses()</span></code></a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#quaccatoo.PredefSeqs.Rabi'" class="reference internal" href="#quaccatoo.PredefSeqs.Rabi"><code class="docutils literal notranslate"><span class="pre">Rabi</span></code></a><ul>

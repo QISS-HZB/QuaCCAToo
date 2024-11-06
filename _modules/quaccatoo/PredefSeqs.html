@@ -151,7 +151,7 @@
 </span><span id="line-4"><span class="sd">Classes</span>
 </span><span id="line-5"><span class="sd">-------</span>
 </span><span id="line-6"><span class="sd">- Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.</span>
-</span><span id="line-7"><span class="sd">- pODMR: Pulsed Optically Detected Magnetic Resonance (pODMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.</span>
+</span><span id="line-7"><span class="sd">- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.</span>
 </span><span id="line-8"><span class="sd">- Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.</span>
 </span><span id="line-9"><span class="sd">- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</span>
 </span><span id="line-10"><span class="sd">&quot;&quot;&quot;</span>
@@ -280,14 +280,14 @@
 </span><span id="line-127"><span class="c1">####################################################################################################</span>
 </span><span id="line-128">
 </span><span id="line-129">
-<div class="viewcode-block" id="PODMR">
-<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PODMR">[docs]</a>
-</span><span id="line-130"><span class="k">class</span> <span class="nc">PODMR</span><span class="p">(</span><span class="n">PulsedSim</span><span class="p">):</span>
+<div class="viewcode-block" id="PMR">
+<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PMR">[docs]</a>
+</span><span id="line-130"><span class="k">class</span> <span class="nc">PMR</span><span class="p">(</span><span class="n">PulsedSim</span><span class="p">):</span>
 </span><span id="line-131"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-132"><span class="sd">    A class containing Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed,</span>
+</span><span id="line-132"><span class="sd">    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,</span>
 </span><span id="line-133"><span class="sd">    inheriting from the PulsedSim class.</span>
 </span><span id="line-134">
-</span><span id="line-135"><span class="sd">    The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,</span>
+</span><span id="line-135"><span class="sd">    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,</span>
 </span><span id="line-136"><span class="sd">    it will undergo some transition which will affect the observable.</span>
 </span><span id="line-137"><span class="sd">    This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.</span>
 </span><span id="line-138"><span class="sd">    Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,</span>
@@ -302,15 +302,15 @@
 </span><span id="line-147">
 </span><span id="line-148"><span class="sd">    Methods</span>
 </span><span id="line-149"><span class="sd">    -------</span>
-</span><span id="line-150"><span class="sd">    PODMR_sequence(f)</span>
-</span><span id="line-151"><span class="sd">        Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.</span>
+</span><span id="line-150"><span class="sd">    PMR_sequence(f)</span>
+</span><span id="line-151"><span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 </span><span id="line-152"><span class="sd">        To be called by the parallel_map in run method.</span>
 </span><span id="line-153"><span class="sd">    (Inherited from PulsedSimulation)</span>
 </span><span id="line-154"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="line-155">
 </span><span id="line-156">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{},</span> <span class="n">time_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
 </span><span id="line-157"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-158"><span class="sd">    Constructor for the pODMR pulsed experiment class.</span>
+</span><span id="line-158"><span class="sd">    Constructor for the PMR pulsed experiment class.</span>
 </span><span id="line-159">
 </span><span id="line-160"><span class="sd">    Parameters</span>
 </span><span id="line-161"><span class="sd">    ----------</span>
@@ -393,14 +393,14 @@
 </span><span id="line-238">        <span class="k">else</span><span class="p">:</span>
 </span><span id="line-239">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list&quot;</span><span class="p">)</span>
 </span><span id="line-240">
-</span><span id="line-241">        <span class="c1"># set the sequence attribute to the PODMR_sequence method</span>
-</span><span id="line-242">        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PODMR_sequence</span>
+</span><span id="line-241">        <span class="c1"># set the sequence attribute to the PMR_sequence method</span>
+</span><span id="line-242">        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMR_sequence</span>
 </span><span id="line-243">
-<div class="viewcode-block" id="PODMR.PODMR_sequence">
-<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PODMR.PODMR_sequence">[docs]</a>
-</span><span id="line-244">    <span class="k">def</span> <span class="nf">PODMR_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="PMR.PMR_sequence">
+<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PMR.PMR_sequence">[docs]</a>
+</span><span id="line-244">    <span class="k">def</span> <span class="nf">PMR_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
 </span><span id="line-245"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-246"><span class="sd">        Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.</span>
+</span><span id="line-246"><span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 </span><span id="line-247"><span class="sd">        To be called by the parallel_map in run method.</span>
 </span><span id="line-248">
 </span><span id="line-249"><span class="sd">        Parameters</span>
@@ -429,8 +429,8 @@
 </span><span id="line-272">        <span class="k">return</span> <span class="n">rho</span></div>
 
 </span><span id="line-273">
-<div class="viewcode-block" id="PODMR.plot_pulses">
-<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PODMR.plot_pulses">[docs]</a>
+<div class="viewcode-block" id="PMR.plot_pulses">
+<a class="viewcode-back" href="../../modules.html#quaccatoo.PredefSeqs.PMR.plot_pulses">[docs]</a>
 </span><span id="line-274">    <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pulse Profiles&quot;</span><span class="p">,</span> <span class="n">f_pulse</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="line-275"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-276"><span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</span>
