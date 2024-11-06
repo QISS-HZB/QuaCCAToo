@@ -4,7 +4,7 @@ This module contains predefined basic pulsed experiments inheriting from the Pul
 Classes
 -------
 - Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
-- pODMR: Pulsed Optically Detected Magnetic Resonance (pODMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.
+- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.
 - Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.
 - Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 """
@@ -127,12 +127,12 @@ class Rabi(PulsedSim):
 ####################################################################################################
 
 
-class PODMR(PulsedSim):
+class PMR(PulsedSim):
     """
-    A class containing Pulsed Optically Detected Magnetic Resonance (pODMR) experiments where the frequency is the variable being changed,
+    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,
     inheriting from the PulsedSim class.
 
-    The pODMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
+    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
     it will undergo some transition which will affect the observable.
     This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.
     Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,
@@ -147,15 +147,15 @@ class PODMR(PulsedSim):
 
     Methods
     -------
-    PODMR_sequence(f)
-        Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.
+    PMR_sequence(f)
+        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
     (Inherited from PulsedSimulation)
     """
 
     def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, time_steps=100, options={}):
         """
-    Constructor for the pODMR pulsed experiment class.
+    Constructor for the PMR pulsed experiment class.
 
     Parameters
     ----------
@@ -238,12 +238,12 @@ class PODMR(PulsedSim):
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
 
-        # set the sequence attribute to the PODMR_sequence method
-        self.sequence = self.PODMR_sequence
+        # set the sequence attribute to the PMR_sequence method
+        self.sequence = self.PMR_sequence
 
-    def PODMR_sequence(self, f):
+    def PMR_sequence(self, f):
         """
-        Defines the Pulsed Optically Detected Magnetic Resonance (pODMR) sequence for a given frequency of the pulse.
+        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
 
         Parameters

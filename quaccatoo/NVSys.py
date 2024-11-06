@@ -67,7 +67,7 @@ class NV(QSys):
         get the NV hamiltonian term accounting for the electron Zeeman effect
     _NuclearZeeman
         get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
-    _HyperFineN
+    _HyperfineN
         get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    
     """
     def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_T="K"):
@@ -96,12 +96,10 @@ class NV(QSys):
         units_T : str
             temperature units ('C'/'K')
         """
-
-        # convert the magnetic field to mTesla
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
-
-        self.B0 = B0
+        else:
+            self.B0 = B0
 
         if units_B0 is None:
             warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
@@ -132,12 +130,8 @@ class NV(QSys):
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-            Hzf = self._ZeroField()
-            Hez = self._ElectronZeeman()
-            Hhf = self._HyperFineN()
-            Hnz = self._NuclearZeeman()
 
-            H0 = Hzf + Hez + Hhf + Hnz
+            H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman()
 
             if not temp:
                 rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
@@ -147,12 +141,8 @@ class NV(QSys):
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
-            Hzf = self._ZeroField()
-            Hez = self._ElectronZeeman()
-            Hhf = self._HyperFineN()
-            Hnz = self._NuclearZeeman()
-            #  also add the Quadrupole Interaction for N14
-            H0 = Hzf + Hez + Hhf + Hnz - 5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
+            
+            H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman() + self._Quadrupole()
 
             if not temp:
                 rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
@@ -395,7 +385,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _HyperFineN(self):
+    def _HyperfineN(self):
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -411,3 +401,20 @@ class NV(QSys):
             return 0
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+        
+    def _Quadrupole(self):
+        """
+        Get the quadrupole term
+
+        Returns
+        -------
+        Quadrupole Hamiltonian : Qobj
+        """
+        if self.N==14:
+            return - 5.01*tensor(qeye(3), jmat(1,'z')**2)
+        elif self.N==15:
+            return None
+        elif self.N==0:
+            return None
+        else:
+            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
