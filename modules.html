@@ -2255,6 +2255,29 @@ It loads experimental data from a file and sets the variable and results attribu
 </dl>
 </dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_five_sinc2">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_five_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f04</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_five_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_five_sinc2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_five_sinc2'"><span>#</span></a></dt>
+<dd><p>Fit two symmetric sinc functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
+</dd>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc functions.</p>
+</dd>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc functions.</p>
+</dd>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the sinc functions.</p>
+</dd>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the sinc functions.</p>
+</dd>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc functions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_hahn_mod">
 <span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_hahn_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_hahn_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_hahn_mod" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_hahn_mod'"><span>#</span></a></dt>
 <dd><p>Fit a Hahn echo with modulation function with 2 frequencies.</p>
@@ -2635,6 +2658,7 @@ It loads experimental data from a file and sets the variable and results attribu
 <li><a :data-current="activeSection === '#module-quaccatoo.FitFunctions'" class="reference internal" href="#module-quaccatoo.FitFunctions">FitFunctions</a><ul>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_exp_decay'" class="reference internal" href="#quaccatoo.FitFunctions.fit_exp_decay"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_exp_decay_n'" class="reference internal" href="#quaccatoo.FitFunctions.fit_exp_decay_n"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay_n()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_five_sinc2'" class="reference internal" href="#quaccatoo.FitFunctions.fit_five_sinc2"><code class="docutils literal notranslate"><span class="pre">fit_five_sinc2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_hahn_mod'" class="reference internal" href="#quaccatoo.FitFunctions.fit_hahn_mod"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_hahn_mod_decay'" class="reference internal" href="#quaccatoo.FitFunctions.fit_hahn_mod_decay"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod_decay()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_lorentz'" class="reference internal" href="#quaccatoo.FitFunctions.fit_lorentz"><code class="docutils literal notranslate"><span class="pre">fit_lorentz()</span></code></a></li>
