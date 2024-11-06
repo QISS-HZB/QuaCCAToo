@@ -137,34 +137,34 @@ def fit_hahn_mod_decay(t, A, B, C, f1, f2, Tc, n):
     return np.exp(-((t / Tc) ** n)) * (A - B * np.sin(2 * np.pi * f1 * t / 2) ** 2 * np.sin(2 * np.pi * f2 * t / 2) ** 2) + C
 
 
-def fit_lorentz(t, A, gamma, f, C):
+def fit_lorentz(f, A, gamma, f0, C):
     """
     Fit a Lorentzian peak.
 
     Parameters
     ----------
-    t : array_like
-        Time values.
+    f : array_like
+        Frequency values.
     A : float
         Amplitude of the peak.
     gamma : float
         Width of the peak.
-    f : float
-        Frequency of the peak.
+    f0 : float
+        Central requency of the peak.
     C : float
         Offset of the peak.
     """
-    return C - A * (gamma**2) / ((t - f) ** 2 + gamma**2)
+    return C - A * (gamma**2) / ((f - f0) ** 2 + gamma**2)
 
 
-def fit_two_lorentz(f, A1, A2, gamma1, gamma2, f1, f2, C):
+def fit_two_lorentz(f, A1, A2, gamma1, gamma2, f01, f02, C):
     """
     Fit two symmetric Lorentzian peaks.
 
     Parameters
     ----------
     f : array_like
-        Time values.
+        Frequency values.
     A1 : float
         Amplitude of the first peak.
     A2 : float
@@ -173,33 +173,73 @@ def fit_two_lorentz(f, A1, A2, gamma1, gamma2, f1, f2, C):
         Width of the first peak.
     gamma2 : float
         Width of the second peak.
-    f1 : float
-        Frequency of the first peak.
-    f2 : float
-        Frequency of the second peak.
+    f01 : float
+        Central frequency of the first peak.
+    f02 : float
+        Central frequency of the second peak.
     C : float
         Offset of the peaks.
     """
-    return C - A1 * (gamma1**2) / ((f - f1) ** 2 + gamma1**2) - A2 * (gamma2**2) / ((f - f2) ** 2 + gamma2**2)
+    return C + fit_lorentz(f, A1, gamma1, f01, 0) + fit_lorentz(f, A2, gamma2, f02, 0)
 
 
-def fit_two_lorentz_sym(f, A, gamma, f1, f2, C):
+def fit_two_lorentz_sym(f, A, gamma, f_mean, f_delta, C):
     """
     Fit two symmetric Lorentzian peaks.
 
     Parameters
     ----------
     f : array_like
-        Time values.
+        Frquency values.
     A : float
         Amplitude of the peaks.
     gamma : float
         Width of the peaks.
-    f1 : float
-        Frequency of the first peak.
-    f2 : float
-        Frequency of the second peak.
+    f_mean : float
+        Mean frequency of the peaks.
+    f_delta : float
+        Frequency difference between the peaks.
     C : float
         Offset of the peaks.
     """
-    return C - A * (gamma**2) / ((f - f1) ** 2 + gamma**2) - A * (gamma**2) / ((f - f2) ** 2 + gamma**2)
+    return C + fit_lorentz(f, A, gamma, f_mean - f_delta/2, 0) + fit_lorentz(f, A, gamma, f_mean + f_delta/2, 0)
+
+def fit_sinc2(f, A, gamma, f0, C):
+    """
+    Fit a sinc function.
+
+    Parameters
+    ----------
+    f : array_like
+        Frequency values.
+    A : float
+        Amplitude of the sinc function.
+    gamma : float
+        Width of the sinc function.
+    f0 : float
+        Central frequency of the sinc function.
+    C : float
+        Offset of the sinc function.
+    """
+    return C- A*gamma**2/(gamma**2 + (f-f0)**2) * np.sin((gamma**2 + (f-f0)**2)**.5/gamma/2 * np.pi )**2
+
+def fit_two_sinc2_sym(f, A, gamma, f_mean, f_delta, C):
+    """
+    Fit two symmetric sinc functions.
+
+    Parameters
+    ----------
+    f : array_like
+        Frequency values.
+    A : float
+        Amplitude of the sinc functions.
+    gamma : float
+        Width of the sinc functions.
+    f_mean : float
+        Mean frequency of the sinc functions.
+    f_delta : float
+        Frequency difference between the sinc functions.
+    C : float
+        Offset of the sinc functions.
+    """
+    return C + fit_sinc2(f, A, gamma, f_mean - f_delta/2, 0) + fit_sinc2(f, A, gamma, f_mean + f_delta/2, 0)
