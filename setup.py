@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='QuaCCAToo',
-    version='0.1',
+    version='0.2',
     description='Quantum Color Centers Analysis Toolbox',
     url='https://github.com/QISS-HZB/QuaCCAToo',
     author='Lucas Tsunaki, Anmol Singh, Sergei Trofimov',
