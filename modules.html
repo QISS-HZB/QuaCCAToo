@@ -2306,18 +2306,18 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_lorentz">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_lorentz" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_lorentz'"><span>#</span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_lorentz" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_lorentz'"><span>#</span></a></dt>
 <dd><p>Fit a Lorentzian peak.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
 <dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the peak.</p>
 </dd>
 <dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the peak.</p>
 </dd>
-<dt><strong>f</strong><span class="classifier">float</span></dt><dd><p>Frequency of the peak.</p>
+<dt><strong>f0</strong><span class="classifier">float</span></dt><dd><p>Central requency of the peak.</p>
 </dd>
 <dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peak.</p>
 </dd>
@@ -2372,13 +2372,34 @@ It loads experimental data from a file and sets the variable and results attribu
 </dl>
 </dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_sinc2">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_sinc2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_sinc2'"><span>#</span></a></dt>
+<dd><p>Fit a sinc function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
+</dd>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc function.</p>
+</dd>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc function.</p>
+</dd>
+<dt><strong>f0</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the sinc function.</p>
+</dd>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc function.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_two_lorentz">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_two_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_two_lorentz" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_two_lorentz'"><span>#</span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_two_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_two_lorentz" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_two_lorentz'"><span>#</span></a></dt>
 <dd><p>Fit two symmetric Lorentzian peaks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
 <dt><strong>A1</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the first peak.</p>
 </dd>
@@ -2388,9 +2409,9 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd>
 <dt><strong>gamma2</strong><span class="classifier">float</span></dt><dd><p>Width of the second peak.</p>
 </dd>
-<dt><strong>f1</strong><span class="classifier">float</span></dt><dd><p>Frequency of the first peak.</p>
+<dt><strong>f01</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the first peak.</p>
 </dd>
-<dt><strong>f2</strong><span class="classifier">float</span></dt><dd><p>Frequency of the second peak.</p>
+<dt><strong>f02</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the second peak.</p>
 </dd>
 <dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peaks.</p>
 </dd>
@@ -2400,22 +2421,45 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_two_lorentz_sym">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_two_lorentz_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_two_lorentz_sym" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_two_lorentz_sym'"><span>#</span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_two_lorentz_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_two_lorentz_sym" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_two_lorentz_sym'"><span>#</span></a></dt>
 <dd><p>Fit two symmetric Lorentzian peaks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frquency values.</p>
 </dd>
 <dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the peaks.</p>
 </dd>
 <dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the peaks.</p>
 </dd>
-<dt><strong>f1</strong><span class="classifier">float</span></dt><dd><p>Frequency of the first peak.</p>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the peaks.</p>
 </dd>
-<dt><strong>f2</strong><span class="classifier">float</span></dt><dd><p>Frequency of the second peak.</p>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the peaks.</p>
 </dd>
 <dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peaks.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.FitFunctions.fit_two_sinc2_sym">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.FitFunctions.</span></span><span class="sig-name descname"><span class="pre">fit_two_sinc2_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/FitFunctions.html#fit_two_sinc2_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.FitFunctions.fit_two_sinc2_sym" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.FitFunctions.fit_two_sinc2_sym'"><span>#</span></a></dt>
+<dd><p>Fit two symmetric sinc functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>f</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
+</dd>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc functions.</p>
+</dd>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc functions.</p>
+</dd>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the sinc functions.</p>
+</dd>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the sinc functions.</p>
+</dd>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc functions.</p>
 </dd>
 </dl>
 </dd>
@@ -2596,8 +2640,10 @@ It loads experimental data from a file and sets the variable and results attribu
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_lorentz'" class="reference internal" href="#quaccatoo.FitFunctions.fit_lorentz"><code class="docutils literal notranslate"><span class="pre">fit_lorentz()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_rabi'" class="reference internal" href="#quaccatoo.FitFunctions.fit_rabi"><code class="docutils literal notranslate"><span class="pre">fit_rabi()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_rabi_decay'" class="reference internal" href="#quaccatoo.FitFunctions.fit_rabi_decay"><code class="docutils literal notranslate"><span class="pre">fit_rabi_decay()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_sinc2'" class="reference internal" href="#quaccatoo.FitFunctions.fit_sinc2"><code class="docutils literal notranslate"><span class="pre">fit_sinc2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_two_lorentz'" class="reference internal" href="#quaccatoo.FitFunctions.fit_two_lorentz"><code class="docutils literal notranslate"><span class="pre">fit_two_lorentz()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_two_lorentz_sym'" class="reference internal" href="#quaccatoo.FitFunctions.fit_two_lorentz_sym"><code class="docutils literal notranslate"><span class="pre">fit_two_lorentz_sym()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.FitFunctions.fit_two_sinc2_sym'" class="reference internal" href="#quaccatoo.FitFunctions.fit_two_sinc2_sym"><code class="docutils literal notranslate"><span class="pre">fit_two_sinc2_sym()</span></code></a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#module-quaccatoo.PulseShapes'" class="reference internal" href="#module-quaccatoo.PulseShapes">PulseShapes</a><ul>
