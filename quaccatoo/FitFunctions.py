@@ -243,3 +243,24 @@ def fit_two_sinc2_sym(f, A, gamma, f_mean, f_delta, C):
         Offset of the sinc functions.
     """
     return C + fit_sinc2(f, A, gamma, f_mean - f_delta/2, 0) + fit_sinc2(f, A, gamma, f_mean + f_delta/2, 0)
+
+def fit_five_sinc2(f, A1, A2, A3, A4, A5, gamma1 , gamma2, gamma3, gamma4, gamma5, f01, f02, f03, f04, f05, C):
+    """
+    Fit two symmetric sinc functions.
+
+    Parameters
+    ----------
+    f : array_like
+        Frequency values.
+    A : float
+        Amplitude of the sinc functions.
+    gamma : float
+        Width of the sinc functions.
+    f_mean : float
+        Mean frequency of the sinc functions.
+    f_delta : float
+        Frequency difference between the sinc functions.
+    C : float
+        Offset of the sinc functions.
+    """
+    return C + fit_sinc2(f, A1, gamma1, f01, 0) + fit_sinc2(f, A2, gamma2, f02, 0) + fit_sinc2(f, A3, gamma3, f03, 0) + fit_sinc2(f, A4, gamma4, f04, 0) + fit_sinc2(f, A5, gamma5, f05, 0)
