@@ -38,7 +38,7 @@ class NV(QSys):
         units of the angles (deg or rad)
     temp : float or None
         temperature
-    units_T : str
+    units_temp : str
         temperature units 'C' or 'K'
     energy_levels : list
         list of energy levels of the Hamiltonian
@@ -70,7 +70,7 @@ class NV(QSys):
     _HyperfineN
         get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    
     """
-    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_T="K"):
+    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_temp="K"):
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
@@ -93,7 +93,7 @@ class NV(QSys):
             units of the angles (deg or rad)
         temp : float
             temperature
-        units_T : str
+        units_temp : str
             temperature units ('C'/'K')
         """
         if not isinstance(B0, (int, float)):
@@ -132,23 +132,13 @@ class NV(QSys):
         if N == 15:
 
             H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman()
-
-            if not temp:
-                rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
-            else:
-                self.rho0_lowT(temp, units_T)
-
+            rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
             
             H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman() + self._Quadrupole()
-
-            if not temp:
-                rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
-            else:
-                self.rho0_lowT(temp, units_T)
-
+            rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
@@ -165,12 +155,15 @@ class NV(QSys):
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
+        if temp is not None:
+            self.rho0_lowT(temp, units_temp)
+
         self.set_MW_freqs()
         self.set_RF_freqs()
         self.set_MW_H1()
         self.set_RF_H1()
 
-    def rho0_lowT(self, temp, units_T="K"):
+    def rho0_lowT(self, temp, units_temp="K"):
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
@@ -179,7 +172,7 @@ class NV(QSys):
         ----------
         T : float
             temperature
-        units_T : str
+        units_temp : str
             units of the temperature (K or C)
 
         Returns
@@ -188,14 +181,14 @@ class NV(QSys):
             initial state of the system
         """
         # check the units and convert the temperature to Kelvin
-        if units_T == "K":
+        if units_temp == "K":
             pass
-        elif units_T == "C":
+        elif units_temp == "C":
             temp += 273.15
-        elif units_T == "F":
+        elif units_temp == "F":
             raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
         else:
-            raise ValueError(f"Invalid value for units_T. Expected either 'K' or 'C', got {units_T}.")
+            raise ValueError(f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}.")
 
         # check if the temperature is a positive real number
         if not isinstance(temp, (int, float)) and temp > 0:
@@ -209,15 +202,15 @@ class NV(QSys):
         index_2 = None
         index_3 = None
         # iterates over all the eigenstates and find the one closest related to the |0,1/2> and |0,-1/2> states
-        for itr in range(len(self.energy_levels)):
+        for itr in range(len(self.eigenstates)):
             if self.N == 15:
-                proj_1 = np.abs(self.energy_levels[itr].overlap(basis(6, 2)))
-                proj_2 = np.abs(self.energy_levels[itr].overlap(basis(6, 3)))
+                proj_1 = np.abs(self.eigenstates[itr].overlap(basis(6, 2)))
+                proj_2 = np.abs(self.eigenstates[itr].overlap(basis(6, 3)))
 
             elif self.N == 14:
-                proj_1 = np.abs(self.energy_levels[itr].overlap(basis(9, 3)))
-                proj_2 = np.abs(self.energy_levels[itr].overlap(basis(9, 4)))
-                proj_3 = np.abs(self.energy_levels[itr].overlap(basis(9, 5)))
+                proj_1 = np.abs(self.eigenstates[itr].overlap(basis(9, 3)))
+                proj_2 = np.abs(self.eigenstates[itr].overlap(basis(9, 4)))
+                proj_3 = np.abs(self.eigenstates[itr].overlap(basis(9, 5)))
                 if proj_3 > max_3:
                     # if the projection is higher than the previous maximum, update the maximum and the index
                     max_3 = proj_3
@@ -230,7 +223,7 @@ class NV(QSys):
                 max_2 = proj_2
                 index_2 = itr
 
-        beta = -1 / cte.Boltzmann * temp
+        beta = -cte.h*1e6 / (cte.Boltzmann * temp)
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
