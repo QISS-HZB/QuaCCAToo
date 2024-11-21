@@ -104,11 +104,11 @@ class NV(QSys):
         if units_B0 is None:
             warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
         elif units_B0 == "T":
-            B0 = B0 * 1e3
+            self.B0 = B0 * 1e3
         elif units_B0 == "mT":
             pass
         elif units_B0 == "G":
-            B0 = B0 * 1e-3
+            self.B0 = B0 * 1e-1
         else:
             raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
 
