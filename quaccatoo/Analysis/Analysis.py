@@ -336,7 +336,7 @@ class Analysis:
             self.fit[results_index], self.fit_cov[results_index] = curve_fit(fit_function, self.experiment.variable, self.experiment.results[results_index], p0=guess, bounds=bounds, maxfev=100000)
             return self.fit[results_index], self.fit_cov[results_index]
 
-    def plot_fit(self, figsize=(6, 4), xlabel="Time", ylabel="Expectation Value", title="Pulsed Result"):
+    def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
         """
         Plot the results of the experiment with the fitted function.
 
