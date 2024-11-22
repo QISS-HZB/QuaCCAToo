@@ -279,7 +279,6 @@ class NV(QSys):
             f6 = self.energy_levels[8] - self.energy_levels[7]
             self.RF_freqs = np.array([f1, f2, f3, f4, f5, f6])
         elif self.N == 0 or self.N is None:
-            warnings.warn("N=0, RF frequencies set to None.")
             self.RF_freqs = None
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
@@ -306,7 +305,6 @@ class NV(QSys):
         elif self.N == 14:
             self.RF_H1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
         elif self.N == 0 or self.N is None:
-            warnings.warn("Without nuclear spin N=0, the RF Hamiltonian is not defined. Returning identity matrix.")
             self.RF_H1 = qeye(3)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
