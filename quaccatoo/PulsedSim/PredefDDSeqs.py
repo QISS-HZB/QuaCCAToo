@@ -124,7 +124,7 @@ class CPMG(PulsedSim):
                 self.H0_H2 = [self.system.H0, self.H2]
 
         else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -597,7 +597,7 @@ class XY(PulsedSim):
                 self.H0_H2 = [self.system.H0, self.H2]
 
         else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):
@@ -1073,7 +1073,7 @@ class XY8(PulsedSim):
                 self.H0_H2 = [self.system.H0, self.H2]
 
         else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list")
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
         if not isinstance(pulse_params, dict):

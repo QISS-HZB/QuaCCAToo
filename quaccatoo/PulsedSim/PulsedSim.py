@@ -81,7 +81,8 @@ class PulsedSim:
         self.system = system
 
         # get the attributes of the system
-        self.rho = system.rho0.copy()
+        if system.rho0 is not None:
+            self.rho = system.rho0.copy()
 
         # if collapse operators are given, the H0_H2 attributed needs to be set with H0 for the mesolve function
         if self.system.c_ops is not None:

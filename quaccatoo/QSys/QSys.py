@@ -137,8 +137,7 @@ class QSys:
 
         # check if rho0 is None
         if rho0 is None:
-            self.rho0 = self.eigenstates[0]  # In this case the initial state is the lowest energy state
-            warnings.warn("The initial state rho0 is set to be the lowest energy state")
+            warnings.warn("Initial state not provided.")
 
         # check if rho0 is a number
         elif rho0 in range(0, len(self.eigenstates)):
