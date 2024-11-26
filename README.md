@@ -17,9 +17,10 @@ We strongly recommend using a virtual environment so that the system Python rema
 You can create a `conda` virtual environment as follows:
 
 ```sh
-conda create --name quaccatoo-env python qutip matplotlib
+conda create --name quaccatoo-env python qutip matplotlib ipykernel
 conda activate quaccatoo-env
 ```
+
 **OR**
 
 You can use a native Python venv (you'll need `pip` as well)
@@ -29,10 +30,16 @@ python -m venv quaccatoo-env
 source quaccatoo-env/bin/activate
 ```
 
-After the virtual environment has been setup, clone the repository and run (from inside the repo) 
+After the virtual environment has been setup, clone the repository and run from  <u>inside the local cloned folder </u>
 
 ``` sh
 pip install .
+```
+
+To check the installation, you can run
+
+``` sh
+pip show quaccatoo
 ```
 
 ## Class Hierarchy
