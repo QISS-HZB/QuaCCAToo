@@ -70,7 +70,7 @@ class NV(QSys):
     _HyperfineN
         get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    
     """
-    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_temp="K"):
+    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_temp="K", E=0):
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
@@ -95,6 +95,8 @@ class NV(QSys):
             temperature
         units_temp : str
             temperature units ('C'/'K')
+        E : float
+            perpedicular component of the zero field splitting
         """
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
@@ -123,6 +125,11 @@ class NV(QSys):
                 pass
             else:
                 raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
+            
+        if not isinstance(E, (int, float)):
+            raise TypeError(f"E must be a real number, got {E}: {type(E)}.")
+        else:
+            self.E = E
 
         self.theta = theta
         self.phi_r = phi_r
@@ -309,7 +316,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _ZeroField(self, D=2.87e3, E=0):
+    def _ZeroField(self):
         """Get the NV Hamiltonian term accounting for zero field splitting.
 
         Parameters
@@ -324,11 +331,11 @@ class NV(QSys):
         Zero Field Hamiltonian : Qobj
         """
         if self.N == 14:
-            return tensor(D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3))
+            return tensor(2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3))
         elif self.N == 15:
-            return tensor(D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2))
+            return tensor(2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2))
         elif self.N == 0:
-            return D * (jmat(1, "z") ** 2 - (jmat(1, "x") ** 2 + jmat(1, "y") ** 2 + jmat(1, "z") ** 2) / 3) + E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
+            return 2.87e3 * jmat(1, "z") ** 2  + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
