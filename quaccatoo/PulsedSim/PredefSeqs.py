@@ -384,8 +384,7 @@ class Ramsey(PulsedSim):
         # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
             warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
-        else:
-            self.pi_pulse_duration = pi_pulse_duration
+        self.pi_pulse_duration = pi_pulse_duration
 
         # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) or time_steps <= 0:
@@ -792,8 +791,7 @@ class Hahn(PulsedSim):
         # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
         if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
             warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
-        else:
-            self.pi_pulse_duration = pi_pulse_duration
+        self.pi_pulse_duration = pi_pulse_duration
 
         # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) and time_steps <= 0:
