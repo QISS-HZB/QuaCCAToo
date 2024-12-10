@@ -47,7 +47,7 @@ class CPMG(PulsedSim):
         generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100, map_kw={}):
         """
         Class constructor for the Carr-Purcell-Meiboom-Gill sequence
 
@@ -73,6 +73,8 @@ class CPMG(PulsedSim):
             dictionary of parameters for the pulse_shape functions
         time_steps : int
             number of time steps in the pulses for the simulation
+        map_kw : dict
+            dictionary of options for the parallel_map method
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -141,6 +143,11 @@ class CPMG(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
+
+        if not isinstance(map_kw, dict):
+            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
+        else:
+            self.map_kw = map_kw
 
         # If projection_pulse is True, the sequence is set to the CPMG_sequence_proj method with the initial and final projection pulses into the Sz basis, otherwise it is set to the CPMG_sequence method without the projection pulses
         if projection_pulse:
@@ -522,7 +529,7 @@ class XY(PulsedSim):
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100, map_kw={}):
         """
         Class constructor for the XY sequence
 
@@ -546,6 +553,10 @@ class XY(PulsedSim):
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
             Number of time steps in the pulses for the simulation
+        map_kw : dict, optional
+            Dictionary of options for the parallel_map method
+        options : dict, optional
+            Dictionary of solver options
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -613,6 +624,11 @@ class XY(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
+
+        if not isinstance(map_kw, dict):
+            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
+        else:
+            self.map_kw = map_kw
 
         # If projection_pulse is True, the sequence is set to the XY_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY_sequence method without the projection pulse
         if projection_pulse:
@@ -997,7 +1013,7 @@ class XY8(PulsedSim):
         Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100, map_kw={}):
         """
         Class constructor for the XY8 sequence
 
@@ -1021,6 +1037,10 @@ class XY8(PulsedSim):
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
             Number of time steps in the pulses for the simulation
+        map_kw : dict, optional
+            Dictionary of options for the parallel_map method
+        options : dict, optional
+            Dictionary of solver options from Qutip
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -1095,6 +1115,11 @@ class XY8(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
+
+        if not isinstance(map_kw, dict):
+            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
+        else:
+            self.map_kw = map_kw
 
         # If projection_pulse is True, the sequence is set to the XY8_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY8_sequence method without the projection pulse
         if projection_pulse:
