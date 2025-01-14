@@ -57,4 +57,4 @@ repository-code: 'https://github.com/QISS-HZB/QuaCCAToo'
 repository-name: QuaCCAToo
 
 license: GPL-3.0
-version: '1.0'
+version: '0.3'
