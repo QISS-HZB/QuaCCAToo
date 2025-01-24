@@ -1,5 +1,3 @@
-# TODO: RXY8
-
 """
 This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.
 """
@@ -14,7 +12,6 @@ import warnings
 
 ####################################################################################################
 
-
 class CPMG(PulsedSim):
     """
     This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedSim class.
@@ -24,7 +21,7 @@ class CPMG(PulsedSim):
     Attributes
     ----------
     M : int
-        order of the XY sequence
+        order of the CPMG sequence
     free_duration : numpy array
         time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration : float or int
@@ -54,7 +51,7 @@ class CPMG(PulsedSim):
         Parameters
         ----------
         M : int
-            order of the XY sequence
+            order of the CPMG sequence
         free_duration : numpy array
             time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
         system : QSys
