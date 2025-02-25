@@ -6,7 +6,7 @@ QuaCCAToo is a Python software for simulating and analyzing spin dynamics of col
 To see examples of utilization, check the notebooks in the `docs` subdirectory. They contain:
 - [Ex01](https://github.com/QISS-HZB/QuaCCAToo/blob/main/docs/ExampleNotebooks/Ex01_spin1%E2%81%842_Rabi_Hahn.ipynb): simplest two-level system, where we first define the system and plot the energy levels. Following that, a Rabi oscillation is simulated for two different pulse vectors, with the results being fitted and plotted in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a modeled collapse operator.
 - [Ex02](https://github.com/QISS-HZB/QuaCCAToo/blob/main/docs/ExampleNotebooks/Ex02_NV_Ramsey_PODMR.ipynb): simulation of nitrogen vacancy centers in diamond, first calculating the energy levels, then performing Rabi and comparing with experimental data. Ramsey and PODMR are also simulated.
-- [Ex03](https://github.com/QISS-HZB/QuaCCAToo/blob/main/docs/ExampleNotebooks/Ex03_NV_ambiguous_resonances.ipynb): simulation of [Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers](https://arxiv.org/abs/2407.09411).
+- [Ex03](https://github.com/QISS-HZB/QuaCCAToo/blob/main/docs/ExampleNotebooks/Ex03_NV_ambiguous_resonances.ipynb): simulation of [Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
 
 To see the documentation, check [https://qiss-hzb.github.io/QuaCCAToo/](https://qiss-hzb.github.io/QuaCCAToo/).
 
