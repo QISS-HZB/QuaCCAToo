@@ -41,8 +41,6 @@ class PulsedSim:
         parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
     time_steps : int
         number of time steps for the pulses
-    map_kw : dict
-        options for the parallel_map function from QuTip
 
     Methods
     -------
@@ -306,6 +304,8 @@ class PulsedSim:
             xaxis variable of the plot representing the parameter being changed in the experiment
         sequence : callable
             sequence of operations to be performed in the experiment
+        map_kw : dict
+            dictionary of options for the parallel_map function from QuTip
         """
         # if no sequence is passed but the PulsedSim has one, uses the attribute sequence
         if sequence is None and self.sequence is not None:
@@ -325,14 +325,12 @@ class PulsedSim:
         else:
             raise ValueError("variable must be a numpy array")
         
-        if isinstance(map_kw, dict):
-            self.map_kw = map_kw
-        else:
+        if not isinstance(map_kw, dict):
             raise ValueError("map_kw must be a dictionary of options for the parallel_map function from QuTip")
 
 
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
-        self.rho = parallel_map(self.sequence, self.variable, map_kw=self.map_kw)
+        self.rho = parallel_map(self.sequence, self.variable, map_kw=map_kw)
 
         # if an observable is given, calculate the expectation values
         if isinstance(self.system.observable, Qobj):

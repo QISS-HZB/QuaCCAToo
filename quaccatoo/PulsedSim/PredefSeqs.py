@@ -36,7 +36,7 @@ class Rabi(PulsedSim):
     PulsedSimulation
     """
 
-    def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, options={}, map_kw = {}):
+    def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, options={}):
         """
         Constructor for the Rabi pulsed experiment class.
 
@@ -56,8 +56,6 @@ class Rabi(PulsedSim):
             Dictionary of parameters for the pulse_shape functions.
         options : dict
             Dictionary of solver options from Qutip.
-        map_kw : dict
-            Dictionary of options for the parallel_map method.
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -107,11 +105,6 @@ class Rabi(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        if not isinstance(map_kw, dict):
-            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
-        else:
-            self.map_kw = map_kw
 
     def run(self):
         """
@@ -163,7 +156,7 @@ class PMR(PulsedSim):
     (Inherited from PulsedSimulation)
     """
 
-    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, time_steps=100, options={}, map_kw = {}):
+    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, time_steps=100, options={}):
         """
         Constructor for the PMR pulsed experiment class.
 
@@ -187,8 +180,6 @@ class PMR(PulsedSim):
             Number of time steps in the pulses for the simulation.
         options : dict
             Dictionary of solver options from Qutip.
-        map_kw : dict
-            Dictionary of options for the parallel_map method.
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -232,11 +223,6 @@ class PMR(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        if not isinstance(map_kw, dict):
-            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
-        else:
-            self.map_kw = map_kw
 
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
@@ -359,7 +345,6 @@ class Ramsey(PulsedSim):
         pulse_params={},
         options={},
         time_steps=100,
-        map_kw={}
     ):
         """
         Class constructor for the Ramsey pulsed experiment class.
@@ -427,11 +412,6 @@ class Ramsey(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        if not isinstance(map_kw, dict):
-            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
-        else:
-            self.map_kw = map_kw
 
         # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
@@ -774,7 +754,6 @@ class Hahn(PulsedSim):
         pulse_params={},
         options={},
         time_steps=100,
-        map_kw={}
     ):
         """
         Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.
@@ -802,8 +781,6 @@ class Hahn(PulsedSim):
             Number of time steps in the pulses for the simulation.
         options : dict
             Dictionary of solver options from Qutip.
-        map_kw : dict
-            Dictionary of options for the parallel_map method.
         """
         # call the parent class constructor
         super().__init__(system, H2)
@@ -865,11 +842,6 @@ class Hahn(PulsedSim):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         else:
             self.options = options
-
-        if not isinstance(map_kw, dict):
-            raise ValueError("map_kw must be a dictionary of options for the parallel_map method")
-        else:
-            self.map_kw = map_kw
 
         # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis
         # otherwise it is set to the hahn_sequence method without the projection pulses
