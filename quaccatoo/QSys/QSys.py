@@ -88,6 +88,8 @@ class QSys:
         Energy levels of the Hamiltonian.
     eigenstates : numpy.ndarray of Qobj
         Eigenstates of the Hamiltonian.
+    dim_add_spin : int
+        Dimension of the added spin if the add_spin method is used.
 
     Methods
     -------
@@ -227,21 +229,21 @@ class QSys:
         if not Qobj(H_spin).isherm:
             warnings.warn("Passed H_spin is not a hermitian object.")
         
-        dim_spin = int(H_spin.shape[0]/self.H0.shape[0])
+        self.dim_add_spin = int(H_spin.shape[0]/self.H0.shape[0])
         
-        if dim_spin <= 1:
+        if self.dim_add_spin <= 1:
             raise ValueError("H_spin must be a Qobj with a dimension higher than H0.")
         
-        self.H0 = tensor(self.H0, qeye(dim_spin)) +  H_spin
+        self.H0 = tensor(self.H0, qeye(self.dim_add_spin )) +  H_spin
         
         if self.rho0 is not None:
-            self.rho0 = tensor(self.rho0, qeye(dim_spin)).unit()
+            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin )).unit()
 
         if self.observable is not None:
-            self.observable = tensor(self.observable, qeye(dim_spin))
+            self.observable = tensor(self.observable, qeye(self.dim_add_spin ))
 
         if self.c_ops is not None:
-            self.c_ops = [tensor(op, qeye(dim_spin)) for op in self.c_ops]
+            self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
 
     def save():
         pass

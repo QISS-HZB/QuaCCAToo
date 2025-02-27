@@ -26,8 +26,6 @@ class NV(QSys):
         magnetic field
     N : 15, 14, 0 or None
         nitrogen isotope, or 0 for no nuclear spin
-    c_ops : list(Qobj)
-        list of collapse operators
     units_B0 : str
         units of the magnetic field (T, mT or G)
     theta : float
@@ -48,6 +46,8 @@ class NV(QSys):
         RF frequencies
     MW_H1 : Qobj
         microwave Hamiltonian
+    RF_H1 : Qobj
+        RF Hamiltonian
     
     Methods
     -------
@@ -416,3 +416,17 @@ class NV(QSys):
             return None
         else:
             raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
+        
+    def add_spin(self, H_spin):
+        """
+        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes
+
+        Parameters
+        ----------
+        H_spin : Qobj
+            Hamiltonian of the extra spin       
+        """
+        super().add_spin(H_spin)
+
+        self.MW_H1 = tensor(self.MW_H1, qeye(self.dim_add_spin))
+        self.RF_H1 = tensor(self.RF_H1, qeye(self.dim_add_spin))
