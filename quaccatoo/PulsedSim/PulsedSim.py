@@ -200,7 +200,7 @@ class PulsedSim:
         core_pulse_params['phi_t'] += phi_t
 
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
-        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options = options, args = core_pulse_params).states[-1]
+        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
 
         # update the total time
         self.total_time += duration
@@ -259,7 +259,7 @@ class PulsedSim:
         options : dict
             options for the Qutip solver
         """
-        self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, [], options=options).states[-1]
+        self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
 
         # update the total time
         self.total_time += duration

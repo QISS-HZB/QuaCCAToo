@@ -118,7 +118,7 @@ class Rabi(PulsedSim):
             self.U = propagator(self.Ht, 2 * np.pi * self.variable, self.system.c_ops, options=self.options, args=self.pulse_params)
         else:   
         # calculates the density matrices in sequence using mesolve
-            self.rho = mesolve(self.Ht, self.system.rho0, 2 * np.pi * self.variable, self.system.c_ops, [], options=self.options, args=self.pulse_params).states
+            self.rho = mesolve(self.Ht, self.system.rho0, 2 * np.pi * self.variable, self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states
 
             # if an observable is given, calculate the expectation values
             if isinstance(self.system.observable, Qobj):
@@ -267,7 +267,7 @@ class PMR(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pulse_duration, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -473,7 +473,7 @@ class Ramsey(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -508,7 +508,7 @@ class Ramsey(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -523,7 +523,7 @@ class Ramsey(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -554,14 +554,14 @@ class Ramsey(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
         # perform the free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
 
         return rho
 
@@ -590,14 +590,14 @@ class Ramsey(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
         # perform the free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
         t0 += ps
 
         # perform final pi/2 pulse
@@ -606,7 +606,7 @@ class Ramsey(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -886,7 +886,7 @@ class Hahn(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -903,7 +903,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(ps, ps + self.pi_pulse_duration, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -939,7 +939,7 @@ class Hahn(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -954,7 +954,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -969,7 +969,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -1003,14 +1003,14 @@ class Hahn(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
         # perform the first free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
         t0 += ps
 
         # perform the pi pulse
@@ -1019,7 +1019,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -1031,7 +1031,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + ps + self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
@@ -1064,14 +1064,14 @@ class Hahn(PulsedSim):
             self.system.rho0,
             2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
         # perform the first free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
         t0 += ps
 
         # perform the pi pulse
@@ -1080,14 +1080,14 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]
         t0 += self.pi_pulse_duration
 
         # perform the second free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
         t0 += ps
 
         # perform the final pi/2 pulse
@@ -1096,7 +1096,7 @@ class Hahn(PulsedSim):
             rho,
             2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
             self.system.c_ops,
-            [],
+            e_ops=[],
             options=self.options,
             args=self.pulse_params,
         ).states[-1]

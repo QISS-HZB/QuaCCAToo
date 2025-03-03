@@ -175,7 +175,7 @@ class CPMG(PulsedSim):
 
         # initial pi/2 pulse on Y
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -191,14 +191,14 @@ class CPMG(PulsedSim):
         # repeat M-1 times the pi pulse and free evolution of ps
         for itr_M in range(self.M - 1):
             # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
             # perform free evolution of ps
             rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
             t0 += tau
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
@@ -226,7 +226,7 @@ class CPMG(PulsedSim):
 
         # initial pi/2 pulse on Y
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -242,14 +242,14 @@ class CPMG(PulsedSim):
         # repeat M-1 times the pi pulse and free evolution of ps
         for itr_M in range(self.M - 1):
             # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
             # perform free evolution of tau
             rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
             t0 += tau
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
@@ -259,7 +259,7 @@ class CPMG(PulsedSim):
         t0 += self.pi_pulse_duration + ps
 
         # final pi/2 pulse on Y
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
 
         return rho
 
@@ -283,7 +283,7 @@ class CPMG(PulsedSim):
 
         # initial pi/2 pulse on Y
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -291,7 +291,7 @@ class CPMG(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -300,22 +300,22 @@ class CPMG(PulsedSim):
         # repeat M-1 times the pi pulse and free evolution of ps
         for itr_M in range(self.M - 1):
             # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
 
         return rho
 
@@ -338,7 +338,7 @@ class CPMG(PulsedSim):
 
         # initial pi/2 pulse on Y
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -346,7 +346,7 @@ class CPMG(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -355,26 +355,26 @@ class CPMG(PulsedSim):
         # repeat M-1 times the pi pulse and free evolution of ps
         for itr_M in range(self.M - 1):
             # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # final pi/2 pulse on Y
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
 
         return rho
 
@@ -647,7 +647,7 @@ class XY(PulsedSim):
         """
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -664,7 +664,7 @@ class XY(PulsedSim):
         for itr_M in range(2 * self.M - 1):
             # perform pi pulse on X or Y axis
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 2]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 2]
             ).states[-1]
 
             # perform free evolution of ps
@@ -672,7 +672,7 @@ class XY(PulsedSim):
             t0 += tau
 
         # perform the last pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
@@ -699,7 +699,7 @@ class XY(PulsedSim):
         """
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -716,7 +716,7 @@ class XY(PulsedSim):
         for itr_M in range(2 * self.M - 1):
             # perform pi pulse on X or Y axis
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 2]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 2]
             ).states[-1]
 
             # perform free evolution of ps
@@ -724,7 +724,7 @@ class XY(PulsedSim):
             t0 += tau
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
@@ -734,7 +734,7 @@ class XY(PulsedSim):
         t0 += self.pi_pulse_duration + ps
 
         # final pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -756,7 +756,7 @@ class XY(PulsedSim):
         """
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -764,7 +764,7 @@ class XY(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -774,23 +774,23 @@ class XY(PulsedSim):
         for itr_M in range(2 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 2]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 2]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
 
         return rho
 
@@ -812,7 +812,7 @@ class XY(PulsedSim):
         """
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -820,7 +820,7 @@ class XY(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -830,27 +830,27 @@ class XY(PulsedSim):
         for itr_M in range(2 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 2]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 2]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[1]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # final pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -1132,7 +1132,7 @@ class XY8(PulsedSim):
 
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -1149,7 +1149,7 @@ class XY8(PulsedSim):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
 
             # perform free evolution of ps
@@ -1157,7 +1157,7 @@ class XY8(PulsedSim):
             t0 += tau
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
@@ -1185,7 +1185,7 @@ class XY8(PulsedSim):
 
         # perform pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -1202,7 +1202,7 @@ class XY8(PulsedSim):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
 
             # perform free evolution of ps
@@ -1210,7 +1210,7 @@ class XY8(PulsedSim):
             t0 += tau
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
@@ -1220,7 +1220,7 @@ class XY8(PulsedSim):
         t0 += self.pi_pulse_duration + ps
 
         # perform pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -1243,7 +1243,7 @@ class XY8(PulsedSim):
 
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -1251,7 +1251,7 @@ class XY8(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1261,23 +1261,23 @@ class XY8(PulsedSim):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
 
         return rho
 
@@ -1300,7 +1300,7 @@ class XY8(PulsedSim):
 
         # perform pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -1308,7 +1308,7 @@ class XY8(PulsedSim):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1318,27 +1318,27 @@ class XY8(PulsedSim):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # perform pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -1518,7 +1518,7 @@ class RXY8(XY8):
 
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -1537,7 +1537,7 @@ class RXY8(XY8):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
 
             # perform free evolution of ps
@@ -1545,7 +1545,7 @@ class RXY8(XY8):
             t0 += tau
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
@@ -1575,7 +1575,7 @@ class RXY8(XY8):
 
         # perform pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
 
         # calculate the first pulse spacing
@@ -1594,7 +1594,7 @@ class RXY8(XY8):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
 
             # perform free evolution of ps
@@ -1602,7 +1602,7 @@ class RXY8(XY8):
             t0 += tau
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
@@ -1612,7 +1612,7 @@ class RXY8(XY8):
         t0 += self.pi_pulse_duration + ps
 
         # perform pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
 
@@ -1636,7 +1636,7 @@ class RXY8(XY8):
 
         # initial pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -1644,7 +1644,7 @@ class RXY8(XY8):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1656,23 +1656,23 @@ class RXY8(XY8):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration / 2
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
 
         return rho
 
@@ -1697,7 +1697,7 @@ class RXY8(XY8):
 
         # perform pi/2 pulse on X axis
         rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]
+            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
         ).states[-1]
         t0 = self.pi_pulse_duration / 2
 
@@ -1705,7 +1705,7 @@ class RXY8(XY8):
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # calculate the pulse spacing between pi pulses
@@ -1717,26 +1717,26 @@ class RXY8(XY8):
         for itr_M in range(8 * self.M - 1):
             # perform pi pulse
             rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[itr_M % 8]
+                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 8]
             ).states[-1]
             t0 += self.pi_pulse_duration
 
             # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
             t0 += ps
 
         # perform pi pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps) + random_phase[itr_M//8], self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
         t0 += self.pi_pulse_duration
 
         # calculate the last pulse spacing
         ps = tau / 2 - self.pi_pulse_duration
 
         # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, [], options=self.options).states[-1]
+        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
         t0 += ps
 
         # perform pi/2 pulse on X axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, [], options=self.options, args=self.pulse_params[0]).states[-1]
+        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
 
         return rho
