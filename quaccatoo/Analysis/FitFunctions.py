@@ -263,3 +263,23 @@ def fit_five_sinc2(f, A1, A2, A3, A4, A5, gamma1 , gamma2, gamma3, gamma4, gamma
         Offset of the sinc functions.
     """
     return C + fit_sinc2(f, A1, gamma1, f01, 0) + fit_sinc2(f, A2, gamma2, f02, 0) + fit_sinc2(f, A3, gamma3, f03, 0) + fit_sinc2(f, A4, gamma4, f04, 0) + fit_sinc2(f, A5, gamma5, f05, 0)
+
+
+def fit_gaussian(f, A, sigma, f0, C):
+    """
+    Fit a Gaussian peak.
+
+    Parameters
+    ----------
+    f : array_like
+        Frequency values.
+    A : float
+        Amplitude of the peak.
+    sigma : float
+        Standard deviation (width) of the Gaussian.
+    f0 : float
+        Central frequency of the peak.
+    C : float
+        Offset of the peak.
+    """
+    return C + A * np.exp(- ( (f - f0)**2 ) / (2 * sigma**2) )
