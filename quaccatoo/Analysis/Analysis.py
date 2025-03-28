@@ -151,7 +151,7 @@ class Analysis:
         self.pearson = r
         return r
 
-    def plot_comparison(self, figsize=(6, 4), xlabel=None, ylabel="Observable", title="Results Comparisions"):
+    def plot_comparison(self, figsize=(6, 4), xlabel=None, ylabel="Observable", title="Results Comparisons"):
         """
         Plots the results of the experiment and the comparison experiment.
 
