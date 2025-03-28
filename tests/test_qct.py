@@ -3,8 +3,13 @@ import pytest
 import numpy as np
 from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj
 
-from quaccatoo import QSys, Analysis, fit_rabi, Rabi, Hahn, square_pulse, NV, XY8
-from quaccatoo.Analysis.FitFunctions import fit_exp_decay, fit_gaussian
+from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
+from quaccatoo.Analysis.FitFunctions import (
+    fit_exp_decay,
+    fit_gaussian,
+    fit_rabi,
+    fit_two_lorentz_sym,
+)
 
 
 @pytest.fixture
@@ -106,3 +111,28 @@ class TestXY8:
         XY8_analysis.run_fit(fit_function=fit_gaussian, guess=[0.8, 0.02, 0.3, 0.01])
         print(XY8_analysis.fit)
         assert 0.29 <= XY8_analysis.fit[-2] <= 0.31
+
+
+class TestPODMR:
+    @pytest.mark.slow
+    def test_podmr(self):
+        qsys = NV(N=15, B0=40, units_B0="mT")
+        w1 = 0.3
+
+        podmr_exp_2 = PMR(
+            frequencies=np.arange(1745, 1753, 0.05),
+            pulse_duration=1 / 2 / w1,
+            system=qsys,
+            H1=w1 * qsys.MW_H1,
+        )
+
+        podmr_exp_2.run()
+        podmr_analysis = Analysis(podmr_exp_2)
+
+        podmr_analysis.run_fit(
+            fit_function=fit_two_lorentz_sym,
+            guess=[0.5, 0.2, 1749, 3, 1],
+        )
+        assert np.isclose(podmr_analysis.fit[-3], 1.749e3, atol=1e-3) and np.isclose(
+            podmr_analysis.fit[-2], 3.029, atol=1e-3
+        )
