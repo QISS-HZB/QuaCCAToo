@@ -109,7 +109,6 @@ class TestXY8:
         XY8_15N.run()
         XY8_analysis = Analysis(XY8_15N)
         XY8_analysis.run_fit(fit_function=fit_gaussian, guess=[0.8, 0.02, 0.3, 0.01])
-        print(XY8_analysis.fit)
         assert 0.29 <= XY8_analysis.fit[-2] <= 0.31
 
 
