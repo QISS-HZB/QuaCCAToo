@@ -152,151 +152,306 @@
 </span><span id="line-5"><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-6">
 </span><span id="line-7"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="line-8">
+</span><span id="line-8"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span><span id="line-9">
 <div class="viewcode-block" id="ExpData">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData">[docs]</a>
-</span><span id="line-9"><span class="k">class</span> <span class="nc">ExpData</span><span class="p">:</span>
-</span><span id="line-10"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-11"><span class="sd">    Class to load experimental data and perform basic data processing.</span>
-</span><span id="line-12">
-</span><span id="line-13"><span class="sd">    Attributes</span>
-</span><span id="line-14"><span class="sd">    ----------</span>
-</span><span id="line-15"><span class="sd">    variable : np.ndarray</span>
-</span><span id="line-16"><span class="sd">        array containing the variable data</span>
-</span><span id="line-17"><span class="sd">    results : np.ndarray or list of np.ndarray</span>
-</span><span id="line-18"><span class="sd">        array or list of arrays containing the results data</span>
-</span><span id="line-19"><span class="sd">    variable_name : str</span>
-</span><span id="line-20"><span class="sd">        name of the variable</span>
-</span><span id="line-21"><span class="sd">    result_name : str</span>
-</span><span id="line-22"><span class="sd">        name of the results</span>
-</span><span id="line-23">
-</span><span id="line-24"><span class="sd">    Methods</span>
-</span><span id="line-25"><span class="sd">    -------</span>
-</span><span id="line-26"><span class="sd">    subtract_results_columns(pos_col=0, neg_col=1)</span>
-</span><span id="line-27"><span class="sd">        subtracts the results of the negative column from the positive column</span>
-</span><span id="line-28"><span class="sd">    background_correction(background_value)</span>
-</span><span id="line-29"><span class="sd">        substracts a background value from the results</span>
-</span><span id="line-30"><span class="sd">    rescale_correction(rescale_value)</span>
-</span><span id="line-31"><span class="sd">        multiplies the results by a rescale value</span>
-</span><span id="line-32"><span class="sd">    baseline_correction</span>
-</span><span id="line-33"><span class="sd">    save</span>
-</span><span id="line-34"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-35">
-</span><span id="line-36">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">variable_column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results_columns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">variable_name</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="n">result_name</span><span class="o">=</span><span class="s2">&quot;Expectation value&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">):</span>
-</span><span id="line-37"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-38"><span class="sd">        Constructor of the ExpData class.</span>
-</span><span id="line-39"><span class="sd">        It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.</span>
-</span><span id="line-40">
-</span><span id="line-41"><span class="sd">        Parameters</span>
-</span><span id="line-42"><span class="sd">        ----------</span>
-</span><span id="line-43"><span class="sd">        file_path  : str</span>
-</span><span id="line-44"><span class="sd">            path to the file containing the experimental data</span>
-</span><span id="line-45"><span class="sd">        variable_column : int</span>
-</span><span id="line-46"><span class="sd">            column index of the variable</span>
-</span><span id="line-47"><span class="sd">        results_columns : int or list of int</span>
-</span><span id="line-48"><span class="sd">            column index of the results</span>
-</span><span id="line-49"><span class="sd">        variable_name : str</span>
-</span><span id="line-50"><span class="sd">            name of the variable</span>
-</span><span id="line-51"><span class="sd">        result_name : str</span>
-</span><span id="line-52"><span class="sd">            name of the results</span>
-</span><span id="line-53"><span class="sd">        **loadtxt_args : dict</span>
-</span><span id="line-54"><span class="sd">            additional arguments for the np.loadtxt function</span>
-</span><span id="line-55"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-56">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="line-57">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_path must be a string&quot;</span><span class="p">)</span>
-</span><span id="line-58">
-</span><span id="line-59">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_column</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="line-60">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variable_column must be an integer&quot;</span><span class="p">)</span>
-</span><span id="line-61">
-</span><span id="line-62">        <span class="c1"># the results columns needs to be an integer or a list of integers</span>
-</span><span id="line-63">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">results_columns</span><span class="p">)):</span>
-</span><span id="line-64">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;results_columns must be an integer or a list of two integers&quot;</span><span class="p">)</span>
-</span><span id="line-65">
-</span><span id="line-66">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="line-67">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variable_name and result_name must be strings&quot;</span><span class="p">)</span>
+</span><span id="line-10"><span class="k">class</span> <span class="nc">ExpData</span><span class="p">:</span>
+</span><span id="line-11"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-12"><span class="sd">    Class to load experimental data and perform basic data processing.</span>
+</span><span id="line-13">
+</span><span id="line-14"><span class="sd">    Attributes</span>
+</span><span id="line-15"><span class="sd">    ----------</span>
+</span><span id="line-16"><span class="sd">    variable : np.ndarray</span>
+</span><span id="line-17"><span class="sd">        array containing the variable data</span>
+</span><span id="line-18"><span class="sd">    results : np.ndarray or list of np.ndarray</span>
+</span><span id="line-19"><span class="sd">        array or list of arrays containing the results data</span>
+</span><span id="line-20"><span class="sd">    variable_name : str</span>
+</span><span id="line-21"><span class="sd">        name of the variable</span>
+</span><span id="line-22"><span class="sd">    result_name : str</span>
+</span><span id="line-23"><span class="sd">        name of the results</span>
+</span><span id="line-24">
+</span><span id="line-25"><span class="sd">    Methods</span>
+</span><span id="line-26"><span class="sd">    -------</span>
+</span><span id="line-27"><span class="sd">    subtract_results_columns:</span>
+</span><span id="line-28"><span class="sd">        subtracts the results of the negative column from the positive column</span>
+</span><span id="line-29"><span class="sd">    offset_correction:</span>
+</span><span id="line-30"><span class="sd">        substracts a background value from the results</span>
+</span><span id="line-31"><span class="sd">    rescale_correction:</span>
+</span><span id="line-32"><span class="sd">        multiplies the results by a rescale value</span>
+</span><span id="line-33"><span class="sd">    poly_baseline_correction:</span>
+</span><span id="line-34"><span class="sd">        performs a polynomial baseline correction to the results</span>
+</span><span id="line-35"><span class="sd">    plot_exp_data:</span>
+</span><span id="line-36"><span class="sd">        plots the experimental data</span>
+</span><span id="line-37"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="line-38">
+</span><span id="line-39">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">variable_column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results_columns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">variable_name</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="n">result_name</span><span class="o">=</span><span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
+</span><span id="line-40">                 <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Experimental Data&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">):</span>
+</span><span id="line-41"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-42"><span class="sd">        Constructor of the ExpData class.</span>
+</span><span id="line-43"><span class="sd">        It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.</span>
+</span><span id="line-44">
+</span><span id="line-45"><span class="sd">        Parameters</span>
+</span><span id="line-46"><span class="sd">        ----------</span>
+</span><span id="line-47"><span class="sd">        file_path  : str</span>
+</span><span id="line-48"><span class="sd">            path to the file containing the experimental data</span>
+</span><span id="line-49"><span class="sd">        variable_column : int</span>
+</span><span id="line-50"><span class="sd">            column index of the variable</span>
+</span><span id="line-51"><span class="sd">        results_columns : int or list of int</span>
+</span><span id="line-52"><span class="sd">            column index of the results</span>
+</span><span id="line-53"><span class="sd">        variable_name : str</span>
+</span><span id="line-54"><span class="sd">            name of the variable</span>
+</span><span id="line-55"><span class="sd">        result_name : str</span>
+</span><span id="line-56"><span class="sd">            name of the results</span>
+</span><span id="line-57"><span class="sd">        plot : bool</span>
+</span><span id="line-58"><span class="sd">            if True, plot the experimental data</span>
+</span><span id="line-59"><span class="sd">        figsize : tuple</span>
+</span><span id="line-60"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-61"><span class="sd">        figtitle : str</span>
+</span><span id="line-62"><span class="sd">            title of the figure for the plot       </span>
+</span><span id="line-63"><span class="sd">        **loadtxt_args : dict</span>
+</span><span id="line-64"><span class="sd">            additional arguments for the np.loadtxt function</span>
+</span><span id="line-65"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-66">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-67">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_path must be a string&quot;</span><span class="p">)</span>
 </span><span id="line-68">
-</span><span id="line-69">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loadtxt_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="line-70">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;loadtxt_args must be a dictionary for the np.loadtxt function&quot;</span><span class="p">)</span>
+</span><span id="line-69">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_column</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-70">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variable_column must be an integer&quot;</span><span class="p">)</span>
 </span><span id="line-71">
-</span><span id="line-72">        <span class="c1"># loads experimental data from a file with the specified arguments</span>
-</span><span id="line-73">        <span class="n">exp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">)</span>
-</span><span id="line-74">
-</span><span id="line-75">        <span class="c1"># sets the results and variable attributes of the ExpData object</span>
-</span><span id="line-76">        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">exp_data</span><span class="p">[:,</span> <span class="n">variable_column</span><span class="p">]</span>
-</span><span id="line-77">
-</span><span id="line-78">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="line-79">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">exp_data</span><span class="p">[:,</span> <span class="n">results_columns</span><span class="p">]</span>
-</span><span id="line-80">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-81">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp_data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">results_columns</span><span class="p">]</span>
-</span><span id="line-82">
-</span><span id="line-83">        <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="n">variable_name</span>
-</span><span id="line-84">        <span class="bp">self</span><span class="o">.</span><span class="n">result_name</span> <span class="o">=</span> <span class="n">result_name</span>
-</span><span id="line-85">
+</span><span id="line-72">        <span class="c1"># the results columns needs to be an integer or a list of integers</span>
+</span><span id="line-73">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">results_columns</span><span class="p">)):</span>
+</span><span id="line-74">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;results_columns must be an integer or a list of two integers&quot;</span><span class="p">)</span>
+</span><span id="line-75">
+</span><span id="line-76">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-77">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variable_name and result_name must be strings&quot;</span><span class="p">)</span>
+</span><span id="line-78">
+</span><span id="line-79">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loadtxt_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="line-80">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;loadtxt_args must be a dictionary for the np.loadtxt function&quot;</span><span class="p">)</span>
+</span><span id="line-81">
+</span><span id="line-82">        <span class="c1"># loads experimental data from a file with the specified arguments</span>
+</span><span id="line-83">        <span class="n">exp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">)</span>
+</span><span id="line-84">
+</span><span id="line-85">        <span class="c1"># sets the results and variable attributes of the ExpData object</span>
+</span><span id="line-86">        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">exp_data</span><span class="p">[:,</span> <span class="n">variable_column</span><span class="p">]</span>
+</span><span id="line-87">
+</span><span id="line-88">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_columns</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-89">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">exp_data</span><span class="p">[:,</span> <span class="n">results_columns</span><span class="p">]</span>
+</span><span id="line-90">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-91">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp_data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">results_columns</span><span class="p">]</span>
+</span><span id="line-92">
+</span><span id="line-93">        <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="n">variable_name</span>
+</span><span id="line-94">        <span class="bp">self</span><span class="o">.</span><span class="n">result_name</span> <span class="o">=</span> <span class="n">result_name</span>
+</span><span id="line-95">
+</span><span id="line-96">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="line-97">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot must be a boolean&quot;</span><span class="p">)</span>
+</span><span id="line-98">        <span class="c1"># plots the experimental data</span>
+</span><span id="line-99">        <span class="k">elif</span> <span class="n">plot</span><span class="p">:</span>
+</span><span id="line-100">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_exp_data</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">)</span>
+</span><span id="line-101">
 <div class="viewcode-block" id="ExpData.subtract_results_columns">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns">[docs]</a>
-</span><span id="line-86">    <span class="k">def</span> <span class="nf">subtract_results_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">neg_col</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-</span><span id="line-87"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-88"><span class="sd">        Overwrites the results attribute substracting the results of the negative column from the positive column.</span>
-</span><span id="line-89">
-</span><span id="line-90"><span class="sd">        Parameters</span>
-</span><span id="line-91"><span class="sd">        ----------</span>
-</span><span id="line-92"><span class="sd">        pos_col: int</span>
-</span><span id="line-93"><span class="sd">            index of the positive column</span>
-</span><span id="line-94"><span class="sd">        neg_col: int</span>
-</span><span id="line-95"><span class="sd">            index of the negative column</span>
-</span><span id="line-96"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-97">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pos_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">neg_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="line-98">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pos_col=</span><span class="si">{</span><span class="n">pos_col</span><span class="si">}</span><span class="s2"> and neg_col=</span><span class="si">{</span><span class="n">neg_col</span><span class="si">}</span><span class="s2"> where not found in the results.&quot;</span><span class="p">)</span>
-</span><span id="line-99">
-</span><span id="line-100">        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pos_col</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">neg_col</span><span class="p">]</span></div>
-
-</span><span id="line-101">
-<div class="viewcode-block" id="ExpData.background_correction">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.background_correction">[docs]</a>
-</span><span id="line-102">    <span class="k">def</span> <span class="nf">background_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background_value</span><span class="p">):</span>
+</span><span id="line-102">    <span class="k">def</span> <span class="nf">subtract_results_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">neg_col</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Subtracted Expt. Data&#39;</span><span class="p">):</span>
 </span><span id="line-103"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-104"><span class="sd">        Overwrites the results attribute substracting the background value from the results.</span>
+</span><span id="line-104"><span class="sd">        Overwrites the results attribute substracting the results of the negative column from the positive column.</span>
 </span><span id="line-105">
 </span><span id="line-106"><span class="sd">        Parameters</span>
 </span><span id="line-107"><span class="sd">        ----------</span>
-</span><span id="line-108"><span class="sd">        background_value : int or float</span>
-</span><span id="line-109"><span class="sd">            value to be substracted from the results</span>
-</span><span id="line-110"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-111">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-</span><span id="line-112">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;background_value must be a number.&quot;</span><span class="p">)</span>
-</span><span id="line-113">
-</span><span id="line-114">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="line-115">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">-</span> <span class="n">background_value</span>
-</span><span id="line-116">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-117">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span> <span class="o">-</span> <span class="n">background_value</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">]</span></div>
+</span><span id="line-108"><span class="sd">        pos_col: int</span>
+</span><span id="line-109"><span class="sd">            index of the positive column</span>
+</span><span id="line-110"><span class="sd">        neg_col: int</span>
+</span><span id="line-111"><span class="sd">            index of the negative column</span>
+</span><span id="line-112"><span class="sd">        plot: bool</span>
+</span><span id="line-113"><span class="sd">            if True, plot the experimental data</span>
+</span><span id="line-114"><span class="sd">        figsize: tuple</span>
+</span><span id="line-115"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-116"><span class="sd">        figtitle: str</span>
+</span><span id="line-117"><span class="sd">            title of the figure for the plot</span>
+</span><span id="line-118"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-119">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pos_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">neg_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-120">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pos_col=</span><span class="si">{</span><span class="n">pos_col</span><span class="si">}</span><span class="s2"> and neg_col=</span><span class="si">{</span><span class="n">neg_col</span><span class="si">}</span><span class="s2"> where not found in the results.&quot;</span><span class="p">)</span>
+</span><span id="line-121">        
+</span><span id="line-122">        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pos_col</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">neg_col</span><span class="p">]</span>  
+</span><span id="line-123">
+</span><span id="line-124">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="line-125">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot must be a boolean&quot;</span><span class="p">)</span>
+</span><span id="line-126">        <span class="k">elif</span> <span class="n">plot</span><span class="p">:</span>
+</span><span id="line-127">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_exp_data</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">)</span></div>
 
-</span><span id="line-118">
+</span><span id="line-128">
+<div class="viewcode-block" id="ExpData.offset_correction">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.offset_correction">[docs]</a>
+</span><span id="line-129">    <span class="k">def</span> <span class="nf">offset_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background_value</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Expt. Data with Offset Correction&#39;</span><span class="p">):</span>
+</span><span id="line-130"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-131"><span class="sd">        Overwrites the results attribute substracting the background value from the results.</span>
+</span><span id="line-132">
+</span><span id="line-133"><span class="sd">        Parameters</span>
+</span><span id="line-134"><span class="sd">        ----------</span>
+</span><span id="line-135"><span class="sd">        background_value : int or float</span>
+</span><span id="line-136"><span class="sd">            value to be substracted from the results</span>
+</span><span id="line-137"><span class="sd">        plot : bool</span>
+</span><span id="line-138"><span class="sd">            if True, plot the experimental data</span>
+</span><span id="line-139"><span class="sd">        figsize : tuple</span>
+</span><span id="line-140"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-141"><span class="sd">        figtitle : str</span>
+</span><span id="line-142"><span class="sd">            title of the figure for the plot</span>
+</span><span id="line-143"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-144">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+</span><span id="line-145">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;background_value must be a number.&quot;</span><span class="p">)</span>
+</span><span id="line-146">
+</span><span id="line-147">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-148">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">-</span> <span class="n">background_value</span>
+</span><span id="line-149">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+</span><span id="line-150">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span> <span class="o">-</span> <span class="n">background_value</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">]</span>
+</span><span id="line-151">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-152">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
+</span><span id="line-153">
+</span><span id="line-154">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="line-155">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot must be a boolean&quot;</span><span class="p">)</span>
+</span><span id="line-156">        <span class="k">elif</span> <span class="n">plot</span><span class="p">:</span>
+</span><span id="line-157">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_exp_data</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">)</span></div>
+
+</span><span id="line-158">
 <div class="viewcode-block" id="ExpData.rescale_correction">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.rescale_correction">[docs]</a>
-</span><span id="line-119">    <span class="k">def</span> <span class="nf">rescale_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rescale_value</span><span class="p">):</span>
-</span><span id="line-120"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-121"><span class="sd">        Overwrites the results attribute multiplying the results by the rescale value.</span>
-</span><span id="line-122">
-</span><span id="line-123"><span class="sd">        Parameters</span>
-</span><span id="line-124"><span class="sd">        ----------</span>
-</span><span id="line-125"><span class="sd">        rescale_value : int or float</span>
-</span><span id="line-126"><span class="sd">            value to be multiplied by the results</span>
-</span><span id="line-127"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-128">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rescale_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-</span><span id="line-129">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rescale_value must be a number.&quot;</span><span class="p">)</span>
-</span><span id="line-130">
-</span><span id="line-131">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="line-132">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">*</span> <span class="n">rescale_value</span>
-</span><span id="line-133">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-134">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span> <span class="o">*</span> <span class="n">rescale_value</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">]</span></div>
+</span><span id="line-159">    <span class="k">def</span> <span class="nf">rescale_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rescale_value</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Expt. Data with Rescale Correction&#39;</span><span class="p">):</span>
+</span><span id="line-160"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-161"><span class="sd">        Overwrites the results attribute multiplying the results by the rescale value.</span>
+</span><span id="line-162">
+</span><span id="line-163"><span class="sd">        Parameters</span>
+</span><span id="line-164"><span class="sd">        ----------</span>
+</span><span id="line-165"><span class="sd">        rescale_value : int or float</span>
+</span><span id="line-166"><span class="sd">            value to be multiplied by the results</span>
+</span><span id="line-167"><span class="sd">        plot : bool</span>
+</span><span id="line-168"><span class="sd">            if True, plot the experimental data</span>
+</span><span id="line-169"><span class="sd">        figsize : tuple</span>
+</span><span id="line-170"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-171"><span class="sd">        figtitle : str</span>
+</span><span id="line-172"><span class="sd">            title of the figure for the plot</span>
+</span><span id="line-173"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-174">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rescale_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+</span><span id="line-175">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rescale_value must be a number.&quot;</span><span class="p">)</span>
+</span><span id="line-176">
+</span><span id="line-177">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-178">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">*</span> <span class="n">rescale_value</span>
+</span><span id="line-179">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+</span><span id="line-180">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span> <span class="o">*</span> <span class="n">rescale_value</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">]</span>
+</span><span id="line-181">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-182">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
+</span><span id="line-183">
+</span><span id="line-184">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="line-185">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot must be a boolean&quot;</span><span class="p">)</span>
+</span><span id="line-186">        <span class="k">elif</span> <span class="n">plot</span><span class="p">:</span>
+</span><span id="line-187">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_exp_data</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">)</span></div>
 
-</span><span id="line-135">
-</span><span id="line-136">    <span class="k">def</span> <span class="nf">baseline_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="line-137"><span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-</span><span id="line-138">        <span class="k">pass</span>
-</span><span id="line-139">
-</span><span id="line-140">    <span class="k">def</span> <span class="nf">save</span><span class="p">():</span>
-</span><span id="line-141">        <span class="k">pass</span></div>
+</span><span id="line-188">
+<div class="viewcode-block" id="ExpData.poly_base_correction">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction">[docs]</a>
+</span><span id="line-189">    <span class="k">def</span> <span class="nf">poly_base_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Expt. Data with Polynomial Baseline Correction&#39;</span><span class="p">):</span>
+</span><span id="line-190"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-191"><span class="sd">        Overwrites the results attribute performing a polynomial baseline correction.</span>
+</span><span id="line-192"><span class="sd">        The baseline is fitted to the data between x_start and x_end, representing the start and end of the xaxis index.</span>
+</span><span id="line-193">
+</span><span id="line-194"><span class="sd">        Parameters</span>
+</span><span id="line-195"><span class="sd">        ----------</span>
+</span><span id="line-196"><span class="sd">        x_start : int or list of int</span>
+</span><span id="line-197"><span class="sd">            start index of the x axis for the baseline fit</span>
+</span><span id="line-198"><span class="sd">        x_end : int or list of int</span>
+</span><span id="line-199"><span class="sd">            end index of the x axis for the baseline fit</span>
+</span><span id="line-200"><span class="sd">        poly_order : int</span>
+</span><span id="line-201"><span class="sd">            order of the polynomial to fit the baseline</span>
+</span><span id="line-202"><span class="sd">        plot : bool</span>
+</span><span id="line-203"><span class="sd">            if True, plot the experimental data</span>
+</span><span id="line-204"><span class="sd">        figsize : tuple</span>
+</span><span id="line-205"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-206"><span class="sd">        figtitle : str</span>
+</span><span id="line-207"><span class="sd">            title of the figure for the plot</span>
+</span><span id="line-208"><span class="sd">                </span>
+</span><span id="line-209"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-210">        <span class="c1"># check all variables</span>
+</span><span id="line-211">        <span class="k">if</span> <span class="n">x_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-212">            <span class="n">x_start</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="line-213">        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_start</span><span class="p">)):</span>
+</span><span id="line-214">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x_start must be a integer index or a list of integer indexes.&quot;</span><span class="p">)</span>
+</span><span id="line-215">        
+</span><span id="line-216">        <span class="k">if</span> <span class="n">x_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-217">            <span class="n">x_end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="line-218">        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_end</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x_end</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_end</span><span class="p">)):</span>
+</span><span id="line-219">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x_end must be a integer index or a list of integer indexes.&quot;</span><span class="p">)</span>
+</span><span id="line-220">        
+</span><span id="line-221">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">poly_order</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-222">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;poly_order must be an integer.&quot;</span><span class="p">)</span>
+</span><span id="line-223">
+</span><span id="line-224">        <span class="c1"># crops the x and y axis for performing the baseline fit  </span>
+</span><span id="line-225">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_end</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-226">            <span class="n">baseline_xaxis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="n">x_start</span><span class="p">:</span><span class="n">x_end</span><span class="p">]</span>
+</span><span id="line-227">            <span class="n">baseline_yaxis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">x_start</span><span class="p">:</span><span class="n">x_end</span><span class="p">]</span>
+</span><span id="line-228">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_end</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_start</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_end</span><span class="p">):</span>
+</span><span id="line-229">            <span class="n">baseline_xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="n">x_start</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">x_end</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_start</span><span class="p">))])</span>
+</span><span id="line-230">            <span class="n">baseline_yaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">x_start</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">x_end</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_start</span><span class="p">))])</span>
+</span><span id="line-231">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-232">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x_start and x_end must int or a list of the same length.&quot;</span><span class="p">)</span>
+</span><span id="line-233">        
+</span><span id="line-234">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Baseline x-axis: </span><span class="si">{</span><span class="n">baseline_xaxis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="line-235">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Baseline y-axis: </span><span class="si">{</span><span class="n">baseline_yaxis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="line-236">
+</span><span id="line-237">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-238">            <span class="n">poly_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">baseline_xaxis</span><span class="p">,</span> <span class="n">baseline_yaxis</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">)</span>
+</span><span id="line-239">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">poly_fit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
+</span><span id="line-240">
+</span><span id="line-241">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+</span><span id="line-242">            <span class="n">poly_fit</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">baseline_xaxis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">baseline_yaxis</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">poly_order</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">baseline_xaxis</span><span class="p">))]</span>
+</span><span id="line-243">            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">poly_fit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">))]</span>
+</span><span id="line-244">
+</span><span id="line-245">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="line-246">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;plot must be a boolean&quot;</span><span class="p">)</span>
+</span><span id="line-247">        <span class="k">elif</span> <span class="n">plot</span><span class="p">:</span>
+</span><span id="line-248">            <span class="bp">self</span><span class="o">.</span><span class="n">plot_exp_data</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">)</span></div>
+
+</span><span id="line-249">
+<div class="viewcode-block" id="ExpData.plot_exp_data">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data">[docs]</a>
+</span><span id="line-250">    <span class="k">def</span> <span class="nf">plot_exp_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Experimental Data&#39;</span><span class="p">):</span>
+</span><span id="line-251"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-252"><span class="sd">        Plots the experimental data.</span>
+</span><span id="line-253">
+</span><span id="line-254"><span class="sd">        Parameters</span>
+</span><span id="line-255"><span class="sd">        ----------</span>
+</span><span id="line-256"><span class="sd">        figsize : tuple</span>
+</span><span id="line-257"><span class="sd">            size of the figure for the plot</span>
+</span><span id="line-258"><span class="sd">        figtitle : str</span>
+</span><span id="line-259"><span class="sd">            title of the figure for the plot        </span>
+</span><span id="line-260"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-261">        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="line-262">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
+</span><span id="line-263">        
+</span><span id="line-264">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figtitle</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-265">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figtitle must be a string&quot;</span><span class="p">)</span>
+</span><span id="line-266">
+</span><span id="line-267">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+</span><span id="line-268">
+</span><span id="line-269">        <span class="c1"># check if the results is a list of results or a single result</span>
+</span><span id="line-270">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-271">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observable&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+</span><span id="line-272">
+</span><span id="line-273">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+</span><span id="line-274">            <span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)):</span>
+</span><span id="line-275">                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Observable </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+</span><span id="line-276">
+</span><span id="line-277">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-278">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
+</span><span id="line-279">
+</span><span id="line-280">        <span class="c1"># set the x-axis limits to the variable of the experiment</span>
+</span><span id="line-281">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="line-282">
+</span><span id="line-283">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span><span class="p">)</span>
+</span><span id="line-284">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_name</span><span class="p">)</span>
+</span><span id="line-285">        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="line-286">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">figtitle</span><span class="p">)</span></div>
+
+</span><span id="line-287">
+</span><span id="line-288">
+</span><span id="line-289">    <span class="k">def</span> <span class="nf">save</span><span class="p">():</span>
+</span><span id="line-290">        <span class="k">pass</span></div>
 
 </span></code></pre></div>
     </div></div>

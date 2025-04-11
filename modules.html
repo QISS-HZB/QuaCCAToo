@@ -2890,7 +2890,7 @@ guess for the initial parameters and bounds for the parameters.</p>
 <p>This module contains the ExpData class as part of the QuaCCAToo package.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.ExpData.ExpData.</span></span><span class="sig-name descname"><span class="pre">ExpData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expectation</span> <span class="pre">value'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">loadtxt_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.ExpData.ExpData.</span></span><span class="sig-name descname"><span class="pre">ExpData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expectation</span> <span class="pre">Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Experimental</span> <span class="pre">Data'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">loadtxt_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData'"><span>#</span></a></dt>
 <dd><p>Class to load experimental data and perform basic data processing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -2909,20 +2909,20 @@ guess for the initial parameters and bounds for the parameters.</p>
 <p class="rubric">Methods</p>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>subtract_results_columns(pos_col=0, neg_col=1)</strong></p></td>
+<tr class="row-odd"><td><p><strong>subtract_results_columns:</strong></p></td>
 <td><p>subtracts the results of the negative column from the positive column</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>background_correction(background_value)</strong></p></td>
+<tr class="row-even"><td><p><strong>offset_correction:</strong></p></td>
 <td><p>substracts a background value from the results</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>rescale_correction(rescale_value)</strong></p></td>
+<tr class="row-odd"><td><p><strong>rescale_correction:</strong></p></td>
 <td><p>multiplies the results by a rescale value</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>baseline_correction</strong></p></td>
-<td></td>
+<tr class="row-even"><td><p><strong>poly_baseline_correction:</strong></p></td>
+<td><p>performs a polynomial baseline correction to the results</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>save</strong></p></td>
-<td></td>
+<tr class="row-odd"><td><p><strong>plot_exp_data:</strong></p></td>
+<td><p>plots the experimental data</p></td>
 </tr>
 </tbody>
 </table>
@@ -2941,6 +2941,12 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd>
 <dt><strong>result_name</strong><span class="classifier">str</span></dt><dd><p>name of the results</p>
 </dd>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+</dd>
 <dt><strong>**loadtxt_args</strong><span class="classifier">dict</span></dt><dd><p>additional arguments for the np.loadtxt function</p>
 </dd>
 </dl>
@@ -2949,35 +2955,83 @@ It loads experimental data from a file and sets the variable and results attribu
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.background_correction" title="quaccatoo.ExpData.ExpData.ExpData.background_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">background_correction</span></code></a>(background_value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.offset_correction" title="quaccatoo.ExpData.ExpData.ExpData.offset_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset_correction</span></code></a>(background_value[, plot, ...])</p></td>
 <td><p>Overwrites the results attribute substracting the background value from the results.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.rescale_correction" title="quaccatoo.ExpData.ExpData.ExpData.rescale_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_correction</span></code></a>(rescale_value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data" title="quaccatoo.ExpData.ExpData.ExpData.plot_exp_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_exp_data</span></code></a>([figsize, figtitle])</p></td>
+<td><p>Plots the experimental data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction" title="quaccatoo.ExpData.ExpData.ExpData.poly_base_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">poly_base_correction</span></code></a>([x_start, x_end, ...])</p></td>
+<td><p>Overwrites the results attribute performing a polynomial baseline correction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.rescale_correction" title="quaccatoo.ExpData.ExpData.ExpData.rescale_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_correction</span></code></a>(rescale_value[, plot, ...])</p></td>
 <td><p>Overwrites the results attribute multiplying the results by the rescale value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns" title="quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_results_columns</span></code></a>([pos_col, neg_col])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns" title="quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_results_columns</span></code></a>([pos_col, neg_col, ...])</p></td>
 <td><p>Overwrites the results attribute substracting the results of the negative column from the positive column.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>baseline_correction</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>save</strong></p></td>
+<tr class="row-odd"><td><p><strong>save</strong></p></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.background_correction">
-<span class="sig-name descname"><span class="pre">background_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.background_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.background_correction" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.background_correction'"><span>#</span></a></dt>
+<dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.offset_correction">
+<span class="sig-name descname"><span class="pre">offset_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expt.</span> <span class="pre">Data</span> <span class="pre">with</span> <span class="pre">Offset</span> <span class="pre">Correction'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.offset_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.offset_correction" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.offset_correction'"><span>#</span></a></dt>
 <dd><p>Overwrites the results attribute substracting the background value from the results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>background_value</strong><span class="classifier">int or float</span></dt><dd><p>value to be substracted from the results</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.plot_exp_data">
+<span class="sig-name descname"><span class="pre">plot_exp_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Experimental</span> <span class="pre">Data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.plot_exp_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data'"><span>#</span></a></dt>
+<dd><p>Plots the experimental data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.poly_base_correction">
+<span class="sig-name descname"><span class="pre">poly_base_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expt.</span> <span class="pre">Data</span> <span class="pre">with</span> <span class="pre">Polynomial</span> <span class="pre">Baseline</span> <span class="pre">Correction'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.poly_base_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction'"><span>#</span></a></dt>
+<dd><p>Overwrites the results attribute performing a polynomial baseline correction.
+The baseline is fitted to the data between x_start and x_end, representing the start and end of the xaxis index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_start</strong><span class="classifier">int or list of int</span></dt><dd><p>start index of the x axis for the baseline fit</p>
+</dd>
+<dt><strong>x_end</strong><span class="classifier">int or list of int</span></dt><dd><p>end index of the x axis for the baseline fit</p>
+</dd>
+<dt><strong>poly_order</strong><span class="classifier">int</span></dt><dd><p>order of the polynomial to fit the baseline</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2985,12 +3039,18 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.rescale_correction">
-<span class="sig-name descname"><span class="pre">rescale_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rescale_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.rescale_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.rescale_correction" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.rescale_correction'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">rescale_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rescale_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expt.</span> <span class="pre">Data</span> <span class="pre">with</span> <span class="pre">Rescale</span> <span class="pre">Correction'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.rescale_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.rescale_correction" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.rescale_correction'"><span>#</span></a></dt>
 <dd><p>Overwrites the results attribute multiplying the results by the rescale value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>rescale_value</strong><span class="classifier">int or float</span></dt><dd><p>value to be multiplied by the results</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2998,7 +3058,7 @@ It loads experimental data from a file and sets the variable and results attribu
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns">
-<span class="sig-name descname"><span class="pre">subtract_results_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.subtract_results_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">subtract_results_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figtitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Subtracted</span> <span class="pre">Expt.</span> <span class="pre">Data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/ExpData/ExpData.html#ExpData.subtract_results_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns'"><span>#</span></a></dt>
 <dd><p>Overwrites the results attribute substracting the results of the negative column from the positive column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3006,6 +3066,12 @@ It loads experimental data from a file and sets the variable and results attribu
 <dt><strong>pos_col: int</strong></dt><dd><p>index of the positive column</p>
 </dd>
 <dt><strong>neg_col: int</strong></dt><dd><p>index of the negative column</p>
+</dd>
+<dt><strong>plot: bool</strong></dt><dd><p>if True, plot the experimental data</p>
+</dd>
+<dt><strong>figsize: tuple</strong></dt><dd><p>size of the figure for the plot</p>
+</dd>
+<dt><strong>figtitle: str</strong></dt><dd><p>title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -3158,7 +3224,9 @@ It loads experimental data from a file and sets the variable and results attribu
 </li>
 <li><a :data-current="activeSection === '#module-quaccatoo.ExpData.ExpData'" class="reference internal" href="#module-quaccatoo.ExpData.ExpData">ExpData</a><ul>
 <li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData"><code class="docutils literal notranslate"><span class="pre">ExpData</span></code></a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.background_correction'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.background_correction"><code class="docutils literal notranslate"><span class="pre">ExpData.background_correction()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.offset_correction'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.offset_correction"><code class="docutils literal notranslate"><span class="pre">ExpData.offset_correction()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.plot_exp_data"><code class="docutils literal notranslate"><span class="pre">ExpData.plot_exp_data()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.poly_base_correction"><code class="docutils literal notranslate"><span class="pre">ExpData.poly_base_correction()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.rescale_correction'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.rescale_correction"><code class="docutils literal notranslate"><span class="pre">ExpData.rescale_correction()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns'" class="reference internal" href="#quaccatoo.ExpData.ExpData.ExpData.subtract_results_columns"><code class="docutils literal notranslate"><span class="pre">ExpData.subtract_results_columns()</span></code></a></li>
 </ul>
