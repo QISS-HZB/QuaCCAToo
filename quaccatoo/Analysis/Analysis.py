@@ -171,7 +171,7 @@ class Analysis:
         if self.pearson is None:
             raise ValueError("You must run the compare_with method before plotting the comparison")
 
-        plt.plot(self.exp_comparison.variable, self.exp_comparison.results, label="Compared Experiment", lw=2, alpha=0.7)
+        plt.scatter(self.exp_comparison.variable, self.exp_comparison.results, label="Compared Experiment", alpha=0.7, s=15)
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
     ######################################################## FFT Methods ########################################################
