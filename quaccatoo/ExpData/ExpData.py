@@ -230,13 +230,10 @@ class ExpData:
             baseline_yaxis = np.concatenate([self.results[x_start[i]:x_end[i]] for i in range(len(x_start))])
         else:
             raise ValueError("x_start and x_end must int or a list of the same length.")
-        
-        print(f"Baseline x-axis: {baseline_xaxis}")
-        print(f"Baseline y-axis: {baseline_yaxis}")
 
         if isinstance(self.results, np.ndarray):
             poly_fit = np.polyfit(baseline_xaxis, baseline_yaxis, poly_order)
-            self.results = self.results - np.polyval(poly_fit, self.variable)
+            self.results -= np.polyval(poly_fit, self.variable)
 
         elif isinstance(self.results, list) and all(isinstance(result, np.ndarray) for result in self.results):
             poly_fit = [np.polyfit(baseline_xaxis[i], baseline_yaxis[i], poly_order) for i in range(len(baseline_xaxis))]
