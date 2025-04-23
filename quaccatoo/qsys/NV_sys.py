@@ -68,7 +68,7 @@ class NV(QSys):
     _HyperfineN
         get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    
     """
-    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0, phi_r=0, units_angles="deg", temp=None, units_temp="K", E=0):
+    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0., phi_r=0., units_angles="deg", temp=None, units_temp="K", E=0):
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.

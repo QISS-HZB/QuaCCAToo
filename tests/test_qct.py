@@ -1,7 +1,7 @@
 import pytest
-
 import numpy as np
 from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj
+from lmfit import Model
 
 from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
 from quaccatoo.analysis.fit_functions import (
@@ -9,6 +9,9 @@ from quaccatoo.analysis.fit_functions import (
     fit_gaussian,
     fit_rabi,
     fit_two_lorentz_sym,
+    RabiModel,
+    GaussianModel,
+    ExpDecayModel
 )
 
 
@@ -53,10 +56,9 @@ def rabi_exp(qsys):
 class TestRabi:
     def test_tpi(self, rabi_exp):
         rabi_exp.run()
-        w1 = 0.1
         rabi_analysis = Analysis(rabi_exp)
-        rabi_analysis.run_fit(fit_function=fit_rabi, guess=[1, 1 / 2 / w1, 0, 0])
-        assert np.isclose(rabi_analysis.fit[1], 5, atol=1e-3)
+        rabi_analysis.run_fit(model=RabiModel())
+        assert np.isclose(rabi_analysis.fit.best_values["Tpi"], 5, atol=1e-3)
 
 
 @pytest.fixture
@@ -79,11 +81,13 @@ def hahn_exp(qsys):
 
 
 class TestHahn:
+    # @pytest.mark.slow
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_decay(self, hahn_exp):
         hahn_exp.run()
         hahn_analysis = Analysis(hahn_exp)
-        hahn_analysis.run_fit(fit_function=fit_exp_decay)
-        assert np.isclose(hahn_analysis.fit[-1], 3.953, atol=1e-3)
+        hahn_analysis.run_fit(model=ExpDecayModel())
+        assert np.isclose(hahn_analysis.fit.best_values["Tc"], 3.953, atol=1e-3)
 
 
 class TestXY8:
@@ -108,30 +112,30 @@ class TestXY8:
         )
         XY8_15N.run()
         XY8_analysis = Analysis(XY8_15N)
-        XY8_analysis.run_fit(fit_function=fit_gaussian, guess=[0.8, 0.02, 0.3, 0.01])
-        assert 0.29 <= XY8_analysis.fit[-2] <= 0.31
+        XY8_analysis.run_fit(model=GaussianModel())
+        assert 0.29 <= XY8_analysis.fit.best_values["center"] <= 0.31
 
 
 class TestPODMR:
-    @pytest.mark.slow
+    # @pytest.mark.slow
     def test_podmr(self):
         qsys = NV(N=15, B0=40, units_B0="mT")
         w1 = 0.3
 
-        podmr_exp_2 = PMR(
+        podmr_exp = PMR(
             frequencies=np.arange(1745, 1753, 0.05),
             pulse_duration=1 / 2 / w1,
             system=qsys,
             H1=w1 * qsys.MW_H1,
         )
 
-        podmr_exp_2.run()
-        podmr_analysis = Analysis(podmr_exp_2)
+        podmr_exp.run()
+        podmr_analysis = Analysis(podmr_exp)
 
         podmr_analysis.run_fit(
-            fit_function=fit_two_lorentz_sym,
-            guess=[0.5, 0.2, 1749, 3, 1],
+            model=Model(fit_two_lorentz_sym),
+            guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}
         )
-        assert np.isclose(podmr_analysis.fit[-3], 1.749e3, atol=1e-3) and np.isclose(
-            podmr_analysis.fit[-2], 3.029, atol=1e-3
-        )
+        assert np.isclose(
+            podmr_analysis.fit.best_values["f_mean"], 1.749e3, atol=1e-3
+        ) and np.isclose(podmr_analysis.fit.best_values["f_delta"], 3.029, atol=1e-3)

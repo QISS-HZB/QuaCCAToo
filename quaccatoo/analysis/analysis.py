@@ -5,12 +5,13 @@ This module contains the Analysis class as part of the QuaCCAToo package.
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Bloch
-from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
+
+from lmfit import Model
 
 class Analysis:
     """
@@ -80,7 +81,7 @@ class Analysis:
         self.FFT_values = []
         self.FFT_peaks = []
         # the fit attributes need to be lists of the same length as the results attribute to avoid index errors
-        self.fit_function = [None] * len(self.experiment.results)
+        self.model = [None] * len(self.experiment.results)
         self.fit = [None] * len(self.experiment.results)
         self.fit_cov = [None] * len(self.experiment.results)
         self.pearson = None
@@ -290,48 +291,68 @@ class Analysis:
 
     ######################################################## FIT Methods ########################################################
 
-    def run_fit(self, fit_function, results_index=0, guess=None, bounds=(-np.inf, np.inf)):
+
+    def run_fit(self, model, results_index=0, guess=None):
         """
-        Run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function,
-        guess for the initial parameters and bounds for the parameters.
+        Run the fit method from lmfit to fit the results of the experiment with a given model,
+        guess for the initial parameters.
 
         Parameters
         ----------
-        fit_function : function
-            function to be used to fit the results
+        model : lmfit.Model
+            model to be used to fit the results
         results_index : int
             index of the results to be fitted if the results attribute is a list
-        guess : list
-            initial guess for the parameters of the fit function
-        bounds : list
-            bounds for the parameters of the fit function
+        guess : dict
+            initial guess for the parameters of the model
+            Takes a dictionary with the keys being the parameters and the value being the initial guess.
+            See the defintions of the models in the FitFunctions.py file for details.
 
         Returns
         -------
-        fit : array
-            array with the fitted parameters
-        fit_cov : array
-            array with the covariance of the fitted parameters
+        fit : dict
+            best fit values of parameters as a dict
         """
-        if not callable(fit_function):
-            raise ValueError("fit_function must be a callable function")
+        if not isinstance(model, Model):
+            raise TypeError("model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")
 
-        # if there is only one result, just fit the results with the fit_function
+        # if there is only one result, just fit the results with the model
         if isinstance(self.experiment.results, np.ndarray):
-            self.fit_function = fit_function
-            self.fit, self.fit_cov = curve_fit(fit_function, self.experiment.variable, self.experiment.results, p0=guess, bounds=bounds, maxfev=100000)
-            return self.fit, self.fit_cov
+            self.model = model
+            if guess:
+                self.fit = model.fit(self.experiment.results, x=self.experiment.variable, **guess)
+            else:
+                # if model.guess:
+                #     params = model.guess(self.experiment.results, x=self.experiment.variable)
+                #     self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                # else:
+                    # params = model.make_params()
+                    # self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                try:
+                    params = model.guess(self.experiment.results, x=self.experiment.variable)
+                    self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                except NotImplementedError:
+                    params = model.make_params()
+                    self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+
+            return self.fit.best_values
 
         # if there are multiple results, check if the results_index is an integer and if it is less than the number of results then fit
         elif isinstance(self.experiment.results, list):
-            if not isinstance(results_index, int):
-                raise ValueError("results_index must be an integer")
-            elif results_index > len(self.experiment.results) - 1:
-                raise ValueError("results_index must be less than the number of results")
+            if not isinstance(results_index, int) or results_index < 0 or results_index >= len(self.experiment.results):
+                raise ValueError("results_index must be a non-negative integer less than the number of results")
 
-            self.fit_function[results_index] = fit_function
-            self.fit[results_index], self.fit_cov[results_index] = curve_fit(fit_function, self.experiment.variable, self.experiment.results[results_index], p0=guess, bounds=bounds, maxfev=100000)
-            return self.fit[results_index], self.fit_cov[results_index]
+            self.model[results_index] = model
+            if guess:
+                self.fit = model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
+            else:
+                if model.guess:
+                    params = model.guess(self.experiment.results[results_index], x=self.experiment.variable)
+                    self.fit[results_index] = model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+                else:
+                    params = model.make_params()
+                    self.fit[results_index] = model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+            return self.fit.best_values
 
     def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
         """
@@ -351,12 +372,12 @@ class Analysis:
         self.plot_results(figsize, xlabel, ylabel, title)
 
         if isinstance(self.experiment.results, np.ndarray):
-            plt.plot(self.experiment.variable, self.fit_function(self.experiment.variable, *self.fit), label="Fit")
+            plt.plot(self.experiment.variable, self.fit.best_fit, label="Fit")
 
         elif isinstance(self.experiment.results, list):
             for itr in range(len(self.experiment.results)):
                 if self.fit_function[itr] is not None:
-                    plt.plot(self.experiment.variable, self.fit_function[itr](self.experiment.variable, *self.fit[itr]), label=f"Fit {itr}")
+                    plt.plot(self.experiment.variable, self.fit[itr].best_fit, label=f"Fit {itr}")
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 

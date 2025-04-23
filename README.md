@@ -17,7 +17,7 @@ We strongly recommend using a virtual environment so that the system Python rema
 You can create a `conda` virtual environment as follows:
 
 ```sh
-conda create --name quaccatoo-env python qutip matplotlib
+conda create --name quaccatoo-env python qutip matplotlib lmfit
 conda activate quaccatoo-env
 ```
 
@@ -30,7 +30,7 @@ python -m venv quaccatoo-env
 source quaccatoo-env/bin/activate
 ```
 
-After the virtual environment has been setup, clone the repository and run from  <u>inside the local cloned folder </u>
+After the virtual environment has been setup, clone the repository and run from <u>inside the local cloned folder </u>
 
 ``` sh
 pip install .
@@ -42,7 +42,7 @@ To check the installation, you can run
 pip show quaccatoo
 ```
 
-Notebooks can be the most convenient way of running QuaCCAToo (but definitely  not the most efficient for long simulations). If you wish to use them, you must also install `jupyter` in you conda environment.
+Notebooks can be the most convenient way of running QuaCCAToo (but definitely not the most efficient for long simulations). If you wish to use them, you must also install `jupyter` in you conda environment.
 
 ``` sh
 pip install jupyter
@@ -68,5 +68,5 @@ Any contribution or bug report are welcome.
 
 - To contribute, fork the main branch and make a pull request.
 - Properly _document everything_ in details following the `numpy` [docstring format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
-- Test your branch by running notebooks Ex01 and Ex02.
+- Test your branch by running `pytest` and the example notebooks. Feel free to add more tests.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center instead of centre.
