@@ -7,11 +7,10 @@ import numpy as np
 from qutip import Bloch
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
+from lmfit import Model
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
-
-from lmfit import Model
 
 class Analysis:
     """
@@ -27,7 +26,7 @@ class Analysis:
         array with the peaks of the FFT values
     fit_function : list
         list with the fit function for each result
-    fit : list
+    fit_params : list
         list with the fitted parameters for each result
     fit_cov : list
         list with the covariance of the fitted parameters for each result
@@ -81,8 +80,8 @@ class Analysis:
         self.FFT_values = []
         self.FFT_peaks = []
         # the fit attributes need to be lists of the same length as the results attribute to avoid index errors
-        self.model = [None] * len(self.experiment.results)
-        self.fit = [None] * len(self.experiment.results)
+        self.fit_model = [None] * len(self.experiment.results)
+        self.fit_params = [None] * len(self.experiment.results)
         self.fit_cov = [None] * len(self.experiment.results)
         self.pearson = None
         self.exp_comparison = None
@@ -292,14 +291,14 @@ class Analysis:
     ######################################################## FIT Methods ########################################################
 
 
-    def run_fit(self, model, results_index=0, guess=None):
+    def run_fit(self, fit_model, results_index=0, guess=None):
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.
 
         Parameters
         ----------
-        model : lmfit.Model
+        fit_model : lmfit.Model
             model to be used to fit the results
         results_index : int
             index of the results to be fitted if the results attribute is a list
@@ -310,49 +309,49 @@ class Analysis:
 
         Returns
         -------
-        fit : dict
-            best fit values of parameters as a dict
+        fit_params : dict
+            best fit parameter values of parameters as a dict
         """
-        if not isinstance(model, Model):
-            raise TypeError("model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")
+        if not isinstance(fit_model, Model):
+            raise TypeError("fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")
 
         # if there is only one result, just fit the results with the model
         if isinstance(self.experiment.results, np.ndarray):
-            self.model = model
+            self.fit_model = fit_model
             if guess:
-                self.fit = model.fit(self.experiment.results, x=self.experiment.variable, **guess)
+                self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, **guess)
             else:
-                # if model.guess:
-                #     params = model.guess(self.experiment.results, x=self.experiment.variable)
-                #     self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                # if fit_model.guess:
+                #     params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
+                #     self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
                 # else:
-                    # params = model.make_params()
-                    # self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                    # params = fit_model.make_params()
+                    # self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
                 try:
-                    params = model.guess(self.experiment.results, x=self.experiment.variable)
-                    self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                    params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
+                    self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
                 except NotImplementedError:
-                    params = model.make_params()
-                    self.fit = model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                    params = fit_model.make_params()
+                    self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
 
-            return self.fit.best_values
+            return self.fit_params.best_values
 
         # if there are multiple results, check if the results_index is an integer and if it is less than the number of results then fit
         elif isinstance(self.experiment.results, list):
             if not isinstance(results_index, int) or results_index < 0 or results_index >= len(self.experiment.results):
                 raise ValueError("results_index must be a non-negative integer less than the number of results")
 
-            self.model[results_index] = model
+            self.fit_model[results_index] = fit_model
             if guess:
-                self.fit = model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
+                self.fit_params = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
             else:
-                if model.guess:
-                    params = model.guess(self.experiment.results[results_index], x=self.experiment.variable)
-                    self.fit[results_index] = model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+                if fit_model.guess:
+                    params = fit_model.guess(self.experiment.results[results_index], x=self.experiment.variable)
+                    self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
                 else:
-                    params = model.make_params()
-                    self.fit[results_index] = model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
-            return self.fit.best_values
+                    params = fit_model.make_params()
+                    self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+            return self.fit_params.best_values
 
     def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
         """
@@ -372,12 +371,12 @@ class Analysis:
         self.plot_results(figsize, xlabel, ylabel, title)
 
         if isinstance(self.experiment.results, np.ndarray):
-            plt.plot(self.experiment.variable, self.fit.best_fit, label="Fit")
+            plt.plot(self.experiment.variable, self.fit_params.best_fit, label="Fit")
 
         elif isinstance(self.experiment.results, list):
             for itr in range(len(self.experiment.results)):
                 if self.fit_function[itr] is not None:
-                    plt.plot(self.experiment.variable, self.fit[itr].best_fit, label=f"Fit {itr}")
+                    plt.plot(self.experiment.variable, self.fit_params[itr].best_fit, label=f"Fit {itr}")
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 

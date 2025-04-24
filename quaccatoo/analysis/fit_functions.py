@@ -1,4 +1,4 @@
-# TODO: expand
+# TODO: expand, document
 
 """
 Collection of in built fit models and functions.
@@ -10,6 +10,8 @@ import numpy as np
 from lmfit import Model
 from lmfit.models import SineModel, LinearModel, GaussianModel, LorentzianModel, ConstantModel, ExponentialModel, update_param_vals
 
+############################################## Rabi - Periodic Oscillation ##############################################
+
 def guess_sin(data, x):
     y = data - data.mean()
     frequencies = np.fft.fftfreq(len(x), abs(x[-1] - x[0]) / (len(x) - 1))
@@ -19,15 +21,6 @@ def guess_sin(data, x):
     frequency = 2 * np.pi * abs(frequencies[argmax])
 
     return amp, frequency
-
-
-def guess_exp(data,x):
-    y=np.log(np.abs(data))
-    result = np.polynomial.Polynomial.fit(x,y,1)
-    coeff = result.convert().coef
-    coeff[0]=np.exp(coeff[0])
-    coeff[1]=-1/coeff[1]
-    return coeff
 
 def fit_rabi(x, amp=1, Tpi=10, phi=0, offset=0):
     """
@@ -75,7 +68,15 @@ class RabiModel(Model):
                                 phi=phi, offset=offset)
         return update_param_vals(pars, self.prefix, **kwargs)
 
+################################################ Exponential Decay ####################################################
 
+def guess_exp(data,x):
+    y=np.log(np.abs(data))
+    result = np.polynomial.Polynomial.fit(x,y,1)
+    coeff = result.convert().coef
+    coeff[0]=np.exp(coeff[0])
+    coeff[1]=-1/coeff[1]
+    return coeff
 
 def fit_exp_decay(x, amp=1, Tc=1, offset=0):
     """
@@ -106,7 +107,7 @@ class ExpDecayModel(Model):
         pars = self.make_params(amp=coeff[0], Tc=coeff[1], offset = data[-1])
         return update_param_vals(pars, self.prefix, **kwargs)
 
-
+######################################################### Rabi with Exp Decay ####################################################
 
 def fit_rabi_decay(x, amp=1, Tpi=10, phi=0, offset=0, Tc=1):
     """
@@ -135,6 +136,7 @@ class RabiDecayModel(Model):
         kwargs.update({'prefix': prefix, 'nan_policy': nan_policy,
                             'independent_vars': independent_vars})
         super().__init__(fit_rabi_decay, **kwargs)
+
     def guess(self, data, x, **kwargs):
         offset=data.mean()
         amp, frequency = guess_sin(data, x)
@@ -174,6 +176,8 @@ def fit_exp_decay_n(x, A=1, C=0, Tc=1, n=1):
     return A * np.exp(-((x / Tc) ** n)) + C
 
 
+####################################################### Hahn Modulation ##############################################################
+
 def fit_hahn_mod(x, A, B, C, f1, f2):
     """
     Fit a Hahn echo with modulation function with 2 frequencies.
@@ -194,7 +198,6 @@ def fit_hahn_mod(x, A, B, C, f1, f2):
         Second modulation frequency.
     """
     return (A - B * np.sin(2 * np.pi * f1 * x / 2) ** 2 * np.sin(2 * np.pi * f2 * x / 2) ** 2) + C
-
 
 def fit_hahn_mod_decay(x, A, B, C, f1, f2, Tc, n):
     """
@@ -221,6 +224,7 @@ def fit_hahn_mod_decay(x, A, B, C, f1, f2, Tc, n):
     """
     return np.exp(-((x / Tc) ** n)) * (A - B * np.sin(2 * np.pi * f1 * x / 2) ** 2 * np.sin(2 * np.pi * f2 * x / 2) ** 2) + C
 
+####################################################### Lorentzian and sinc ##############################################################
 
 def fit_lorentz(x, A, gamma, f0, C):
     """
@@ -240,7 +244,6 @@ def fit_lorentz(x, A, gamma, f0, C):
         Offset of the peak.
     """
     return C - A * (gamma**2) / ((x - f0) ** 2 + gamma**2)
-
 
 def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87, f02=2.87, C=0):
     """
@@ -266,7 +269,6 @@ def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87, f02=2.87, C
         Offset of the peaks.
     """
     return C + fit_lorentz(x, A1, gamma1, f01, 0) + fit_lorentz(x, A2, gamma2, f02, 0)
-
 
 def fit_two_lorentz_sym(x, A, gamma, f_mean, f_delta, C):
     """
