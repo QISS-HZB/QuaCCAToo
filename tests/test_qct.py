@@ -57,8 +57,8 @@ class TestRabi:
     def test_tpi(self, rabi_exp):
         rabi_exp.run()
         rabi_analysis = Analysis(rabi_exp)
-        rabi_analysis.run_fit(model=RabiModel())
-        assert np.isclose(rabi_analysis.fit.best_values["Tpi"], 5, atol=1e-3)
+        rabi_analysis.run_fit(fit_model=RabiModel())
+        assert np.isclose(rabi_analysis.fit_params.best_values["Tpi"], 5, atol=1e-3)
 
 
 @pytest.fixture
@@ -86,8 +86,8 @@ class TestHahn:
     def test_decay(self, hahn_exp):
         hahn_exp.run()
         hahn_analysis = Analysis(hahn_exp)
-        hahn_analysis.run_fit(model=ExpDecayModel())
-        assert np.isclose(hahn_analysis.fit.best_values["Tc"], 3.953, atol=1e-3)
+        hahn_analysis.run_fit(fit_model=ExpDecayModel())
+        assert np.isclose(hahn_analysis.fit_params.best_values["Tc"], 3.953, atol=1e-3)
 
 
 class TestXY8:
@@ -112,8 +112,8 @@ class TestXY8:
         )
         XY8_15N.run()
         XY8_analysis = Analysis(XY8_15N)
-        XY8_analysis.run_fit(model=GaussianModel())
-        assert 0.29 <= XY8_analysis.fit.best_values["center"] <= 0.31
+        XY8_analysis.run_fit(fit_model=GaussianModel())
+        assert 0.29 <= XY8_analysis.fit_params.best_values["center"] <= 0.31
 
 
 class TestPODMR:
@@ -133,9 +133,9 @@ class TestPODMR:
         podmr_analysis = Analysis(podmr_exp)
 
         podmr_analysis.run_fit(
-            model=Model(fit_two_lorentz_sym),
+            fit_model=Model(fit_two_lorentz_sym),
             guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}
         )
         assert np.isclose(
-            podmr_analysis.fit.best_values["f_mean"], 1.749e3, atol=1e-3
-        ) and np.isclose(podmr_analysis.fit.best_values["f_delta"], 3.029, atol=1e-3)
+            podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
+        ) and np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
