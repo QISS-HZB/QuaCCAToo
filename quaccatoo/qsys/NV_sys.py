@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
-from .q_sys import QSys
+from .qsys import QSys
 
 gamma_e = cte.value("electron gyromag. ratio in MHz/T")*1e-3  # MHz/mT
 gamma_N14 = 3.077e-3

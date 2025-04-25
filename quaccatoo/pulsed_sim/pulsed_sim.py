@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, mesolve, parallel_map
 from .pulse_shapes import square_pulse
-from ..q_sys.q_sys import QSys
+from ..qsys.qsys import QSys
 
 
 class PulsedSim:
