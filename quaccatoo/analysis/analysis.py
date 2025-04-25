@@ -304,13 +304,13 @@ class Analysis:
             index of the results to be fitted if the results attribute is a list
         guess : dict
             initial guess for the parameters of the model
-            Takes a dictionary with the keys being the parameters and the value being the initial guess.
+            Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.
             See the defintions of the models in the FitFunctions.py file for details.
 
         Returns
         -------
         fit_params : dict
-            best fit parameter values of parameters as a dict
+            best fit parameter values of parameters as a dict with the parameter names as the keys
         """
         if not isinstance(fit_model, Model):
             raise TypeError("fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")
@@ -321,12 +321,6 @@ class Analysis:
             if guess:
                 self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, **guess)
             else:
-                # if fit_model.guess:
-                #     params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
-                #     self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
-                # else:
-                    # params = fit_model.make_params()
-                    # self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
                 try:
                     params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
                     self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
@@ -345,10 +339,10 @@ class Analysis:
             if guess:
                 self.fit_params = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
             else:
-                if fit_model.guess:
+                try:
                     params = fit_model.guess(self.experiment.results[results_index], x=self.experiment.variable)
                     self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
-                else:
+                except NotImplementedError:
                     params = fit_model.make_params()
                     self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
             return self.fit_params.best_values

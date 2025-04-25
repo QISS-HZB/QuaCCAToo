@@ -2,6 +2,9 @@
 
 """
 Collection of in built fit models and functions.
+
+The predefined model classes take a (fit) function and implement a guess subroutine for intelligent initial values.
+
 The general mechanism is the same as that of lmfit. So a lot of functions have been taken from there.
 To create additional fit models, simply instantiate an lmfit model with the target fit function.
 """
@@ -245,7 +248,7 @@ def fit_lorentz(x, A, gamma, f0, C):
     """
     return C - A * (gamma**2) / ((x - f0) ** 2 + gamma**2)
 
-def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87, f02=2.87, C=0):
+def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87e3, f02=2.87e3, C=0):
     """
     Fit two symmetric Lorentzian peaks.
 
@@ -270,7 +273,7 @@ def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87, f02=2.87, C
     """
     return C + fit_lorentz(x, A1, gamma1, f01, 0) + fit_lorentz(x, A2, gamma2, f02, 0)
 
-def fit_two_lorentz_sym(x, A, gamma, f_mean, f_delta, C):
+def fit_two_lorentz_sym(x, A=1, gamma=1, f_mean=2.87e3, f_delta=1, C=0):
     """
     Fit two symmetric Lorentzian peaks.
 

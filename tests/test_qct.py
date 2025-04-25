@@ -5,9 +5,6 @@ from lmfit import Model
 
 from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
 from quaccatoo.analysis.fit_functions import (
-    fit_exp_decay,
-    fit_gaussian,
-    fit_rabi,
     fit_two_lorentz_sym,
     RabiModel,
     GaussianModel,
@@ -117,7 +114,7 @@ class TestXY8:
 
 
 class TestPODMR:
-    # @pytest.mark.slow
+    @pytest.mark.slow
     def test_podmr(self):
         qsys = NV(N=15, B0=40, units_B0="mT")
         w1 = 0.3
