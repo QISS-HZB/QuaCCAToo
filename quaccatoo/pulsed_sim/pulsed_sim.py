@@ -8,8 +8,8 @@ This module contains the PulsedSim class that is used to define a general pulsed
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, mesolve, parallel_map
-from .PulseShapes import square_pulse
-from ..QSys.QSys import QSys
+from .pulse_shapes import square_pulse
+from ..q_sys.q_sys import QSys
 
 
 class PulsedSim:
@@ -393,6 +393,3 @@ class PulsedSim:
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
-
-    def save():
-        pass

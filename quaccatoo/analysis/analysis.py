@@ -1,5 +1,3 @@
-# TODO: improve/rework the fit method with easier guess and bounds inputs inspired on qudi
-
 """
 This module contains the Analysis class as part of the QuaCCAToo package.
 """
@@ -11,9 +9,8 @@ from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
 
-from ..ExpData.ExpData import ExpData
-from ..PulsedSim.PulsedSim import PulsedSim
-
+from ..exp_data.exp_data import ExpData
+from ..pulsed_sim.pulsed_sim import PulsedSim
 
 class Analysis:
     """
@@ -444,6 +441,3 @@ class Analysis:
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
         bloch.frame_alpha = 0
         bloch.render()
-
-    def save():
-        pass

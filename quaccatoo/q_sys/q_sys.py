@@ -6,7 +6,6 @@ This module contains the plot_energy_B0 function, the QSys class part of QuaCCAT
 """
 
 import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, qeye, tensor
@@ -244,6 +243,3 @@ class QSys:
 
         if self.c_ops is not None:
             self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
-
-    def save():
-        pass

@@ -14,8 +14,8 @@ import warnings
 import numpy as np
 from qutip import Qobj, mesolve, propagator
 
-from .PulsedSim import PulsedSim
-from .PulseShapes import square_pulse
+from .pulsed_sim import PulsedSim
+from .pulse_shapes import square_pulse
 
 ####################################################################################################
 

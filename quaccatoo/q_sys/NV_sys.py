@@ -1,4 +1,3 @@
-# TODO: include new systems
 # TODO: add electric and crystal stress hamiltonians for NV
 
 """
@@ -6,11 +5,10 @@ This module contains NV class, which is a subclass of QSys.
 """
 
 import warnings
-
 import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
-from .QSys import QSys
+from .q_sys import QSys
 
 gamma_e = cte.value("electron gyromag. ratio in MHz/T")*1e-3  # MHz/mT
 gamma_N14 = 3.077e-3
@@ -53,9 +51,9 @@ class NV(QSys):
     -------
     rho0_lowT
         calculates the initial state of the system at low temperatures using the Boltzmann distribution
-    set_MW_freqs
+    _set_MW_freqs
         sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
-    set_RF_freqs
+    _set_RF_freqs
         sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
     set_MW_H1
         sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
@@ -165,8 +163,8 @@ class NV(QSys):
         if temp is not None:
             self.rho0_lowT(temp, units_temp)
 
-        self.set_MW_freqs()
-        self.set_RF_freqs()
+        self._set_MW_freqs()
+        self._set_RF_freqs()
         self.set_MW_H1()
         self.set_RF_H1()
 
@@ -249,7 +247,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def set_MW_freqs(self):
+    def _set_MW_freqs(self):
         """
         Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.
         """
@@ -268,7 +266,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def set_RF_freqs(self):
+    def _set_RF_freqs(self):
         """
         Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
         """

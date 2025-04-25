@@ -1,5 +1,3 @@
-# TODO: implement the baseline_correction and save methods
-
 """
 This module contains the ExpData class as part of the QuaCCAToo package.
 """
@@ -281,7 +279,3 @@ class ExpData:
         ax.set_ylabel(self.result_name)
         ax.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
         ax.set_title(figtitle)
-
-
-    def save():
-        pass
