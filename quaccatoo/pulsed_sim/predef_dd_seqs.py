@@ -5,9 +5,8 @@ This module contains dynamical decoupling pulse sequences, used in quantum sensi
 import numpy as np
 from qutip import Qobj, mesolve
 
-from .PulseShapes import square_pulse
-from .PulsedSim import PulsedSim
-from .PulseShapes import square_pulse
+from .pulse_shapes import square_pulse
+from .pulsed_sim import PulsedSim
 import warnings
 
 ####################################################################################################

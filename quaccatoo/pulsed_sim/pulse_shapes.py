@@ -6,7 +6,6 @@ This module contains pulse shape functions to be used in the PulsedSim classes a
 
 import numpy as np
 
-
 def square_pulse(t, **pulse_params):
     """
     Square pulse envelope modulation

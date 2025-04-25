@@ -4,7 +4,7 @@ import numpy as np
 from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj
 
 from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
-from quaccatoo.Analysis.FitFunctions import (
+from quaccatoo.analysis.fit_functions import (
     fit_exp_decay,
     fit_gaussian,
     fit_rabi,
