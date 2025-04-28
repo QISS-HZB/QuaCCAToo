@@ -1,55 +1,56 @@
 QuaCCAToo Modules
 =================
 
-QSys
+qsys
 ----
 
-.. automodule:: quaccatoo.QSys.QSys
+.. automodule:: quaccatoo.qsys.qsys
    :members:
 
-NVSys
------
-.. automodule:: quaccatoo.QSys.NVSys
+NV_Sys
+------
+.. automodule:: quaccatoo.qsys.NV_sys
    :members:
 
-PulsedSim
+pulsed_sim
 ----------
 
-.. automodule:: quaccatoo.PulsedSim.PulsedSim
+.. automodule:: quaccatoo.pulsed_sim.pulsed_sim
    :members:
 
-PredefSeqs
-----------
-
-.. automodule:: quaccatoo.PulsedSim.PredefSeqs
-   :members:
-
-PredefDDSeqs
-------------
-
-.. automodule:: quaccatoo.PulsedSim.PredefDDSeqs
-   :members:
-
-PulseShapes
+predef_seqs
 -----------
 
-.. automodule:: quaccatoo.PulsedSim.PulseShapes
+.. automodule:: quaccatoo.pulsed_sim.predef_seqs
    :members:
 
-Analysis
---------
+predef_dd_seqs
+--------------
 
-.. automodule:: quaccatoo.Analysis.Analysis
+.. automodule:: quaccatoo.pulsed_sim.predef_dd_seqs
    :members:
 
-FitFunctions
+pulse_shapes
 ------------
 
-.. automodule:: quaccatoo.Analysis.FitFunctions
+.. automodule:: quaccatoo.pulsed_sim.pulse_shapes
    :members:
 
-ExpData
--------
+analysis
+--------
 
-.. automodule:: quaccatoo.ExpData.ExpData
+.. automodule:: quaccatoo.analysis.analysis
+   :members:
+
+fit_functions
+-------------
+
+.. automodule:: quaccatoo.analysis.fit_functions
+   :members:
+   :member-order: bysource
+
+exp_data
+--------
+
+.. automodule:: quaccatoo.exp_data.exp_data
    :members:
