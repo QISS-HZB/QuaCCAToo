@@ -305,12 +305,36 @@ class Analysis:
         guess : dict
             initial guess for the parameters of the model
             Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.
-            See the defintions of the models in the FitFunctions.py file for details.
+            See the definitions of the models in the fit_functions.py file for details.
+
+        Examples
+        --------
+        The typical usage scheme is to pass a model and optionally, a dictionary of initial values. The file
+        fit_functions.py includes a bunch of predefined models and imports some commonly needed ones from lmfit
+        which can be directly passed to the function and used. Alternatively, the Model function from lmfit takes
+        a custom Python function and instantiates a model class object with it, which can then be used here.
+
+        >>> from lmfit import Model #needed for custom models
+        >>> # my_analysis_obj is an instance of the analysis class
+        >>> my_analysis_obj.run_fit(fit_model=RabiModel())
+        >>> my_analysis_obj.run_fit(
+                fit_model=Model(fit_two_lorentz_sym),
+                guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}
+                )
+
+        In the snippet above, we showcase some ways to perform fits using this method. Using predefined
+        models takes care of most of the stuff. One can still pass a guess dictionary to provide better
+        initial values. The second example shows the usage with a custom model instantiated from a function
+        along with user provided guesses. It's important to note that the first parameter of these custom
+        functions should be `x`. Moreover, the keys in the dictionary should correspond to the other
+        parameters of the function (this holds true for the predefined models as well). The names of the
+        parameters can be referred to from the source file (fit_functions.py).
 
         Returns
         -------
         fit_params : dict
             best fit parameter values of parameters as a dict with the parameter names as the keys
+
         """
         if not isinstance(fit_model, Model):
             raise TypeError("fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")

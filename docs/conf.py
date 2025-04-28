@@ -29,6 +29,7 @@ exclude_patterns = [
 numpydoc_class_members_toctree = False
 
 autoclass_content = "both"
+autodoc_inherit_docstrings = False
 
 # -- Options for HTML output -------------------------------------------------
 

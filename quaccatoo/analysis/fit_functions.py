@@ -7,6 +7,8 @@ The predefined model classes take a (fit) function and implement a guess subrout
 
 The general mechanism is the same as that of lmfit. So a lot of functions have been taken from there.
 To create additional fit models, simply instantiate an lmfit model with the target fit function.
+
+Refer to the documentation of analysis.run_fit for usage details.
 """
 
 import numpy as np
@@ -45,6 +47,11 @@ def fit_rabi(x, amp=1, Tpi=10, phi=0, offset=0):
     return amp * np.cos(np.pi * x / Tpi + phi) + offset
 
 class RabiModel(Model):
+    """
+    Modified from lmfit's SineModel to include an offset as well
+
+    Takes the same parameters as the fit_rabi function.
+    """
     def __init__(self, independent_vars=['x'], prefix='', nan_policy='raise',
                  **kwargs):
         kwargs.update({'prefix': prefix, 'nan_policy': nan_policy,
@@ -53,9 +60,6 @@ class RabiModel(Model):
         self._set_paramhints_prefix()
 
     def guess(self, data, x, **kwargs):
-        """
-        Taken from lmfit's SineModel, modified to include the offset as well.
-        """
         offset=data.mean()
         amp, frequency = guess_sin(data, x)
         data = data - data.mean()
@@ -99,6 +103,11 @@ def fit_exp_decay(x, amp=1, Tc=1, offset=0):
     return amp * np.exp(-x / Tc) + offset
 
 class ExpDecayModel(Model):
+    """
+    Modified from lmfit's ExponentialModel to include an offset as well
+
+    Takes the same parameters as the fit_exp_decay function.
+    """
     def __init__(self, independent_vars=['x'], prefix='', nan_policy='raise',
                  **kwargs):
         kwargs.update({'prefix': prefix, 'nan_policy': nan_policy,
@@ -118,7 +127,7 @@ def fit_rabi_decay(x, amp=1, Tpi=10, phi=0, offset=0, Tc=1):
 
     Parameters
     ----------
-    t : array_like
+    x : array_like
         Time values.
     amp : float
         Amplitude of the cosine function.
@@ -134,6 +143,11 @@ def fit_rabi_decay(x, amp=1, Tpi=10, phi=0, offset=0, Tc=1):
     return amp * np.cos(np.pi * x / Tpi + phi) * np.exp(-x / Tc) + offset
 
 class RabiDecayModel(Model):
+    """
+    Analogous to RabiModel, modulated with an exponential decay.
+
+    Takes the same parameters as the fit_rabi_decay function.
+    """
     def __init__(self, independent_vars=['x'], prefix='', nan_policy='raise',
                  **kwargs):
         kwargs.update({'prefix': prefix, 'nan_policy': nan_policy,
