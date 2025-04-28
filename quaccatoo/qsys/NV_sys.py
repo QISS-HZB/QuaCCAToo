@@ -55,9 +55,9 @@ class NV(QSys):
         sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
     _set_RF_freqs
         sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
-    set_MW_H1
+    _set_MW_H1
         sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
-    set_RF_H1
+    _set_RF_H1
         sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions
     _ZeroField
         get the NV Hamiltonian term accounting for zero field splitting
@@ -165,8 +165,8 @@ class NV(QSys):
 
         self._set_MW_freqs()
         self._set_RF_freqs()
-        self.set_MW_H1()
-        self.set_RF_H1()
+        self._set_MW_H1()
+        self._set_RF_H1()
 
     def rho0_lowT(self, temp, units_temp="K"):
         """
@@ -288,7 +288,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def set_MW_H1(self):
+    def _set_MW_H1(self):
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         """
@@ -301,7 +301,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def set_RF_H1(self):
+    def _set_RF_H1(self):
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         """
