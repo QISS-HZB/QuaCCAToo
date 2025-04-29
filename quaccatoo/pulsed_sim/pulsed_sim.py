@@ -50,10 +50,10 @@ class PulsedSim:
         updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
     add_free_evolution
         adds a free evolution operation to the sequence of operations of the experiment
-    free_evolution
+    _free_evolution
         updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
-    free_evolution_H2
-        same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
+    _free_evolution
+        same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     run
         runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
     measure
@@ -105,7 +105,7 @@ class PulsedSim:
         self.sequence = None
         self.time_steps = None
 
-    def add_pulse(self, duration, H1, phi_t=0, pulse_shape=square_pulse, pulse_params={}, time_steps=100, options={}):
+    def add_pulse(self, duration, H1, phi_t=0, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
         control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
@@ -127,8 +127,10 @@ class PulsedSim:
         options : dict
             options for the Qutip solver
         """
-        # check if options is a dictionary of dynamic solver options from Qutip
-        if not isinstance(options, dict):
+        # check if options is None or a dictionary
+        if options is None:
+            options = {}
+        elif not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # check if time_steps is a positive integer
@@ -146,8 +148,11 @@ class PulsedSim:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
         # check if pulse_params is a dictionary to be passed to the pulse_shape function
-        if not isinstance(pulse_params, dict):
+        if pulse_params is None:
+            pulse_params = {}
+        elif not isinstance(pulse_params, dict):
             raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
+        
         # if the user doesn't provide a phi_t, set it to 0
         if 'phi_t' not in pulse_params:
             pulse_params['phi_t'] = 0
@@ -205,9 +210,9 @@ class PulsedSim:
         # update the total time
         self.total_time += duration
 
-    def add_free_evolution(self, duration, options={}):
+    def add_free_evolution(self, duration, options=None):
         """
-        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.
+        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.
 
         Parameters
         ----------
@@ -223,17 +228,19 @@ class PulsedSim:
         # add the free evolution to the pulse_profiles list
         self.pulse_profiles.append([None, [self.total_time, duration + self.total_time], None, None])
 
-        # if a H2 or collapse operators are given, use free_evolution_H2 method, otherwise use free_evolution method
+        # if a H2 or collapse operators are given, use _free_evolution method, otherwise use _free_evolution method
         if self.H2 is not None or self.system.c_ops is not None:
-            # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-            if not isinstance(options, dict):
+            # check whether options is None or a dictionary
+            if options is None:
+                options = {}
+            elif not isinstance(options, dict):
                 raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-            self.free_evolution_H2(duration, options)
+            self._free_evolution(duration, options)
         else:
-            self.free_evolution(duration)
+            self._free_evolution(duration)
 
-    def free_evolution(self, duration):
+    def _free_evolution(self, duration):
         """
         Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
@@ -248,9 +255,9 @@ class PulsedSim:
         # update the total time
         self.total_time += duration
 
-    def free_evolution_H2(self, duration, options={}):
+    def _free_evolution(self, duration, options):
         """
-        Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.
+        Same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.
 
         Parameters
         ----------
