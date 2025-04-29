@@ -2063,7 +2063,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.run_FFT" title="quaccatoo.analysis.analysis.Analysis.run_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_FFT</span></code></a>()</p></td>
 <td><p>Run the real fast Fourier transform for the results and variable attributes of the PulsedSimulation object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="quaccatoo.analysis.analysis.Analysis.get_peaks_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code></a>(**find_peaks_args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="quaccatoo.analysis.analysis.Analysis.get_peaks_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code></a>(**find_peaks_kwargs)</p></td>
 <td><p>Find the peaks of the FFT values calculated by the run_FFT method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.plot_FFT" title="quaccatoo.analysis.analysis.Analysis.plot_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_FFT</span></code></a>([freq_lim, figsize, xlabel, ...])</p></td>
@@ -2098,7 +2098,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.compare_with" title="quaccatoo.analysis.analysis.Analysis.compare_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_with</span></code></a>(exp_comparison[, ...])</p></td>
 <td><p>Loads a second experiment to compare with the first one.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="quaccatoo.analysis.analysis.Analysis.get_peaks_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code></a>(**find_peaks_args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="quaccatoo.analysis.analysis.Analysis.get_peaks_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code></a>(**find_peaks_kwargs)</p></td>
 <td><p>Find the peaks of the FFT values calculated by the run_FFT method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.plot_FFT" title="quaccatoo.analysis.analysis.Analysis.plot_FFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_FFT</span></code></a>([freq_lim, figsize, xlabel, ...])</p></td>
@@ -2153,12 +2153,12 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.analysis.analysis.Analysis.get_peaks_FFT">
-<span class="sig-name descname"><span class="pre">get_peaks_FFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">find_peaks_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#Analysis.get_peaks_FFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">get_peaks_FFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">find_peaks_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#Analysis.get_peaks_FFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT'"><span>#</span></a></dt>
 <dd><p>Find the peaks of the FFT values calculated by the run_FFT method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>find_peaks_args</strong><span class="classifier">dict</span></dt><dd><p>dictionary with the arguments to be passed to the scipy.signal.find_peaks function</p>
+<dt><strong>find_peaks_kwargs</strong><span class="classifier">dict</span></dt><dd><p>dictionary with the arguments to be passed to the scipy.signal.find_peaks function</p>
 </dd>
 </dl>
 </dd>
