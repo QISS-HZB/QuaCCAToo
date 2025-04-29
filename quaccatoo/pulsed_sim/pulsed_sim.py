@@ -294,7 +294,7 @@ class PulsedSim:
         # return the results of the experiment
         return self.results
 
-    def run(self, variable=None, sequence=None, map_kw={'num_cpus': None}):
+    def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """
         Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.
 
@@ -304,6 +304,8 @@ class PulsedSim:
             xaxis variable of the plot representing the parameter being changed in the experiment
         sequence : callable
             sequence of operations to be performed in the experiment
+        sequence_kwargs : dict
+            dictionary of arguments to be passed to the sequence function
         map_kw : dict
             dictionary of options for the parallel_map function from QuTip
         """
@@ -325,12 +327,19 @@ class PulsedSim:
         else:
             raise ValueError("variable must be a numpy array")
         
-        if not isinstance(map_kw, dict):
+        # check if map_kw and sequence_kwargs are None or dictionaries
+        if map_kw is None:
+            map_kw = {'num_cpus': None}
+        elif not isinstance(map_kw, dict):
             raise ValueError("map_kw must be a dictionary of options for the parallel_map function from QuTip")
 
+        if sequence_kwargs is None:
+            sequence_kwargs = {}
+        elif not isinstance(sequence_kwargs, dict):
+            raise ValueError("sequence_args must be a dictionary of arguments to be passed to the sequence function")
 
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
-        self.rho = parallel_map(self.sequence, self.variable, map_kw=map_kw)
+        self.rho = parallel_map(self.sequence, self.variable, task_kwargs=sequence_kwargs, map_kw=map_kw)
 
         # if an observable is given, calculate the expectation values
         if isinstance(self.system.observable, Qobj):
