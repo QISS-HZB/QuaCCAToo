@@ -39,11 +39,11 @@ class CPMG(PulsedSim):
         CPMG sequence with time dependent H2 or collapse operators.
     CPMG_sequence_proj_H2 :
         CPMG sequence with time dependent H2 or collapse operators and a final pi/2 pulse.
-    get_pulse_profiles :
+    _get_pulse_profiles :
         generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the Carr-Purcell-Meiboom-Gill sequence
 
@@ -123,8 +123,8 @@ class CPMG(PulsedSim):
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
+        if not isinstance(pulse_params, dict) and pulse_params is not None:
+            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
         else:
             # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
             self.pulse_params = np.empty(2, dtype=dict)
@@ -133,10 +133,12 @@ class CPMG(PulsedSim):
             self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # If projection_pulse is True, the sequence is set to the CPMG_sequence_proj method with the initial and final projection pulses into the Sz basis, otherwise it is set to the CPMG_sequence method without the projection pulses
         if projection_pulse:
@@ -377,7 +379,7 @@ class CPMG(PulsedSim):
 
         return rho
 
-    def get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the CPMG sequence for a given tau.
 
@@ -477,7 +479,7 @@ class CPMG(PulsedSim):
             Title of the plot
         """
 
-        self.get_pulse_profiles(tau)
+        self._get_pulse_profiles(tau)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
@@ -514,11 +516,11 @@ class XY(PulsedSim):
         XY sequence with time dependent H2 or collapse operators.
     XY_sequence_proj_H2(tau)
         XY sequence with time dependent H2 or collapse operators and a final pi/2 pulse.
-    get_pulse_profiles(tau)
+    _get_pulse_profiles(tau)
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the XY sequence
 
@@ -597,8 +599,8 @@ class XY(PulsedSim):
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
+        if not isinstance(pulse_params, dict) and pulse_params is not None:
+            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
         else:
             # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
             self.pulse_params = np.empty(2, dtype=dict)
@@ -607,10 +609,12 @@ class XY(PulsedSim):
             self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # If projection_pulse is True, the sequence is set to the XY_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY_sequence method without the projection pulse
         if projection_pulse:
@@ -853,7 +857,7 @@ class XY(PulsedSim):
 
         return rho
 
-    def get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the XY-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -957,7 +961,7 @@ class XY(PulsedSim):
             Title of the plot
         """
         # generate the pulse profiles for the given tau
-        self.get_pulse_profiles(tau)
+        self._get_pulse_profiles(tau)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
@@ -991,11 +995,11 @@ class XY8(PulsedSim):
         XY8 sequence with time dependent H2 or collapse operators.
     XY8_sequence_proj_H2(tau)
         XY8 sequence with time dependent H2 or collapse operators and a final pi/2 pulse.
-    get_pulse_profiles(tau)
+    _get_pulse_profiles(tau)
         Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the XY8 sequence
 
@@ -1074,8 +1078,8 @@ class XY8(PulsedSim):
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
+        if not isinstance(pulse_params, dict) and pulse_params is not None:
+            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
         else:
             self.pulse_params = pulse_params
             # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
@@ -1091,10 +1095,12 @@ class XY8(PulsedSim):
             self.pulse_params[7] = self.pulse_params[0]
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # If projection_pulse is True, the sequence is set to the XY8_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY8_sequence method without the projection pulse
         if projection_pulse:
@@ -1341,7 +1347,7 @@ class XY8(PulsedSim):
 
         return rho
 
-    def get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
 
@@ -1444,7 +1450,7 @@ class XY8(PulsedSim):
             Title of the plot
         """
 
-        self.get_pulse_profiles(tau)
+        self._get_pulse_profiles(tau)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
@@ -1474,7 +1480,7 @@ class RXY8(XY8):
     
 
     """
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params={}, options={}, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the RXY8 sequence
 

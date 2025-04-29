@@ -36,7 +36,7 @@ class Rabi(PulsedSim):
     PulsedSimulation
     """
 
-    def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, options={}):
+    def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None):
         """
         Constructor for the Rabi pulsed experiment class.
 
@@ -74,37 +74,42 @@ class Rabi(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
+        if pulse_params is None:
+            self.pulse_params = {}
+        elif isinstance(pulse_params, dict):
+            self.pulse_params = pulse_params
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
+        
+        # if phi_t is not in the pulse_params dictionary, assign it as 0
+        if "phi_t" not in self.pulse_params:
+            self.pulse_params["phi_t"] = 0
+
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
+            self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        
         # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-            self.pulse_profiles = [[H1, pulse_duration, pulse_shape, pulse_params]]
+            self.pulse_profiles = [[H1, pulse_duration, pulse_shape, self.pulse_params]]
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
             else:
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.pulse_profiles = [[H1[i], pulse_duration, pulse_shape[i], pulse_params] for i in range(len(H1))]
+            self.pulse_profiles = [[H1[i], pulse_duration, pulse_shape[i], self.pulse_params] for i in range(len(H1))]
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             else:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
-
-        # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if isinstance(pulse_params, dict):
-            self.pulse_params = pulse_params
-            # if phi_t is not in the pulse_params dictionary, assign it as 0
-            if "phi_t" not in pulse_params:
-                self.pulse_params["phi_t"] = 0
-        else:
-            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
-
-        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
-            self.options = options
 
     def run(self):
         """
@@ -156,7 +161,7 @@ class PMR(PulsedSim):
     (Inherited from PulsedSimulation)
     """
 
-    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params={}, time_steps=100, options={}):
+    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
         """
         Constructor for the PMR pulsed experiment class.
 
@@ -210,30 +215,35 @@ class PMR(PulsedSim):
             self.time_steps = time_steps
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
-        else:
+        if pulse_params is None:
+            self.pulse_params = {}
+        elif isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
-            # check whether phi_t is in the pulse_params dictionary and if it is not, assign it to the object as 0
-            if "phi_t" not in pulse_params:
-                self.pulse_params["phi_t"] = 0
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
+        
+        # if phi_t is not in the pulse_params dictionary, assign it as 0
+        if "phi_t" not in self.pulse_params:
+            self.pulse_params["phi_t"] = 0
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
-            self.pulse_profiles = [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, pulse_params]
+            self.pulse_profiles = [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, self.pulse_params]
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
             else:
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.pulse_profiles = [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
+            self.pulse_profiles = [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], self.pulse_params] for i in range(len(H1))]
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             else:
@@ -327,7 +337,7 @@ class Ramsey(PulsedSim):
         Defines the Ramsey sequence considering time-dependent H2 or collapse operators.
     ramsey_sequence_proj_H2(tau)
         Defines the Ramsey sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.
-    get_pulse_profiles(tau)
+    _get_pulse_profiles(tau)
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     (Inherited from PulsedSimulation)
@@ -342,8 +352,8 @@ class Ramsey(PulsedSim):
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
-        pulse_params={},
-        options={},
+        pulse_params=None,
+        options=None,
         time_steps=100,
     ):
         """
@@ -400,18 +410,25 @@ class Ramsey(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
-        else:
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
+        if pulse_params is None:
+            self.pulse_params = {}
+        elif isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
-            if "phi_t" not in pulse_params:
-                self.pulse_params["phi_t"] = 0
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
+        
+        # if phi_t is not in the pulse_params dictionary, assign it as 0
+        if "phi_t" not in self.pulse_params:
+            self.pulse_params["phi_t"] = 0
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
@@ -613,7 +630,7 @@ class Ramsey(PulsedSim):
 
         return rho
 
-    def get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -703,7 +720,7 @@ class Ramsey(PulsedSim):
             Title of the plot.
         """
         # generate the pulse profiles for the Ramsey sequence for a given tau
-        self.get_pulse_profiles(tau)
+        self._get_pulse_profiles(tau)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
@@ -751,8 +768,8 @@ class Hahn(PulsedSim):
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
-        pulse_params={},
-        options={},
+        pulse_params=None,
+        options=None,
         time_steps=100,
     ):
         """
@@ -829,19 +846,24 @@ class Hahn(PulsedSim):
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
         # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict):
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
-        else:
+        if pulse_params is None:
+            self.pulse_params = {}
+        elif isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
-            # if phi_t is not in the pulse_params dictionary, assign it as 0
-            if "phi_t" not in pulse_params:
-                self.pulse_params["phi_t"] = 0
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
+        
+        # if phi_t is not in the pulse_params dictionary, assign it as 0
+        if "phi_t" not in self.pulse_params:
+            self.pulse_params["phi_t"] = 0
 
         # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        else:
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
             self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis
         # otherwise it is set to the hahn_sequence method without the projection pulses
@@ -1103,7 +1125,7 @@ class Hahn(PulsedSim):
 
         return rho
 
-    def get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the Hahn echo sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -1197,7 +1219,7 @@ class Hahn(PulsedSim):
             Title of the plot.
         """
         # generate the pulse profiles for the Hahn echo sequence for a given tau
-        self.get_pulse_profiles(tau)
+        self._get_pulse_profiles(tau)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
