@@ -35,7 +35,7 @@ class ExpData:
     """
 
     def __init__(self, file_path, variable_column=0, results_columns=1, variable_name="Time", result_name="Expectation Value",
-                 plot=False, figsize=(6, 4), figtitle='Experimental Data', **loadtxt_args):
+                 plot=False, figsize=(6, 4), figtitle='Experimental Data', **loadtxt_kwargs):
         """
         Constructor of the ExpData class.
         It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.
@@ -58,7 +58,7 @@ class ExpData:
             size of the figure for the plot
         figtitle : str
             title of the figure for the plot       
-        **loadtxt_args : dict
+        **loadtxt_kwargs : dict
             additional arguments for the np.loadtxt function
         """
         if not isinstance(file_path, str):
@@ -74,11 +74,11 @@ class ExpData:
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
             raise ValueError("variable_name and result_name must be strings")
 
-        if not isinstance(loadtxt_args, dict):
-            raise ValueError("loadtxt_args must be a dictionary for the np.loadtxt function")
+        if not isinstance(loadtxt_kwargs, dict):
+            raise ValueError("loadtxt_kwargs must be a dictionary for the np.loadtxt function")
 
         # loads experimental data from a file with the specified arguments
-        exp_data = np.loadtxt(file_path, **loadtxt_args)
+        exp_data = np.loadtxt(file_path, **loadtxt_kwargs)
 
         # sets the results and variable attributes of the ExpData object
         self.variable = exp_data[:, variable_column]
