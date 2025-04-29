@@ -97,7 +97,7 @@
 <h1>QuaCCAToo Modules<a class="headerlink" href="#quaccatoo-modules" title="Link to this heading"><span>#</span></a></h1>
 <section id="module-quaccatoo.qsys.qsys">
 <span id="qsys"></span><h2>qsys<a class="headerlink" href="#module-quaccatoo.qsys.qsys" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#module-quaccatoo.qsys.qsys'"><span>#</span></a></h2>
-<p>This module contains the plot_energy_B0 function, the QSys class part of QuaCCAToo package.</p>
+<p>This module contains the plot_energy_B0 function, compose_sys function and the QSys class part of QuaCCAToo package.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.qsys.qsys.QSys">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.qsys.qsys.</span></span><span class="sig-name descname"><span class="pre">QSys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/qsys/qsys.html#QSys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.qsys.QSys" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.qsys.qsys.QSys'"><span>#</span></a></dt>
@@ -190,6 +190,27 @@ given a Hamiltonian for the new spin.</p>
 </dd>
 </dl>
 </dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.qsys.qsys.compose_sys">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.qsys.qsys.</span></span><span class="sig-name descname"><span class="pre">compose_sys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qsys1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qsys2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/qsys/qsys.html#compose_sys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.qsys.compose_sys" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.qsys.qsys.compose_sys'"><span>#</span></a></dt>
+<dd><p>Takes two quantum systems and returns the composed system by performing tensor products of the two</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qsys1</strong><span class="classifier">QSys</span></dt><dd><p>First quantum system.</p>
+</dd>
+<dt><strong>qsys2</strong><span class="classifier">QSys</span></dt><dd><p>Second quantum system.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>qsys1 X qsys2</strong><span class="classifier">QSys</span></dt><dd><p>Composed quantum system.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.qsys.qsys.plot_energy_B0">
@@ -3000,6 +3021,7 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.qsys.qsys.QSys.plot_energy'" class="reference internal" href="#quaccatoo.qsys.qsys.QSys.plot_energy"><code class="docutils literal notranslate"><span class="pre">QSys.plot_energy()</span></code></a></li>
 </ul>
 </li>
+<li><a :data-current="activeSection === '#quaccatoo.qsys.qsys.compose_sys'" class="reference internal" href="#quaccatoo.qsys.qsys.compose_sys"><code class="docutils literal notranslate"><span class="pre">compose_sys()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.qsys.qsys.plot_energy_B0'" class="reference internal" href="#quaccatoo.qsys.qsys.plot_energy_B0"><code class="docutils literal notranslate"><span class="pre">plot_energy_B0()</span></code></a></li>
 </ul>
 </li>
