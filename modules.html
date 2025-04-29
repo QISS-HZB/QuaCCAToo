@@ -408,13 +408,13 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code></a>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_free_evolution</span></code>(duration, options)</p></td>
+<td><p>Same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code></a>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_free_evolution</span></code>(duration, options)</p></td>
+<td><p>Same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
@@ -452,16 +452,10 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code></a>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code></a>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code></a>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
@@ -476,8 +470,8 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution">
-<span class="sig-name descname"><span class="pre">add_free_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_free_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution'"><span>#</span></a></dt>
-<dd><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p>
+<span class="sig-name descname"><span class="pre">add_free_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_free_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution'"><span>#</span></a></dt>
+<dd><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -491,7 +485,7 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse">
-<span class="sig-name descname"><span class="pre">add_pulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_t=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_pulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">add_pulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_t=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_pulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse'"><span>#</span></a></dt>
 <dd><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
 control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p>
 <dl class="field-list simple">
@@ -508,35 +502,6 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 <dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>dictionary of parameters for the pulse_shape functions</p>
 </dd>
 <dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>number of time steps for the pulses</p>
-</dd>
-<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>options for the Qutip solver</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution">
-<span class="sig-name descname"><span class="pre">free_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.free_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution'"><span>#</span></a></dt>
-<dd><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.
-This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the free evolution</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2">
-<span class="sig-name descname"><span class="pre">free_evolution_H2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.free_evolution_H2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2'"><span>#</span></a></dt>
-<dd><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the free evolution</p>
 </dd>
 <dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>options for the Qutip solver</p>
 </dd>
@@ -684,16 +649,10 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
 <td><p>Generates the pulse profiles for the Hahn echo sequence for a given tau.</p></td>
@@ -904,16 +863,10 @@ however the method can be more general.</p>
 <td><p>Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
@@ -1008,16 +961,10 @@ such that the quantum system will undergo periodical transitions between the exc
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
@@ -1111,16 +1058,10 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
 <td><p>Generates the pulse profiles for the Ramsey sequence for a given tau.</p></td>
@@ -1355,16 +1296,10 @@ such that these periodicals inversions will cancel out oscillating noises except
 <td><p>Defines the CPMG sequence, but with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
 <td><p>Generates the pulse profiles for the CPMG sequence for a given tau.</p></td>
@@ -1564,16 +1499,10 @@ where a random phase is added in each XY8 block in order to improve noise suppre
 <td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
@@ -1761,16 +1690,10 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <td><p>Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
 <td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
@@ -1987,16 +1910,10 @@ in order to improve noise suppression and pulse errors.</p>
 <td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the free_evolution method.</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution</span></code>(duration)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_evolution_H2</span></code>(duration[, options])</p></td>
-<td><p>Same as free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
 <td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
@@ -3184,8 +3101,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim"><code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code></a><ul>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_free_evolution()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_pulse()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution"><code class="docutils literal notranslate"><span class="pre">PulsedSim.free_evolution()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.free_evolution_H2"><code class="docutils literal notranslate"><span class="pre">PulsedSim.free_evolution_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="docutils literal notranslate"><span class="pre">PulsedSim.measure()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="docutils literal notranslate"><span class="pre">PulsedSim.plot_pulses()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="docutils literal notranslate"><span class="pre">PulsedSim.run()</span></code></a></li>
