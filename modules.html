@@ -581,7 +581,7 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Hahn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Hahn'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Hahn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Hahn'"><span>#</span></a></dt>
 <dd><p>A class containing Hahn echo experiments, inheriting from the PulsedSimulation class.</p>
 <p>The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.
 The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</p>
@@ -654,46 +654,29 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
-<td><p>Generates the pulse profiles for the Hahn echo sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles">
-<span class="sig-name descname"><span class="pre">get_pulse_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn.get_pulse_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles'"><span>#</span></a></dt>
-<dd><p>Generates the pulse profiles for the Hahn echo sequence for a given tau.
-The pulse profiles are stored in the pulse_profiles attribute of the object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution variable or pulse spacing for the Hahn echo sequence.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence">
 <span class="sig-name descname"><span class="pre">hahn_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn.hahn_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence'"><span>#</span></a></dt>
@@ -802,7 +785,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.PMR">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">PMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#PMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.PMR" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.PMR'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">PMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#PMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.PMR" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.PMR'"><span>#</span></a></dt>
 <dd><p>A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,
 inheriting from the PulsedSim class.</p>
 <p>The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
@@ -916,7 +899,7 @@ To be called by the parallel_map in run method.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Rabi">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Rabi'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Rabi'"><span>#</span></a></dt>
 <dd><p>A class containing Rabi experiments, inheriting from the PulsedSimulation class.</p>
 <p>A Rabi sequence is composed of a resonant pulse of varying duration,
 such that the quantum system will undergo periodical transitions between the excited and ground states.</p>
@@ -989,7 +972,7 @@ thus the run method from the parent class is overwritten.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Ramsey">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Ramsey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Ramsey'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Ramsey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Ramsey'"><span>#</span></a></dt>
 <dd><p>A class containing Ramsey experiments, inheriting from the PulsedSimulation class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -1018,7 +1001,7 @@ thus the run method from the parent class is overwritten.</p>
 <tr class="row-even"><td><p><strong>ramsey_sequence_proj_H2(tau)</strong></p></td>
 <td><p>Defines the Ramsey sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>get_pulse_profiles(tau)</strong></p></td>
+<tr class="row-odd"><td><p><strong>_get_pulse_profiles(tau)</strong></p></td>
 <td><p>Generates the pulse profiles for the Ramsey sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>(Inherited from PulsedSimulation)</strong></p></td>
@@ -1063,46 +1046,29 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
-<td><p>Generates the pulse profiles for the Ramsey sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles">
-<span class="sig-name descname"><span class="pre">get_pulse_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey.get_pulse_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles'"><span>#</span></a></dt>
-<dd><p>Generates the pulse profiles for the Ramsey sequence for a given tau.
-The pulse profiles are stored in the pulse_profiles attribute of the object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution variable or pulse spacing for the Hahn echo sequence.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses">
 <span class="sig-name descname"><span class="pre">plot_pulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Intensity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Profiles</span> <span class="pre">of</span> <span class="pre">Ramsey</span> <span class="pre">Sequence'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey.plot_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses'"><span>#</span></a></dt>
@@ -1215,7 +1181,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <p>This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">CPMG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">CPMG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG'"><span>#</span></a></dt>
 <dd><p>This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedSim class.
 The CPMG sequence consists of a series of pi pulses and free evolution times,
 such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.</p>
@@ -1248,7 +1214,7 @@ such that these periodicals inversions will cancel out oscillating noises except
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPMG_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the CPMG sequence, but with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the CPMG sequence for a given tau.</p></td>
 </tr>
 </tbody>
@@ -1301,16 +1267,13 @@ such that these periodicals inversions will cancel out oscillating noises except
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
-<td><p>Generates the pulse profiles for the CPMG sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1400,19 +1363,6 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles">
-<span class="sig-name descname"><span class="pre">get_pulse_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG.get_pulse_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles'"><span>#</span></a></dt>
-<dd><p>Generates the pulse profiles for the CPMG sequence for a given tau.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution variable or pulse spacing for the Hahn echo sequence.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses">
 <span class="sig-name descname"><span class="pre">plot_pulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expectation</span> <span class="pre">Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Profiles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG.plot_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses'"><span>#</span></a></dt>
 <dd><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.</p>
@@ -1436,7 +1386,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">RXY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#RXY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">RXY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#RXY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8'"><span>#</span></a></dt>
 <dd><p>This contains the RXY8-M sequence, inheriting from XY8. The RXY8-M is a further improvement from the XY8-M sequence,
 where a random phase is added in each XY8 block in order to improve noise suppression and pulse errors.</p>
 <dl class="field-list simple">
@@ -1504,16 +1454,13 @@ where a random phase is added in each XY8 block in order to improve noise suppre
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code>([tau])</p></td>
-<td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1609,7 +1556,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY'"><span>#</span></a></dt>
 <dd><p>This class contains the XY-M pulse sequence, inheriting from PulsedSim class.
 The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
 It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.</p>
@@ -1642,7 +1589,7 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <tr class="row-even"><td><p><strong>XY_sequence_proj_H2(tau)</strong></p></td>
 <td><p>XY sequence with time dependent H2 or collapse operators and a final pi/2 pulse.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>get_pulse_profiles(tau)</strong></p></td>
+<tr class="row-odd"><td><p><strong>_get_pulse_profiles(tau)</strong></p></td>
 <td><p>Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.</p></td>
 </tr>
 </tbody>
@@ -1695,16 +1642,13 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
-<td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1792,20 +1736,6 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles">
-<span class="sig-name descname"><span class="pre">get_pulse_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY.get_pulse_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles'"><span>#</span></a></dt>
-<dd><p>Generates the pulse profiles for the XY-M sequence for a given tau.
-The pulse profiles are stored in the pulse_profiles attribute of the object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>free evolution variable or pulse spacing for the Hahn echo sequence</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses">
 <span class="sig-name descname"><span class="pre">plot_pulses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Expectation</span> <span class="pre">Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pulse</span> <span class="pre">Profiles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY.plot_pulses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses'"><span>#</span></a></dt>
 <dd><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.</p>
@@ -1829,7 +1759,7 @@ The pulse profiles are stored in the pulse_profiles attribute of the object.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY8">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options={}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8'"><span>#</span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8'"><span>#</span></a></dt>
 <dd><p>This contains the XY8-M sequence, inheriting from Pulsed Simulation.
 The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
 in order to improve noise suppression and pulse errors.</p>
@@ -1862,7 +1792,7 @@ in order to improve noise suppression and pulse errors.</p>
 <tr class="row-even"><td><p><strong>XY8_sequence_proj_H2(tau)</strong></p></td>
 <td><p>XY8 sequence with time dependent H2 or collapse operators and a final pi/2 pulse.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>get_pulse_profiles(tau)</strong></p></td>
+<tr class="row-odd"><td><p><strong>_get_pulse_profiles(tau)</strong></p></td>
 <td><p>Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.</p></td>
 </tr>
 </tbody>
@@ -1915,16 +1845,13 @@ in order to improve noise suppression and pulse errors.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pulse_profiles</span></code></a>([tau])</p></td>
-<td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
 <td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -2006,19 +1933,6 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final density matrix</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles">
-<span class="sig-name descname"><span class="pre">get_pulse_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8.get_pulse_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles'"><span>#</span></a></dt>
-<dd><p>Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>free evolution variable or pulse spacing for the Hahn echo sequence</p>
 </dd>
 </dl>
 </dd>
@@ -3111,7 +3025,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#module-quaccatoo.pulsed_sim.predef_seqs'" class="reference internal" href="#module-quaccatoo.pulsed_sim.predef_seqs">predef_seqs</a><ul>
 <li><a :data-current="activeSection === '#classes'" class="reference internal" href="#classes">Classes</a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Hahn'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn"><code class="docutils literal notranslate"><span class="pre">Hahn</span></code></a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">Hahn.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="docutils literal notranslate"><span class="pre">Hahn.hahn_sequence()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2"><code class="docutils literal notranslate"><span class="pre">Hahn.hahn_sequence_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="docutils literal notranslate"><span class="pre">Hahn.hahn_sequence_proj()</span></code></a></li>
@@ -3129,7 +3042,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 </ul>
 </li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Ramsey'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey"><code class="docutils literal notranslate"><span class="pre">Ramsey</span></code></a><ul>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">Ramsey.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="docutils literal notranslate"><span class="pre">Ramsey.plot_pulses()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="docutils literal notranslate"><span class="pre">Ramsey.ramsey_sequence()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2"><code class="docutils literal notranslate"><span class="pre">Ramsey.ramsey_sequence_H2()</span></code></a></li>
@@ -3145,7 +3057,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_H2"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence_proj()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj_H2"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence_proj_H2()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">CPMG.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="docutils literal notranslate"><span class="pre">CPMG.plot_pulses()</span></code></a></li>
 </ul>
 </li>
@@ -3161,7 +3072,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_H2"><code class="docutils literal notranslate"><span class="pre">XY.XY_sequence_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj"><code class="docutils literal notranslate"><span class="pre">XY.XY_sequence_proj()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj_H2"><code class="docutils literal notranslate"><span class="pre">XY.XY_sequence_proj_H2()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">XY.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="docutils literal notranslate"><span class="pre">XY.plot_pulses()</span></code></a></li>
 </ul>
 </li>
@@ -3170,7 +3080,6 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_H2"><code class="docutils literal notranslate"><span class="pre">XY8.XY8_sequence_H2()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj"><code class="docutils literal notranslate"><span class="pre">XY8.XY8_sequence_proj()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj_H2'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj_H2"><code class="docutils literal notranslate"><span class="pre">XY8.XY8_sequence_proj_H2()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.get_pulse_profiles"><code class="docutils literal notranslate"><span class="pre">XY8.get_pulse_profiles()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="docutils literal notranslate"><span class="pre">XY8.plot_pulses()</span></code></a></li>
 </ul>
 </li>
