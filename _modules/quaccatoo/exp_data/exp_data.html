@@ -184,7 +184,7 @@
 </span><span id="line-35"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="line-36">
 </span><span id="line-37">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">variable_column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results_columns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">variable_name</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="n">result_name</span><span class="o">=</span><span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
-</span><span id="line-38">                 <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Experimental Data&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">):</span>
+</span><span id="line-38">                 <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s1">&#39;Experimental Data&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_kwargs</span><span class="p">):</span>
 </span><span id="line-39"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-40"><span class="sd">        Constructor of the ExpData class.</span>
 </span><span id="line-41"><span class="sd">        It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.</span>
@@ -207,7 +207,7 @@
 </span><span id="line-58"><span class="sd">            size of the figure for the plot</span>
 </span><span id="line-59"><span class="sd">        figtitle : str</span>
 </span><span id="line-60"><span class="sd">            title of the figure for the plot       </span>
-</span><span id="line-61"><span class="sd">        **loadtxt_args : dict</span>
+</span><span id="line-61"><span class="sd">        **loadtxt_kwargs : dict</span>
 </span><span id="line-62"><span class="sd">            additional arguments for the np.loadtxt function</span>
 </span><span id="line-63"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-64">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -223,11 +223,11 @@
 </span><span id="line-74">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
 </span><span id="line-75">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;variable_name and result_name must be strings&quot;</span><span class="p">)</span>
 </span><span id="line-76">
-</span><span id="line-77">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loadtxt_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="line-78">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;loadtxt_args must be a dictionary for the np.loadtxt function&quot;</span><span class="p">)</span>
+</span><span id="line-77">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loadtxt_kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="line-78">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;loadtxt_kwargs must be a dictionary for the np.loadtxt function&quot;</span><span class="p">)</span>
 </span><span id="line-79">
 </span><span id="line-80">        <span class="c1"># loads experimental data from a file with the specified arguments</span>
-</span><span id="line-81">        <span class="n">exp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_args</span><span class="p">)</span>
+</span><span id="line-81">        <span class="n">exp_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">loadtxt_kwargs</span><span class="p">)</span>
 </span><span id="line-82">
 </span><span id="line-83">        <span class="c1"># sets the results and variable attributes of the ExpData object</span>
 </span><span id="line-84">        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">exp_data</span><span class="p">[:,</span> <span class="n">variable_column</span><span class="p">]</span>
