@@ -198,13 +198,13 @@ class Analysis:
 
         return self.FFT_values
 
-    def get_peaks_FFT(self, **find_peaks_args):
+    def get_peaks_FFT(self, **find_peaks_kwargs):
         """
         Find the peaks of the FFT values calculated by the run_FFT method.
 
         Parameters
         ----------
-        find_peaks_args : dict
+        find_peaks_kwargs : dict
             dictionary with the arguments to be passed to the scipy.signal.find_peaks function
 
         Returns
@@ -216,11 +216,11 @@ class Analysis:
             raise ValueError("No FFT values to analyze, you must run the FFT first")
 
         if isinstance(self.experiment.results, np.ndarray):
-            self.FFT_peaks_index = find_peaks(self.FFT_values[1], **find_peaks_args)
+            self.FFT_peaks_index = find_peaks(self.FFT_values[1], **find_peaks_kwargs)
             self.FFT_peaks = self.FFT_values[0][self.FFT_peaks_index[0]]
 
         elif isinstance(self.experiment.results, list):
-            self.FFT_peaks_index = [find_peaks(FFT, **find_peaks_args) for FFT in self.FFT_values[1]]
+            self.FFT_peaks_index = [find_peaks(FFT, **find_peaks_kwargs) for FFT in self.FFT_values[1]]
             self.FFT_peaks = [self.FFT_values[0][index[0]] for index in self.FFT_peaks_index]
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
