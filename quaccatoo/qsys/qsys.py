@@ -2,13 +2,77 @@
 # TODO: implement eV units conversion to frequencies
 
 """
-This module contains the plot_energy_B0 function, the QSys class part of QuaCCAToo package.
+This module contains the plot_energy_B0 function, compose_sys function and the QSys class part of QuaCCAToo package.
 """
 
 import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, qeye, tensor
+
+def compose_sys(qsys1, qsys2):
+    """
+    Takes two quantum systems and returns the composed system by performing tensor products of the two
+
+    Parameters
+    ----------
+    qsys1 : QSys
+        First quantum system.
+    qsys2 : QSys
+        Second quantum system.
+
+    Returns
+    -------
+    qsys1 X qsys2 : QSys
+        Composed quantum system.
+    """
+    if not isinstance(qsys1, QSys) or not isinstance(qsys2, QSys):
+        raise ValueError("Both qsys1 and qsys2 must be instances of the QSys class.")
+    
+    # check if both systems have the same units
+    if qsys1.units_H0 != qsys2.units_H0:
+        warnings.warn("The two systems have different units.")
+
+    # check if the Hamiltonians are qobj, if they are perform a tensor product
+    if isinstance(qsys1.H0, Qobj) and isinstance(qsys2.H0, Qobj):
+        H0 = tensor(qsys1.H0, qsys2.H0)
+    else:
+        raise ValueError("Both Hamiltonians must be Qobj.")
+
+    # check if the initial states are qobj, if they are perform a tensor product
+    if qsys1.rho0 is not None and qsys2.rho0 is not None:
+        if isinstance(qsys1.rho0, Qobj) and isinstance(qsys2.rho0, Qobj):
+            rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
+        else:
+            raise ValueError("Both initial states must be Qobj or None")
+    else:
+        rho0 = None
+        
+    # check if the observables are qobj, if they are perform a tensor product
+    if qsys1.observable is not None and qsys2.observable is not None:
+        if isinstance(qsys1.observable, Qobj) and isinstance(qsys2.observable, Qobj):
+            observable = tensor(qsys1.observable, qsys2.observable)
+        elif isinstance(qsys1.observable, list) and isinstance(qsys2.observable, list):
+            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable]
+        else:
+            raise ValueError("Both observables must be Qobj or None")
+    else:
+        observable = None
+    
+    # check if the collapse operators are qobj, if they are perform a tensor product
+    if qsys1.c_ops is None and qsys2.c_ops is None:
+        c_ops = None
+    elif qsys1.c_ops is not None and qsys2.c_ops is None:
+        c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops]
+    elif qsys1.c_ops is None and qsys2.c_ops is not None:
+        c_ops = [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+    elif qsys1.c_ops is not None and qsys2.c_ops is not None:
+        c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+    else:
+        raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
+    
+    # create the new system
+    return QSys(H0, rho0, c_ops, observable, qsys1.units_H0)
 
 def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Field", ylabel="Energy (MHz)"):
     """
