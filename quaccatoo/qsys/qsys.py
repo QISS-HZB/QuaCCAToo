@@ -136,23 +136,18 @@ class QSys:
         # calculate the eigenstates of the Hamiltonian
         self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
 
-        # check if rho0 is None
+        # check if rho0 is correctly defined
         if rho0 is None:
             warnings.warn("Initial state not provided.")
-
-        # check if rho0 is a number
         elif rho0 in range(0, len(self.eigenstates)):
             self.rho0 = self.eigenstates[rho0] * self.eigenstates[rho0].dag()  # In this case the initial state is the i-th energy state
-
         elif Qobj(rho0).isket and Qobj(rho0).shape[0] == H0.shape[0]:
             rho0 = Qobj(rho0)
             self.rho0 = rho0 * rho0.dag()
-
         elif Qobj(rho0).isherm and Qobj(rho0).shape == H0.shape:
             self.rho0 = Qobj(rho0)
-
         else:
-            raise ValueError("H0 and rho0 must be a Qobj or an index number indicating the system eigenstates")
+            raise ValueError("rho0 must be a Qobj or an index number indicating the system eigenstates")
 
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 and rho0, or a list of Qobj
         if observable is None:
