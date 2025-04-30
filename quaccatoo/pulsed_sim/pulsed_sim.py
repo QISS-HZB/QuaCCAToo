@@ -282,14 +282,12 @@ class PulsedSim:
         elif observable is None and self.system.observable is not None:
             self.results = np.real((self.system.observable * self.rho).tr())
         # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
-        elif observable is None and (isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape):
+        elif observable is not None and (isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape):
             self.system.observable = observable
             self.results = np.real((observable * self.rho).tr())
-        # else raises an error
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
 
-        # return the results of the experiment
         return self.results
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
