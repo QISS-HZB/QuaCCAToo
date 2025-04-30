@@ -74,7 +74,6 @@ class PulsedSim:
         H2 : Qobj
             time dependent sensing Hamiltonian of the system
         """
-        # check if system is a QSys object
         if not isinstance(system, QSys):
             raise ValueError("system must be a QSys object")
 
@@ -127,27 +126,23 @@ class PulsedSim:
         options : dict
             options for the Qutip solver
         """
-        # check if options is None or a dictionary
+        # check all the parameters
         if options is None:
             options = {}
         elif not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-        # check if time_steps is a positive integer
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
         else:
             self.time_steps = time_steps
 
-        # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
 
-        # Check if pulse_shape is a single function or a list of functions
         if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check if pulse_params is a dictionary to be passed to the pulse_shape function
         if pulse_params is None:
             pulse_params = {}
         elif not isinstance(pulse_params, dict):
@@ -201,13 +196,11 @@ class PulsedSim:
         phi_t : float
             time phase of the pulse representing the rotation axis in the rotating frame
         """
-        # update the phase of the pulse
         core_pulse_params['phi_t'] += phi_t
 
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
         self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
 
-        # update the total time
         self.total_time += duration
 
     def add_free_evolution(self, duration, options=None):
@@ -238,7 +231,7 @@ class PulsedSim:
 
             self._free_evolution(duration, options)
         else:
-            self._free_evolution(duration)
+            self._free_evolution(duration, options)
 
     def _free_evolution(self, duration):
         """
@@ -252,7 +245,6 @@ class PulsedSim:
         """
         self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
 
-        # update the total time
         self.total_time += duration
 
     def _free_evolution(self, duration, options):
@@ -268,7 +260,6 @@ class PulsedSim:
         """
         self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
 
-        # update the total time
         self.total_time += duration
 
     def measure(self, observable=None):
