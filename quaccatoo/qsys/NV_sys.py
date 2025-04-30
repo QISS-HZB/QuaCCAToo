@@ -400,7 +400,7 @@ class NV(QSys):
         Hyperfine Hamiltonian : Qobj
         """
         if self.N == 14:
-            return -2.7 * tensor(jmat(1, "z"), jmat(1, "z")) - 2.14 * (tensor(jmat(1, "x"), jmat(1, "x")) + tensor(jmat(1, "y"), jmat(1, "y")))
+            return -2.14 * tensor(jmat(1, "z"), jmat(1, "z")) - 2.7 * (tensor(jmat(1, "x"), jmat(1, "x")) + tensor(jmat(1, "y"), jmat(1, "y")))
         elif self.N == 15:
             return +3.03 * tensor(jmat(1, "z"), jmat(1 / 2, "z")) + 3.65 * (tensor(jmat(1, "x"), jmat(1 / 2, "x")) + tensor(jmat(1, "y"), jmat(1 / 2, "y")))
         if self.N == 0 or self.N is None:
