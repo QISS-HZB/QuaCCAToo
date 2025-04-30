@@ -7,10 +7,10 @@ This module contains the PulsedSim class that is used to define a general pulsed
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, mesolve, parallel_map
+import warnings
+from qutip import Qobj, mesolve, parallel_map, measurement
 from .pulse_shapes import square_pulse
 from ..qsys.qsys import QSys
-
 
 class PulsedSim:
     """
@@ -56,8 +56,8 @@ class PulsedSim:
         same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     run
         runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
-    measure
-        measures the observable after the sequence of operations and returns the expectation value of the observable
+    measure_qsys
+        measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
     plot_pulses
         plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     save
@@ -79,7 +79,6 @@ class PulsedSim:
 
         self.system = system
 
-        # get the attributes of the system
         if system.rho0 is not None:
             self.rho = system.rho0.copy()
 
@@ -262,33 +261,26 @@ class PulsedSim:
 
         self.total_time += duration
 
-    def measure(self, observable=None):
+    def measure_qsys(self, observable=None):
         """
-        Measures the observable after the sequence of operations and returns the expectation value of the observable.
+        Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
+        If no observable is given, the observable of the qsys is used.
 
         Parameters
         ----------
         observable : Qobj
             observable to be measured after the sequence of operations
-
-        Returns
-        -------
-        results of the experiment
         """
-        # if no observable is passed and the QSys doesn't have one, returns the final density matrix
-        if observable is None and self.system.observable is None:
-            return self.rho.copy()
-        # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
-        elif observable is None and self.system.observable is not None:
-            self.results = np.real((self.system.observable * self.rho).tr())
-        # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
-        elif observable is not None and (isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape):
-            self.system.observable = observable
-            self.results = np.real((observable * self.rho).tr())
+        if isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape:
+            if not observable.isherm:
+                warnings.warn("Passed observable is not hermitian.")
+            self.results, self.rho = measurement.measure_observable(self.rho, observable)
+
+        elif observable is None and (isinstance(self.system.observable, Qobj) and self.system.observable.shape == self.system.rho0.shape):
+            self.results, self.rho = measurement.measure_observable(self.rho, self.system.observable)
+
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
-
-        return self.results
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """
@@ -311,7 +303,6 @@ class PulsedSim:
         # if a sequence is passed, checks if it is a python function and overwrites the attribute
         elif callable(sequence):
             self.sequence = sequence
-        # else raises an error
         else:
             raise ValueError("sequence must be a python function with a list operations returning a number")
 
