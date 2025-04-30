@@ -11,7 +11,6 @@ from qutip import Qobj, mesolve, parallel_map
 from .pulse_shapes import square_pulse
 from ..qsys.qsys import QSys
 
-
 class PulsedSim:
     """
     The PulsedSim class is used to define a general pulsed experiment with a sequence of pulses and free evolution operations.
@@ -56,8 +55,6 @@ class PulsedSim:
         same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     run
         runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
-    measure
-        measures the observable after the sequence of operations and returns the expectation value of the observable
     plot_pulses
         plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     save
@@ -74,13 +71,11 @@ class PulsedSim:
         H2 : Qobj
             time dependent sensing Hamiltonian of the system
         """
-        # check if system is a QSys object
         if not isinstance(system, QSys):
             raise ValueError("system must be a QSys object")
 
         self.system = system
 
-        # get the attributes of the system
         if system.rho0 is not None:
             self.rho = system.rho0.copy()
 
@@ -127,27 +122,23 @@ class PulsedSim:
         options : dict
             options for the Qutip solver
         """
-        # check if options is None or a dictionary
+        # check all variables and parameters
         if options is None:
             options = {}
         elif not isinstance(options, dict):
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-        # check if time_steps is a positive integer
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
         else:
             self.time_steps = time_steps
 
-        # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
 
-        # Check if pulse_shape is a single function or a list of functions
         if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check if pulse_params is a dictionary to be passed to the pulse_shape function
         if pulse_params is None:
             pulse_params = {}
         elif not isinstance(pulse_params, dict):
@@ -157,7 +148,6 @@ class PulsedSim:
         if 'phi_t' not in pulse_params:
             pulse_params['phi_t'] = 0
 
-        # check if phi_t is a real number
         if not isinstance(phi_t, (int, float)):
             raise ValueError("phi_t must be a real number")
 
@@ -207,7 +197,6 @@ class PulsedSim:
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
         self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
 
-        # update the total time
         self.total_time += duration
 
     def add_free_evolution(self, duration, options=None):
@@ -221,7 +210,6 @@ class PulsedSim:
         options : dict
             options for the Qutip solver
         """
-        # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) or duration < 0:
             raise ValueError("duration must be a positive real number")
 
@@ -230,7 +218,6 @@ class PulsedSim:
 
         # if a H2 or collapse operators are given, use _free_evolution method, otherwise use _free_evolution method
         if self.H2 is not None or self.system.c_ops is not None:
-            # check whether options is None or a dictionary
             if options is None:
                 options = {}
             elif not isinstance(options, dict):
@@ -251,8 +238,6 @@ class PulsedSim:
             duration of the free evolution
         """
         self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
-
-        # update the total time
         self.total_time += duration
 
     def _free_evolution(self, duration, options):
@@ -267,39 +252,7 @@ class PulsedSim:
             options for the Qutip solver
         """
         self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
-
-        # update the total time
         self.total_time += duration
-
-    def measure(self, observable=None):
-        """
-        Measures the observable after the sequence of operations and returns the expectation value of the observable.
-
-        Parameters
-        ----------
-        observable : Qobj
-            observable to be measured after the sequence of operations
-
-        Returns
-        -------
-        results of the experiment
-        """
-        # if no observable is passed and the QSys doesn't have one, returns the final density matrix
-        if observable is None and self.system.observable is None:
-            return self.rho.copy()
-        # if no observable is passed but the QSys has one, returns the expectation value of the observable from QSys
-        elif observable is None and self.system.observable is not None:
-            self.results = np.real((self.system.observable * self.rho).tr())
-        # if an observable is passed, checks the dimensions of the observable and returns the expectation value of the observable
-        elif observable is None and (isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape):
-            self.system.observable = observable
-            self.results = np.real((observable * self.rho).tr())
-        # else raises an error
-        else:
-            raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
-
-        # return the results of the experiment
-        return self.results
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """
@@ -369,7 +322,6 @@ class PulsedSim:
         title : str
             title of the plot
         """
-        # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
@@ -378,7 +330,6 @@ class PulsedSim:
         elif not isinstance(xlabel, str):
             raise ValueError("xlabel must be a string")
 
-        # initialize the figure and axis for the plot
         fig, ax = plt.subplots(1, 1, figsize=figsize)
 
         # iterate over all operations in the sequence
