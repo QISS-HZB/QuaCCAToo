@@ -440,7 +440,10 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code></a>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
 </tr>
 </tbody>
@@ -475,10 +478,13 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code></a>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -520,6 +526,24 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 </dd>
 <dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>options for the Qutip solver</p>
 </dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure">
+<span class="sig-name descname"><span class="pre">measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.measure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure'"><span>#</span></a></dt>
+<dd><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>observable</strong><span class="classifier">Qobj</span></dt><dd><p>observable to be measured after the sequence of operations</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>results of the experiment</dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -663,10 +687,13 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -845,10 +872,13 @@ however the method can be more general.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -940,10 +970,13 @@ such that the quantum system will undergo periodical transitions between the exc
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, title])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi.run" title="quaccatoo.pulsed_sim.predef_seqs.Rabi.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi.run" title="quaccatoo.pulsed_sim.predef_seqs.Rabi.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
 <td><p>Overwrites the run method of the parent class.</p></td>
 </tr>
 </tbody>
@@ -1034,22 +1067,25 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj_H2</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1252,10 +1288,13 @@ such that these periodicals inversions will cancel out oscillating noises except
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1436,10 +1475,13 @@ where a random phase is added in each XY8 block in order to improve noise suppre
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1621,10 +1663,13 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1821,10 +1866,13 @@ in order to improve noise suppression and pulse errors.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
+<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -2989,6 +3037,7 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim"><code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code></a><ul>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_free_evolution()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_pulse()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="docutils literal notranslate"><span class="pre">PulsedSim.measure()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="docutils literal notranslate"><span class="pre">PulsedSim.plot_pulses()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="docutils literal notranslate"><span class="pre">PulsedSim.run()</span></code></a></li>
 </ul>
