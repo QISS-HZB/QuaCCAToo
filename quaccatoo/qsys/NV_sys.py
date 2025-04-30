@@ -115,7 +115,6 @@ class NV(QSys):
         if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
             raise TypeError(f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}.")
         else:
-            # converts the angles to radians
             if units_angles == "deg":
                 theta = np.deg2rad(theta)
                 phi_r = np.deg2rad(phi_r)
@@ -185,7 +184,6 @@ class NV(QSys):
         rho0 : Qobj
             initial state of the system
         """
-        # check the units and convert the temperature to Kelvin
         if units_temp == "K":
             pass
         elif units_temp == "C":
@@ -195,7 +193,6 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}.")
 
-        # check if the temperature is a positive real number
         if not isinstance(temp, (int, float)) and temp > 0:
             raise ValueError("T must be a positive real number.")
 
@@ -240,7 +237,9 @@ class NV(QSys):
             Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2]) + np.exp(beta * self.energy_levels[index_3])
 
             self.rho0 = tensor(
-                fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0, 0], [0, np.exp(beta * self.energy_levels[index_2]), 0], [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
+                fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0, 0],
+                                     [0, np.exp(beta * self.energy_levels[index_2]), 0],
+                                     [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
             )
         elif self.N ==0 or self.N is None:
             self.rho0 = fock_dm(3, 1)
@@ -271,17 +270,28 @@ class NV(QSys):
         Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
         """
         if self.N == 15:
-            f1 = self.energy_levels[1] - self.energy_levels[0]
+            f1 = self.energy_levels[1] - self.energy_levels[0] 
             f2 = self.energy_levels[3] - self.energy_levels[2]
             f3 = self.energy_levels[5] - self.energy_levels[4]
             self.RF_freqs = np.array([f1, f2, f3])
+        # for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1
         elif self.N == 14:
-            f1 = self.energy_levels[1] - self.energy_levels[0]
-            f2 = self.energy_levels[2] - self.energy_levels[1]
-            f3 = self.energy_levels[4] - self.energy_levels[3]
-            f4 = self.energy_levels[5] - self.energy_levels[4]
-            f5 = self.energy_levels[7] - self.energy_levels[6]
-            f6 = self.energy_levels[8] - self.energy_levels[7]
+            # the order of the ms states changes above the GSLAC
+            if self.B0 <= 102.5:
+                f1 = self.energy_levels[2] - self.energy_levels[1] # 0 -> -1 at ms=0
+                f2 = self.energy_levels[2] - self.energy_levels[0] # 0 -> +1 at ms=0
+                f3 = self.energy_levels[5] - self.energy_levels[3] # 0 -> -1 at ms=-1
+                f4 = self.energy_levels[5] - self.energy_levels[4] # 0 -> +1 at ms=-1
+                f5 = self.energy_levels[8] - self.energy_levels[7] # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6] # 0 -> +1 at ms=-1
+            else:
+                f1 = self.energy_levels[2] - self.energy_levels[0] # 0 -> -1 at ms=-1
+                f2 = self.energy_levels[2] - self.energy_levels[1] # 0 -> +1 at ms=-1
+                f3 = self.energy_levels[5] - self.energy_levels[4] # 0 -> -1 at ms=0
+                f4 = self.energy_levels[5] - self.energy_levels[3] # 0 -> +1 at ms=0
+                f5 = self.energy_levels[8] - self.energy_levels[7] # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6] # 0 -> +1 at ms=-1
+
             self.RF_freqs = np.array([f1, f2, f3, f4, f5, f6])
         elif self.N == 0 or self.N is None:
             self.RF_freqs = None
