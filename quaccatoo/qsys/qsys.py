@@ -12,7 +12,8 @@ from qutip import Qobj, qeye, tensor
 
 def compose_sys(qsys1, qsys2):
     """
-    Takes two quantum systems and returns the composed system by performing tensor products of the two
+    Takes two quantum systems and returns the composed system by performing tensor products of the two,
+    after checking if all parameters are valid.
 
     Parameters
     ----------
@@ -29,17 +30,14 @@ def compose_sys(qsys1, qsys2):
     if not isinstance(qsys1, QSys) or not isinstance(qsys2, QSys):
         raise ValueError("Both qsys1 and qsys2 must be instances of the QSys class.")
     
-    # check if both systems have the same units
     if qsys1.units_H0 != qsys2.units_H0:
         warnings.warn("The two systems have different units.")
 
-    # check if the Hamiltonians are qobj, if they are perform a tensor product
     if isinstance(qsys1.H0, Qobj) and isinstance(qsys2.H0, Qobj):
         H0 = tensor(qsys1.H0, qsys2.H0)
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
-    # check if the initial states are qobj, if they are perform a tensor product
     if qsys1.rho0 is not None and qsys2.rho0 is not None:
         if isinstance(qsys1.rho0, Qobj) and isinstance(qsys2.rho0, Qobj):
             rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
@@ -48,7 +46,6 @@ def compose_sys(qsys1, qsys2):
     else:
         rho0 = None
         
-    # check if the observables are qobj, if they are perform a tensor product
     if qsys1.observable is not None and qsys2.observable is not None:
         if isinstance(qsys1.observable, Qobj) and isinstance(qsys2.observable, Qobj):
             observable = tensor(qsys1.observable, qsys2.observable)
@@ -59,7 +56,6 @@ def compose_sys(qsys1, qsys2):
     else:
         observable = None
     
-    # check if the collapse operators are qobj, if they are perform a tensor product
     if qsys1.c_ops is None and qsys2.c_ops is None:
         c_ops = None
     elif qsys1.c_ops is not None and qsys2.c_ops is None:
@@ -71,7 +67,6 @@ def compose_sys(qsys1, qsys2):
     else:
         raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
     
-    # create the new system
     return QSys(H0, rho0, c_ops, observable, qsys1.units_H0)
 
 def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Field", ylabel="Energy (MHz)"):
@@ -93,15 +88,12 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Fie
     ylabel : str
         Label of the y-axis.
     """
-    # check if figsize is a tuple of two positive floats
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
         raise ValueError("figsize must be a tuple of two positive floats")
 
-    # check if B0 is a numpy array or list and if all elements are real numbers
     if not isinstance(B0, (np.ndarray, list)) and all(isinstance(b, (int, float)) for b in B0):
         raise ValueError("B0 must be a list or a numpy array of real numbers")
 
-    # check if H0 is a list of Qobj of the same size as B0
     if not isinstance(H0, list) or not all(isinstance(h, Qobj) for h in H0) or len(H0) != len(B0):
         raise ValueError("H0 must be a list of Qobj of the same size as B0")
 
@@ -186,15 +178,14 @@ class QSys:
             self.units_H0 = units_H0
         else:
             raise ValueError(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
-
-        if not Qobj(H0).isherm:
-            warnings.warn("Passed H0 is not a hermitian object.")
-
+        
         self.H0 = Qobj(H0)
 
-        # calculate the eigenenergies of the Hamiltonian
+        if not self.H0.isherm:
+            warnings.warn("Passed H0 is not a hermitian object.")
+
+        # calculate the eigenenergies of the Hamiltonian and subtract the ground state energy from all the eigenenergies to get the lowest level at 0
         H_eig = H0.eigenenergies()
-        # subtracts the ground state energy from all the eigenenergies to get the lowest level at 0
         self.energy_levels = H_eig - H_eig[0]
 
         # calculate the eigenstates of the Hamiltonian
@@ -220,6 +211,8 @@ class QSys:
             isinstance(observable, list) and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable) and all(obs.shape == H0.shape for obs in observable)
         ):
             self.observable = observable
+            if not observable.isherm:
+                warnings.warn("Passed observable is not hermitian.")
         else:
             raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0.")
 
@@ -245,7 +238,6 @@ class QSys:
         energy_lim : list
             limits of the energy levels.
         """
-        # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
