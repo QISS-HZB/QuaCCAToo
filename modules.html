@@ -441,8 +441,8 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code></a>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code></a>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
@@ -479,8 +479,8 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code></a>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code></a>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
@@ -532,19 +532,15 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure">
-<span class="sig-name descname"><span class="pre">measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.measure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure'"><span>#</span></a></dt>
-<dd><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p>
+<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys">
+<span class="sig-name descname"><span class="pre">measure_qsys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.measure_qsys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys'"><span>#</span></a></dt>
+<dd><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
+If no observable is given, the observable of the qsys is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>observable</strong><span class="classifier">Qobj</span></dt><dd><p>observable to be measured after the sequence of operations</p>
 </dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>results of the experiment</dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -688,8 +684,8 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj_H2</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</p></td>
@@ -873,8 +869,8 @@ however the method can be more general.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</p></td>
@@ -971,8 +967,8 @@ such that the quantum system will undergo periodical transitions between the exc
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
@@ -1068,8 +1064,8 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</p></td>
@@ -1289,8 +1285,8 @@ such that these periodicals inversions will cancel out oscillating noises except
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.</p></td>
@@ -1476,8 +1472,8 @@ where a random phase is added in each XY8 block in order to improve noise suppre
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
@@ -1664,8 +1660,8 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.</p></td>
@@ -1867,8 +1863,8 @@ in order to improve noise suppression and pulse errors.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, phi_t, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure</span></code>([observable])</p></td>
-<td><p>Measures the observable after the sequence of operations and returns the expectation value of the observable.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable])</p></td>
+<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
@@ -3038,7 +3034,7 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim"><code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code></a><ul>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_free_evolution()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_pulse()</span></code></a></li>
-<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure"><code class="docutils literal notranslate"><span class="pre">PulsedSim.measure()</span></code></a></li>
+<li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="docutils literal notranslate"><span class="pre">PulsedSim.measure_qsys()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="docutils literal notranslate"><span class="pre">PulsedSim.plot_pulses()</span></code></a></li>
 <li><a :data-current="activeSection === '#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run'" class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="docutils literal notranslate"><span class="pre">PulsedSim.run()</span></code></a></li>
 </ul>
