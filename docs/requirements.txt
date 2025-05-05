@@ -1,4 +1,7 @@
 numpydoc
 sphinx
-sphinxawesome-theme
+sphinx_rtd_theme
+nbsphinx
+pygments
+ipykernel
 ..

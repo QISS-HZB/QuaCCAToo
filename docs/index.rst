@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-QuaCCAToo
-=========
+QuaCCAToo: Quantum Color Centers Analysis Toolbox
+=================================================
 
-The documentation for the submodules in QuaCCAToo is available here. For more examples also refer to the notebooks in the repository <https://github.com/QISS-HZB/QuaCCAToo>. Merge requests welcome!
+The documentation for QuaCCAToo is available here. Check out the notebooks for a quick tutorial on the usage. Merge requests welcome at https://github.com/QISS-HZB/QuaCCAToo !
 
 
 .. toctree::
@@ -14,3 +14,4 @@ The documentation for the submodules in QuaCCAToo is available here. For more ex
    :caption: Contents:
 
    modules
+   notebooks
