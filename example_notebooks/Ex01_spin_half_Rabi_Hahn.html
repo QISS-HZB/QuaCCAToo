@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Defining the Spin 1/2 System &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/example_notebooks/Ex01_spin_half_Rabi_Hahn.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ex02 - NV: Ramsey and PODMR" href="../notebook2.html" />
+    <link rel="prev" title="Ex01 - Rabi and Hahn of a spin half system" href="../notebook1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Notebooks</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook1.html">Ex01 - Rabi and Hahn of a spin half system</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Defining the Spin 1/2 System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Rabi-Oscillation">2. Rabi Oscillation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Hahn-Echo">3. Hahn Echo</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#3.1.-Custom-sequence">3.1. Custom sequence</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">Ex02 - NV: Ramsey and PODMR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">Ex03 - Ambiguous Resonances</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Notebooks</a></li>
+          <li class="breadcrumb-item"><a href="../notebook1.html">Ex01 - Rabi and Hahn of a spin half system</a></li>
+      <li class="breadcrumb-item active">1. Defining the Spin 1/2 System</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/example_notebooks/Ex01_spin_half_Rabi_Hahn.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>In this example, we consider the simplest two-level system. First, we define the system and plot the energy levels. Following that, a Rabi oscillation is simulated for two different pulse vectors, with the results being fitted and plotted in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a modelled collapse operator.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import sigmax, sigmay, sigmaz, fock_dm
+
+from quaccatoo import QSys, PulsedSim, Analysis, RabiModel, Rabi, Hahn, square_pulse
+</pre></div>
+</div>
+</div>
+<section id="1.-Defining-the-Spin-1/2-System">
+<h1>1. Defining the Spin 1/2 System<a class="headerlink" href="#1.-Defining-the-Spin-1/2-System" title="Link to this heading"></a></h1>
+<p>We begin defining a general two-level system with a time independent Hamiltonian given by</p>
+<div class="math notranslate nohighlight">
+\[H_0 = \frac{\Delta}{2} \sigma_z ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Delta\)</span> is the energy difference between the two levels and <span class="math notranslate nohighlight">\(\sigma_z\)</span> the Pauli matrix. Although simple, this Hamiltonian can represent a varied number of systems: from spin-1/2 nuclear spins in NMR, to electronic spins in EPR, to superconducting qubits. Let us assume now that the state is initialized in the state <span class="math notranslate nohighlight">\(|0 \rangle\)</span>, thus the initial density matrix is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\rho_0 = |0 \rangle \langle 0 | = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix} .\end{split}\]</div>
+<p>Last, we also consider that the system has an observable given by the operator <span class="math notranslate nohighlight">\(\sigma_z\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># here we define delta = 1
+delta = 1
+
+# create the QSys object with the desired parameters
+qsys = QSys(
+    H0 = delta/2 * sigmaz(),
+    rho0 = fock_dm(2, 0),
+    observable = sigmaz(),
+    units_H0 = &#39;MHz&#39; # sets the Hamiltonian units. By default it is considered to be in frequency units.
+)
+</pre></div>
+</div>
+</div>
+<p>The energy levels are trivial in this simple case. To visualize them we use the plot_energy method from quaccatoo. Note, that in QSys class, the lowest state energy is subtracted from all the eigenenergies to have the lowest level at 0.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.plot_energy(figsize=(1,3))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_6_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_6_0.png" />
+</div>
+</div>
+</section>
+<section id="2.-Rabi-Oscillation">
+<h1>2. Rabi Oscillation<a class="headerlink" href="#2.-Rabi-Oscillation" title="Link to this heading"></a></h1>
+<p>With the quantum system defined, the first measurement to perform is a Rabi oscillation. This is done by applying a resonant pulse to the system with varying length, such that it will drive the system between the two levels causing a period oscillation of the observable expectation value. Let us consider a square cosine pulse of frequency <span class="math notranslate nohighlight">\(\Delta\)</span> applied on the x-axis of the laboratory frame. The interaction of the pulse with the system is then described in terms of a control Hamiltonian
+given by</p>
+<div class="math notranslate nohighlight">
+\[H_1 = \omega_1 \sigma_x ,\]</div>
+<p>which is then multiplied by the time-dependent pulse function. <span class="math notranslate nohighlight">\(\omega_1\)</span> is the Rabi frequency, related to the amplitude of the pulse.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># let&#39;s consider a rabi frequency 10 times smaller than the resonance frequency, such that the rotating wave approximation is valid
+w1 = 0.1 # in frequency units
+
+# create the Rabi object for the qsys and the desired parameters
+rabi_exp = Rabi(
+    pulse_duration = np.linspace(0, 40, 1000), # time array of pulse duration which we want to simulate the experiment
+    system = qsys, # we pass the qsys object defined in the previous section
+    H1 = w1*sigmax(), # the Hamiltonian for the interaction with the pulse
+    pulse_shape = square_pulse, # the pulse shape function we want to use (this line is redundant since square_pulse is the default pulse shape function if not specified)
+    pulse_params = {&#39;f_pulse&#39;: delta}, # we need to pass the the frequency of the pulse as the resonant frequency of the system
+)
+
+# to visualize the pulse sequence we can use the plot_pulses method, where we can see the pulse shape and the pulse duration
+rabi_exp.plot_pulses()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_9_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_9_0.png" />
+</div>
+</div>
+<p>With the run method the experiment is simulated and the expectation value of the observable is plotted with plot_results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp.run()
+
+Analysis(rabi_exp).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_11_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_11_0.png" />
+</div>
+</div>
+<p>As expected, the expectation value of the operator shows a period oscillation, but with a small modulation related to the rotating wave approximation as we chose <span class="math notranslate nohighlight">\(\Delta/\omega_1=10\)</span>. For larger ratios, this modulation disappears (check yourself!). Now to fit the data we use the Analysis class.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># create the Analysis object for the Rabi experiment
+rabi_analysis = Analysis(rabi_exp)
+
+# fit the Rabi oscillations with the run_fit method
+rabi_analysis.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
+# plot the results of the fit
+rabi_analysis.plot_fit()
+
+# check the fit results
+rabi_analysis.fit_params
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>16</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.62377262</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 6.2628e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-7371.72465</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-7352.09363</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99875015</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.99811023</td><td style='text-align:left'> 0.00112158</td><td style='text-align:left'>(0.11%)</td><td style='text-align:left'>0.9984407098994188</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 5.00156755</td><td style='text-align:left'> 7.9429e-04</td><td style='text-align:left'>(0.02%)</td><td style='text-align:left'>5.005005005005005</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>-3.6092e-06</td><td style='text-align:left'> 0.00228926</td><td style='text-align:left'>(63428.28%)</td><td style='text-align:left'>0.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'>-6.2555e-04</td><td style='text-align:left'> 8.0706e-04</td><td style='text-align:left'>(129.02%)</td><td style='text-align:left'>5.995876962343694e-05</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8717</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1962</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1710</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_13_1.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_13_1.png" />
+</div>
+</div>
+<p>Here we observe that the fitted value of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration <span class="math notranslate nohighlight">\(t_\pi \cong 5.001\)</span> is slightly larger than the expected value of <span class="math notranslate nohighlight">\(1/(2 \omega_1) = 5\)</span>. To obtain a more accurate value, we can consider a rotating pulse with two control Hamiltonians <span class="math notranslate nohighlight">\(\sigma_x\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span>, for that we define custom pulse shape for X and Y with a dephasing of <span class="math notranslate nohighlight">\(\pi/2\)</span> as follows.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define a custom pulse shape for X
+def custom_pulseX(t):
+    return np.cos(delta*t)
+
+# define a custom pulse shape for Y
+def custom_pulseY(t):
+    return np.cos(delta*t - np.pi/2)
+
+# create the new Rabi object for the qsys and the desired parameters
+rabi_exp_2 = Rabi(
+    pulse_duration = np.linspace(0, 40, 1000), # time array of pulse duration which we want to simulate the experiment
+    system = qsys, # we pass the qsys object defined in the previous section
+    H1 = [w1*sigmax()/2, w1*sigmay()/2], # the Hamiltonian for the interaction with the pulse now is a list with the two control Hamiltonians for X and Y
+    pulse_shape = [custom_pulseX, custom_pulseY] # for the pulse_shape we pass a list with the two custom pulse shape functions, as now the custom pulses have no other parameters and pulse_params dictionary is empty
+)
+
+# run the experiment
+rabi_exp_2.run()
+# call Analysis class
+rabi_analysis_2 = Analysis(rabi_exp_2)
+
+# fit the Rabi oscillations with the run_fit method same as before
+rabi_analysis_2.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
+
+# plot the results of the fit
+rabi_analysis_2.plot_fit()
+
+# check the fit results
+rabi_analysis_2.fit_params
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>16</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 5.4842e-07</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 5.5062e-10</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-21315.9864</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-21296.3554</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 1.00000000</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.99998810</td><td style='text-align:left'> 1.0515e-06</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1.0004618490445119</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 5.00000180</td><td style='text-align:left'> 7.4323e-07</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>5.005005005005005</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>-8.2819e-06</td><td style='text-align:left'> 2.1428e-06</td><td style='text-align:left'>(25.87%)</td><td style='text-align:left'>0.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'>-4.7762e-07</td><td style='text-align:left'> 7.5673e-07</td><td style='text-align:left'>(158.44%)</td><td style='text-align:left'>0.000999150191175806</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8717</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1961</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1710</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_15_1.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_15_1.png" />
+</div>
+</div>
+<p>In the rotating frame of reference, this new rotating pulse is fully aligned within the <span class="math notranslate nohighlight">\(x\)</span>-axis. Thus, the modulations have disappeared and the <span class="math notranslate nohighlight">\(t_\pi\)</span> value is closer to the expected value of <span class="math notranslate nohighlight">\(1/(2\omega_1)\)</span>. Another useful way to visualize the Rabi oscillation is through the Bloch sphere representation, as shown bellow. In the rotating frame, the Bloch vector rotates around the <span class="math notranslate nohighlight">\(x\)</span>-axis. However, in the laboratory frame, it rotates in a spiral.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp_3 = Rabi(
+    pulse_duration = np.linspace(0, 1/2/w1, 500), # In this case we define a pulse duration array which goes up to a pi-pulse
+    system = qsys,
+    H1 = [w1*sigmax()/2, w1*sigmay()/2],
+    pulse_shape = [custom_pulseX, custom_pulseY]
+)
+
+# run the experiment
+rabi_exp_3.run()
+# call Analysis class
+rabi_analysis_3 = Analysis(rabi_exp_3)
+
+# plot the Bloch sphere representation of the results
+rabi_analysis_3.plot_bloch()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_17_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_17_0.png" />
+</div>
+</div>
+</section>
+<section id="3.-Hahn-Echo">
+<h1>3. Hahn Echo<a class="headerlink" href="#3.-Hahn-Echo" title="Link to this heading"></a></h1>
+<p>Another important quantity in quantum systems is the coherence time <span class="math notranslate nohighlight">\(T_2\)</span>, being a measure of how fast a system loses its quantum information, or in other words, how fast it becomes classical. To model the non-unitary process which causes quantum decoherence we make use of the Lindblad master equation from Qutip, by defining a collapse operator</p>
+<div class="math notranslate nohighlight">
+\[C = \gamma \sigma_z ,\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\gamma\)</span> is rate of decoherence, inversely proportional to <span class="math notranslate nohighlight">\(T_2\)</span>. The Hahn echo sequence is then used to measure the coherence time, being composed of two free evolutions with a refocusing <span class="math notranslate nohighlight">\(\pi\)</span>-pulse in between. An initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span>-pulse are also included in order to project the spin the quantization axis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define an arbitrary gamma
+gamma = 0.1
+
+# overwrite the c_ops attribute of the QSys object
+qsys.c_ops = gamma * sigmaz()
+
+hahn_exp = Hahn(
+    free_duration = np.linspace(5, 25, 30), # define the array of free durations to simulate
+    pi_pulse_duration= 1/2/w1, # define the pi pulse duration
+    projection_pulse=True, # include the pi/2 pulse after the second free evolution (this line is redundant since it is the default value) !!! The projection pulse is the last pi/2-pulse. It is only present in NV measurements. The first one that is needed to bring the spin to the equator plane is used in NV experiments as well as in EPR/NMR experiments. Therefore, it is better to keep the first pulse always included, while leaving the last pulse optional !!!
+    # same parameters as before
+    system = qsys,
+    H1 = w1*sigmax(),
+    pulse_shape=square_pulse,
+    pulse_params = {&#39;f_pulse&#39;: delta}
+)
+
+# plot the pulse sequence
+hahn_exp.plot_pulses(tau=10)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_20_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_20_0.png" />
+</div>
+</div>
+<p>In this case, we can observe the initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span> pulses, the two free evolutions and the middle <span class="math notranslate nohighlight">\(\pi\)</span>-pulse. Finaly, running the experiment leads to an exponential decay of the observable expectation value, known as the Hahn echo decay.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the experiment and plot the result
+hahn_exp.run()
+Analysis(hahn_exp).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_22_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_22_0.png" />
+</div>
+</div>
+<section id="3.1.-Custom-sequence">
+<h2>3.1. Custom sequence<a class="headerlink" href="#3.1.-Custom-sequence" title="Link to this heading"></a></h2>
+<p>Let’s say now that we want to end the Hahn echo sequence with <span class="math notranslate nohighlight">\(3\pi/2\)</span> pulse instead of <span class="math notranslate nohighlight">\(\pi/2\)</span>. This sequence is not predefined in quaccatoo, but the user can define it as below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># the custom sequence needs to be defined as a python function of a controlled variable, in this case of the free evolution time tau, and a dictionary with the sequence arguments
+def custom_Hahn(tau, **kwargs):
+
+    ps = tau - kwargs[&#39;t_pi&#39;] # calculate pulse separation time !!! pulse separation time is tau - length of a pi-pulse !!!
+
+    seq = PulsedSim(kwargs[&#39;qsys&#39;]) # we start initializing the sequence
+    # we add the first pi/half pulse with the add_pulse method
+    seq.add_pulse(duration=kwargs[&#39;t_pi&#39;]/2, H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
+    # then we add a free evolution with the add_free_evolution method
+    seq.add_free_evolution(duration=ps)
+    seq.add_pulse(duration=kwargs[&#39;t_pi&#39;], H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
+    seq.add_free_evolution(duration=ps)
+    seq.add_pulse(duration=3*kwargs[&#39;t_pi&#39;]/2, H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
+
+    # return the final state
+    return seq.rho
+
+# The sequence arguments are passed through a dictionary
+sequence_kwargs = {
+    &#39;qsys&#39;: qsys,
+    &#39;H1&#39;: w1*sigmax(),
+    &#39;pulse_shape&#39;: square_pulse,
+    &#39;delta&#39;: delta,
+    &#39;t_pi&#39;: 1/2/w1,
+    &#39;w1&#39;: w1
+}
+
+custom_seq = PulsedSim(qsys)
+# in this case the run method should be specified with the variable and sequence
+custom_seq.run(variable=np.linspace(5, 25, 30), sequence=custom_Hahn, sequence_kwargs=sequence_kwargs)
+Analysis(custom_seq).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_25_0.png" src="../_images/example_notebooks_Ex01_spin_half_Rabi_Hahn_25_0.png" />
+</div>
+</div>
+<p>In this case thus, the expectation value start from negatives values then decays to 0 due to the final <span class="math notranslate nohighlight">\(3\pi/2\)</span> pulse.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook1.html" class="btn btn-neutral float-left" title="Ex01 - Rabi and Hahn of a spin half system" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebook2.html" class="btn btn-neutral float-right" title="Ex02 - NV: Ramsey and PODMR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

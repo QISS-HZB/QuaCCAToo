@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Energy Levels &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/example_notebooks/Ex02_NV_Ramsey_PODMR.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ex03 - Ambiguous Resonances" href="../notebook3.html" />
+    <link rel="prev" title="Ex02 - NV: Ramsey and PODMR" href="../notebook2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Notebooks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../notebook1.html">Ex01 - Rabi and Hahn of a spin half system</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook2.html">Ex02 - NV: Ramsey and PODMR</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Energy Levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Rabi-Oscillations-of-Electronic-Spin">2. Rabi Oscillations of Electronic Spin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Ramsey-Experiment">3. Ramsey Experiment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)">4. Pulsed Optically Detected Magnetic Resonance (pODMR)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">Ex03 - Ambiguous Resonances</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Notebooks</a></li>
+          <li class="breadcrumb-item"><a href="../notebook2.html">Ex02 - NV: Ramsey and PODMR</a></li>
+      <li class="breadcrumb-item active">1. Energy Levels</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/example_notebooks/Ex02_NV_Ramsey_PODMR.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>We follow up on first example, but with a more concrete quantum system: the nitrogen vacancy (NV) center in diamond. NVs are probably the most known color centers, due to its extensive research in quantum technologies. Here, however, we will focus on QuaCCAToo’s usage rather than the physics of the NV itself. For more detailed information about NVs, we recommend:</p>
+<p>[1] E. V. Levine, et al., Principles and techniques of the quantum diamond microscope, Nanophotonics 8, 1945 (2019).</p>
+<p>[2] S. Pezzagna and J. Meijer, Quantum computer based on color centers in diamond, Applied Physics Reviews 8,011308 (2021).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import fock_dm, tensor, qeye
+
+from quaccatoo import plot_energy_B0, NV, Rabi, Ramsey, PMR, RabiModel, fit_two_lorentz_sym, fit_two_sinc2_sym, Analysis, ExpData
+from lmfit import Model
+</pre></div>
+</div>
+</div>
+<section id="1.-Energy-Levels">
+<h1>1. Energy Levels<a class="headerlink" href="#1.-Energy-Levels" title="Link to this heading"></a></h1>
+<p>We begin defining the quantum system from the predefined NV class in quaccatoo. The class has only two mandatory parameters, the nitrogen isotope <span class="math notranslate nohighlight">\(^{14}\text{N}\)</span> or <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> and the magnetic field in mT. Optionally, the user can define a misalignment angle between the NV axis and the magnetic field, alternative magnetic field units, alternative Hamiltonian units, or collapse operators for the pulsed experiments.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    B0 = 38.4, # external magnetic field in mT
+    N=15, # here we start considering the 15N nuclear spin
+    units_B0=&#39;mT&#39;, # the unit of the external magnetic field
+)
+
+# to visualize the energy levels we use the plot_energy method
+qsys.plot_energy()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_4_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_4_0.png" />
+</div>
+</div>
+<p>Here we observe the three electronic energy levels of the NV center: <span class="math notranslate nohighlight">\(m_s=0,-1,+1\)</span>. To be able to see the nuclear levels splitting, we need to specify a smaller energy range in the plot_energy method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.plot_energy(energy_lim=[1790, 1798])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_6_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_6_0.png" />
+</div>
+</div>
+<p>Now, the splitting from the <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> nuclear spin is observed.</p>
+<p>So far we considered <span class="math notranslate nohighlight">\(B_0=40\)</span> mT, but if we want to see how these energy levels change as a function of the external magnetic field we can use the plot_energy_B0 function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the range of B0 values where we want to plot the energy levels
+B0_array = np.linspace(0, 200, 100)
+
+# plot the energy levels as a function of the external magnetic field
+plot_energy_B0(
+    B0 = B0_array,
+    H0 = [NV(N=15, B0=B, units_B0=&#39;mT&#39;).H0 for B in B0_array] # here we calculate the Hamiltonian for each B0 value
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_8_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_8_0.png" />
+</div>
+</div>
+<p>As expected, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> grows linearly with the field, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> decreases linearly and <span class="math notranslate nohighlight">\(m_s=0\)</span> level is not affected by the field. After 100 mT, the level anticrossing occurs.</p>
+</section>
+<section id="2.-Rabi-Oscillations-of-Electronic-Spin">
+<h1>2. Rabi Oscillations of Electronic Spin<a class="headerlink" href="#2.-Rabi-Oscillations-of-Electronic-Spin" title="Link to this heading"></a></h1>
+<p>Just like in the previous notebook, the first experiment usually conducted is Rabi oscillations. In this case, <span class="math notranslate nohighlight">\(H_1\)</span> and the resonant frequency of the pulse are not as trivial as before. The user can define their own parameters, but the NV class has a standard interaction Hamiltonian</p>
+<div class="math notranslate nohighlight">
+\[H_1 = S_x \otimes \mathbb{1},\]</div>
+<p>which can be obtained by the MW_H1 method. While the resonant frequencies for the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> and <span class="math notranslate nohighlight">\(m_s=0 \rightarrow +1\)</span> can be obtained from MW_freqs method, which takes the average between the two nuclear spin states. Again, we will consider a square cosine wave for the pulse.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w1 = 16.72 # typical NV Rabi frequency in MHz
+
+# define the Rabi experiment
+rabi_exp_1 = Rabi(
+    pulse_duration = np.arange(0, 0.15, 3e-3), # pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
+
+# run the experiment
+rabi_exp_1.run()
+# plot results
+
+rabi_analysis = Analysis(rabi_exp_1)
+rabi_analysis.plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_12_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_12_0.png" />
+</div>
+</div>
+<p>If we want to compare with the simulation with experimental data, we can use the ExpData class to load it from .dat file.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>exp_data = ExpData(file_path=&#39;./exp_data_examples/Ex02_NV_rabi.dat&#39;)
+exp_data.variable *= 1e6 # convert the variable from s to us
+
+rabi_analysis.compare_with(exp_data)
+rabi_analysis.plot_comparison()
+rabi_analysis.pearson
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0453606037750993), rvalue=np.float64(0.9872724331132969), pvalue=np.float64(5.450830010550885e-40), stderr=np.float64(0.060209767213068484), intercept_stderr=np.float64(0.05996996938639089))
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_14_1.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_14_1.png" />
+</div>
+</div>
+<p>In this case, we observe a strong correlation of the simulation and experimental data with an rvalue of 0.987. The standard observable for the NV is the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> given by the fluorescence. To see the populations of the other two states <span class="math notranslate nohighlight">\(m_s=\pm 1\)</span>, we need to redefine the system observables and define a new Rabi experiment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.observable = [tensor(fock_dm(3, 0), qeye(2)), tensor(fock_dm(3, 2), qeye(2))]
+
+# define the Rabi experiment
+rabi_exp_2 = Rabi(
+    pulse_duration = np.linspace(0, 3/w1, 1000),
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
+
+# run the experiment
+rabi_exp_2.run()
+Analysis(rabi_exp_2).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_16_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_16_0.png" />
+</div>
+</div>
+<p>Note that population of the <span class="math notranslate nohighlight">\(m_s=+1\)</span> remains 0, as we are using the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> resonant frequency, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> population oscillates with the same frequency as the <span class="math notranslate nohighlight">\(m_s=0\)</span> population, but with opposite sign. If we used the other resonant frequency, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> population would oscillate but <span class="math notranslate nohighlight">\(m_s=-1\)</span> would remain 0.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp_3 = Rabi(
+    pulse_duration = np.linspace(0, 3/w1, 1000),
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
+
+# run the experiment
+rabi_exp_3.run()
+Analysis(rabi_exp_3).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_18_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_18_0.png" />
+</div>
+</div>
+<p>Finally, by running a fit of the observable we can extract the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.observable = tensor(fock_dm(3,0), qeye(2)) # !!! This line doesn&#39;t change the already conducted simulation rabi_exp_1. We can just delete it. !!!
+
+# call the Analysis class for the rabi experiment
+rabi_analysis = Analysis(rabi_exp_1)
+
+rabi_analysis.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
+# plot the fit results
+rabi_analysis.plot_fit()
+# print the fitted pi-pulse duration
+rabi_analysis.fit_params
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>31</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>50</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 6.7360e-05</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 1.4643e-06</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-667.874151</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-660.226059</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99998911</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.49571846</td><td style='text-align:left'> 2.4267e-04</td><td style='text-align:left'>(0.05%)</td><td style='text-align:left'>0.3556245643830907</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 0.02978295</td><td style='text-align:left'> 3.2778e-06</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>0.025</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'> 6.28318469</td><td style='text-align:left'> 9.9725e-04</td><td style='text-align:left'>(0.02%)</td><td style='text-align:left'>4.569589314312426</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'> 0.50405323</td><td style='text-align:left'> 1.7397e-04</td><td style='text-align:left'>(0.03%)</td><td style='text-align:left'>0.5103864093385502</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8664</td></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'>Tpi</td><td style='text-align:right'>+0.1099</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_20_1.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_20_1.png" />
+</div>
+</div>
+<p>As expected the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration is very close to <span class="math notranslate nohighlight">\(1/(2\omega_1)\)</span>.</p>
+</section>
+<section id="3.-Ramsey-Experiment">
+<h1>3. Ramsey Experiment<a class="headerlink" href="#3.-Ramsey-Experiment" title="Link to this heading"></a></h1>
+<p>A simple, but important, pulse sequence in quantum sensing is the Ramsey experiment. It measures the accumulated phase difference in the two levels, by applying a <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, waiting for a time <span class="math notranslate nohighlight">\(\tau\)</span> and applying another <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, then measuring the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> state.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system same as before
+qsys = NV(
+    N=15,
+    B0 = 40
+)
+
+w1 = 30 # Rabi frequency in MHz
+
+# define the Ramsey experiment
+ramsey_exp = Ramsey(
+    free_duration = np.linspace(1/2/w1, 3, 500), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
+
+# plot the pulses
+ramsey_exp.plot_pulses(tau=.03)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/a3459/miniforge3/envs/quaccatoo-env/lib/python3.12/site-packages/quaccatoo/QSys/NVSys.py:107: UserWarning: No units for the magnetic field were given. The magnetic field will be considered in mT.
+  warnings.warn(&#34;No units for the magnetic field were given. The magnetic field will be considered in mT.&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_24_1.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_24_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the experiment and plot results
+ramsey_exp.run()
+Analysis(ramsey_exp).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_25_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_25_0.png" />
+</div>
+</div>
+<p>We could fit the results again with a period oscillation, but to illustrate a different method we will use the FFT from quaccatoo.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ramsey_analysis = Analysis(ramsey_exp)
+# run the FFT
+ramsey_analysis.run_FFT()
+# extract peaks from the FFT spectrum
+ramsey_analysis.get_peaks_FFT()
+# plot the FFT results
+ramsey_analysis.plot_FFT(freq_lim=[0,5])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_27_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_27_0.png" />
+</div>
+</div>
+<p>The frequencies are too spaced in the FFT due to the low range of <span class="math notranslate nohighlight">\(\tau\)</span>, but we can see the main peak corresponds to approximately half of the hyperfine splitting of the nuclear spin <span class="math notranslate nohighlight">\(a_{||}/2=1.515\)</span> MHz, as expected.</p>
+</section>
+<section id="4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)">
+<h1>4. Pulsed Optically Detected Magnetic Resonance (pODMR)<a class="headerlink" href="#4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)" title="Link to this heading"></a></h1>
+<p>To further study the energy levels of the system, we simulate a pODMR experiment. A pODMR experiment is simply composed by a pulse of varying frequency, thus when it corresponds to a resonance, a change in the observable is expected.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system same as before
+qsys = NV(
+    N=15,
+    B0 = 40
+)
+
+w1 = 30 # Rabi frequency in MHz
+
+# define the PODMR experiment
+podmr_exp_1 = PMR(
+    frequencies = np.arange(1400, 4300, 10), # frequencies to scan in MHz
+    pulse_duration = 1/2/w1, # pulse duration
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+)
+
+# run and plot the experiment
+podmr_exp_1.run()
+Analysis(podmr_exp_1).plot_results() # !!! The x-axis for pODMR is frequency, not the time. Changed in the class method!!!
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_31_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_31_0.png" />
+</div>
+</div>
+<p>Two resonances can be observed, corresponding to the two electronic spin transitions and with a splitting given by the Zeeman interaction with the external magnetic field. To see the nuclear spin splitting, we need to reduce the Rabi frequency to have a better frequency resolution.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w1 = 0.3 # Rabi frequency in MHz
+
+# define the PODMR experiment
+podmr_exp_2 = PMR(
+    frequencies = np.arange(1745, 1753, 0.05), # frequencies to scan in MHz
+    pulse_duration = 1/2/w1, # pulse duration
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+)
+
+# run and plot the experiment
+podmr_exp_2.run()
+Analysis(podmr_exp_2).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_33_0.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_33_0.png" />
+</div>
+</div>
+<p>The two resonances now correspond to the two nuclear spin transitions. To get the splitting, we can fit them with Lorentzian Functions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>podmr_analysis = Analysis(podmr_exp_2)
+
+# run the fit
+podmr_analysis.run_fit(
+    fit_model = Model(fit_two_lorentz_sym),
+    guess = {&#39;A&#39;: 0.5, &#39;gamma&#39;: 0.2, &#39;f_mean&#39;:1749, &#39;f_delta&#39;:3,&#39;C&#39;:1}, # initial guess for the fit parameters
+    )
+
+podmr_analysis.plot_fit(xlabel=&#39;Frequency&#39;)
+podmr_analysis.fit_params
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_two_lorentz_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>24</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.11917557</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.6887e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-1142.37301</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-1126.99714</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.95699504</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.53978264</td><td style='text-align:left'> 0.01113652</td><td style='text-align:left'>(2.06%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.19906076</td><td style='text-align:left'> 0.00681328</td><td style='text-align:left'>(3.42%)</td><td style='text-align:left'>0.2</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00957</td><td style='text-align:left'> 0.00410519</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02851436</td><td style='text-align:left'> 0.00817499</td><td style='text-align:left'>(0.27%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 1.00473395</td><td style='text-align:left'> 0.00311813</td><td style='text-align:left'>(0.31%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.5631</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.5552</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_35_1.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_35_1.png" />
+</div>
+</div>
+<p>From the fit we can extract the parallel component of the hyperfine splitting <span class="math notranslate nohighlight">\(a_{||}=3.03\)</span> MHz. However, the commonly used Lorentzian function does not completely describes all features of the resonace. A better fit is provided with sinc function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>podmr_analysis_2 = Analysis(podmr_exp_2)
+
+# run the fit
+podmr_analysis_2.run_fit(
+    fit_model = Model(fit_two_sinc2_sym), # we use the same fit function as for the Rabi experiment
+    guess = {&#39;A&#39;: 0.5, &#39;gamma&#39;: 0.4, &#39;f_mean&#39;:1749, &#39;f_delta&#39;:3,&#39;C&#39;:1}, # initial guess for the fit parameters
+    )
+
+podmr_analysis_2.plot_fit(xlabel=&#39;Frequency&#39;)
+podmr_analysis_2.fit_params
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_two_sinc2_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>37</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 1.1555e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.4547e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2252.56039</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2237.18453</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99995830</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.49679723</td><td style='text-align:left'> 2.6772e-04</td><td style='text-align:left'>(0.05%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.30066635</td><td style='text-align:left'> 1.1429e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>0.4</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00882</td><td style='text-align:left'> 1.2186e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02839469</td><td style='text-align:left'> 2.4162e-04</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 0.99916892</td><td style='text-align:left'> 8.0602e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.4124</td></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.2688</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.2126</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_37_1.png" src="../_images/example_notebooks_Ex02_NV_Ramsey_PODMR_37_1.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook2.html" class="btn btn-neutral float-left" title="Ex02 - NV: Ramsey and PODMR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebook3.html" class="btn btn-neutral float-right" title="Ex03 - Ambiguous Resonances" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

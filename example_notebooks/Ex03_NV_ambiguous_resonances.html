@@ -1,0 +1,678 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Field Misalignment and \(^{15}\text{N}\) Coupling &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/example_notebooks/Ex03_NV_ambiguous_resonances.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Ex03 - Ambiguous Resonances" href="../notebook3.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Notebooks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../notebook1.html">Ex01 - Rabi and Hahn of a spin half system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">Ex02 - NV: Ramsey and PODMR</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook3.html">Ex03 - Ambiguous Resonances</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-13C-Coupling">2. 13C Coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-RXY8-with-H2">3. RXY8 with H2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Notebooks</a></li>
+          <li class="breadcrumb-item"><a href="../notebook3.html">Ex03 - Ambiguous Resonances</a></li>
+      <li class="breadcrumb-item active">1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/example_notebooks/Ex03_NV_ambiguous_resonances.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>In this example we simulate ambiguous resonances in multipulse quantum sensing with nitrogen vacancy (NV) centers in diamonds. This notebook closely follows the work from “Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers” available at <a class="reference external" href="https://doi.org/10.1103/PhysRevA.111.022606">https://doi.org/10.1103/PhysRevA.111.022606</a> .</p>
+<p>As this is a quite complex problem, physics discussions will be kept to a minimum here in favor of a focus to the simulation. For a detailed explanation of the problem, please refer to the original paper.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import tensor, jmat, qeye
+
+from quaccatoo import NV, XY8, RXY8, Analysis
+</pre></div>
+</div>
+</div>
+<section id="1.-Field-Misalignment-and-^{15}\text{N}-Coupling">
+<h1>1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling<a class="headerlink" href="#1.-Field-Misalignment-and-^{15}\text{N}-Coupling" title="Link to this heading"></a></h1>
+<p>We begin simulating a XY8-2 sequence with a misaligned magnetic field, as in Sec. IV A of the paper.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 39.4, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=2.6,
+    units_angles=&#39;deg&#39;
+)
+
+w1 = 20
+
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .36, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}, # MW frequency for the ms=0 --&gt; ms=+1 state transition
+    time_steps=100 # Number of time steps in each MW pulse
+)
+
+# plot the pulses
+XY8_15N.plot_pulses(tau=.1, figsize=(12, 4))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_4_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_4_0.png" />
+</div>
+</div>
+<p>Here we can observe the 16 <span class="math notranslate nohighlight">\(\pi\)</span>-pulses plus the initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span> pulses. Now to run the experiment as in Fig. 3 (d).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_6_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_6_0.png" />
+</div>
+</div>
+<p>Increasing the XY8 order for M=4,6,8:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 4
+XY8_15N.M = 4
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-4 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_8_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_8_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 6
+XY8_15N.M = 6
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-6 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_9_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_9_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 8
+XY8_15N.M = 8
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-8 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_10_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_10_0.png" />
+</div>
+</div>
+<p>Now, changing the field for XY8-2 as in Fig. 3 (c).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 33 mT, 5.1 deg
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 33, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=5.1, # 5.1 degrees os misalignment
+    units_angles=&#39;deg&#39;
+)
+
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.22, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
+
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=33$ mT $\theta_0=5.1^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_12_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_12_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 26 mT, 9.3 deg
+qsys = NV(
+    N=15,
+    B0 = 26,
+    units_B0=&#39;mT&#39;,
+    theta = 9.3,
+    units_angles=&#39;deg&#39;
+)
+
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.22, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
+
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=26$ mT $\theta_0=9.3^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_13_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_13_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 17 mT, 17 deg
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 17, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=17, # 17 degrees os misalignment
+    units_angles=&#39;deg&#39;
+)
+
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
+
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_14_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_14_0.png" />
+</div>
+</div>
+<p>If we now include a pulse length error, as in Fig. 6 we have:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .45, 100),
+    pi_pulse_duration = 1/2/w1*.8,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$, pulse lenght=0.8 $t_{\pi}$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+&lt;&gt;:11: SyntaxWarning: invalid escape sequence &#39;\c&#39;
+&lt;&gt;:11: SyntaxWarning: invalid escape sequence &#39;\c&#39;
+/tmp/ipykernel_58668/3959528906.py:11: SyntaxWarning: invalid escape sequence &#39;\c&#39;
+  Analysis(XY8_15N).plot_results(title=&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$, pulse lenght=0.8 $t_{\pi}$&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_16_1.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_16_1.png" />
+</div>
+</div>
+</section>
+<section id="2.-13C-Coupling">
+<h1>2. 13C Coupling<a class="headerlink" href="#2.-13C-Coupling" title="Link to this heading"></a></h1>
+<p>As in Sec. IV B, we need to define the coupling Hamiltonian <span class="math notranslate nohighlight">\(H_2\)</span> in the same way as Eq 3 of the paper.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the coupling tensor as in Sec S5 of the paper
+A = np.empty((3, 3), dtype=object)
+A[0, 0] = -0.25
+A[0, 1] = -1.85
+A[0, 2] = -.49
+A[1, 0] = A[0, 1]
+A[1, 1] = 0
+A[1, 2] = .01
+A[2, 0] = A[0, 2]
+A[2, 1] = A[1, 2]
+A[2, 2] = 1.01
+
+HhfC = (
+A[0,0]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;x&#39;)) + A[0,1]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;y&#39;)) + A[0,2]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
++ A[1,0]*tensor(jmat(1,&#39;y&#39;), qeye(3), jmat(1/2,&#39;x&#39;)) + A[1,1]*tensor(jmat(1,&#39;y&#39;), qeye(3),jmat(1/2,&#39;y&#39;)) + A[1,2]*tensor(jmat(1,&#39;y&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
++ A[2,0]*tensor(jmat(1,&#39;z&#39;), qeye(3),  jmat(1/2,&#39;x&#39;)) + A[2,1]*tensor(jmat(1,&#39;z&#39;), qeye(3), jmat(1/2,&#39;y&#39;)) + A[2,2]*tensor(jmat(1,&#39;z&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
+)
+
+# define the nuclear Zeeman Hamiltonian for the 13C nuclear spin
+def Hzc(B0, theta):
+    return 10.705e-3*B0*tensor(qeye(3), qeye(3), np.cos(theta*np.pi/180)*jmat(1/2,&#39;z&#39;) + np.sin(theta*np.pi/180)*jmat(1/2,&#39;x&#39;))
+</pre></div>
+</div>
+</div>
+<p>Now we define the NV Hamiltonian and use the add_spin method to introduce the 13C nuclear spin.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys = NV(
+    N=14,
+    B0 = 18, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=2.34,
+    units_angles=&#39;deg&#39;,
+)
+
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
+
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=18$ mT, $\theta_0=2.34^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_21_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_21_0.png" />
+</div>
+</div>
+<p>Increasing the field, as in Fig. 4 (a).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=14,
+    B0 = 31, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=1.35,
+    units_angles=&#39;deg&#39;,
+)
+
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
+
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=31$ mT, $\theta_0=1.35^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_23_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_23_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=14,
+    B0 = 40, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=1.14,
+    units_angles=&#39;deg&#39;,
+)
+
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
+
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_24_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_24_0.png" />
+</div>
+</div>
+<p>Now, we keep the field constant and increase the order, as in Fig. 4(b).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=4,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-4 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_26_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_26_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=6,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-6 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_27_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_27_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=8,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
+
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-8 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_28_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_28_0.png" />
+</div>
+</div>
+</section>
+<section id="3.-RXY8-with-H2">
+<h1>3. RXY8 with H2<a class="headerlink" href="#3.-RXY8-with-H2" title="Link to this heading"></a></h1>
+<p>As discussed in Sec. IV C, the finite length of the pulses can lead to ambiguous resonances. Here, we define the NV Hamiltonian as usual and a time-dependent magnetic field <span class="math notranslate nohighlight">\(B_2(t)\)</span> as in Eq. 4.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 40, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+)
+
+w1 = 20
+f2 = 5.5
+B2z = 0.3
+
+def B2(t, args):
+    return B2z*np.sin(f2*t)
+
+H2 = [tensor(jmat(1,&#39;z&#39;), qeye(2)), B2]
+
+XY8_12_H2  = XY8(
+    M=12,
+    free_duration = np.linspace(.06, 0.17, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]},
+    H2 = H2
+)
+
+# the number of CPUs for the parallel computation can be specified with the num_cpus keyword argument
+XY8_12_H2.run(map_kw = {&#39;num_cpus&#39;: 8})
+Analysis(XY8_12_H2).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_31_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_31_0.png" />
+</div>
+</div>
+<p>These ambiguous resonances can be supressed with phase randomization, for that we use the RXY8 class.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>RXY8_12_H2  = RXY8(
+    M=12,
+    free_duration = np.linspace(.06, 0.17, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]},
+    H2 = H2
+)
+
+RXY8_12_H2.run()
+Analysis(RXY8_12_H2).plot_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_33_0.png" src="../_images/example_notebooks_Ex03_NV_ambiguous_resonances_33_0.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook3.html" class="btn btn-neutral float-left" title="Ex03 - Ambiguous Resonances" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-QuaCCAToo Modules
+QuaCCAToo modules
 =================
 
 qsys
