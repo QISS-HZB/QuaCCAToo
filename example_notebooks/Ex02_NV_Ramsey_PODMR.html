@@ -97,11 +97,11 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import fock_dm, tensor, qeye
 
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">plot_energy_B0</span><span class="p">,</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">Ramsey</span><span class="p">,</span> <span class="n">PMR</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">fit_two_lorentz_sym</span><span class="p">,</span> <span class="n">fit_two_sinc2_sym</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">ExpData</span>
-<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
+from quaccatoo import plot_energy_B0, NV, Rabi, Ramsey, PMR, RabiModel, fit_two_lorentz_sym, fit_two_sinc2_sym, Analysis, ExpData
+from lmfit import Model
 </pre></div>
 </div>
 </div>
@@ -112,15 +112,15 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mf">38.4</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="c1"># here we start considering the 15N nuclear spin</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span> <span class="c1"># the unit of the external magnetic field</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    B0 = 38.4, # external magnetic field in mT
+    N=15, # here we start considering the 15N nuclear spin
+    units_B0=&#39;mT&#39;, # the unit of the external magnetic field
+)
 
-<span class="c1"># to visualize the energy levels we use the plot_energy method</span>
-<span class="n">qsys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
+# to visualize the energy levels we use the plot_energy method
+qsys.plot_energy()
 </pre></div>
 </div>
 </div>
@@ -136,7 +136,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">(</span><span class="n">energy_lim</span><span class="o">=</span><span class="p">[</span><span class="mi">1790</span><span class="p">,</span> <span class="mi">1798</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.plot_energy(energy_lim=[1790, 1798])
 </pre></div>
 </div>
 </div>
@@ -153,14 +153,14 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the range of B0 values where we want to plot the energy levels</span>
-<span class="n">B0_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the range of B0 values where we want to plot the energy levels
+B0_array = np.linspace(0, 200, 100)
 
-<span class="c1"># plot the energy levels as a function of the external magnetic field</span>
-<span class="n">plot_energy_B0</span><span class="p">(</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="n">B0_array</span><span class="p">,</span>
-    <span class="n">H0</span> <span class="o">=</span> <span class="p">[</span><span class="n">NV</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">B0</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">H0</span> <span class="k">for</span> <span class="n">B</span> <span class="ow">in</span> <span class="n">B0_array</span><span class="p">]</span> <span class="c1"># here we calculate the Hamiltonian for each B0 value</span>
-<span class="p">)</span>
+# plot the energy levels as a function of the external magnetic field
+plot_energy_B0(
+    B0 = B0_array,
+    H0 = [NV(N=15, B0=B, units_B0=&#39;mT&#39;).H0 for B in B0_array] # here we calculate the Hamiltonian for each B0 value
+)
 </pre></div>
 </div>
 </div>
@@ -183,22 +183,22 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="mf">16.72</span> <span class="c1"># typical NV Rabi frequency in MHz</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w1 = 16.72 # typical NV Rabi frequency in MHz
 
-<span class="c1"># define the Rabi experiment</span>
-<span class="n">rabi_exp_1</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">3e-3</span><span class="p">),</span> <span class="c1"># pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=-1 state transition</span>
-<span class="p">)</span>
+# define the Rabi experiment
+rabi_exp_1 = Rabi(
+    pulse_duration = np.arange(0, 0.15, 3e-3), # pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
 
-<span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="c1"># plot results</span>
+# run the experiment
+rabi_exp_1.run()
+# plot results
 
-<span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_1</span><span class="p">)</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+rabi_analysis = Analysis(rabi_exp_1)
+rabi_analysis.plot_results()
 </pre></div>
 </div>
 </div>
@@ -214,12 +214,12 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exp_data</span> <span class="o">=</span> <span class="n">ExpData</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;./exp_data_examples/Ex02_NV_rabi.dat&#39;</span><span class="p">)</span>
-<span class="n">exp_data</span><span class="o">.</span><span class="n">variable</span> <span class="o">*=</span> <span class="mf">1e6</span> <span class="c1"># convert the variable from s to us</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>exp_data = ExpData(file_path=&#39;./exp_data_examples/Ex02_NV_rabi.dat&#39;)
+exp_data.variable *= 1e6 # convert the variable from s to us
 
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">compare_with</span><span class="p">(</span><span class="n">exp_data</span><span class="p">)</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_comparison</span><span class="p">()</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">pearson</span>
+rabi_analysis.compare_with(exp_data)
+rabi_analysis.plot_comparison()
+rabi_analysis.pearson
 </pre></div>
 </div>
 </div>
@@ -243,19 +243,19 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.observable = [tensor(fock_dm(3, 0), qeye(2)), tensor(fock_dm(3, 2), qeye(2))]
 
-<span class="c1"># define the Rabi experiment</span>
-<span class="n">rabi_exp_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=-1 state transition</span>
-<span class="p">)</span>
+# define the Rabi experiment
+rabi_exp_2 = Rabi(
+    pulse_duration = np.linspace(0, 3/w1, 1000),
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
 
-<span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+# run the experiment
+rabi_exp_2.run()
+Analysis(rabi_exp_2).plot_results()
 </pre></div>
 </div>
 </div>
@@ -271,16 +271,16 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp_3</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp_3 = Rabi(
+    pulse_duration = np.linspace(0, 3/w1, 1000),
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
 
-<span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_3</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_3</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+# run the experiment
+rabi_exp_3.run()
+Analysis(rabi_exp_3).plot_results()
 </pre></div>
 </div>
 </div>
@@ -296,18 +296,18 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># !!! This line doesn&#39;t change the already conducted simulation rabi_exp_1. We can just delete it. !!!</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.observable = tensor(fock_dm(3,0), qeye(2)) # !!! This line doesn&#39;t change the already conducted simulation rabi_exp_1. We can just delete it. !!!
 
-<span class="c1"># call the Analysis class for the rabi experiment</span>
-<span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_1</span><span class="p">)</span>
+# call the Analysis class for the rabi experiment
+rabi_analysis = Analysis(rabi_exp_1)
 
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
-    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">(),</span> <span class="c1"># here we use the RabiModel as a target for fitting</span>
-    <span class="p">)</span>
-<span class="c1"># plot the fit results</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
-<span class="c1"># print the fitted pi-pulse duration</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+rabi_analysis.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
+# plot the fit results
+rabi_analysis.plot_fit()
+# print the fitted pi-pulse duration
+rabi_analysis.fit_params
 </pre></div>
 </div>
 </div>
@@ -334,25 +334,25 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system same as before</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system same as before
+qsys = NV(
+    N=15,
+    B0 = 40
+)
 
-<span class="n">w1</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># Rabi frequency in MHz</span>
+w1 = 30 # Rabi frequency in MHz
 
-<span class="c1"># define the Ramsey experiment</span>
-<span class="n">ramsey_exp</span> <span class="o">=</span> <span class="n">Ramsey</span><span class="p">(</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=-1 state transition</span>
-<span class="p">)</span>
+# define the Ramsey experiment
+ramsey_exp = Ramsey(
+    free_duration = np.linspace(1/2/w1, 3, 500), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]} # MW frequency for the ms=0 --&gt; ms=-1 state transition
+)
 
-<span class="c1"># plot the pulses</span>
-<span class="n">ramsey_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mf">.03</span><span class="p">)</span>
+# plot the pulses
+ramsey_exp.plot_pulses(tau=.03)
 </pre></div>
 </div>
 </div>
@@ -376,9 +376,9 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># run the experiment and plot results</span>
-<span class="n">ramsey_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the experiment and plot results
+ramsey_exp.run()
+Analysis(ramsey_exp).plot_results()
 </pre></div>
 </div>
 </div>
@@ -394,13 +394,13 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_exp</span><span class="p">)</span>
-<span class="c1"># run the FFT</span>
-<span class="n">ramsey_analysis</span><span class="o">.</span><span class="n">run_FFT</span><span class="p">()</span>
-<span class="c1"># extract peaks from the FFT spectrum</span>
-<span class="n">ramsey_analysis</span><span class="o">.</span><span class="n">get_peaks_FFT</span><span class="p">()</span>
-<span class="c1"># plot the FFT results</span>
-<span class="n">ramsey_analysis</span><span class="o">.</span><span class="n">plot_FFT</span><span class="p">(</span><span class="n">freq_lim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ramsey_analysis = Analysis(ramsey_exp)
+# run the FFT
+ramsey_analysis.run_FFT()
+# extract peaks from the FFT spectrum
+ramsey_analysis.get_peaks_FFT()
+# plot the FFT results
+ramsey_analysis.plot_FFT(freq_lim=[0,5])
 </pre></div>
 </div>
 </div>
@@ -420,25 +420,25 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system same as before</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system same as before
+qsys = NV(
+    N=15,
+    B0 = 40
+)
 
-<span class="n">w1</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1"># Rabi frequency in MHz</span>
+w1 = 30 # Rabi frequency in MHz
 
-<span class="c1"># define the PODMR experiment</span>
-<span class="n">podmr_exp_1</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
-    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1400</span><span class="p">,</span> <span class="mi">4300</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="c1"># frequencies to scan in MHz</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pulse duration</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-<span class="p">)</span>
+# define the PODMR experiment
+podmr_exp_1 = PMR(
+    frequencies = np.arange(1400, 4300, 10), # frequencies to scan in MHz
+    pulse_duration = 1/2/w1, # pulse duration
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+)
 
-<span class="c1"># run and plot the experiment</span>
-<span class="n">podmr_exp_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span> <span class="c1"># !!! The x-axis for pODMR is frequency, not the time. Changed in the class method!!!</span>
+# run and plot the experiment
+podmr_exp_1.run()
+Analysis(podmr_exp_1).plot_results() # !!! The x-axis for pODMR is frequency, not the time. Changed in the class method!!!
 </pre></div>
 </div>
 </div>
@@ -454,19 +454,19 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># Rabi frequency in MHz</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w1 = 0.3 # Rabi frequency in MHz
 
-<span class="c1"># define the PODMR experiment</span>
-<span class="n">podmr_exp_2</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
-    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1745</span><span class="p">,</span> <span class="mi">1753</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="c1"># frequencies to scan in MHz</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pulse duration</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-<span class="p">)</span>
+# define the PODMR experiment
+podmr_exp_2 = PMR(
+    frequencies = np.arange(1745, 1753, 0.05), # frequencies to scan in MHz
+    pulse_duration = 1/2/w1, # pulse duration
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+)
 
-<span class="c1"># run and plot the experiment</span>
-<span class="n">podmr_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+# run and plot the experiment
+podmr_exp_2.run()
+Analysis(podmr_exp_2).plot_results()
 </pre></div>
 </div>
 </div>
@@ -482,16 +482,16 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>podmr_analysis = Analysis(podmr_exp_2)
 
-<span class="c1"># run the fit</span>
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
-    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">fit_two_lorentz_sym</span><span class="p">),</span>
-    <span class="n">guess</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;f_mean&#39;</span><span class="p">:</span><span class="mi">1749</span><span class="p">,</span> <span class="s1">&#39;f_delta&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="c1"># initial guess for the fit parameters</span>
-    <span class="p">)</span>
+# run the fit
+podmr_analysis.run_fit(
+    fit_model = Model(fit_two_lorentz_sym),
+    guess = {&#39;A&#39;: 0.5, &#39;gamma&#39;: 0.2, &#39;f_mean&#39;:1749, &#39;f_delta&#39;:3,&#39;C&#39;:1}, # initial guess for the fit parameters
+    )
 
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+podmr_analysis.plot_fit(xlabel=&#39;Frequency&#39;)
+podmr_analysis.fit_params
 </pre></div>
 </div>
 </div>
@@ -514,16 +514,16 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>podmr_analysis_2 = Analysis(podmr_exp_2)
 
-<span class="c1"># run the fit</span>
-<span class="n">podmr_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
-    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">fit_two_sinc2_sym</span><span class="p">),</span> <span class="c1"># we use the same fit function as for the Rabi experiment</span>
-    <span class="n">guess</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;f_mean&#39;</span><span class="p">:</span><span class="mi">1749</span><span class="p">,</span> <span class="s1">&#39;f_delta&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="c1"># initial guess for the fit parameters</span>
-    <span class="p">)</span>
+# run the fit
+podmr_analysis_2.run_fit(
+    fit_model = Model(fit_two_sinc2_sym), # we use the same fit function as for the Rabi experiment
+    guess = {&#39;A&#39;: 0.5, &#39;gamma&#39;: 0.4, &#39;f_mean&#39;:1749, &#39;f_delta&#39;:3,&#39;C&#39;:1}, # initial guess for the fit parameters
+    )
 
-<span class="n">podmr_analysis_2</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">podmr_analysis_2</span><span class="o">.</span><span class="n">fit_params</span>
+podmr_analysis_2.plot_fit(xlabel=&#39;Frequency&#39;)
+podmr_analysis_2.fit_params
 </pre></div>
 </div>
 </div>

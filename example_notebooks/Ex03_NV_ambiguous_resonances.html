@@ -94,10 +94,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">qeye</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import tensor, jmat, qeye
 
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">XY8</span><span class="p">,</span> <span class="n">RXY8</span><span class="p">,</span> <span class="n">Analysis</span>
+from quaccatoo import NV, XY8, RXY8, Analysis
 </pre></div>
 </div>
 </div>
@@ -108,29 +108,29 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="c1"># here we start considering the 15N nuclear spin</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mf">39.4</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 39.4, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=2.6,
+    units_angles=&#39;deg&#39;
+)
 
-<span class="n">w1</span> <span class="o">=</span> <span class="mi">20</span>
+w1 = 20
 
-<span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.36</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]},</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-    <span class="n">time_steps</span><span class="o">=</span><span class="mi">100</span> <span class="c1"># Number of time steps in each MW pulse</span>
-<span class="p">)</span>
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .36, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}, # MW frequency for the ms=0 --&gt; ms=+1 state transition
+    time_steps=100 # Number of time steps in each MW pulse
+)
 
-<span class="c1"># plot the pulses</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+# plot the pulses
+XY8_15N.plot_pulses(tau=.1, figsize=(12, 4))
 </pre></div>
 </div>
 </div>
@@ -146,8 +146,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -163,10 +163,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># M = 4</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-4 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 4
+XY8_15N.M = 4
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-4 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -181,10 +181,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># M = 6</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-6 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 6
+XY8_15N.M = 6
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-6 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -199,10 +199,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># M = 8</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-8 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># M = 8
+XY8_15N.M = 8
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-8 $B_0=39$ mT $\theta_0=2.6^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -218,26 +218,26 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 33 mT, 5.1 deg</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="c1"># here we start considering the 15N nuclear spin</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">33</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">5.1</span><span class="p">,</span> <span class="c1"># 5.1 degrees os misalignment</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 33 mT, 5.1 deg
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 33, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=5.1, # 5.1 degrees os misalignment
+    units_angles=&#39;deg&#39;
+)
 
-<span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.22</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-<span class="p">)</span>
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.22, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
 
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $B_0=33$ mT $\theta_0=5.1^\circ$&#39;</span><span class="p">)</span>
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=33$ mT $\theta_0=5.1^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -252,26 +252,26 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 26 mT, 9.3 deg</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">26</span><span class="p">,</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="mf">9.3</span><span class="p">,</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 26 mT, 9.3 deg
+qsys = NV(
+    N=15,
+    B0 = 26,
+    units_B0=&#39;mT&#39;,
+    theta = 9.3,
+    units_angles=&#39;deg&#39;
+)
 
-<span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.22</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-<span class="p">)</span>
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.22, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
 
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $B_0=26$ mT $\theta_0=9.3^\circ$&#39;</span><span class="p">)</span>
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=26$ mT $\theta_0=9.3^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -286,26 +286,26 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 17 mT, 17 deg</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="c1"># here we start considering the 15N nuclear spin</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">17</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="c1"># 17 degrees os misalignment</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 17 mT, 17 deg
+qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 17, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=17, # 17 degrees os misalignment
+    units_angles=&#39;deg&#39;
+)
 
-<span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span> <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-<span class="p">)</span>
+XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .45, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]} # MW frequency for the ms=0 --&gt; ms=+1 state transition
+)
 
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$&#39;</span><span class="p">)</span>
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=r&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -321,17 +321,17 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="o">*</span><span class="mf">.8</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_15N  = XY8(
+    M=2,
+    free_duration = np.linspace(.25, .45, 100),
+    pi_pulse_duration = 1/2/w1*.8,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_15N</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_15N</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;XY8-2 $B_0=17$ mT $</span><span class="se">\t</span><span class="s1">heta_0=17^\circ$, pulse lenght=0.8 $t_{\pi}$&#39;</span><span class="p">)</span>
+XY8_15N.run()
+Analysis(XY8_15N).plot_results(title=&#39;XY8-2 $B_0=17$ mT $\theta_0=17^\circ$, pulse lenght=0.8 $t_{\pi}$&#39;)
 </pre></div>
 </div>
 </div>
@@ -361,27 +361,27 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the coupling tensor as in Sec S5 of the paper</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.85</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.49</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.01</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.01</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the coupling tensor as in Sec S5 of the paper
+A = np.empty((3, 3), dtype=object)
+A[0, 0] = -0.25
+A[0, 1] = -1.85
+A[0, 2] = -.49
+A[1, 0] = A[0, 1]
+A[1, 1] = 0
+A[1, 2] = .01
+A[2, 0] = A[0, 2]
+A[2, 1] = A[1, 2]
+A[2, 2] = 1.01
 
-<span class="n">HhfC</span> <span class="o">=</span> <span class="p">(</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>  <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="p">)</span>
+HhfC = (
+A[0,0]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;x&#39;)) + A[0,1]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;y&#39;)) + A[0,2]*tensor(jmat(1,&#39;x&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
++ A[1,0]*tensor(jmat(1,&#39;y&#39;), qeye(3), jmat(1/2,&#39;x&#39;)) + A[1,1]*tensor(jmat(1,&#39;y&#39;), qeye(3),jmat(1/2,&#39;y&#39;)) + A[1,2]*tensor(jmat(1,&#39;y&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
++ A[2,0]*tensor(jmat(1,&#39;z&#39;), qeye(3),  jmat(1/2,&#39;x&#39;)) + A[2,1]*tensor(jmat(1,&#39;z&#39;), qeye(3), jmat(1/2,&#39;y&#39;)) + A[2,2]*tensor(jmat(1,&#39;z&#39;), qeye(3), jmat(1/2,&#39;z&#39;))
+)
 
-<span class="c1"># define the nuclear Zeeman Hamiltonian for the 13C nuclear spin</span>
-<span class="k">def</span> <span class="nf">Hzc</span><span class="p">(</span><span class="n">B0</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mf">10.705e-3</span><span class="o">*</span><span class="n">B0</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
+# define the nuclear Zeeman Hamiltonian for the 13C nuclear spin
+def Hzc(B0, theta):
+    return 10.705e-3*B0*tensor(qeye(3), qeye(3), np.cos(theta*np.pi/180)*jmat(1/2,&#39;z&#39;) + np.sin(theta*np.pi/180)*jmat(1/2,&#39;x&#39;))
 </pre></div>
 </div>
 </div>
@@ -390,27 +390,27 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">2.34</span><span class="p">,</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys = NV(
+    N=14,
+    B0 = 18, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=2.34,
+    units_angles=&#39;deg&#39;,
+)
 
-<span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
 
-<span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=18$ mT, $\theta_0=2.34^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=18$ mT, $\theta_0=2.34^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -426,28 +426,28 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">1.35</span><span class="p">,</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=14,
+    B0 = 31, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=1.35,
+    units_angles=&#39;deg&#39;,
+)
 
-<span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
 
-<span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=31$ mT, $\theta_0=1.35^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=31$ mT, $\theta_0=1.35^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -462,28 +462,28 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the NV center system</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">1.14</span><span class="p">,</span>
-    <span class="n">units_angles</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define the NV center system
+qsys = NV(
+    N=14,
+    B0 = 40, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+    theta=1.14,
+    units_angles=&#39;deg&#39;,
+)
 
-<span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
+qsys.add_spin(HhfC + Hzc(qsys.B0, qsys.theta))
 
-<span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+XY8_13C  = XY8(
+    M=2,
+    free_duration = np.linspace(.4, .85, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-2 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-2 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -499,17 +499,17 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.41</span><span class="p">,</span> <span class="mf">.64</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=4,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-4 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-4 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -524,17 +524,17 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.41</span><span class="p">,</span> <span class="mf">.64</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=6,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-6 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-6 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -549,17 +549,17 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.41</span><span class="p">,</span> <span class="mf">.64</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>XY8_13C  = XY8(
+    M=8,
+    free_duration = np.linspace(.41, .64, 100),
+    pi_pulse_duration = 1/2/w1,
+    system = qsys,
+    H1 = w1*qsys.MW_H1,
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[1]}
+)
 
-<span class="n">XY8_13C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_13C</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;XY8-8 $^</span><span class="si">{13}</span><span class="s1">$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;</span><span class="p">)</span>
+XY8_13C.run()
+Analysis(XY8_13C).plot_results(title=r&#39;XY8-8 $^{13}$C, $B_0=40$ mT, $\theta_0=1.14^\circ$&#39;)
 </pre></div>
 </div>
 </div>
@@ -578,34 +578,34 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="c1"># here we start considering the 15N nuclear spin</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="c1"># external magnetic field in mT</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys = NV(
+    N=15, # here we start considering the 15N nuclear spin
+    B0 = 40, # external magnetic field in mT
+    units_B0=&#39;mT&#39;,
+)
 
-<span class="n">w1</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">f2</span> <span class="o">=</span> <span class="mf">5.5</span>
-<span class="n">B2z</span> <span class="o">=</span> <span class="mf">0.3</span>
+w1 = 20
+f2 = 5.5
+B2z = 0.3
 
-<span class="k">def</span> <span class="nf">B2</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">B2z</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">f2</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+def B2(t, args):
+    return B2z*np.sin(f2*t)
 
-<span class="n">H2</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">B2</span><span class="p">]</span>
+H2 = [tensor(jmat(1,&#39;z&#39;), qeye(2)), B2]
 
-<span class="n">XY8_12_H2</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.06</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-    <span class="n">H2</span> <span class="o">=</span> <span class="n">H2</span>
-<span class="p">)</span>
+XY8_12_H2  = XY8(
+    M=12,
+    free_duration = np.linspace(.06, 0.17, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]},
+    H2 = H2
+)
 
-<span class="c1"># the number of CPUs for the parallel computation can be specified with the num_cpus keyword argument</span>
-<span class="n">XY8_12_H2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">map_kw</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;num_cpus&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">XY8_12_H2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+# the number of CPUs for the parallel computation can be specified with the num_cpus keyword argument
+XY8_12_H2.run(map_kw = {&#39;num_cpus&#39;: 8})
+Analysis(XY8_12_H2).plot_results()
 </pre></div>
 </div>
 </div>
@@ -621,18 +621,18 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RXY8_12_H2</span>  <span class="o">=</span> <span class="n">RXY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.06</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="c1"># free evolution time in us</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># pi-pulse duration in us</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># NV center system</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="c1"># control Hamiltonian</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-    <span class="n">H2</span> <span class="o">=</span> <span class="n">H2</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>RXY8_12_H2  = RXY8(
+    M=12,
+    free_duration = np.linspace(.06, 0.17, 100), # free evolution time in us
+    pi_pulse_duration = 1/2/w1, # pi-pulse duration in us
+    system = qsys, # NV center system
+    H1 = w1*qsys.MW_H1, # control Hamiltonian
+    pulse_params = {&#39;f_pulse&#39;: qsys.MW_freqs[0]},
+    H2 = H2
+)
 
-<span class="n">RXY8_12_H2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">RXY8_12_H2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+RXY8_12_H2.run()
+Analysis(RXY8_12_H2).plot_results()
 </pre></div>
 </div>
 </div>

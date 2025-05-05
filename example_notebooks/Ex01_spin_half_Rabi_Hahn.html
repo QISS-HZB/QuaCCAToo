@@ -97,10 +97,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">sigmax</span><span class="p">,</span> <span class="n">sigmay</span><span class="p">,</span> <span class="n">sigmaz</span><span class="p">,</span> <span class="n">fock_dm</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+from qutip import sigmax, sigmay, sigmaz, fock_dm
 
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">QSys</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">Hahn</span><span class="p">,</span> <span class="n">square_pulse</span>
+from quaccatoo import QSys, PulsedSim, Analysis, RabiModel, Rabi, Hahn, square_pulse
 </pre></div>
 </div>
 </div>
@@ -117,16 +117,16 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># here we define delta = 1</span>
-<span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># here we define delta = 1
+delta = 1
 
-<span class="c1"># create the QSys object with the desired parameters</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">QSys</span><span class="p">(</span>
-    <span class="n">H0</span> <span class="o">=</span> <span class="n">delta</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigmaz</span><span class="p">(),</span>
-    <span class="n">rho0</span> <span class="o">=</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="n">observable</span> <span class="o">=</span> <span class="n">sigmaz</span><span class="p">(),</span>
-    <span class="n">units_H0</span> <span class="o">=</span> <span class="s1">&#39;MHz&#39;</span> <span class="c1"># sets the Hamiltonian units. By default it is considered to be in frequency units.</span>
-<span class="p">)</span>
+# create the QSys object with the desired parameters
+qsys = QSys(
+    H0 = delta/2 * sigmaz(),
+    rho0 = fock_dm(2, 0),
+    observable = sigmaz(),
+    units_H0 = &#39;MHz&#39; # sets the Hamiltonian units. By default it is considered to be in frequency units.
+)
 </pre></div>
 </div>
 </div>
@@ -135,7 +135,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>qsys.plot_energy(figsize=(1,3))
 </pre></div>
 </div>
 </div>
@@ -158,20 +158,20 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s consider a rabi frequency 10 times smaller than the resonance frequency, such that the rotating wave approximation is valid</span>
-<span class="n">w1</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># in frequency units</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># let&#39;s consider a rabi frequency 10 times smaller than the resonance frequency, such that the rotating wave approximation is valid
+w1 = 0.1 # in frequency units
 
-<span class="c1"># create the Rabi object for the qsys and the desired parameters</span>
-<span class="n">rabi_exp</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="c1"># time array of pulse duration which we want to simulate the experiment</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># we pass the qsys object defined in the previous section</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span> <span class="c1"># the Hamiltonian for the interaction with the pulse</span>
-    <span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="c1"># the pulse shape function we want to use (this line is redundant since square_pulse is the default pulse shape function if not specified)</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="p">},</span> <span class="c1"># we need to pass the the frequency of the pulse as the resonant frequency of the system</span>
-<span class="p">)</span>
+# create the Rabi object for the qsys and the desired parameters
+rabi_exp = Rabi(
+    pulse_duration = np.linspace(0, 40, 1000), # time array of pulse duration which we want to simulate the experiment
+    system = qsys, # we pass the qsys object defined in the previous section
+    H1 = w1*sigmax(), # the Hamiltonian for the interaction with the pulse
+    pulse_shape = square_pulse, # the pulse shape function we want to use (this line is redundant since square_pulse is the default pulse shape function if not specified)
+    pulse_params = {&#39;f_pulse&#39;: delta}, # we need to pass the the frequency of the pulse as the resonant frequency of the system
+)
 
-<span class="c1"># to visualize the pulse sequence we can use the plot_pulses method, where we can see the pulse shape and the pulse duration</span>
-<span class="n">rabi_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">()</span>
+# to visualize the pulse sequence we can use the plot_pulses method, where we can see the pulse shape and the pulse duration
+rabi_exp.plot_pulses()
 </pre></div>
 </div>
 </div>
@@ -187,9 +187,9 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp.run()
 
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+Analysis(rabi_exp).plot_results()
 </pre></div>
 </div>
 </div>
@@ -205,18 +205,18 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create the Analysis object for the Rabi experiment</span>
-<span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># create the Analysis object for the Rabi experiment
+rabi_analysis = Analysis(rabi_exp)
 
-<span class="c1"># fit the Rabi oscillations with the run_fit method</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
-    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">(),</span> <span class="c1"># here we use the RabiModel as a target for fitting</span>
-    <span class="p">)</span>
-<span class="c1"># plot the results of the fit</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
+# fit the Rabi oscillations with the run_fit method
+rabi_analysis.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
+# plot the results of the fit
+rabi_analysis.plot_fit()
 
-<span class="c1"># check the fit results</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+# check the fit results
+rabi_analysis.fit_params
 </pre></div>
 </div>
 </div>
@@ -239,37 +239,37 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define a custom pulse shape for X</span>
-<span class="k">def</span> <span class="nf">custom_pulseX</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">delta</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define a custom pulse shape for X
+def custom_pulseX(t):
+    return np.cos(delta*t)
 
-<span class="c1"># define a custom pulse shape for Y</span>
-<span class="k">def</span> <span class="nf">custom_pulseY</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">delta</span><span class="o">*</span><span class="n">t</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+# define a custom pulse shape for Y
+def custom_pulseY(t):
+    return np.cos(delta*t - np.pi/2)
 
-<span class="c1"># create the new Rabi object for the qsys and the desired parameters</span>
-<span class="n">rabi_exp_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="c1"># time array of pulse duration which we want to simulate the experiment</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span> <span class="c1"># we pass the qsys object defined in the previous section</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="c1"># the Hamiltonian for the interaction with the pulse now is a list with the two control Hamiltonians for X and Y</span>
-    <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">]</span> <span class="c1"># for the pulse_shape we pass a list with the two custom pulse shape functions, as now the custom pulses have no other parameters and pulse_params dictionary is empty</span>
-<span class="p">)</span>
+# create the new Rabi object for the qsys and the desired parameters
+rabi_exp_2 = Rabi(
+    pulse_duration = np.linspace(0, 40, 1000), # time array of pulse duration which we want to simulate the experiment
+    system = qsys, # we pass the qsys object defined in the previous section
+    H1 = [w1*sigmax()/2, w1*sigmay()/2], # the Hamiltonian for the interaction with the pulse now is a list with the two control Hamiltonians for X and Y
+    pulse_shape = [custom_pulseX, custom_pulseY] # for the pulse_shape we pass a list with the two custom pulse shape functions, as now the custom pulses have no other parameters and pulse_params dictionary is empty
+)
 
-<span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="c1"># call Analysis class</span>
-<span class="n">rabi_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_2</span><span class="p">)</span>
+# run the experiment
+rabi_exp_2.run()
+# call Analysis class
+rabi_analysis_2 = Analysis(rabi_exp_2)
 
-<span class="c1"># fit the Rabi oscillations with the run_fit method same as before</span>
-<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
-    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">(),</span> <span class="c1"># here we use the RabiModel as a target for fitting</span>
-    <span class="p">)</span>
+# fit the Rabi oscillations with the run_fit method same as before
+rabi_analysis_2.run_fit(
+    fit_model = RabiModel(), # here we use the RabiModel as a target for fitting
+    )
 
-<span class="c1"># plot the results of the fit</span>
-<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
+# plot the results of the fit
+rabi_analysis_2.plot_fit()
 
-<span class="c1"># check the fit results</span>
-<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">fit_params</span>
+# check the fit results
+rabi_analysis_2.fit_params
 </pre></div>
 </div>
 </div>
@@ -292,20 +292,20 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp_3</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
-    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="c1"># In this case we define a pulse duration array which goes up to a pi-pulse</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
-    <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">]</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rabi_exp_3 = Rabi(
+    pulse_duration = np.linspace(0, 1/2/w1, 500), # In this case we define a pulse duration array which goes up to a pi-pulse
+    system = qsys,
+    H1 = [w1*sigmax()/2, w1*sigmay()/2],
+    pulse_shape = [custom_pulseX, custom_pulseY]
+)
 
-<span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_3</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="c1"># call Analysis class</span>
-<span class="n">rabi_analysis_3</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_3</span><span class="p">)</span>
+# run the experiment
+rabi_exp_3.run()
+# call Analysis class
+rabi_analysis_3 = Analysis(rabi_exp_3)
 
-<span class="c1"># plot the Bloch sphere representation of the results</span>
-<span class="n">rabi_analysis_3</span><span class="o">.</span><span class="n">plot_bloch</span><span class="p">()</span>
+# plot the Bloch sphere representation of the results
+rabi_analysis_3.plot_bloch()
 </pre></div>
 </div>
 </div>
@@ -327,25 +327,25 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define an arbitrary gamma</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># define an arbitrary gamma
+gamma = 0.1
 
-<span class="c1"># overwrite the c_ops attribute of the QSys object</span>
-<span class="n">qsys</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">sigmaz</span><span class="p">()</span>
+# overwrite the c_ops attribute of the QSys object
+qsys.c_ops = gamma * sigmaz()
 
-<span class="n">hahn_exp</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
-    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="c1"># define the array of free durations to simulate</span>
-    <span class="n">pi_pulse_duration</span><span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="c1"># define the pi pulse duration</span>
-    <span class="n">projection_pulse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># include the pi/2 pulse after the second free evolution (this line is redundant since it is the default value) !!! The projection pulse is the last pi/2-pulse. It is only present in NV measurements. The first one that is needed to bring the spin to the equator plane is used in NV experiments as well as in EPR/NMR experiments. Therefore, it is better to keep the first pulse always included, while leaving the last pulse optional !!!</span>
-    <span class="c1"># same parameters as before</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
-    <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="p">}</span>
-<span class="p">)</span>
+hahn_exp = Hahn(
+    free_duration = np.linspace(5, 25, 30), # define the array of free durations to simulate
+    pi_pulse_duration= 1/2/w1, # define the pi pulse duration
+    projection_pulse=True, # include the pi/2 pulse after the second free evolution (this line is redundant since it is the default value) !!! The projection pulse is the last pi/2-pulse. It is only present in NV measurements. The first one that is needed to bring the spin to the equator plane is used in NV experiments as well as in EPR/NMR experiments. Therefore, it is better to keep the first pulse always included, while leaving the last pulse optional !!!
+    # same parameters as before
+    system = qsys,
+    H1 = w1*sigmax(),
+    pulse_shape=square_pulse,
+    pulse_params = {&#39;f_pulse&#39;: delta}
+)
 
-<span class="c1"># plot the pulse sequence</span>
-<span class="n">hahn_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+# plot the pulse sequence
+hahn_exp.plot_pulses(tau=10)
 </pre></div>
 </div>
 </div>
@@ -361,9 +361,9 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># run the experiment and plot the result</span>
-<span class="n">hahn_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">hahn_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># run the experiment and plot the result
+hahn_exp.run()
+Analysis(hahn_exp).plot_results()
 </pre></div>
 </div>
 </div>
@@ -381,37 +381,37 @@ given by</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the custom sequence needs to be defined as a python function of a controlled variable, in this case of the free evolution time tau, and a dictionary with the sequence arguments</span>
-<span class="k">def</span> <span class="nf">custom_Hahn</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># the custom sequence needs to be defined as a python function of a controlled variable, in this case of the free evolution time tau, and a dictionary with the sequence arguments
+def custom_Hahn(tau, **kwargs):
 
-    <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span> <span class="c1"># calculate pulse separation time !!! pulse separation time is tau - length of a pi-pulse !!!</span>
+    ps = tau - kwargs[&#39;t_pi&#39;] # calculate pulse separation time !!! pulse separation time is tau - length of a pi-pulse !!!
 
-    <span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;qsys&#39;</span><span class="p">])</span> <span class="c1"># we start initializing the sequence</span>
-    <span class="c1"># we add the first pi/half pulse with the add_pulse method</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
-    <span class="c1"># then we add a free evolution with the add_free_evolution method</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">ps</span><span class="p">)</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">],</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">ps</span><span class="p">)</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
+    seq = PulsedSim(kwargs[&#39;qsys&#39;]) # we start initializing the sequence
+    # we add the first pi/half pulse with the add_pulse method
+    seq.add_pulse(duration=kwargs[&#39;t_pi&#39;]/2, H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
+    # then we add a free evolution with the add_free_evolution method
+    seq.add_free_evolution(duration=ps)
+    seq.add_pulse(duration=kwargs[&#39;t_pi&#39;], H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
+    seq.add_free_evolution(duration=ps)
+    seq.add_pulse(duration=3*kwargs[&#39;t_pi&#39;]/2, H1=kwargs[&#39;H1&#39;], pulse_shape=kwargs[&#39;pulse_shape&#39;], pulse_params = {&#39;f_pulse&#39;: kwargs[&#39;delta&#39;]})
 
-    <span class="c1"># return the final state</span>
-    <span class="k">return</span> <span class="n">seq</span><span class="o">.</span><span class="n">rho</span>
+    # return the final state
+    return seq.rho
 
-<span class="c1"># The sequence arguments are passed through a dictionary</span>
-<span class="n">sequence_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;qsys&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="s1">&#39;H1&#39;</span><span class="p">:</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
-    <span class="s1">&#39;pulse_shape&#39;</span><span class="p">:</span> <span class="n">square_pulse</span><span class="p">,</span>
-    <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="p">,</span>
-    <span class="s1">&#39;t_pi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="s1">&#39;w1&#39;</span><span class="p">:</span> <span class="n">w1</span>
-<span class="p">}</span>
+# The sequence arguments are passed through a dictionary
+sequence_kwargs = {
+    &#39;qsys&#39;: qsys,
+    &#39;H1&#39;: w1*sigmax(),
+    &#39;pulse_shape&#39;: square_pulse,
+    &#39;delta&#39;: delta,
+    &#39;t_pi&#39;: 1/2/w1,
+    &#39;w1&#39;: w1
+}
 
-<span class="n">custom_seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">qsys</span><span class="p">)</span>
-<span class="c1"># in this case the run method should be specified with the variable and sequence</span>
-<span class="n">custom_seq</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">sequence</span><span class="o">=</span><span class="n">custom_Hahn</span><span class="p">,</span> <span class="n">sequence_kwargs</span><span class="o">=</span><span class="n">sequence_kwargs</span><span class="p">)</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">custom_seq</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+custom_seq = PulsedSim(qsys)
+# in this case the run method should be specified with the variable and sequence
+custom_seq.run(variable=np.linspace(5, 25, 30), sequence=custom_Hahn, sequence_kwargs=sequence_kwargs)
+Analysis(custom_seq).plot_results()
 </pre></div>
 </div>
 </div>
