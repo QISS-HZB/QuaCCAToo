@@ -1,7 +1,7 @@
-Ex02 - NV: Ramsey and PODMR
-===========================
+02 - NV: Ramsey and PODMR
+=========================
 
 .. toctree::
    :maxdepth: 1
 
-   example_notebooks/Ex02_NV_Ramsey_PODMR
+   tutorials/02_NV_Ramsey_PODMR

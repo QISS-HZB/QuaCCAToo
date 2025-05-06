@@ -1,7 +1,7 @@
-Ex03 - Ambiguous Resonances
-===========================
+03 - Ambiguous Resonances
+=========================
 
 .. toctree::
    :maxdepth: 1
 
-   example_notebooks/Ex03_NV_ambiguous_resonances
+   tutorials/03_NV_ambiguous_resonances
