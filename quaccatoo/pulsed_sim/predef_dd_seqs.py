@@ -70,75 +70,14 @@ class CPMG(PulsedSim):
         time_steps : int
             number of time steps in the pulses for the simulation
         """
-        # call the parent class constructor
         super().__init__(system, H2)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
 
-        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
-        if not isinstance(free_duration, (np.ndarray, list)) or not (np.all(np.isreal(free_duration)) and np.all(np.greater_equal(free_duration, 0))):
-            raise ValueError("free_duration must be a numpy array with real positive elements")
-        else:
-            self.variable = free_duration
-
-        if not isinstance(M, int) or M <= 0:
-            raise ValueError("M must be a positive integer")
-        else:
-            self.M = M
-
-        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
-
-        self.pi_pulse_duration = pi_pulse_duration
-
-        # check whether time_steps is a positive integer and if it is, assign it to the object
-        if not isinstance(time_steps, int) or time_steps <= 0:
-            raise ValueError("time_steps must be a positive integer")
-        else:
-            self.time_steps = time_steps
-
-        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
-        if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
-            self.pulse_shape = pulse_shape
-        else:
-            raise ValueError("pulse_shape must be a python function or a list of python functions")
-
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0, [H1, pulse_shape]]
-            else:
-                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            else:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
-
-        # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict) and pulse_params is not None:
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
-        else:
-            # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-            self.pulse_params = np.empty(2, dtype=dict)
-            # X pulse parameters are the first element in the list and Y pulses are the second element
-            self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-            self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-
-        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if options is None:
-            self.options = {}
-        elif isinstance(options, dict):
-            self.options = options
-        else:
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
+        self.pulse_params = np.empty(2, dtype=dict)
+        # X pulse parameters are the first element in the list and Y pulses are the second element
+        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
+        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
 
         # If projection_pulse is True, the sequence is set to the CPMG_sequence_proj method with the initial and final projection pulses into the Sz basis, otherwise it is set to the CPMG_sequence method without the projection pulses
         if projection_pulse:
@@ -153,9 +92,8 @@ class CPMG(PulsedSim):
                 self.sequence = self.CPMG_sequence
         else:
             raise ValueError("projection_pulse must be a boolean")
-
+        
         self.projection_pulse = projection_pulse
-        self.variable_name = f"Tau (1/{self.system.units_H0})"
 
     def CPMG_sequence(self, tau):
         """
@@ -484,9 +422,7 @@ class CPMG(PulsedSim):
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
-
 ####################################################################################################
-
 
 class XY(PulsedSim):
     """
@@ -547,74 +483,14 @@ class XY(PulsedSim):
         options : dict, optional
             Dictionary of solver options
         """
-        # call the parent class constructor
         super().__init__(system, H2)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
 
-        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
-        if not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
-            raise ValueError("free_duration must be a numpy array with real positive elements")
-        else:
-            self.variable = free_duration
-
-        if not isinstance(M, int) or M <= 0:
-            raise ValueError("M must be a positive integer")
-        else:
-            self.M = M
-
-        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
-        self.pi_pulse_duration = pi_pulse_duration
-
-        # check whether time_steps is a positive integer and if it is, assign it to the object
-        if not isinstance(time_steps, int) and time_steps <= 0:
-            raise ValueError("time_steps must be a positive integer")
-        else:
-            self.time_steps = time_steps
-
-        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
-        if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
-            self.pulse_shape = pulse_shape
-        else:
-            raise ValueError("pulse_shape must be a python function or a list of python functions")
-
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0, [H1, pulse_shape]]
-            else:
-                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            else:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
-
-        # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict) and pulse_params is not None:
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
-        else:
-            # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-            self.pulse_params = np.empty(2, dtype=dict)
-            # X pulse parameters are the first element in the list and Y pulses are the second element
-            self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-            self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-
-        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if options is None:
-            self.options = {}
-        elif isinstance(options, dict):
-            self.options = options
-        else:
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
+        self.pulse_params = np.empty(2, dtype=dict)
+        # X pulse parameters are the first element in the list and Y pulses are the second element
+        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
+        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
 
         # If projection_pulse is True, the sequence is set to the XY_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY_sequence method without the projection pulse
         if projection_pulse:
@@ -631,7 +507,6 @@ class XY(PulsedSim):
             raise ValueError("projection_pulse must be a boolean")
 
         self.projection_pulse = projection_pulse
-        self.variable_name = f"Tau (1/{self.system.units_H0})"
 
     def XY_sequence(self, tau):
         """
@@ -1026,81 +901,20 @@ class XY8(PulsedSim):
         options : dict, optional
             Dictionary of solver options from Qutip
         """
-        # call the parent class constructor
         super().__init__(system, H2)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
 
-        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
-        if not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
-            raise ValueError("free_duration must be a numpy array with real positive elements")
-        else:
-            self.variable = free_duration
-
-        if not isinstance(M, int) or M <= 0:
-            raise ValueError("M must be a positive integer")
-        else:
-            self.M = M
-
-        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
-        self.pi_pulse_duration = pi_pulse_duration
-
-        # check whether time_steps is a positive integer and if it is, assign it to the object
-        if not isinstance(time_steps, int) and time_steps <= 0:
-            raise ValueError("time_steps must be a positive integer")
-        else:
-            self.time_steps = time_steps
-
-        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
-        if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
-            self.pulse_shape = pulse_shape
-        else:
-            raise ValueError("pulse_shape must be a python function or a list of python functions")
-
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0, [H1, pulse_shape]]
-            else:
-                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            else:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
-
-        # check whether pulse_params is a dictionary and if it is, assign it to the object
-        if not isinstance(pulse_params, dict) and pulse_params is not None:
-            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function or None")
-        else:
-            self.pulse_params = pulse_params
-            # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-            self.pulse_params = np.empty(8, dtype=dict)
-            # define XY8 pulse parameters for the sequence: X-Y-X-Y-Y-X-Y-X
-            self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-            self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-            self.pulse_params[2] = self.pulse_params[0]
-            self.pulse_params[3] = self.pulse_params[1]
-            self.pulse_params[4] = self.pulse_params[1]
-            self.pulse_params[5] = self.pulse_params[0]
-            self.pulse_params[6] = self.pulse_params[1]
-            self.pulse_params[7] = self.pulse_params[0]
-
-        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
-        if options is None:
-            self.options = {}
-        elif isinstance(options, dict):
-            self.options = options
-        else:
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
+        self.pulse_params = np.empty(8, dtype=dict)
+        # define XY8 pulse parameters for the sequence: X-Y-X-Y-Y-X-Y-X
+        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
+        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
+        self.pulse_params[2] = self.pulse_params[0]
+        self.pulse_params[3] = self.pulse_params[1]
+        self.pulse_params[4] = self.pulse_params[1]
+        self.pulse_params[5] = self.pulse_params[0]
+        self.pulse_params[6] = self.pulse_params[1]
+        self.pulse_params[7] = self.pulse_params[0]
 
         # If projection_pulse is True, the sequence is set to the XY8_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY8_sequence method without the projection pulse
         if projection_pulse:
@@ -1117,7 +931,6 @@ class XY8(PulsedSim):
             raise ValueError("projection_pulse must be a boolean")
 
         self.projection_pulse = projection_pulse
-        self.variable_name = f"Tau (1/{self.system.units_H0})"
 
     def XY8_sequence(self, tau):
         """

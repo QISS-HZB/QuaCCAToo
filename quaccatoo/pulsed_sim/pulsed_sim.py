@@ -404,7 +404,7 @@ class PulsedSim:
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
 
-    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration):
+    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M):
         """
         
         """
@@ -434,13 +434,14 @@ class PulsedSim:
         else:
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
         
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
             else:
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                self.H0_H2 = [self.system.H0, self.H2]
 
         elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
@@ -448,6 +449,8 @@ class PulsedSim:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             else:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                self.H0_H2 = [self.system.H0, self.H2]
+
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
         
@@ -474,3 +477,10 @@ class PulsedSim:
             self.pi_pulse_duration = pi_pulse_duration
         else:
             self.pi_pulse_duration = pi_pulse_duration
+
+        if M is None:
+            pass
+        elif not isinstance(M, int) or M <= 0:
+            raise ValueError("M must be a positive integer")
+        else:
+            self.M = M

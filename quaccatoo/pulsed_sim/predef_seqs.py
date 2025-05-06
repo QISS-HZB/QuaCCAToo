@@ -58,7 +58,7 @@ class Rabi(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, len(pulse_duration), None, None)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None)
 
         # check whether pulse_duration is a numpy array and if it is, assign it to the object
         if not isinstance(pulse_duration, (np.ndarray, list)) or not np.all(np.isreal(pulse_duration)) or not np.all(np.greater_equal(pulse_duration, 0)):
@@ -142,7 +142,7 @@ class PMR(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, None, None)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, None, None, None)
 
         # check whether frequencies is a numpy array or list and if it is, assign it to the object
         if not isinstance(frequencies, (np.ndarray, list)) or not np.all(np.isreal(frequencies)) or not np.all(np.greater_equal(frequencies, 0)):
@@ -290,7 +290,7 @@ class Ramsey(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, None)
 
         # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse
         # otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
@@ -644,7 +644,7 @@ class Hahn(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, None)
 
         # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis
         # otherwise it is set to the hahn_sequence method without the projection pulses
