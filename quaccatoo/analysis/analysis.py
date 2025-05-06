@@ -24,8 +24,8 @@ class Analysis:
         tuple with the frequency values and the FFT values
     FFT_peaks : array
         array with the peaks of the FFT values
-    fit_function : list
-        list with the fit function for each result
+    fit_model : lmfit.Model or list(lmfit.Model)
+        list with the fitting model for each result
     fit_params : list
         list with the fitted parameters for each result
     fit_cov : list
@@ -361,7 +361,7 @@ class Analysis:
 
             self.fit_model[results_index] = fit_model
             if guess:
-                self.fit_params = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
+                self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
             else:
                 try:
                     params = fit_model.guess(self.experiment.results[results_index], x=self.experiment.variable)
@@ -369,7 +369,7 @@ class Analysis:
                 except NotImplementedError:
                     params = fit_model.make_params()
                     self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
-            return self.fit_params.best_values
+            return self.fit_params[results_index].best_values
 
     def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
         """
@@ -393,7 +393,7 @@ class Analysis:
 
         elif isinstance(self.experiment.results, list):
             for itr in range(len(self.experiment.results)):
-                if self.fit_function[itr] is not None:
+                if self.fit_model[itr] is not None:
                     plt.plot(self.experiment.variable, self.fit_params[itr].best_fit, label=f"Fit {itr}")
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
