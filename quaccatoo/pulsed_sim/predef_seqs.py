@@ -175,18 +175,9 @@ class PMR(PulsedSim):
         """
         self.pulse_params["f_pulse"] = f
 
-        # run the simulation and return the final density matrix
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pulse_duration, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
+        self._pulse(self.Ht, self.pulse_duration, self.options, self.pulse_params)
 
-        return rho
+        return self.rho
 
     def plot_pulses(self, figsize=(6, 4), xlabel="Time", ylabel="Pulse Intensity", title="Pulse Profiles", f_pulse=None):
         """
@@ -212,9 +203,7 @@ class PMR(PulsedSim):
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
-
 ####################################################################################################
-
 
 class Ramsey(PulsedSim):
     """
@@ -323,24 +312,11 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate the pulse separation time
-        ps = tau - self.pi_pulse_duration / 2
 
-        # perform initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution(tau - self.pi_pulse_duration / 2)
 
-        # perform the free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        return rho
+        return self.rho
 
     def ramsey_sequence_proj(self, tau):
         """
@@ -358,36 +334,12 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate the pulse separation time
-        ps = tau - self.pi_pulse_duration
 
-        # perform initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution(tau - self.pi_pulse_duration)
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
-        # perform the free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        # perform final pi/2 pulse
-        t0 = self.pi_pulse_duration / 2 + ps
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        return rho
+        return self.rho
 
     def ramsey_sequence_H2(self, tau):
         """
@@ -405,24 +357,10 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        ps = tau - self.pi_pulse_duration / 2
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution_H2(tau - self.pi_pulse_duration / 2, self.options)
 
-        # perform initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
-
-        # perform the free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
-
-        return rho
+        return self.rho
 
     def ramsey_sequence_proj_H2(self, tau):
         """
@@ -440,37 +378,12 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate the pulse separation time
-        ps = tau - self.pi_pulse_duration
 
-        # perform initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution_H2(tau - self.pi_pulse_duration, self.options)
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
-        # perform the free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
-        t0 += ps
-
-        # perform final pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        return rho
+        return self.rho
 
     def _get_pulse_profiles(self, tau=None):
         """
@@ -678,41 +591,14 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate pulse separation time
-        ps = tau - self.pi_pulse_duration
 
-        # perform the initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution(tau - self.pi_pulse_duration)
 
-        # perform the first free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+        self._free_evolution(tau - self.pi_pulse_duration/2)
 
-        # changing pulse separation time for the second free evolution
-        ps += self.pi_pulse_duration / 2
-
-        # perform the pi pulse
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(ps, ps + self.pi_pulse_duration, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        # perform the second free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        return rho
+        return self.rho
 
     def hahn_sequence_proj(self, tau):
         """
@@ -731,52 +617,16 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate pulse separation time
+        # pulse separation time
         ps = tau - self.pi_pulse_duration
 
-        # perform the initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution(ps)
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+        self._free_evolution(ps)
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
-        # perform the first free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        # perform the pi pulse
-        t0 = self.pi_pulse_duration / 2 + ps
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        # perform the second free evolution
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        # perform the final pi/2 pulse
-        t0 += tau
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        # if no observable is given, return the final density matrix
-        return rho
+        return self.rho
 
     def hahn_sequence_H2(self, tau):
         """
@@ -795,50 +645,14 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate pulse separation time
-        ps = tau - self.pi_pulse_duration
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution_H2(tau - self.pi_pulse_duration, self.options)
 
-        # perform the initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+        self._free_evolution_H2(tau - self.pi_pulse_duration/2, self.options)
 
-        # perform the first free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
-        t0 += ps
-
-        # perform the pi pulse
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 += self.pi_pulse_duration
-
-        # perform the second free evolution
-        rho = mesolve(
-            self.H0_H2,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + ps + self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        return rho
-
+        return self.rho
+    
     def hahn_sequence_proj_H2(self, tau):
         """
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
@@ -856,53 +670,16 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final density matrix.
         """
-        # calculate pulse separation time
+        # pulse separation time
         ps = tau - self.pi_pulse_duration
 
-        # perform the initial pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            self.system.rho0,
-            2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+        self._free_evolution_H2(ps, self.options)
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+        self._free_evolution_H2(ps, self.options)
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
-        # perform the first free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
-        t0 += ps
-
-        # perform the pi pulse
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-        t0 += self.pi_pulse_duration
-
-        # perform the second free evolution
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states[-1]
-        t0 += ps
-
-        # perform the final pi/2 pulse
-        rho = mesolve(
-            self.Ht,
-            rho,
-            2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-            self.system.c_ops,
-            e_ops=[],
-            options=self.options,
-            args=self.pulse_params,
-        ).states[-1]
-
-        return rho
+        return self.rho
 
     def _get_pulse_profiles(self, tau=None):
         """
