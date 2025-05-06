@@ -1,5 +1,4 @@
 # TODO: units in plot_pulses
-# TODO: implement save method
 
 """
 This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations, part of the QuaCAAToo package.
@@ -105,7 +104,7 @@ class PulsedSim:
         self.sequence = None
         self.time_steps = None
 
-    def add_pulse(self, duration, H1, phi_t=0, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
+    def add_pulse(self, duration, H1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
         control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
@@ -116,8 +115,6 @@ class PulsedSim:
             duration of the pulse
         H1 : Qobj or list(Qobj)
             control Hamiltonian of the system
-        phi_t : float
-            time phase of the pulse representing the rotation axis in the rotating frame
         pulse_shape : callable or list(callable)
             pulse shape function or list of pulse shape functions representing the time modulation of t H1
         pulse_params : dict
@@ -153,10 +150,6 @@ class PulsedSim:
         if 'phi_t' not in pulse_params:
             pulse_params['phi_t'] = 0
 
-        # check if phi_t is a real number
-        if not isinstance(phi_t, (int, float)):
-            raise ValueError("phi_t must be a real number")
-
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0
         if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             # append it to the pulse_profiles list
@@ -177,11 +170,13 @@ class PulsedSim:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list")
 
         # add the pulse operation to the sequence of operations by calling the pulse method
-        self._pulse(Ht, duration, options, pulse_params, phi_t)
+        self._pulse(Ht, duration, options, pulse_params)
 
-    def _pulse(self, Ht, duration, options, core_pulse_params, phi_t):
+    def _pulse(self, Ht, duration, options, core_pulse_params):
         """
-        Updates the total time of the experiment, sets the phase for the pulse and calls the pulse_operation function to perform the pulse operation.
+        Calls the mesolve function from QuTip to perform the pulse operation with the given Hamiltonian, time array and options,
+        by updating the rho attribute of the class with the result of the operation.
+        Adds the pulse duration to the total time.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
@@ -194,11 +189,7 @@ class PulsedSim:
             options for the Qutip solver
         pulse_params : dict
             dictionary of parameters for the pulse_shape functions
-        phi_t : float
-            time phase of the pulse representing the rotation axis in the rotating frame
         """
-        core_pulse_params['phi_t'] += phi_t
-
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
         self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
 
@@ -230,13 +221,13 @@ class PulsedSim:
             elif not isinstance(options, dict):
                 raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-            self._free_evolution(duration, options)
+            self._free_evolution_H2(duration, options)
         else:
             self._free_evolution(duration, options)
 
     def _free_evolution(self, duration):
         """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix to perform the free evolution operation with the exponential operator.
+        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
 
         Parameters
@@ -251,7 +242,7 @@ class PulsedSim:
 
         self.total_time += duration
 
-    def _free_evolution(self, duration, options):
+    def _free_evolution_H2(self, duration, options):
         """
         Same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.
 
