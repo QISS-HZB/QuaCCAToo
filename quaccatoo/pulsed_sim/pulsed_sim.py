@@ -56,6 +56,8 @@ class PulsedSim:
         same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
     run
         runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
+    _get_results
+        gets the results of the experiment from the calculated rho, based on the observable of the system
     measure_qsys
         measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
     plot_pulses
@@ -288,6 +290,7 @@ class PulsedSim:
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """
         Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.
+        The rho attribute is updated.
 
         Parameters
         ----------
@@ -336,6 +339,7 @@ class PulsedSim:
     def _get_results(self):
         """
         Gets the results of the experiment from the calculated rho, based on the observable of the system.
+        The results are stored in the results attribute of the class.
         """
         if self.rho[0].isket:
             if isinstance(self.system.observable, Qobj):
