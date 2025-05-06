@@ -9,8 +9,6 @@ Classes
 - Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 """
 
-import warnings
-
 import numpy as np
 from qutip import Qobj, mesolve, propagator
 

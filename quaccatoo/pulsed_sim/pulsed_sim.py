@@ -62,8 +62,8 @@ class PulsedSim:
         measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
     plot_pulses
         plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
-    save
-        saves the experiment
+    _check_attr_predef_seqs
+        checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
     """
     def __init__(self, system, H2=None):
         """
@@ -406,7 +406,26 @@ class PulsedSim:
 
     def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M):
         """
-        
+        Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.
+
+        Parameters
+        ----------
+        H1 : Qobj or list(Qobj)
+            control Hamiltonian of the system
+        pulse_shape : callable or list(callable)
+            pulse shape function or list of pulse shape functions representing the time modulation of H1
+        pulse_params : dict
+            dictionary of parameters for the pulse_shape functions
+        options : dict
+            options for the Qutip solver
+        time_steps : int
+            number of time steps for the pulses, if applicable
+        free_duration : np.array
+            free evolution times of the sequence, if applicable
+        pi_pulse_duration : float
+            duration of the pi pulse, if applicable
+        M : int
+            order of the sequence, if applicable 
         """
         # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
@@ -478,6 +497,7 @@ class PulsedSim:
         else:
             self.pi_pulse_duration = pi_pulse_duration
 
+        # check whether M is a positive integer and if it is, assign it to the object
         if M is None:
             pass
         elif not isinstance(M, int) or M <= 0:

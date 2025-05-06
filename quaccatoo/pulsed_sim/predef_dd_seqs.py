@@ -7,7 +7,6 @@ from qutip import Qobj, mesolve
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
-import warnings
 
 ####################################################################################################
 
