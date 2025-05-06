@@ -124,12 +124,7 @@ class Rabi(PulsedSim):
         else:   
         # calculates the density matrices in sequence using mesolve
             self.rho = mesolve(self.Ht, self.system.rho0, 2 * np.pi * self.variable, self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params).states
-
-            # if an observable is given, calculate the expectation values
-            if isinstance(self.system.observable, Qobj):
-                self.results = np.array([np.real((rho * self.system.observable).tr()) for rho in self.rho])  # np.real is used to ensure no imaginary components will be attributed to results
-            elif isinstance(self.system.observable, list):
-                self.results = [np.array([np.real((rho * observable).tr()) for rho in self.rho]) for observable in self.system.observable]
+            self._get_results()
 
 
 ####################################################################################################
@@ -234,15 +229,15 @@ class PMR(PulsedSim):
         else:
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.pulse_profiles = [H1, np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape, self.pulse_params]
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
             else:
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.pulse_profiles = [[H1[i], np.linspace(0, self.pulse_duration, self.time_steps), pulse_shape[i], self.pulse_params] for i in range(len(H1))]
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
@@ -430,8 +425,8 @@ class Ramsey(PulsedSim):
         else:
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
@@ -439,7 +434,7 @@ class Ramsey(PulsedSim):
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
@@ -449,7 +444,8 @@ class Ramsey(PulsedSim):
         else:
             raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
 
-        # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse, otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
+        # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse
+        # otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulse:
             if H2 is not None or self.system.c_ops is not None:
                 self.sequence = self.ramsey_sequence_proj_H2
@@ -826,8 +822,8 @@ class Hahn(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
@@ -835,7 +831,7 @@ class Hahn(PulsedSim):
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]

@@ -102,8 +102,8 @@ class CPMG(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
@@ -111,7 +111,7 @@ class CPMG(PulsedSim):
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
@@ -578,8 +578,8 @@ class XY(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
@@ -587,7 +587,7 @@ class XY(PulsedSim):
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
@@ -1057,8 +1057,8 @@ class XY8(PulsedSim):
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.rho0.shape:
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0, [H1, pulse_shape]]
@@ -1066,7 +1066,7 @@ class XY8(PulsedSim):
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.rho0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
