@@ -368,7 +368,6 @@ class PulsedSim:
         title : str
             title of the plot
         """
-        # check if figsize is a tuple of two positive floats
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
@@ -377,7 +376,6 @@ class PulsedSim:
         elif not isinstance(xlabel, str):
             raise ValueError("xlabel must be a string")
 
-        # initialize the figure and axis for the plot
         fig, ax = plt.subplots(1, 1, figsize=figsize)
 
         # iterate over all operations in the sequence
@@ -387,18 +385,15 @@ class PulsedSim:
             if self.pulse_profiles[itr_pulses][0] is None:
                 ax.plot(self.pulse_profiles[itr_pulses][1], [0, 0], label='Free Evolution', lw=2, alpha=0.7, color='C0')
 
-            # if the pulse has only one operator, plot the pulse profile
+            # if the pulse has operators, plot the pulse profiles
             elif isinstance(self.pulse_profiles[itr_pulses][0], Qobj):
                 ax.plot(self.pulse_profiles[itr_pulses][1], self.pulse_profiles[itr_pulses][2](2*np.pi*self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]), label='H1', lw=2, alpha=0.7, color='C1')
 
-            # if the pulse has multiple operators, plot each pulse profile
             elif isinstance(self.pulse_profiles[itr_pulses][0], list):
                 for itr_op in range(len(self.pulse_profiles[itr_pulses])):
                     ax.plot(self.pulse_profiles[itr_pulses][itr_op][1], self.pulse_profiles[itr_pulses][itr_op][2](2*np.pi*self.pulse_profiles[itr_pulses][itr_op][1], **self.pulse_profiles[itr_pulses][itr_op][3]), label=f'H1_{itr_op}', lw=2, alpha=0.7, color=f'C{2+itr_op}')
 
-        # set the x-axis limits to the total time of the experiment
         ax.set_xlim(0, self.total_time)
-        # set the axes labels according to the parameters
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_title(title)
@@ -408,3 +403,74 @@ class PulsedSim:
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
+
+    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration):
+        """
+        
+        """
+        # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
+        if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
+            self.pulse_shape = pulse_shape
+        else:
+            raise ValueError("pulse_shape must be a python function or a list of python functions")
+
+        # check whether pulse_params is a dictionary and if it is, assign it to the object
+        if pulse_params is None:
+            self.pulse_params = {}
+        elif isinstance(pulse_params, dict):
+            self.pulse_params = pulse_params
+        else:
+            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
+        
+        # if phi_t is not in the pulse_params dictionary, assign it as 0
+        if "phi_t" not in self.pulse_params:
+            self.pulse_params["phi_t"] = 0
+
+        # check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object
+        if options is None:
+            self.options = {}
+        elif isinstance(options, dict):
+            self.options = options
+        else:
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        
+        # check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object
+        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
+            self.H1 = H1
+            if self.H2 is None:
+                self.Ht = [self.system.H0, [H1, pulse_shape]]
+            else:
+                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+
+        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
+            self.H1 = H1
+            if self.H2 is None:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+            else:
+                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+        else:
+            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
+        
+        # check whether time_steps is a positive integer and if it is, assign it to the object
+        if not isinstance(time_steps, int) or time_steps <= 0:
+            raise ValueError("time_steps must be a positive integer")
+        else:
+            self.time_steps = time_steps
+
+        # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
+        if free_duration is None:
+            pass
+        elif not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
+            raise ValueError("free_duration must be a numpy array with real positive elements")
+        else:
+            self.variable = free_duration
+            self.variable_name = f"Tau (1/{self.system.units_H0})"
+        
+        # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
+        if pi_pulse_duration is None:
+            pass
+        elif not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
+            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
+            self.pi_pulse_duration = pi_pulse_duration
+        else:
+            self.pi_pulse_duration = pi_pulse_duration
