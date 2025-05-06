@@ -48,7 +48,7 @@ class Analysis:
     plot_FFT :
         plot the FFT values calculated by the run_FFT method
     run_fit :
-        run the curve_fit method from scipy.optimize to fit the results of the experiment with a given fit function
+        run the fit method from lmfit to fit the results of the experiment with a given model
     plot_fit :
         plot the results of the experiment with the fitted function
     plot_results :
