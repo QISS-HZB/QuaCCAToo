@@ -83,8 +83,6 @@
 <span class="sd">- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">mesolve</span><span class="p">,</span> <span class="n">propagator</span>
 
@@ -109,7 +107,8 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    PulsedSimulation</span>
+<span class="sd">    run :</span>
+<span class="sd">        runs the simulation and stores the results in the results attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -121,7 +120,7 @@
 <span class="sd">        pulse_duration : numpy.ndarray</span>
 <span class="sd">            Time array for the simulation representing the pulse duration to be used as the variable for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
 <span class="sd">        H1 : Qobj or list(Qobj)</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        H2 : Qobj or list(Qobj)</span>
@@ -133,8 +132,8 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># call the parent class constructor</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_duration</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># check whether pulse_duration is a numpy array and if it is, assign it to the object</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">pulse_duration</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
@@ -144,55 +143,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">pulse_duration</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Pulse Duration (1/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span>
 
-        <span class="c1"># check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">pulse_shape</span> <span class="ow">in</span> <span class="n">pulse_shape</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">pulse_shape</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_shape must be a python function or a list of python functions&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether pulse_params is a dictionary and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">pulse_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="n">pulse_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># if phi_t is not in the pulse_params dictionary, assign it as 0</span>
-        <span class="k">if</span> <span class="s2">&quot;phi_t&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">H1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">H1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
 
 <div class="viewcode-block" id="Rabi.run">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Rabi.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.</span>
-<span class="sd">        If the system has no initial density matrix, the propagator is calcualated.</span>
+<span class="sd">        If the system has no initial state, the propagator is calcualated.</span>
 <span class="sd">        If an observable is given, the expectation values are stored in the results attribute.</span>
 <span class="sd">        For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths,</span>
 <span class="sd">        thus the run method from the parent class is overwritten.</span>
@@ -202,18 +163,11 @@
         <span class="k">else</span><span class="p">:</span>   
         <span class="c1"># calculates the density matrices in sequence using mesolve</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span>
-
-            <span class="c1"># if an observable is given, calculate the expectation values</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">((</span><span class="n">rho</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">observable</span><span class="p">)</span><span class="o">.</span><span class="n">tr</span><span class="p">())</span> <span class="k">for</span> <span class="n">rho</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">])</span>  <span class="c1"># np.real is used to ensure no imaginary components will be attributed to results</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">((</span><span class="n">rho</span> <span class="o">*</span> <span class="n">observable</span><span class="p">)</span><span class="o">.</span><span class="n">tr</span><span class="p">())</span> <span class="k">for</span> <span class="n">rho</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">])</span> <span class="k">for</span> <span class="n">observable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">observable</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_results</span><span class="p">()</span></div>
 </div>
 
 
-
 <span class="c1">####################################################################################################</span>
-
 
 <div class="viewcode-block" id="PMR">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.PMR">[docs]</a>
@@ -237,10 +191,11 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    PMR_sequence(f)</span>
+<span class="sd">    PMR_sequence :</span>
 <span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 <span class="sd">        To be called by the parallel_map in run method.</span>
-<span class="sd">    (Inherited from PulsedSimulation)</span>
+<span class="sd">    plot_pulses :</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">pulse_duration</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -254,7 +209,7 @@
 <span class="sd">        pulse_duration : float or int</span>
 <span class="sd">            Duration of the pulse.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
 <span class="sd">        H1 : Qobj or list(Qobj)</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        H2 : Qobj or list(Qobj)</span>
@@ -268,8 +223,8 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># call the parent class constructor</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># check whether frequencies is a numpy array or list and if it is, assign it to the object</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">frequencies</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
@@ -283,55 +238,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_duration must be a positive real number&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">pulse_duration</span>
-
-        <span class="c1"># check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">pulse_shape</span> <span class="ow">in</span> <span class="n">pulse_shape</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">pulse_shape</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_shape must be a python function or a list of python functions&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether time_steps is a positive integer and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">time_steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;time_steps must be a positive integer&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span> <span class="o">=</span> <span class="n">time_steps</span>
-
-        <span class="c1"># check whether pulse_params is a dictionary and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">pulse_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="n">pulse_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># if phi_t is not in the pulse_params dictionary, assign it as 0</span>
-        <span class="k">if</span> <span class="s2">&quot;phi_t&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check if H1 is a Qobj or a list of Qobj with the same dimensions as H0 and rho0</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">H1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">H1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list&quot;</span><span class="p">)</span>
 
         <span class="c1"># set the sequence attribute to the PMR_sequence method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMR_sequence</span>
@@ -351,22 +257,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
+<span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
 
-        <span class="c1"># run the simulation and return the final density matrix</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">rho</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
 <div class="viewcode-block" id="PMR.plot_pulses">
@@ -397,9 +294,7 @@
 </div>
 
 
-
 <span class="c1">####################################################################################################</span>
-
 
 <div class="viewcode-block" id="Ramsey">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Ramsey">[docs]</a>
@@ -418,20 +313,17 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    ramsey_sequence(tau)</span>
+<span class="sd">    ramsey_sequence :</span>
 <span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
 <span class="sd">        The sequence consists of an initial pi/2 pulse and a single free evolution.</span>
 <span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
-<span class="sd">    ramsey_sequence_proj(tau)</span>
+<span class="sd">    ramsey_sequence_proj :</span>
 <span class="sd">        Defines the Ramsey sequence with final pi/2 pulse to project into the Sz basis.</span>
-<span class="sd">    ramsey_sequence_H2(tau)</span>
-<span class="sd">        Defines the Ramsey sequence considering time-dependent H2 or collapse operators.</span>
-<span class="sd">    ramsey_sequence_proj_H2(tau)</span>
-<span class="sd">        Defines the Ramsey sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.</span>
-<span class="sd">    _get_pulse_profiles(tau)</span>
+<span class="sd">    _get_pulse_profiles :</span>
 <span class="sd">        Generates the pulse profiles for the Ramsey sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
-<span class="sd">    (Inherited from PulsedSimulation)</span>
+<span class="sd">    plot_pulses :</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -455,7 +347,7 @@
 <span class="sd">        free_duration : numpy.ndarray</span>
 <span class="sd">            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
 <span class="sd">        H1 : Qobj or list(Qobj)</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        pi_pulse_duration : float or int</span>
@@ -474,83 +366,15 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># call the parent class constructor</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">free_duration</span><span class="p">,</span> <span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">free_duration</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">free_duration</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">free_duration</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;free_duration must be a numpy array with real positive elements&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">free_duration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Tau (1/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span>
-
-        <span class="c1"># check whether pi_pulse_duration is a positive real number and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">pi_pulse_duration</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">pi_pulse_duration</span> <span class="o">&gt;</span> <span class="n">free_duration</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># check whether time_steps is a positive integer and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">time_steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;time_steps must be a positive integer&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span> <span class="o">=</span> <span class="n">time_steps</span>
-
-        <span class="c1"># check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">pulse_shape</span> <span class="ow">in</span> <span class="n">pulse_shape</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">pulse_shape</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_shape must be a python function or a list of python functions&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether pulse_params is a dictionary and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">pulse_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="n">pulse_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># if phi_t is not in the pulse_params dictionary, assign it as 0</span>
-        <span class="k">if</span> <span class="s2">&quot;phi_t&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">H1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H1</span> <span class="o">=</span> <span class="n">H1</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">H1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H1</span> <span class="o">=</span> <span class="n">H1</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list&quot;</span><span class="p">)</span>
-
-        <span class="c1"># If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse, otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2</span>
+        <span class="c1"># If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse</span>
+        <span class="c1"># otherwise it is set to the ramsey_sequence method without the projection pulse.</span>
         <span class="k">if</span> <span class="n">projection_pulse</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence_proj_H2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence_proj</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence_proj</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">projection_pulse</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence_H2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;projection_pulse must be a boolean&quot;</span><span class="p">)</span>
 
@@ -572,26 +396,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
+<span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate the pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="c1"># perform initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
 
-        <span class="c1"># perform the free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
 <div class="viewcode-block" id="Ramsey.ramsey_sequence_proj">
@@ -610,127 +421,14 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
+<span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate the pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
 
-        <span class="c1"># perform initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
 
-        <span class="c1"># perform the free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="c1"># perform final pi/2 pulse</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ps</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
-
-
-<div class="viewcode-block" id="Ramsey.ramsey_sequence_H2">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_H2">[docs]</a>
-    <span class="k">def</span> <span class="nf">ramsey_sequence_H2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
-<span class="sd">        The sequence consists of an initial pi/2 pulse and a single free evolution.</span>
-<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        tau : float</span>
-<span class="sd">            Free evolution time.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform the free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
-
-
-<div class="viewcode-block" id="Ramsey.ramsey_sequence_proj_H2">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj_H2">[docs]</a>
-    <span class="k">def</span> <span class="nf">ramsey_sequence_proj_H2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
-<span class="sd">        The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis.</span>
-<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        tau : float</span>
-<span class="sd">            Free evolution time.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate the pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># perform initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform the free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
-
-        <span class="c1"># perform final pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
     <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -743,26 +441,16 @@
 <span class="sd">        tau : float</span>
 <span class="sd">            Free evolution variable or pulse spacing for the Hahn echo sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check if tau is None and if it is, assign the first element of the variable attribute to tau</span>
+        <span class="c1"># check if tau is correctly defined</span>
         <span class="k">if</span> <span class="n">tau</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1"># else if it is not a float or an integer, raise an error</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">tau</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tau must be a positive real number larger than pi_pulse_duration&quot;</span><span class="p">)</span>
 
-        <span class="c1"># initialize the pulse_profiles attribute to an empty list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c1"># if tau is None, assign the first element of the variable attribute to tau</span>
-        <span class="k">if</span> <span class="n">tau</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># if tau is not a float or an integer, raise an error</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tau must be a float or an integer&quot;</span><span class="p">)</span>
-
         <span class="c1"># if projection_pulse is True, include the final pi/2 pulse in the pulse_profiles</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
-            <span class="c1"># calculate the pulse separation time</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>   
             <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
 
             <span class="c1"># if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence</span>
@@ -785,7 +473,6 @@
 
         <span class="c1"># if projection_pulse is false, do not include the final pi/2 pulse in the pulse_profiles</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># calculate the pulse separation time</span>
             <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
 
             <span class="c1"># if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence</span>
@@ -802,7 +489,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">ps</span> <span class="o">+</span> <span class="n">t0</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
                 <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
 
-        <span class="c1"># set the total time to t0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">t0</span>
 
 <div class="viewcode-block" id="Ramsey.plot_pulses">
@@ -832,9 +518,7 @@
 </div>
 
 
-
 <span class="c1">####################################################################################################</span>
-
 
 <div class="viewcode-block" id="Hahn">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Hahn">[docs]</a>
@@ -853,19 +537,20 @@
 <span class="sd">        Duration of the pi pulse.</span>
 <span class="sd">    projection_pulse : bool</span>
 <span class="sd">        Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.</span>
+<span class="sd">    </span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    hahn_sequence(tau)</span>
+<span class="sd">    hahn_sequence :</span>
 <span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,</span>
-<span class="sd">        returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.</span>
-<span class="sd">    hahn_sequence_proj(tau)</span>
+<span class="sd">        returning the final state. The sequence is to be called by the parallel_map method of QuTip.</span>
+<span class="sd">    hahn_sequence_proj :</span>
 <span class="sd">        Defines the Hahn echo sequence with a final pi/2 pulse, in order to project the result into the Sz basis.</span>
-<span class="sd">    hahn_sequence_H2(tau)</span>
-<span class="sd">        Defines the Hahn echo sequence considering time-dependent H2 or collapse operators.</span>
-<span class="sd">    hahn_sequence_proj_H2(tau)</span>
-<span class="sd">        Defines the Hahn echo sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.</span>
-<span class="sd">    (Inherited from PulsedSimulation)</span>
+<span class="sd">    _get_pulse_profiles :</span>
+<span class="sd">        Generates the pulse profiles for the Hahn echo sequence for a given tau.</span>
+<span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
+<span class="sd">    plot_pulses :</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -889,7 +574,7 @@
 <span class="sd">        free_duration : numpy.ndarray</span>
 <span class="sd">            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
 <span class="sd">        H1 : Qobj or list of Qobj</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        pi_pulse_duration : float or int</span>
@@ -908,84 +593,15 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># call the parent class constructor</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
-
-        <span class="c1"># check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">free_duration</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">free_duration</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">free_duration</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;free_duration must be a numpy array with real positive elements&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">free_duration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Tau (1/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span>
-
-        <span class="c1"># check whether pi_pulse_duration is a positive real number and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">pi_pulse_duration</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">pi_pulse_duration</span> <span class="o">&gt;</span> <span class="n">free_duration</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># check whether time_steps is a positive integer and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">time_steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;time_steps must be a positive integer&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span> <span class="o">=</span> <span class="n">time_steps</span>
-
-        <span class="c1"># check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">pulse_shape</span> <span class="ow">in</span> <span class="n">pulse_shape</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">pulse_shape</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_shape must be a python function or a list of python functions&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether H1 is a Qobj or a list of Qobjs of the same shape as rho0, H0 and H1 with the same length as the pulse_shape list and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">H1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H1</span> <span class="o">=</span> <span class="n">H1</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">H1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H1</span> <span class="o">=</span> <span class="n">H1</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H1</span><span class="p">))]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="p">[</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list&quot;</span><span class="p">)</span>
-
-        <span class="c1"># check whether pulse_params is a dictionary and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">pulse_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="n">pulse_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># if phi_t is not in the pulse_params dictionary, assign it as 0</span>
-        <span class="k">if</span> <span class="s2">&quot;phi_t&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># check whether options is a dictionary of solver options from Qutip and if it is, assign it to the object</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">free_duration</span><span class="p">,</span> <span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis</span>
         <span class="c1"># otherwise it is set to the hahn_sequence method without the projection pulses</span>
         <span class="k">if</span> <span class="n">projection_pulse</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence_proj_H2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence_proj</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence_proj</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">projection_pulse</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence_H2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;projection_pulse must be a boolean&quot;</span><span class="p">)</span>
 
@@ -1008,43 +624,16 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
+<span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
 
-        <span class="c1"># perform the initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
 
-        <span class="c1"># perform the first free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
 
-        <span class="c1"># changing pulse separation time for the second free evolution</span>
-        <span class="n">ps</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform the pi pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">ps</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="c1"># perform the second free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
 <div class="viewcode-block" id="Hahn.hahn_sequence_proj">
@@ -1064,186 +653,18 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
+<span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate pulse separation time</span>
+        <span class="c1"># pulse separation time</span>
         <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
 
-        <span class="c1"># perform the initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
 
-        <span class="c1"># perform the first free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="c1"># perform the pi pulse</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ps</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="c1"># perform the second free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">*</span> <span class="n">ps</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="c1"># perform the final pi/2 pulse</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="c1"># if no observable is given, return the final density matrix</span>
-        <span class="k">return</span> <span class="n">rho</span></div>
-
-
-<div class="viewcode-block" id="Hahn.hahn_sequence_H2">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_H2">[docs]</a>
-    <span class="k">def</span> <span class="nf">hahn_sequence_H2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
-
-<span class="sd">        The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them.</span>
-<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        tau : float</span>
-<span class="sd">            Free evolution time.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># perform the initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform the first free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
-
-        <span class="c1"># perform the pi pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># perform the second free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
-
-
-<div class="viewcode-block" id="Hahn.hahn_sequence_proj_H2">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj_H2">[docs]</a>
-    <span class="k">def</span> <span class="nf">hahn_sequence_proj_H2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
-
-<span class="sd">        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse.</span>
-<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        tau : float</span>
-<span class="sd">            Free evolution time.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        rho : Qobj</span>
-<span class="sd">            Final density matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># calculate pulse separation time</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># perform the initial pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># perform the first free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
-
-        <span class="c1"># perform the pi pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
-
-        <span class="c1"># perform the second free evolution</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
-
-        <span class="c1"># perform the final pi/2 pulse</span>
-        <span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span>
-            <span class="n">rho</span><span class="p">,</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span>
-            <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">rho</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
     <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1256,23 +677,20 @@
 <span class="sd">        tau : float</span>
 <span class="sd">            Free evolution variable or pulse spacing for the Hahn echo sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check if tau is None and if it is, assign the last element of the variable attribute to tau</span>
+        <span class="c1"># check if tau is correctly defined</span>
         <span class="k">if</span> <span class="n">tau</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1"># else if it is not a float or an integer, raise an error</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">tau</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tau must be a positive real number larger than pi_pulse_duration&quot;</span><span class="p">)</span>
 
-        <span class="c1"># initialize the pulse_profiles attribute to an empty list and t0 to 0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># if projection_pulse is True, include the final pi/2 pulse in the pulse_profiles</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
             <span class="c1"># if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
                 <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
@@ -1284,8 +702,8 @@
 
             <span class="c1"># otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
                 <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>
@@ -1299,8 +717,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
                 <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">])</span>
@@ -1310,8 +728,8 @@
 
             <span class="c1"># otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>
+                <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
                 <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H1</span><span class="p">))])</span>

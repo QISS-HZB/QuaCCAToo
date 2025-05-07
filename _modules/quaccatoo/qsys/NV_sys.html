@@ -227,7 +227,7 @@
 
             <span class="n">H0</span> <span class="o">=</span> <span class="n">Hzf</span> <span class="o">+</span> <span class="n">Hez</span>
 
-            <span class="n">rho0</span> <span class="o">=</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+            <span class="n">rho0</span> <span class="o">=</span> <span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -320,7 +320,7 @@
                                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="n">index_3</span><span class="p">])]])</span> <span class="o">/</span> <span class="n">Z</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
