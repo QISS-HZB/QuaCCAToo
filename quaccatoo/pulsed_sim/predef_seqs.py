@@ -31,7 +31,7 @@ class Rabi(PulsedSim):
 
     Methods
     -------
-    run
+    run :
         runs the simulation and stores the results in the results attribute.
     """
 
@@ -44,7 +44,7 @@ class Rabi(PulsedSim):
         pulse_duration : numpy.ndarray
             Time array for the simulation representing the pulse duration to be used as the variable for the simulation.
         system : QSys
-            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
@@ -75,7 +75,7 @@ class Rabi(PulsedSim):
     def run(self):
         """
         Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.
-        If the system has no initial density matrix, the propagator is calcualated.
+        If the system has no initial state, the propagator is calcualated.
         If an observable is given, the expectation values are stored in the results attribute.
         For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths,
         thus the run method from the parent class is overwritten.
@@ -109,10 +109,10 @@ class PMR(PulsedSim):
 
     Methods
     -------
-    PMR_sequence
+    PMR_sequence :
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
-    plot_pulses
+    plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
     """
 
@@ -127,7 +127,7 @@ class PMR(PulsedSim):
         pulse_duration : float or int
             Duration of the pulse.
         system : QSys
-            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
@@ -173,7 +173,7 @@ class PMR(PulsedSim):
         Returns
         -------
         rho : Qobj
-            Final density matrix.
+            Final state.
         """
         self.pulse_params["f_pulse"] = f
 
@@ -222,16 +222,16 @@ class Ramsey(PulsedSim):
 
     Methods
     -------
-    ramsey_sequence(
+    ramsey_sequence :
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
         The sequence is to be called by the parallel_map method of QuTip.
-    ramsey_sequence_proj
+    ramsey_sequence_proj :
         Defines the Ramsey sequence with final pi/2 pulse to project into the Sz basis.
-    _get_pulse_profiles
+    _get_pulse_profiles :
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
-    plot_pulses
+    plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
     """
 
@@ -256,7 +256,7 @@ class Ramsey(PulsedSim):
         free_duration : numpy.ndarray
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
         system : QSys
-            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         pi_pulse_duration : float or int
@@ -279,7 +279,7 @@ class Ramsey(PulsedSim):
         self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, None)
 
         # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse
-        # otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
+        # otherwise it is set to the ramsey_sequence method without the projection pulse.
         if projection_pulse:
             self.sequence = self.ramsey_sequence_proj
         elif not projection_pulse:
@@ -303,7 +303,7 @@ class Ramsey(PulsedSim):
         Returns
         -------
         rho : Qobj
-            Final density matrix.
+            Final state.
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
@@ -325,7 +325,7 @@ class Ramsey(PulsedSim):
         Returns
         -------
         rho : Qobj
-            Final density matrix.
+            Final state.
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
@@ -448,18 +448,19 @@ class Hahn(PulsedSim):
         Duration of the pi pulse.
     projection_pulse : bool
         Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.
+    
 
     Methods
     -------
-    hahn_sequence
+    hahn_sequence :
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,
-        returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
-    hahn_sequence_proj
+        returning the final state. The sequence is to be called by the parallel_map method of QuTip.
+    hahn_sequence_proj :
         Defines the Hahn echo sequence with a final pi/2 pulse, in order to project the result into the Sz basis.
-    _get_pulse_profiles
+    _get_pulse_profiles :
         Generates the pulse profiles for the Hahn echo sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
-    plot_pulses
+    plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
     """
 
@@ -484,7 +485,7 @@ class Hahn(PulsedSim):
         free_duration : numpy.ndarray
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
         system : QSys
-            Quantum system object containing the initial density matrix, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         H1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         pi_pulse_duration : float or int
@@ -532,7 +533,7 @@ class Hahn(PulsedSim):
         Returns
         -------
         rho : Qobj
-            Final density matrix.
+            Final state.
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
@@ -558,7 +559,7 @@ class Hahn(PulsedSim):
         Returns
         -------
         rho : Qobj
-            Final density matrix.
+            Final state.
         """
         # pulse separation time
         ps = tau - self.pi_pulse_duration

@@ -43,25 +43,23 @@ class PulsedSim:
 
     Methods
     -------
-    add_pulse
+    add_pulse :
         adds a pulse operation to the sequence of operations of the experiment
-    pulse
+    pulse :
         updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
-    add_free_evolution
+    add_free_evolution :
         adds a free evolution operation to the sequence of operations of the experiment
-    _free_evolution
+    _free_evolution :
         updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
-    _free_evolution
-        same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators
-    run
+    run :
         runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
-    _get_results
+    _get_results :
         gets the results of the experiment from the calculated rho, based on the observable of the system
-    measure_qsys
+    measure_qsys :
         measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
-    plot_pulses
+    plot_pulses :
         plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
-    _check_attr_predef_seqs
+    _check_attr_predef_seqs :
         checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
     """
     def __init__(self, system, H2=None):
@@ -222,7 +220,7 @@ class PulsedSim:
 
     def _free_evolution(self, duration, options):
         """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix.
+        Updates the total time of the experiment and applies the time-evolution operator to the initial state.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
         If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.
         Otherwise, the time-evolution operator is applied directlyby the exponential operator.
