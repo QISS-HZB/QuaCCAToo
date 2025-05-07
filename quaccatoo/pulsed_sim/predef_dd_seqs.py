@@ -110,41 +110,23 @@ class CPMG(PulsedSim):
         rho : Qobj
             final density matrix
         """
-
-        # initial pi/2 pulse on Y
-        rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
-        ).states[-1]
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-        t0 = ps + self.pi_pulse_duration / 2
-
-        # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
 
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
+        # initial pi/2 pulse on Y
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        self._free_evolution(ps/2 - self.pi_pulse_duration/2)
 
-            # perform free evolution of ps
-            rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-            t0 += tau
+        # repeat 8*M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(8*self.M - 1):
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+            self._free_evolution(ps)
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
 
-        # calculate the last pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration / 2
+        self._free_evolution(ps/2)
 
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        return rho
+        return self.rho
 
     def CPMG_sequence_proj(self, tau):
         """
@@ -161,45 +143,26 @@ class CPMG(PulsedSim):
         rho : Qobj
             final density matrix
         """
-
-        # initial pi/2 pulse on Y
-        rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
-        ).states[-1]
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-        t0 = ps + self.pi_pulse_duration / 2
-
-        # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
 
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
+        # initial pi/2 pulse on Y
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        self._free_evolution(ps/2 - self.pi_pulse_duration/2)
 
-            # perform free evolution of tau
-            rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-            t0 += tau
+        # repeat 8*M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(8*self.M - 1):
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+            self._free_evolution(ps)
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
 
-        # calculate the last pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-        t0 += self.pi_pulse_duration + ps
+        self._free_evolution(ps/2 - self.pi_pulse_duration/2)
 
         # final pi/2 pulse on Y
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
 
-        return rho
+        return self.rho
 
     def CPMG_sequence_H2(self, tau):
         """
@@ -218,44 +181,23 @@ class CPMG(PulsedSim):
         rho : Qobj
             final density matrix
         """
-
-        # initial pi/2 pulse on Y
-        rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-        t0 += ps
-
-        # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
 
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
-            t0 += self.pi_pulse_duration
+        # initial pi/2 pulse on Y
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        self._free_evolution_H2(ps/2 - self.pi_pulse_duration/2, self.options)
 
-            # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-            t0 += ps
+        # repeat 8*M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(8*self.M - 1):
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+            self._free_evolution_H2(ps, self.options)
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
-        t0 += self.pi_pulse_duration
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
 
-        # calculate the last pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration / 2
+        self._free_evolution_H2(ps/2, self.options)
 
-        # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-
-        return rho
+        return self.rho
 
     def CPMG_sequence_proj_H2(self, tau):
         """
@@ -273,48 +215,26 @@ class CPMG(PulsedSim):
         rho : Qobj
             final density matrix
         """
-
-        # initial pi/2 pulse on Y
-        rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]
-        ).states[-1]
-        t0 = self.pi_pulse_duration / 2
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-        t0 += ps
-
-        # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
 
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            # perform pi pulse on X
-            rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
-            t0 += self.pi_pulse_duration
+        # initial pi/2 pulse on Y
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        self._free_evolution_H2(ps/2 - self.pi_pulse_duration/2, self.options)
 
-            # perform free evolution of ps
-            rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-            t0 += ps
+        # repeat 8*M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(8*self.M - 1):
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            self._free_evolution_H2(ps, self.options)
 
         # perform the last pi pulse on X
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]).states[-1]
-        t0 += self.pi_pulse_duration
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
 
-        # calculate the last pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = mesolve(self.H0_H2, rho, 2 * np.pi * np.linspace(t0, t0 + ps, self.time_steps), self.system.c_ops, e_ops=[], options=self.options).states[-1]
-        t0 += ps
+        self._free_evolution_H2(ps/2 - self.pi_pulse_duration/2, self.options)
 
         # final pi/2 pulse on Y
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
 
-        return rho
+        return self.rho
 
     def _get_pulse_profiles(self, tau=None):
         """
@@ -353,8 +273,8 @@ class CPMG(PulsedSim):
         # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
 
-        # add pulses and free evolution M-1 times
-        for itr_M in range(self.M - 1):
+        # add pulses and free evolution 8*M-1 times
+        for itr_M in range(8*self.M - 1):
             # add a pi pulse on X
             if isinstance(self.H1, Qobj):
                 self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[0]])
@@ -522,42 +442,21 @@ class XY(PulsedSim):
         rho : Qobj
             Final density matrix
         """
-        # initial pi/2 pulse on X axis
-        rho = mesolve(
-            self.Ht, self.system.rho0, 2 * np.pi * np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[0]
-        ).states[-1]
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-        t0 = ps + self.pi_pulse_duration / 2
-
-        # calculate the pulse spacing between pi pulses
         ps = tau - self.pi_pulse_duration
+
+        # initial pi/2 pulse on Y
+        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        self._free_evolution(ps/2 - self.pi_pulse_duration/2)
 
         # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
         for itr_M in range(2 * self.M - 1):
-            # perform pi pulse on X or Y axis
-            rho = mesolve(
-                self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[itr_M % 2]
-            ).states[-1]
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 2])
+            self._free_evolution(ps)
 
-            # perform free evolution of ps
-            rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-            t0 += tau
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
+        self._free_evolution(ps/2)
 
-        # perform the last pi pulse on Y axis
-        rho = mesolve(self.Ht, rho, 2 * np.pi * np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.system.c_ops, e_ops=[], options=self.options, args=self.pulse_params[1]).states[-1]
-
-        # calculate the last pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration / 2
-
-        # perform free evolution of ps
-        rho = (-1j * 2 * np.pi * self.system.H0 * ps).expm() * rho * ((-1j * 2 * np.pi * self.system.H0 * ps).expm()).dag()
-
-        return rho
+        return self.rho
 
     def XY_sequence_proj(self, tau):
         """
