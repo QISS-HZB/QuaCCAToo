@@ -209,51 +209,36 @@ class PulsedSim:
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) or duration < 0:
             raise ValueError("duration must be a positive real number")
+        
+        if options is None:
+            options = {}
+        elif not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
         # add the free evolution to the pulse_profiles list
         self.pulse_profiles.append([None, [self.total_time, duration + self.total_time], None, None])
 
-        # if a H2 or collapse operators are given, use _free_evolution method, otherwise use _free_evolution method
-        if self.H2 is not None or self.system.c_ops is not None:
-            # check whether options is None or a dictionary
-            if options is None:
-                options = {}
-            elif not isinstance(options, dict):
-                raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+        self._free_evolution(duration, options)
 
-            self._free_evolution_H2(duration, options)
-        else:
-            self._free_evolution(duration, options)
-
-    def _free_evolution(self, duration):
+    def _free_evolution(self, duration, options):
         """
         Updates the total time of the experiment and applies the time-evolution operator to the initial density matrix.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+        If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.
+        Otherwise, the time-evolution operator is applied directlyby the exponential operator.
 
         Parameters
         ----------
         duration : float or int
             duration of the free evolution
         """
-        if self.rho.isket:
-            self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho
+        if self.system.c_ops is not None or self.H2 is not None:
+            self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
         else:
-            self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
-
-        self.total_time += duration
-
-    def _free_evolution_H2(self, duration, options):
-        """
-        Same as _free_evolution but using mesolve for the time dependent Hamiltonian or collapse operators.
-
-        Parameters
-        ----------
-        duration : float or int
-            duration of the free evolution
-        options : dict
-            options for the Qutip solver
-        """
-        self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
+            if self.rho.isket:
+                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho
+            else:
+                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
 
         self.total_time += duration
 
@@ -321,6 +306,9 @@ class PulsedSim:
             sequence_kwargs = {}
         elif not isinstance(sequence_kwargs, dict):
             raise ValueError("sequence_args must be a dictionary of arguments to be passed to the sequence function")
+        
+        # the rho attribute needs to be reset to the initial state, so it doesnt run over the previous simulation
+        self.rho = self.system.rho0.copy()
 
         # run the experiment by calling the parallel_map function from QuTip over the variable attribute
         self.rho = parallel_map(self.sequence, self.variable, task_kwargs=sequence_kwargs, map_kw=map_kw)

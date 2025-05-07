@@ -282,15 +282,9 @@ class Ramsey(PulsedSim):
         # If projection_pulse is True, the sequence is set to the ramsey_sequence_proj method with the final projection pulse
         # otherwise it is set to the ramsey_sequence method without the projection pulse. If H2 or c_ops are given then uses the alternative methods _H2
         if projection_pulse:
-            if H2 is not None or self.system.c_ops is not None:
-                self.sequence = self.ramsey_sequence_proj_H2
-            else:
-                self.sequence = self.ramsey_sequence_proj
+            self.sequence = self.ramsey_sequence_proj
         elif not projection_pulse:
-            if H2 is not None or self.system.c_ops is not None:
-                self.sequence = self.ramsey_sequence_H2
-            else:
-                self.sequence = self.ramsey_sequence
+            self.sequence = self.ramsey_sequence
         else:
             raise ValueError("projection_pulse must be a boolean")
 
@@ -314,7 +308,7 @@ class Ramsey(PulsedSim):
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(tau - self.pi_pulse_duration / 2)
+        self._free_evolution(tau - self.pi_pulse_duration / 2, self.options)
 
         return self.rho
 
@@ -336,51 +330,7 @@ class Ramsey(PulsedSim):
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(tau - self.pi_pulse_duration)
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-
-        return self.rho
-
-    def ramsey_sequence_H2(self, tau):
-        """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-        The sequence consists of an initial pi/2 pulse and a single free evolution.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time.
-
-        Returns
-        -------
-        rho : Qobj
-            Final density matrix.
-        """
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution_H2(tau - self.pi_pulse_duration / 2, self.options)
-
-        return self.rho
-
-    def ramsey_sequence_proj_H2(self, tau):
-        """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-        The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time.
-
-        Returns
-        -------
-        rho : Qobj
-            Final density matrix.
-        """
-
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution_H2(tau - self.pi_pulse_duration, self.options)
+        self._free_evolution(tau - self.pi_pulse_duration, self.options)
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
         return self.rho
@@ -560,15 +510,9 @@ class Hahn(PulsedSim):
         # If projection_pulse is True, the sequence is set to the hahn_sequence_proj method with the final projection pulse to project the result into the Sz basis
         # otherwise it is set to the hahn_sequence method without the projection pulses
         if projection_pulse:
-            if H2 is not None or self.system.c_ops is not None:
-                self.sequence = self.hahn_sequence_proj_H2
-            else:
-                self.sequence = self.hahn_sequence_proj
+            self.sequence = self.hahn_sequence_proj
         elif not projection_pulse:
-            if H2 is not None or self.system.c_ops is not None:
-                self.sequence = self.hahn_sequence_H2
-            else:
-                self.sequence = self.hahn_sequence
+            self.sequence = self.hahn_sequence
         else:
             raise ValueError("projection_pulse must be a boolean")
 
@@ -593,10 +537,10 @@ class Hahn(PulsedSim):
         """
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(tau - self.pi_pulse_duration)
+        self._free_evolution(tau - self.pi_pulse_duration, self.options)
 
         self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
-        self._free_evolution(tau - self.pi_pulse_duration/2)
+        self._free_evolution(tau - self.pi_pulse_duration/2, self.options)
 
         return self.rho
 
@@ -621,62 +565,9 @@ class Hahn(PulsedSim):
         ps = tau - self.pi_pulse_duration
 
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(ps)
+        self._free_evolution(ps, self.options)
         self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
-        self._free_evolution(ps)
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-
-        return self.rho
-
-    def hahn_sequence_H2(self, tau):
-        """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-
-        The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time.
-
-        Returns
-        -------
-        rho : Qobj
-            Final density matrix.
-        """
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution_H2(tau - self.pi_pulse_duration, self.options)
-
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
-        self._free_evolution_H2(tau - self.pi_pulse_duration/2, self.options)
-
-        return self.rho
-    
-    def hahn_sequence_proj_H2(self, tau):
-        """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-
-        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time.
-
-        Returns
-        -------
-        rho : Qobj
-            Final density matrix.
-        """
-        # pulse separation time
-        ps = tau - self.pi_pulse_duration
-
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution_H2(ps, self.options)
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
-        self._free_evolution_H2(ps, self.options)
+        self._free_evolution(ps, self.options)
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
         return self.rho
