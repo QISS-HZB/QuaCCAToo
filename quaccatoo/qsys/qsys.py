@@ -8,7 +8,7 @@ This module contains the plot_energy_B0 function, compose_sys function and the Q
 import warnings
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, qeye, tensor
+from qutip import Qobj, qeye, tensor, basis
 
 def compose_sys(qsys1, qsys2):
     """
@@ -195,16 +195,15 @@ class QSys:
         if rho0 is None:
             warnings.warn("Initial state not provided.")
         elif rho0 in range(0, len(self.eigenstates)):
-            self.rho0 = self.eigenstates[rho0] * self.eigenstates[rho0].dag()  # In this case the initial state is the i-th energy state
+            self.rho0 = self.eigenstates[rho0]  # In this case the initial state is the i-th energy state
         elif Qobj(rho0).isket and Qobj(rho0).shape[0] == H0.shape[0]:
-            rho0 = Qobj(rho0)
-            self.rho0 = rho0 * rho0.dag()
+            self.rho0 = Qobj(rho0)
         elif Qobj(rho0).isherm and Qobj(rho0).shape == H0.shape:
             self.rho0 = Qobj(rho0)
         else:
-            raise ValueError("rho0 must be a Qobj or an index number indicating the system eigenstates")
+            raise ValueError("rho0 must be a Qobj, None or an index number indicating the system eigenstates")
 
-        # check if observable is not None, or if it is a Qobj of the same dimension as H0 and rho0, or a list of Qobj
+        # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj
         if observable is None:
             self.observable = None
         elif (isinstance(observable, (Qobj, np.ndarray)) and observable.shape == H0.shape) or (
@@ -214,7 +213,7 @@ class QSys:
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
         else:
-            raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0.")
+            raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0.")
 
         # check if c_ops is a list of Qobj with the same dimensions as H0
         if c_ops is None:
@@ -286,8 +285,10 @@ class QSys:
         
         self.H0 = tensor(self.H0, qeye(self.dim_add_spin )) +  H_spin
         
-        if self.rho0 is not None:
+        if self.rho0.isherm:
             self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin )).unit()
+        elif self.rho0.isket:
+            self.rho0 = tensor(self.rho0, basis(self.dim_add_spin, 0)).unit()
 
         if self.observable is not None:
             self.observable = tensor(self.observable, qeye(self.dim_add_spin ))

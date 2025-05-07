@@ -151,7 +151,7 @@ class NV(QSys):
 
             H0 = Hzf + Hez
 
-            rho0 = fock_dm(3, 1).unit()
+            rho0 = basis(3, 1)
             observable = fock_dm(3, 1)
 
         else:
@@ -242,7 +242,7 @@ class NV(QSys):
                                      [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
             )
         elif self.N ==0 or self.N is None:
-            self.rho0 = fock_dm(3, 1)
+            self.rho0 = basis(3, 1)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 

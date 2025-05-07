@@ -463,7 +463,7 @@ class Analysis:
 
         if len(self.experiment.rho) == 1:
             raise ValueError("Density matrices were not calculated, please run experiment first.")
-        elif isinstance(self.experiment.rho, list) and all(rho.shape == (2, 2) for rho in self.experiment.rho):
+        elif isinstance(self.experiment.rho, list) and all(rho.shape[0] == 2 for rho in self.experiment.rho):
             pass
         else:
             raise ValueError("QSys must have dimension of two to be able to plot a Bloch sphere")
