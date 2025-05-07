@@ -31,7 +31,8 @@ class Rabi(PulsedSim):
 
     Methods
     -------
-    PulsedSimulation
+    run
+        runs the simulation and stores the results in the results attribute.
     """
 
     def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None):
@@ -108,10 +109,11 @@ class PMR(PulsedSim):
 
     Methods
     -------
-    PMR_sequence(f)
+    PMR_sequence
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
-    (Inherited from PulsedSimulation)
+    plot_pulses
+        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
     """
 
     def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
@@ -220,20 +222,17 @@ class Ramsey(PulsedSim):
 
     Methods
     -------
-    ramsey_sequence(tau)
+    ramsey_sequence(
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
         The sequence is to be called by the parallel_map method of QuTip.
-    ramsey_sequence_proj(tau)
+    ramsey_sequence_proj
         Defines the Ramsey sequence with final pi/2 pulse to project into the Sz basis.
-    ramsey_sequence_H2(tau)
-        Defines the Ramsey sequence considering time-dependent H2 or collapse operators.
-    ramsey_sequence_proj_H2(tau)
-        Defines the Ramsey sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.
-    _get_pulse_profiles(tau)
+    _get_pulse_profiles
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
-    (Inherited from PulsedSimulation)
+    plot_pulses
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
     """
 
     def __init__(
@@ -452,16 +451,16 @@ class Hahn(PulsedSim):
 
     Methods
     -------
-    hahn_sequence(tau)
+    hahn_sequence
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,
         returning the final density matrix. The sequence is to be called by the parallel_map method of QuTip.
-    hahn_sequence_proj(tau)
+    hahn_sequence_proj
         Defines the Hahn echo sequence with a final pi/2 pulse, in order to project the result into the Sz basis.
-    hahn_sequence_H2(tau)
-        Defines the Hahn echo sequence considering time-dependent H2 or collapse operators.
-    hahn_sequence_proj_H2(tau)
-        Defines the Hahn echo sequence considering time-dependent H2 or collapse operators and a final pi/2 pulse.
-    (Inherited from PulsedSimulation)
+    _get_pulse_profiles
+        Generates the pulse profiles for the Hahn echo sequence for a given tau.
+        The pulse profiles are stored in the pulse_profiles attribute of the object.
+    plot_pulses
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
     """
 
     def __init__(
