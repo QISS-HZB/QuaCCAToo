@@ -38,11 +38,10 @@ def compose_sys(qsys1, qsys2):
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
-    if qsys1.rho0 is not None and qsys2.rho0 is not None:
-        if isinstance(qsys1.rho0, Qobj) and isinstance(qsys2.rho0, Qobj):
-            rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
-        else:
-            raise ValueError("Both initial states must be Qobj or None")
+    if qsys1.rho0.isherm and qsys2.rho0.isherm:
+        rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
+    elif qsys1.rho0.isket and qsys2.rho0.isket:
+        rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
     else:
         rho0 = None
         
