@@ -821,12 +821,12 @@ class RXY8(XY8):
             random_phase = np.random.rand()*2*np.pi
             self.pulse_params[0+8*itr_M] = {**pulse_params, **{"phi_t": 0 + random_phase}}
             self.pulse_params[1+8*itr_M] = {**pulse_params, **{"phi_t": -np.pi / 2 + random_phase}}
-            self.pulse_params[2+8*itr_M] = self.pulse_params[0]
-            self.pulse_params[3+8*itr_M] = self.pulse_params[1]
-            self.pulse_params[4+8*itr_M] = self.pulse_params[1]
-            self.pulse_params[5+8*itr_M] = self.pulse_params[0]
-            self.pulse_params[6+8*itr_M] = self.pulse_params[1]
-            self.pulse_params[7+8*itr_M] = self.pulse_params[0]
+            self.pulse_params[2+8*itr_M] = self.pulse_params[0+8*itr_M]
+            self.pulse_params[3+8*itr_M] = self.pulse_params[1+8*itr_M]
+            self.pulse_params[4+8*itr_M] = self.pulse_params[1+8*itr_M]
+            self.pulse_params[5+8*itr_M] = self.pulse_params[0+8*itr_M]
+            self.pulse_params[6+8*itr_M] = self.pulse_params[1+8*itr_M]
+            self.pulse_params[7+8*itr_M] = self.pulse_params[0+8*itr_M]
 
         
     def RXY8_sequence(self, tau):
