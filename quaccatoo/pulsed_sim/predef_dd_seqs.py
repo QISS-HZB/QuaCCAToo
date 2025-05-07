@@ -3,7 +3,7 @@ This module contains dynamical decoupling pulse sequences, used in quantum sensi
 """
 
 import numpy as np
-from qutip import Qobj, mesolve
+from qutip import Qobj
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
@@ -165,35 +165,28 @@ class CPMG(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution variable or pulse spacing for the Hahn echo sequence.
+            Free evolution variable or pulse spacing for the  sequence.
         """
+        # check if tau is correctly defined
         if tau is None:
             tau = self.variable[-1]
-        # check whether tau is a positive real number and if it is, assign it to the object
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
 
-        # initialize the pulse_profiles attribute and total time
         self.pulse_profiles = []
-        t0 = 0
 
         # add the first pi/2 pulse on Y
         if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[1]])
+            self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[1]])
         elif isinstance(self.H1, list):
-            self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[1]] for i in range(len(self.H1))])
+            self.pulse_profiles.append([[self.H1[i], np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[1]] for i in range(len(self.H1))])
 
-        t0 += self.pi_pulse_duration / 2
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # add the first free evolution of ps
-        self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-        t0 += ps
-
-        # calculate the pulse spacing between pi pulses
+        t0 = self.pi_pulse_duration / 2
         ps = tau - self.pi_pulse_duration
+        
+        # add the first free evolution
+        self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+        t0 += ps/2 - self.pi_pulse_duration/2
 
         # add pulses and free evolution 8*M-1 times
         for itr_M in range(8*self.M - 1):
@@ -203,7 +196,7 @@ class CPMG(PulsedSim):
             elif isinstance(self.H1, list):
                 self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
             t0 += self.pi_pulse_duration
-            # add a free evolution of ps
+            # add a free evolution
             self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
             t0 += ps
 
@@ -215,12 +208,9 @@ class CPMG(PulsedSim):
         t0 += self.pi_pulse_duration
 
         if self.projection_pulse:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+            t0 += ps/2 - self.pi_pulse_duration/2
 
             if isinstance(self.H1, Qobj):
                 # add the last pi/2 pulse
@@ -231,12 +221,9 @@ class CPMG(PulsedSim):
 
             t0 += self.pi_pulse_duration / 2
         else:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration / 2
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2], None, None])
+            t0 += ps/2
 
         self.total_time = t0
 
@@ -247,7 +234,7 @@ class CPMG(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
         figsize : tuple
             Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
@@ -293,7 +280,7 @@ class XY(PulsedSim):
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, c_ops=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the XY sequence
 
@@ -412,35 +399,28 @@ class XY(PulsedSim):
         Parameters
         ----------
         tau : float
-            free evolution variable or pulse spacing for the Hahn echo sequence
+            free evolution variable or pulse spacing for the  sequence
         """
+        # checl if tau is correctly define
         if tau is None:
             tau = self.variable[-1]
-        # check whether tau is a positive real number and if it is, assign it to the object
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
 
-        # initialize the pulse_profiles attribute and total time
         self.pulse_profiles = []
-        t0 = 0
 
         # add the first pi/2 pulse on X axis
         if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
+            self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
         elif isinstance(self.H1, list):
-            self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
+            self.pulse_profiles.append([[self.H1[i], np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
 
-        t0 += self.pi_pulse_duration / 2
-
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # add the first free evolution of ps
-        self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-        t0 += ps
-
-        # calculate the pulse spacing between pi pulses
+        t0 = self.pi_pulse_duration / 2
         ps = tau - self.pi_pulse_duration
+
+        # add the first free evolution
+        self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+        t0 += ps/2 - self.pi_pulse_duration/2
 
         # add pulses and free evolution M-1 times
         for itr_M in range(2 * self.M - 1):
@@ -453,7 +433,7 @@ class XY(PulsedSim):
                 )
             t0 += self.pi_pulse_duration
 
-            # add a free evolution of ps
+            # add a free evolution
             self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
             t0 += ps
 
@@ -465,12 +445,9 @@ class XY(PulsedSim):
         t0 += self.pi_pulse_duration
 
         if self.projection_pulse:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+            t0 += ps/2 - self.pi_pulse_duration/2
 
             if isinstance(self.H1, Qobj):
                 # add the last pi/2 pulse
@@ -481,12 +458,9 @@ class XY(PulsedSim):
 
             t0 += self.pi_pulse_duration / 2
         else:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration / 2
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2], None, None])
+            t0 += ps/2
 
         self.total_time = t0
 
@@ -497,7 +471,7 @@ class XY(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
         figsize : tuple
             Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
@@ -668,39 +642,33 @@ class XY8(PulsedSim):
 
     def _get_pulse_profiles(self, tau=None):
         """
-        Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+        Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
         tau : float
-            free evolution variable or pulse spacing for the Hahn echo sequence
+            free evolution variable or pulse spacing for the  sequence
         """
+        # check if tau is correctly defined
         if tau is None:
             tau = self.variable[-1]
-        # check whether tau is a positive real number and if it is, assign it to the object
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
 
-        # initialize the pulse_profiles attribute and total time
         self.pulse_profiles = []
-        t0 = 0
+
         # add the first pi/2 pulse on X axis
         if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
+            self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
         elif isinstance(self.H1, list):
-            self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
+            self.pulse_profiles.append([[self.H1[i], np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
 
-        t0 += self.pi_pulse_duration / 2
+        t0 = self.pi_pulse_duration / 2
+        ps = tau  - self.pi_pulse_duration
 
-        # calculate the first pulse spacing
-        ps = tau / 2 - self.pi_pulse_duration
-
-        # add the first free evolution of ps
-        self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-        t0 += ps
-
-        # calculate the pulse spacing between pi pulses
-        ps = tau - self.pi_pulse_duration
+        # add the first free evolution
+        self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+        t0 += ps/2 - self.pi_pulse_duration/2
 
         # add pulses and free evolution M-1 times
         for itr_M in range(8 * self.M - 1):
@@ -713,7 +681,7 @@ class XY8(PulsedSim):
                 )
             t0 += self.pi_pulse_duration
 
-            # add a free evolution of ps
+            # add a free evolution
             self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
             t0 += ps
 
@@ -725,12 +693,9 @@ class XY8(PulsedSim):
         t0 += self.pi_pulse_duration
 
         if self.projection_pulse:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+            t0 += ps/2 - self.pi_pulse_duration/2
 
             if isinstance(self.H1, Qobj):
                 # add the last pi/2 pulse
@@ -741,12 +706,9 @@ class XY8(PulsedSim):
 
             t0 += self.pi_pulse_duration / 2
         else:
-            # calculate the last pulse spacing
-            ps = tau / 2 - self.pi_pulse_duration / 2
-
-            # add the last free evolution of ps
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2], None, None])
+            t0 += ps/2
 
         # set the total_time attribute to the total time of the pulse sequence
         self.total_time = t0
@@ -758,7 +720,7 @@ class XY8(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
         figsize : tuple
             Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
@@ -898,3 +860,76 @@ class RXY8(XY8):
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
 
         return self.rho
+    
+    def _get_pulse_profiles(self, tau=None):
+        """
+        Generates the pulse profiles for the RXY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+
+        Parameters
+        ----------
+        tau : float
+            free evolution variable or pulse spacing for the sequence
+        """
+        # check if tau is correctly defined
+        if tau is None:
+            tau = self.variable[-1]
+        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
+            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+
+        self.pulse_profiles = []
+
+        # add the first pi/2 pulse on X axis
+        if isinstance(self.H1, Qobj):
+            self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
+        elif isinstance(self.H1, list):
+            self.pulse_profiles.append([[self.H1[i], np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
+
+        t0 = self.pi_pulse_duration / 2
+        ps = tau  - self.pi_pulse_duration
+
+        # add the first free evolution
+        self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration / 2], None, None])
+        t0 += ps/2 - self.pi_pulse_duration / 2
+
+        # add pulses and free evolution M-1 times
+        for itr_M in range(8 * self.M - 1):
+            # add a pi pulse
+            if isinstance(self.H1, Qobj):
+                self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[itr_M]])
+            elif isinstance(self.H1, list):
+                self.pulse_profiles.append(
+                    [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[itr_M % 8]] for i in range(len(self.H1))]
+                )
+            t0 += self.pi_pulse_duration
+
+            # add a free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
+            t0 += ps
+
+        # add another pi pulse
+        if isinstance(self.H1, Qobj):
+            self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[-1]])
+        elif isinstance(self.H1, list):
+            self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[-1]] for i in range(len(self.H1))])
+        t0 += self.pi_pulse_duration
+
+        if self.projection_pulse:
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
+            t0 += ps/2 - self.pi_pulse_duration/2
+
+            if isinstance(self.H1, Qobj):
+                # add the last pi/2 pulse
+                self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
+            elif isinstance(self.H1, list):
+                # add the first pi/2 pulse
+                self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
+
+            t0 += self.pi_pulse_duration / 2
+        else:
+            # add the last free evolution
+            self.pulse_profiles.append([None, [t0, t0 + ps/2], None, None])
+            t0 += ps/2
+
+        # set the total_time attribute to the total time of the pulse sequence
+        self.total_time = t0
