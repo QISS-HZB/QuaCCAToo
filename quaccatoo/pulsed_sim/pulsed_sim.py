@@ -250,7 +250,7 @@ class PulsedSim:
         observable : Qobj
             observable to be measured after the sequence of operations
         """
-        if isinstance(observable, Qobj) and observable.shape == self.system.rho0.shape[0]:
+        if isinstance(observable, Qobj) and observable.shape[0] == self.system.rho0.shape[0]:
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
             self.results, self.rho = measurement.measure_observable(self.rho, observable)
