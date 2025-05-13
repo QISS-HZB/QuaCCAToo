@@ -24,11 +24,6 @@ class Rabi(PulsedSim):
     A Rabi sequence is composed of a resonant pulse of varying duration,
     such that the quantum system will undergo periodical transitions between the excited and ground states.
 
-    Attributes
-    ----------
-    pulse_duration : numpy.ndarray
-        Time array for the simulation representing the pulse duration to be used as the variable for the simulation.
-
     Methods
     -------
     run :
