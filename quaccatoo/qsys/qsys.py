@@ -219,6 +219,8 @@ class QSys:
         # check if c_ops is a list of Qobj with the same dimensions as H0
         if c_ops is None:
             self.c_ops = c_ops
+        elif isinstance(c_ops, Qobj) and c_ops.shape == self.H0.shape:
+            self.c_ops = c_ops
         elif isinstance(c_ops, list):
             if all(isinstance(op, (Qobj, np.ndarray)) and op.shape == self.H0.shape for op in c_ops):
                 self.c_ops = c_ops
