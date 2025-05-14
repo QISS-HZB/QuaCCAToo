@@ -12,23 +12,7 @@ Documentation and usage tutorial available at https://qiss-hzb.github.io/QuaCCAT
 
 ## Installation
 
-We strongly recommend using a virtual environment so that the system Python remains untouched.
-
-You can create a `conda` virtual environment as follows:
-
-```sh
-conda create --name quaccatoo-env python qutip matplotlib lmfit
-conda activate quaccatoo-env
-```
-
-**OR**
-
-You can use a native Python venv (you'll need `pip` as well)
-
-``` sh
-python -m venv quaccatoo-env
-source quaccatoo-env/bin/activate
-```
+We strongly recommend using a virtual environment (use whichever tool like `venv`/`conda`/`uv` that you prefer) so that the system Python remains untouched.
 
 After the virtual environment has been setup, clone the repository and run from <u>inside the local cloned folder </u>
 
@@ -42,11 +26,7 @@ To check the installation, you can run
 pip show quaccatoo
 ```
 
-Notebooks can be the most convenient way of running QuaCCAToo (but definitely not the most efficient for long simulations). If you wish to use them, you must also install `jupyter` in you conda environment.
-
-``` sh
-pip install jupyter
-```
+Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detailed installation instructions.
 
 ## Class Hierarchy
 
