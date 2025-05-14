@@ -23,7 +23,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="QuaCCAToo modules" href="modules.html" /> 
+    <link rel="next" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,8 +47,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a></li>
 </ul>
 
         </div>
@@ -77,10 +78,42 @@
              
   <section id="quaccatoo-quantum-color-centers-analysis-toolbox">
 <h1>QuaCCAToo: Quantum Color Centers Analysis Toolbox<a class="headerlink" href="#quaccatoo-quantum-color-centers-analysis-toolbox" title="Link to this heading"></a></h1>
-<p>The documentation for QuaCCAToo is available here. Check out the notebooks for a quick tutorial on the usage. Merge requests welcome at <a class="reference external" href="https://github.com/QISS-HZB/QuaCCAToo">https://github.com/QISS-HZB/QuaCCAToo</a> !</p>
+<img alt="_images/QuaCCAToo_logo.svg" src="_images/QuaCCAToo_logo.svg" />
+<p>QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum
+technology applications, without using rotating wave approximations. The software serves as an extension for
+QuTip, inheriting its object-oriented framework and the Qobj class. This way, the software combines
+accessibility from the high level of abstraction and human-readability of Python with the efficiency of
+compiled programming languages provided by Qutip’s parallelization and the matrix algebra from Scipy
+and Numpy.</p>
+<p>The documentation for QuaCCAToo is available here. Merge requests welcome at <a class="reference external" href="https://github.com/QISS-HZB/QuaCCAToo">https://github.com/QISS-HZB/QuaCCAToo</a> !</p>
+<p>To see usage examples, check the tutorial notebooks linked here. They
+contain:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html">01</a>:
+simplest two-level system, where we first define the system and plot
+the energy levels. Following that, a Rabi oscillation is simulated for
+two different pulse vectors, with the results being fitted and plotted
+in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a
+modeled collapse operator.</p></li>
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html">02</a>:
+simulation of nitrogen vacancy centers in diamond, first calculating
+the energy levels, then performing Rabi and comparing with
+experimental data. Ramsey and PODMR are also simulated.</p></li>
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_ambiguous_resonances.html">03</a>:
+simulation of <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606">Ambiguous Resonances in Multipulse Quantum Sensing with
+Nitrogen Vacancy
+Centers</a>.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebook1.html">01 - Rabi and Hahn of a spin half system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook2.html">02 - NV: Ramsey and PODMR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Ambiguous Resonances</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#module-quaccatoo.qsys.qsys">qsys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#module-quaccatoo.qsys.NV_sys">NV_Sys</a></li>
@@ -93,12 +126,6 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html#module-quaccatoo.exp_data.exp_data">exp_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebook1.html">01 - Rabi and Hahn of a spin half system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook2.html">02 - NV: Ramsey and PODMR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Ambiguous Resonances</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </section>
@@ -107,7 +134,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-right" title="QuaCCAToo modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
