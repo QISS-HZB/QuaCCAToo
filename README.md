@@ -8,19 +8,7 @@ accessibility from the high level of abstraction and human-readability of Python
 compiled programming languages provided by Qutip's parallelization and the matrix algebra from Scipy
 and Numpy. 
 
-What unifies color centers and defines the framework of QuaCCAToo is the quantum mechanical
-description of the magnetic spins with density matrices, combined with a semi-classical description of the
-control and optical fields. Despite the name, the software then is applicable to a much broader set of
-physical systems as discussed, as long as the quantum states can be expressed in terms of a density matrix,
-the system has a well-defined internal Hamiltonian $H_0$ and a control Hamiltonian $H_1$ describing the
-interaction with external fields.
-
-To see examples of utilization, check the tutorial notebooks in the `docs` subdirectory or on the documentation website [here](https://qiss-hzb.github.io/QuaCCAToo/). They contain:
-- [01](https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html): simplest two-level system, where we first define the system and plot the energy levels. Following that, a Rabi oscillation is simulated for two different pulse vectors, with the results being fitted and plotted in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a modeled collapse operator.
-- [02](https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html): simulation of nitrogen vacancy centers in diamond, first calculating the energy levels, then performing Rabi and comparing with experimental data. Ramsey and PODMR are also simulated.
-- [03](https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_ambiguous_resonances.html): simulation of [Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
-
-To see the documentation, check [https://qiss-hzb.github.io/QuaCCAToo/](https://qiss-hzb.github.io/QuaCCAToo/).
+Documentation and usage tutorial available at https://qiss-hzb.github.io/QuaCCAToo/
 
 ## Installation
 
@@ -59,12 +47,6 @@ Notebooks can be the most convenient way of running QuaCCAToo (but definitely no
 ``` sh
 pip install jupyter
 ```
-
-### Note for Windows/macOS Users
-
-QuaCCAToo is best optimized to run on GNU/Linux systems. More specifically, the `parallel_map` method from
-Qutip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
-in simulations and even crashes in some hardware. macOS machines have not been tested by us.
 
 ## Class Hierarchy
 
