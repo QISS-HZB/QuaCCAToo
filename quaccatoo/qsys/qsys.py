@@ -183,12 +183,7 @@ class QSys:
         if not self.H0.isherm:
             warnings.warn("Passed H0 is not a hermitian object.")
 
-        # calculate the eigenenergies of the Hamiltonian and subtract the ground state energy from all the eigenenergies to get the lowest level at 0
-        H_eig = H0.eigenenergies()
-        self.energy_levels = H_eig - H_eig[0]
-
-        # calculate the eigenstates of the Hamiltonian
-        self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
+        self._get_energy_levels()
 
         # check if rho0 is correctly defined
         if rho0 is None:
@@ -228,6 +223,17 @@ class QSys:
                 raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
         else:
             raise ValueError("c_ops must be a list of Qobj or None")
+        
+    def _get_energy_levels(self):
+        """
+        Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.
+        Sets the energy_levels and eigenstates attributes of the class.
+        """
+        H_eig = self.H0.eigenenergies()
+        self.energy_levels = H_eig - H_eig[0]
+
+        self.eigenstates = self.H0.eigenstates()[1]
+
 
     def plot_energy(self, figsize=(2, 6), energy_lim=None):
         """
@@ -267,8 +273,8 @@ class QSys:
         
     def add_spin(self, H_spin):
         """
-        Adds another spin to the system's Hamiltonian,
-        given a Hamiltonian for the new spin.
+        Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.
+        Updates the time-independent Hamiltonian, the energy levels, the initial state, the observable and the collapse operators accordingly.
 
         Parameters
         ----------
@@ -287,6 +293,7 @@ class QSys:
             raise ValueError("H_spin must be a Qobj with a dimension higher than H0.")
         
         self.H0 = tensor(self.H0, qeye(self.dim_add_spin )) +  H_spin
+        self._get_energy_levels()
         
         if self.rho0.isherm:
             self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin )).unit()

@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj
+from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj, basis
 from lmfit import Model
 
 from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
@@ -23,8 +23,8 @@ def qsys():
 class TestQSys:
     def test_states(self, qsys):
         assert (qsys.eigenstates[0], qsys.eigenstates[1]) == (
-            Qobj([[0, 0], [0, 1]]),
-            Qobj([[1, 0], [0, 0]]),
+            -basis(2,1),
+            -basis(2,0)
         )
 
     def test_levels(self, qsys):
