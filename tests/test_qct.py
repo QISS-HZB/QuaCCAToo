@@ -8,8 +8,21 @@ from quaccatoo.analysis.fit_functions import (
     fit_two_lorentz_sym,
     RabiModel,
     GaussianModel,
-    ExpDecayModel
+    ExpDecayModel,
 )
+
+"""
+The testing framework for QuaCCAToo.
+
+We use `pytest` for testing. See https://docs.pytest.org/en/stable/getting-started.html
+for a quick introduction to pytest.
+
+The gist is to use fixtures (`@pytest.fixture` decorator) for objects which are needed
+repeatedly, and group related tests into an appropriately named test class.
+
+Remember to mark long running tests with the `@pytest.mark.slow` decorator. These can then be run
+with the `--runslow` CLI flag passed to `pytest`.
+"""
 
 
 @pytest.fixture
@@ -23,8 +36,8 @@ def qsys():
 class TestQSys:
     def test_states(self, qsys):
         assert (qsys.eigenstates[0], qsys.eigenstates[1]) == (
-            -basis(2,1),
-            -basis(2,0)
+            -basis(2, 1),
+            -basis(2, 0),
         )
 
     def test_levels(self, qsys):
@@ -131,8 +144,10 @@ class TestPODMR:
 
         podmr_analysis.run_fit(
             fit_model=Model(fit_two_lorentz_sym),
-            guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}
+            guess={"A": 0.5, "gamma": 0.2, "f_mean": 1749, "f_delta": 3, "C": 1},
         )
         assert np.isclose(
             podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
-        ) and np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
+        ) and np.isclose(
+            podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3
+        )
