@@ -146,11 +146,8 @@ class NV(QSys):
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
-            Hzf = self._ZeroField()
-            Hez = self._ElectronZeeman()
 
-            H0 = Hzf + Hez
-
+            H0 = self._ZeroField() + self._ElectronZeeman()
             rho0 = basis(3, 1)
             observable = fock_dm(3, 1)
 
@@ -251,16 +248,16 @@ class NV(QSys):
         Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.
         """
         if self.N == 15:
-            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[0:2])) / 2
-            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[0:2])) / 2
+            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[1:2])) / 2
+            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[1:2])) / 2
             self.MW_freqs = np.array([f1, f2])
         elif self.N == 14:
-            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[0:3])) / 3
-            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[0:3])) / 3
+            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[1:3])) / 3
+            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[1:3])) / 3
             self.MW_freqs = np.array([f1, f2])
         elif self.N == 0 or self.N is None:
-            f1 = self.energy_levels[1] - self.energy_levels[0]
-            f2 = self.energy_levels[2] - self.energy_levels[0]
+            f1 = self.energy_levels[1]
+            f2 = self.energy_levels[2]
             self.MW_freqs = np.array([f1, f2])
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
@@ -270,7 +267,7 @@ class NV(QSys):
         Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
         """
         if self.N == 15:
-            f1 = self.energy_levels[1] - self.energy_levels[0] 
+            f1 = self.energy_levels[1]
             f2 = self.energy_levels[3] - self.energy_levels[2]
             f3 = self.energy_levels[5] - self.energy_levels[4]
             self.RF_freqs = np.array([f1, f2, f3])
@@ -279,13 +276,13 @@ class NV(QSys):
             # the order of the ms states changes above the GSLAC
             if self.B0 <= 102.5:
                 f1 = self.energy_levels[2] - self.energy_levels[1] # 0 -> -1 at ms=0
-                f2 = self.energy_levels[2] - self.energy_levels[0] # 0 -> +1 at ms=0
+                f2 = self.energy_levels[2] # 0 -> +1 at ms=0
                 f3 = self.energy_levels[5] - self.energy_levels[3] # 0 -> -1 at ms=-1
                 f4 = self.energy_levels[5] - self.energy_levels[4] # 0 -> +1 at ms=-1
                 f5 = self.energy_levels[8] - self.energy_levels[7] # 0 -> -1 at ms=+1
                 f6 = self.energy_levels[8] - self.energy_levels[6] # 0 -> +1 at ms=-1
             else:
-                f1 = self.energy_levels[2] - self.energy_levels[0] # 0 -> -1 at ms=-1
+                f1 = self.energy_levels[2] # 0 -> -1 at ms=-1
                 f2 = self.energy_levels[2] - self.energy_levels[1] # 0 -> +1 at ms=-1
                 f3 = self.energy_levels[5] - self.energy_levels[4] # 0 -> -1 at ms=0
                 f4 = self.energy_levels[5] - self.energy_levels[3] # 0 -> +1 at ms=0
