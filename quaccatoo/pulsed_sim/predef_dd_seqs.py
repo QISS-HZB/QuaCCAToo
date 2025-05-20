@@ -19,7 +19,7 @@ class CPMG(PulsedSim):
     Attributes
     ----------
     M : int
-        order of the CPMG sequence
+        number of pulses (order) in the CPMG sequence
     free_duration : numpy array
         time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
     pi_pulse_duration : float or int
@@ -110,8 +110,8 @@ class CPMG(PulsedSim):
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
         self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
 
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8*self.M - 1):
+        # repeat M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(self.M - 1):
             self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
             self._free_evolution(ps, self.options)
 
@@ -143,8 +143,8 @@ class CPMG(PulsedSim):
         self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
         self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
 
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8*self.M - 1):
+        # repeat M-1 times the pi pulse and free evolution of ps
+        for itr_M in range(self.M - 1):
             self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
             self._free_evolution(ps, self.options)
 
