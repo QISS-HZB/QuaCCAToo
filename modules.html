@@ -178,6 +178,11 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.utils">utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.save"><code class="docutils literal notranslate"><span class="pre">save()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2869,6 +2874,49 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-quaccatoo.utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-quaccatoo.utils" title="Link to this heading"></a></h2>
+<p>This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.utils.load">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.load" title="Link to this definition"></a></dt>
+<dd><p>Loads the attributes of an object from a zip file,
+creates an instance of the object, and sets the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>Path to the zip file where the attributes are saved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>object</dt><dd><p>The loaded object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.utils.save">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.save" title="Link to this definition"></a></dt>
+<dd><p>Look for all the attributes of the object, save Qobj attributes to separate files,
+and save the rest of the attributes to a pickle file. Finally, create a zip file
+containing all the files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>object</strong><span class="classifier">quaccatoo object</span></dt><dd><p>The object to be saved.</p>
+</dd>
+<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>Path to the file where the attributes will be saved.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
