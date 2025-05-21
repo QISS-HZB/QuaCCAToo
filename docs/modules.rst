@@ -54,3 +54,9 @@ exp_data
 
 .. automodule:: quaccatoo.exp_data.exp_data
    :members:
+
+utils
+-----
+
+.. automodule:: quaccatoo.utils
+   :members:
