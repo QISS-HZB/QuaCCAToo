@@ -1,9 +1,14 @@
+"""
+This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.
+"""
+
 import inspect
 import shutil
 import os
 import zipfile
 import dill
 import quaccatoo
+import numpy as np
 
 from qutip import Qobj, fileio
 
@@ -35,7 +40,7 @@ def save(object, file_name):
         # Separate attributes into Python and Qobj types
         for attr in attributes:
             value = getattr(object, attr)
-            if isinstance(value, Qobj) or (isinstance(value, list) and all(isinstance(item, Qobj) for item in value)):
+            if isinstance(value, Qobj) or (isinstance(value, (list, np.ndarray)) and all(isinstance(item, Qobj) for item in value)):
                 # Save Qobj attributes to a file in the temporary directory
                 fileio.qsave(value, os.path.join(tmp_dir, str(attr)))
             else:         
