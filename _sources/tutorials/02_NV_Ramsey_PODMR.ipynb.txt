@@ -40,7 +40,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -55,13 +55,13 @@
     }
    ],
    "source": [
-    "qsys = NV(\n",
+    "qsys_1 = NV(\n",
     "    N=15,\n",
     "    units_B0='mT',\n",
     "    B0 = 38.4,\n",
     ")\n",
     "\n",
-    "qsys.plot_energy()"
+    "qsys_1.plot_energy()"
    ]
   },
   {
@@ -73,7 +73,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -88,7 +88,7 @@
     }
    ],
    "source": [
-    "qsys.plot_energy(energy_lim=[1790, 1798])"
+    "qsys_1.plot_energy(energy_lim=[1790, 1798])"
    ]
   },
   {
@@ -152,7 +152,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -170,22 +170,22 @@
     "# typical NV Rabi frequency in MHz\n",
     "w1 = 16.72 \n",
     "\n",
-    "rabi_exp_1 = Rabi(\n",
+    "rabi_sim_1 = Rabi(\n",
     "    # pulse duration in us\n",
     "    pulse_duration = np.arange(0, 0.15, 3e-3), \n",
     "    # NV center system defined above\n",
-    "    system = qsys, \n",
+    "    system = qsys_1, \n",
     "    # control Hamiltonian\n",
-    "    H1 = w1*qsys.MW_H1, \n",
+    "    H1 = w1*qsys_1.MW_H1, \n",
     "    # MW frequency for the ms=0 --> ms=-1 state transition\n",
-    "    pulse_params = {'f_pulse': qsys.MW_freqs[0]} \n",
+    "    pulse_params = {'f_pulse': qsys_1.MW_freqs[0]} \n",
     ")\n",
     "\n",
     "\n",
     "# run the experiment and plot results\n",
-    "rabi_exp_1.run()\n",
-    "rabi_analysis = Analysis(rabi_exp_1)\n",
-    "rabi_analysis.plot_results()"
+    "rabi_sim_1.run()\n",
+    "rabi_analysis_1 = Analysis(rabi_sim_1)\n",
+    "rabi_analysis_1.plot_results()"
    ]
   },
   {
@@ -197,7 +197,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -226,9 +226,9 @@
     "# convert the variable from s to us\n",
     "exp_data.variable *= 1e6 \n",
     "\n",
-    "rabi_analysis.compare_with(exp_data)\n",
-    "rabi_analysis.plot_comparison()\n",
-    "rabi_analysis.pearson"
+    "rabi_analysis_1.compare_with(exp_data)\n",
+    "rabi_analysis_1.plot_comparison()\n",
+    "rabi_analysis_1.pearson"
    ]
   },
   {
@@ -240,7 +240,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -255,11 +255,11 @@
     }
    ],
    "source": [
-    "qsys.observable = [tensor(fock_dm(3, 0), qeye(2)), tensor(fock_dm(3, 2), qeye(2))]\n",
+    "qsys_1.observable = [tensor(fock_dm(3, 0), qeye(2)), tensor(fock_dm(3, 2), qeye(2))]\n",
     "\n",
     "# run the experiment\n",
-    "rabi_exp_1.run()\n",
-    "Analysis(rabi_exp_1).plot_results()"
+    "rabi_sim_1.run()\n",
+    "Analysis(rabi_sim_1).plot_results()"
    ]
   },
   {
@@ -271,7 +271,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -286,16 +286,17 @@
     }
    ],
    "source": [
-    "rabi_exp_2 = Rabi(\n",
+    "rabi_sim_2 = Rabi(\n",
     "    pulse_duration = np.linspace(0, 3/w1, 1000),\n",
-    "    system = qsys,\n",
-    "    H1 = w1*qsys.MW_H1,\n",
+    "    system = qsys_1,\n",
+    "    H1 = w1*qsys_1.MW_H1,\n",
     "    # MW frequency for the ms=0 --> ms=+1 state transition\n",
-    "    pulse_params = {'f_pulse': qsys.MW_freqs[1]} \n",
+    "    pulse_params = {'f_pulse': qsys_1.MW_freqs[1]} \n",
     ")\n",
     "\n",
-    "rabi_exp_2.run()\n",
-    "Analysis(rabi_exp_2).plot_results()"
+    "rabi_sim_2.run()\n",
+    "rabi_analysis_2 = Analysis(rabi_sim_2)\n",
+    "rabi_analysis_2.plot_results()"
    ]
   },
   {
@@ -335,16 +336,14 @@
     }
    ],
    "source": [
-    "rabi_analysis = Analysis(rabi_exp_1)\n",
-    "\n",
-    "rabi_analysis.run_fit(\n",
+    "rabi_analysis_2.run_fit(\n",
     "    fit_model = RabiModel(),\n",
     "    # since there are two observables, we need to specify which one we want to fit\n",
-    "    results_index = 1\n",
+    "    results_index = 0\n",
     "    )\n",
     "\n",
-    "rabi_analysis.plot_fit()\n",
-    "rabi_analysis.fit_params[1]"
+    "rabi_analysis_2.plot_fit()\n",
+    "rabi_analysis_2.fit_params[0]"
    ]
   },
   {
@@ -370,7 +369,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -385,8 +384,8 @@
     }
    ],
    "source": [
-    "# NV center system same as before\n",
-    "qsys = NV(\n",
+    "# NV center system same as before with standard observables\n",
+    "qsys_2 = NV(\n",
     "    N=15,\n",
     "    B0 = 40,\n",
     "    units_B0='mT'\n",
@@ -395,21 +394,21 @@
     "# Rabi frequency in MHz\n",
     "w1 = 30 \n",
     "\n",
-    "ramsey_exp = Ramsey(\n",
+    "ramsey_sim = Ramsey(\n",
     "    # free evolution time in us\n",
     "    free_duration = np.linspace(1/2/w1, 3, 500), \n",
     "    pi_pulse_duration = 1/2/w1,\n",
-    "    system = qsys,\n",
-    "    H1 = w1*qsys.MW_H1,\n",
-    "    pulse_params = {'f_pulse': qsys.MW_freqs[0]}\n",
+    "    system = qsys_2,\n",
+    "    H1 = w1*qsys_2.MW_H1,\n",
+    "    pulse_params = {'f_pulse': qsys_2.MW_freqs[0]}\n",
     ")\n",
     "\n",
-    "ramsey_exp.plot_pulses(tau=.03)"
+    "ramsey_sim.plot_pulses(tau=.03)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -424,8 +423,8 @@
     }
    ],
    "source": [
-    "ramsey_exp.run()\n",
-    "Analysis(ramsey_exp).plot_results()"
+    "ramsey_sim.run()\n",
+    "Analysis(ramsey_sim).plot_results()"
    ]
   },
   {
@@ -437,7 +436,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -452,7 +451,7 @@
     }
    ],
    "source": [
-    "ramsey_analysis = Analysis(ramsey_exp)\n",
+    "ramsey_analysis = Analysis(ramsey_sim)\n",
     "\n",
     "ramsey_analysis.run_FFT()\n",
     "ramsey_analysis.get_peaks_FFT()\n",
@@ -497,24 +496,16 @@
     }
    ],
    "source": [
-    "qsys = NV(\n",
-    "    N=15,\n",
-    "    B0 = 40,\n",
-    "    units_B0='mT'\n",
-    ")\n",
-    "\n",
-    "w1 = 30\n",
-    "\n",
-    "podmr_exp_1 = PMR(\n",
+    "podmr_sim_1 = PMR(\n",
     "    # frequencies to scan in MHz\n",
     "    frequencies = np.arange(1400, 4300, 10), \n",
     "    pulse_duration = 1/2/w1,\n",
-    "    system = qsys,\n",
-    "    H1 = w1*qsys.MW_H1\n",
+    "    system = qsys_2,\n",
+    "    H1 = w1*qsys_2.MW_H1\n",
     ")\n",
     "\n",
-    "podmr_exp_1.run()\n",
-    "Analysis(podmr_exp_1).plot_results()"
+    "podmr_sim_1.run()\n",
+    "Analysis(podmr_sim_1).plot_results()"
    ]
   },
   {
@@ -526,7 +517,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -543,15 +534,15 @@
    "source": [
     "w1 = 0.3\n",
     "\n",
-    "podmr_exp_2 = PMR(\n",
+    "podmr_sim_2 = PMR(\n",
     "    frequencies = np.arange(1745, 1753, 0.05),\n",
     "    pulse_duration = 1/2/w1,\n",
-    "    system = qsys,\n",
-    "    H1 = w1*qsys.MW_H1,\n",
+    "    system = qsys_2,\n",
+    "    H1 = w1*qsys_2.MW_H1,\n",
     ")\n",
     "\n",
-    "podmr_exp_2.run()\n",
-    "Analysis(podmr_exp_2).plot_results()"
+    "podmr_sim_2.run()\n",
+    "Analysis(podmr_sim_2).plot_results()"
    ]
   },
   {
@@ -563,7 +554,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 15,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -591,16 +582,16 @@
     }
    ],
    "source": [
-    "podmr_analysis = Analysis(podmr_exp_2)\n",
+    "podmr_analysis_1 = Analysis(podmr_sim_2)\n",
     "\n",
-    "podmr_analysis.run_fit(\n",
+    "podmr_analysis_1.run_fit(\n",
     "    fit_model = Model(fit_two_lorentz_sym),\n",
     "    # initial guess for the fit parameters\n",
     "    guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}, \n",
     "    )\n",
     "\n",
-    "podmr_analysis.plot_fit(xlabel='Frequency')\n",
-    "podmr_analysis.fit_params"
+    "podmr_analysis_1.plot_fit(xlabel='Frequency')\n",
+    "podmr_analysis_1.fit_params"
    ]
   },
   {
@@ -612,7 +603,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": null,
    "metadata": {},
    "outputs": [
     {
@@ -640,7 +631,7 @@
     }
    ],
    "source": [
-    "podmr_analysis_2 = Analysis(podmr_exp_2)\n",
+    "podmr_analysis_2 = Analysis(podmr_sim_2)\n",
     "\n",
     "podmr_analysis_2.run_fit(\n",
     "    fit_model = Model(fit_two_sinc2_sym),\n",

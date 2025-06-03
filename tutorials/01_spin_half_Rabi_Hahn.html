@@ -154,13 +154,13 @@ Hamiltonian given by</p>
 <p>which is then multiplied by the time-dependent pulse function. <span class="math notranslate nohighlight">\(\omega_1\)</span> is the Rabi frequency, related to the amplitude of the pulse.</p>
 <p>First, let’s consider a rabi frequency 10 times smaller than the resonance frequency <span class="math notranslate nohighlight">\(\omega_1=\omega_0/10\)</span>, such that the rotating wave approximation is valid.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="n">w0</span><span class="o">/</span><span class="mi">10</span>
 
 <span class="c1"># create the Rabi object for the qsys and the desired parameters</span>
-<span class="n">rabi_exp</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+<span class="n">rabi_sim_1</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
     <span class="c1"># time array of pulse duration which we want to simulate the experiment</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
     <span class="c1"># we pass the qsys object defined in the previous section</span>
@@ -173,7 +173,7 @@ Hamiltonian given by</p>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">},</span>
 <span class="p">)</span>
 
-<span class="n">rabi_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">()</span>
+<span class="n">rabi_sim_1</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -186,12 +186,12 @@ Hamiltonian given by</p>
 </div>
 <p>To visualize the pulse sequence we can use the <code class="docutils literal notranslate"><span class="pre">plot_pulses</span> <span class="pre">method</span></code>, where we can see the pulse shape and the pulse duration. With the run method the experiment is simulated and the expectation value of the observable is plotted with plot_results.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_sim_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -205,25 +205,24 @@ Hamiltonian given by</p>
 <p>As expected, the expectation value of the operator shows a period oscillation, but with a small modulation related to the rotating wave approximation as we chose <span class="math notranslate nohighlight">\(\omega_0/\omega_1=10\)</span>. For larger ratios, this modulation disappears (check yourself!). Now to fit the data we use the <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> class.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> instance provides the <code class="docutils literal notranslate"><span class="pre">run_fit</span></code> method which takes in a <code class="docutils literal notranslate"><span class="pre">fit_model</span></code> parameter (an <code class="docutils literal notranslate"><span class="pre">lmfit</span></code> model instance, and optionally also a <code class="docutils literal notranslate"><span class="pre">guess</span></code> parameter for the initial values). We can then visualize the fit via the <code class="docutils literal notranslate"><span class="pre">plot_fit</span></code> method. The <code class="docutils literal notranslate"><span class="pre">fit_params</span></code> attribute contains the detailed fitting report.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_analysis_1</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_1</span><span class="p">)</span>
 
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
     <span class="c1"># here we use the RabiModel as a target for fitting</span>
     <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">(),</span>
     <span class="p">)</span>
 
 <span class="c1"># plot the results and print the params of the fit</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">fit_params</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>16</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.62379529</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 6.2630e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-7371.68830</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-7352.05728</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99875014</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.99812524</td><td style='text-align:left'> 0.00112160</td><td style='text-align:left'>(0.11%)</td><td style='text-align:left'>0.9984559815149023</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 5.00156483</td><td style='text-align:left'> 7.9437e-04</td><td style='text-align:left'>(0.02%)</td><td style='text-align:left'>5.005005005005005</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>-1.3590e-06</td><td style='text-align:left'> 0.00228935</td><td style='text-align:left'>(168452.81%)</td><td style='text-align:left'>0.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'>-6.2572e-04</td><td style='text-align:left'> 8.0708e-04</td><td style='text-align:left'>(128.98%)</td><td style='text-align:left'>6.0341154883046144e-05</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8718</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1962</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1710</td></tr></table></div>
@@ -237,7 +236,7 @@ Hamiltonian given by</p>
 </div>
 <p>Here, we observe that the fitted value of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration <span class="math notranslate nohighlight">\(t_\pi \cong 5.001\)</span> μs is slightly larger than the expected value of <span class="math notranslate nohighlight">\(1/(2 \omega_1) = 5\)</span> μs. To obtain a more accurate value, we can consider a rotating pulse with two control Hamiltonians <span class="math notranslate nohighlight">\(\sigma_x\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span>, for that we define custom pulse shape for X and Y with a dephasing of <span class="math notranslate nohighlight">\(\pi/2\)</span> as follows.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_pulseX</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
@@ -246,7 +245,7 @@ Hamiltonian given by</p>
 <span class="k">def</span> <span class="nf">custom_pulseY</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">w0</span><span class="o">*</span><span class="n">t</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">rabi_exp_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+<span class="n">rabi_sim_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
     <span class="c1"># the Hamiltonian for the interaction with the pulse now is a list with the two control Hamiltonians for X and Y</span>
@@ -255,8 +254,8 @@ Hamiltonian given by</p>
      <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">rabi_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">rabi_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_2</span><span class="p">)</span>
+<span class="n">rabi_sim_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">rabi_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_2</span><span class="p">)</span>
 
 <span class="c1"># fit the Rabi oscillations with the run_fit method same as before</span>
 <span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
@@ -269,8 +268,7 @@ Hamiltonian given by</p>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>16</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 2.0777e-08</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 2.0860e-11</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-24589.1886</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-24569.5576</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 1.00000000</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.99999940</td><td style='text-align:left'> 2.0466e-07</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1.0004727285547417</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 5.00000663</td><td style='text-align:left'> 1.4466e-07</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>5.005005005005005</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>-2.6341e-05</td><td style='text-align:left'> 4.1706e-07</td><td style='text-align:left'>(1.58%)</td><td style='text-align:left'>0.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'>-8.1005e-07</td><td style='text-align:left'> 1.4729e-07</td><td style='text-align:left'>(18.18%)</td><td style='text-align:left'>0.0009978644624300977</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8717</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1961</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1710</td></tr></table></div>
@@ -288,7 +286,7 @@ spiral.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp_3</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_sim_3</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
     <span class="c1"># In this case we define a pulse duration array which goes up to a pi-pulse</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
@@ -296,8 +294,8 @@ spiral.</p>
     <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">rabi_exp_3</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">rabi_analysis_3</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_3</span><span class="p">)</span>
+<span class="n">rabi_sim_3</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">rabi_analysis_3</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_3</span><span class="p">)</span>
 
 <span class="n">rabi_analysis_3</span><span class="o">.</span><span class="n">plot_bloch</span><span class="p">()</span>
 </pre></div>
@@ -318,7 +316,7 @@ spiral.</p>
 \[C = \gamma \sigma_z ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\gamma=0.1\)</span> MHz is rate of decoherence, inversely proportional to <span class="math notranslate nohighlight">\(T_2\)</span>. The Hahn echo sequence is then used to measure the coherence time, being composed of two free evolutions with a refocusing <span class="math notranslate nohighlight">\(\pi\)</span>-pulse in between. An initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span>-pulses are also included in order to project the spin the quantization axis.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
@@ -326,7 +324,7 @@ spiral.</p>
 <span class="c1"># overwrite the c_ops attribute of the QSys object</span>
 <span class="n">qsys</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">sigmaz</span><span class="p">()</span>
 
-<span class="n">hahn_exp</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
+<span class="n">hahn_sim</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
     <span class="n">pi_pulse_duration</span><span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="c1"># include the pi/2 pulse after the second free evolution (this line is redundant since it is the default value)</span>
@@ -337,7 +335,7 @@ spiral.</p>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">hahn_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">hahn_sim</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -350,11 +348,11 @@ spiral.</p>
 </div>
 <p>In this case, we can observe the initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span> pulses, the two free evolutions and the middle <span class="math notranslate nohighlight">\(\pi\)</span>-pulse. Finaly, running the experiment leads to an exponential decay of the observable expectation value, known as the Hahn echo decay.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hahn_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">hahn_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hahn_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">hahn_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

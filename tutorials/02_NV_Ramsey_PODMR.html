@@ -111,16 +111,16 @@
 <p>We begin defining the quantum system from the predefined <code class="docutils literal notranslate"><span class="pre">NV</span></code> class in quaccatoo. The class has only two mandatory parameters, the nitrogen isotope <span class="math notranslate nohighlight">\(^{14}\text{N}\)</span>, <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> or None (which neglects all nuclear terms) and the magnetic field in mT. Optionally, the user can define a misalignment angle between the NV axis and the magnetic field, alternative magnetic field units, alternative Hamiltonian units, or collapse operators for the pulsed experiments. To visualize the
 energy levels, we use the <code class="docutils literal notranslate"><span class="pre">plot_energy</span></code> method.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_1</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
     <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
     <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span>
     <span class="n">B0</span> <span class="o">=</span> <span class="mf">38.4</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">qsys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
+<span class="n">qsys_1</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -133,10 +133,10 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </div>
 <p>We observe the three electronic energy levels of the NV center: <span class="math notranslate nohighlight">\(m_s=0,-1,+1\)</span>. To be able to see the nuclear levels splitting, we need to specify a smaller energy range in the <code class="docutils literal notranslate"><span class="pre">plot_energy</span></code> method.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">(</span><span class="n">energy_lim</span><span class="o">=</span><span class="p">[</span><span class="mi">1790</span><span class="p">,</span> <span class="mi">1798</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_1</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">(</span><span class="n">energy_lim</span><span class="o">=</span><span class="p">[</span><span class="mi">1790</span><span class="p">,</span> <span class="mi">1798</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -180,28 +180,28 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 \[H_1 = S_x \otimes \mathbb{1},\]</div>
 <p>which can be obtained by the <code class="docutils literal notranslate"><span class="pre">MW_H1</span></code> method. While the resonant frequencies for the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> and <span class="math notranslate nohighlight">\(m_s=0 \rightarrow +1\)</span> can be obtained from <code class="docutils literal notranslate"><span class="pre">MW_freqs</span></code> attribute, which takes the average between the two nuclear spin states. Again, we will consider a square cosine wave for the pulse.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># typical NV Rabi frequency in MHz</span>
 <span class="n">w1</span> <span class="o">=</span> <span class="mf">16.72</span>
 
-<span class="n">rabi_exp_1</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+<span class="n">rabi_sim_1</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
     <span class="c1"># pulse duration in us</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">3e-3</span><span class="p">),</span>
     <span class="c1"># NV center system defined above</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys_1</span><span class="p">,</span>
     <span class="c1"># control Hamiltonian</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
+    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys_1</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="c1"># MW frequency for the ms=0 --&gt; ms=-1 state transition</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys_1</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
 <span class="p">)</span>
 
 
 <span class="c1"># run the experiment and plot results</span>
-<span class="n">rabi_exp_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_1</span><span class="p">)</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">rabi_sim_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">rabi_analysis_1</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_1</span><span class="p">)</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -214,22 +214,21 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </div>
 <p>If we want to compare with the simulation with experimental data, we can use the <code class="docutils literal notranslate"><span class="pre">ExpData</span></code> class to load it from .dat or .txt file and the <code class="docutils literal notranslate"><span class="pre">compare_with</span></code> method. In this case, the experimental data was measured for the same NV parameters as defined previously.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exp_data</span> <span class="o">=</span> <span class="n">ExpData</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;./exp_data_tutorials/Ex02_NV_rabi.dat&#39;</span><span class="p">)</span>
 <span class="c1"># convert the variable from s to us</span>
 <span class="n">exp_data</span><span class="o">.</span><span class="n">variable</span> <span class="o">*=</span> <span class="mf">1e6</span>
 
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">compare_with</span><span class="p">(</span><span class="n">exp_data</span><span class="p">)</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_comparison</span><span class="p">()</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">pearson</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">compare_with</span><span class="p">(</span><span class="n">exp_data</span><span class="p">)</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">plot_comparison</span><span class="p">()</span>
+<span class="n">rabi_analysis_1</span><span class="o">.</span><span class="n">pearson</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -245,14 +244,14 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>We observe a strong correlation of the simulation and experimental data with an rvalue of 0.987. The standard observable for the NV is the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> given by the fluorescence. To see the populations of the other two states <span class="math notranslate nohighlight">\(m_s=\pm 1\)</span>, we need to redefine the system observables and run again the Rabi experiment.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_1</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
 
 <span class="c1"># run the experiment</span>
-<span class="n">rabi_exp_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">rabi_sim_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -265,19 +264,20 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>Note that population of the <span class="math notranslate nohighlight">\(m_s=+1\)</span> remains 0, as we are using the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> resonant frequency, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> population oscillates with the same frequency as the <span class="math notranslate nohighlight">\(m_s=0\)</span> population, but with opposite sign. If we used the other resonant frequency, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> population would oscillate but <span class="math notranslate nohighlight">\(m_s=-1\)</span> would remain 0.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_exp_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_sim_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys_1</span><span class="p">,</span>
+    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys_1</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys_1</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
 
-<span class="n">rabi_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">rabi_sim_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">rabi_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim_2</span><span class="p">)</span>
+<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -293,16 +293,14 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_exp_1</span><span class="p">)</span>
-
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
     <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">(),</span>
     <span class="c1"># since there are two observables, we need to specify which one we want to fit</span>
-    <span class="n">results_index</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">results_index</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">)</span>
 
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
-<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
+<span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -325,11 +323,11 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <h1>3. Ramsey Experiment<a class="headerlink" href="#3.-Ramsey-Experiment" title="Link to this heading"></a></h1>
 <p>A simple, but important, pulse sequence in quantum sensing is the Ramsey experiment. It measures the accumulated phase difference in the two levels, by applying a <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, waiting for a time <span class="math notranslate nohighlight">\(\tau\)</span> and applying another <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, then measuring the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> state.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NV center system same as before</span>
-<span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NV center system same as before with standard observables</span>
+<span class="n">qsys_2</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
     <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
     <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
     <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span>
@@ -338,16 +336,16 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <span class="c1"># Rabi frequency in MHz</span>
 <span class="n">w1</span> <span class="o">=</span> <span class="mi">30</span>
 
-<span class="n">ramsey_exp</span> <span class="o">=</span> <span class="n">Ramsey</span><span class="p">(</span>
+<span class="n">ramsey_sim</span> <span class="o">=</span> <span class="n">Ramsey</span><span class="p">(</span>
     <span class="c1"># free evolution time in us</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
     <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
-    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys_2</span><span class="p">,</span>
+    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys_2</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys_2</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
 <span class="p">)</span>
 
-<span class="n">ramsey_exp</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mf">.03</span><span class="p">)</span>
+<span class="n">ramsey_sim</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mf">.03</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -359,11 +357,11 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_exp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_exp</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -376,10 +374,10 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>We could fit the results again with a period oscillation, but to illustrate a different method we will use the FFT from quaccatoo. First, the FFT is run with <code class="docutils literal notranslate"><span class="pre">run_FFT</span></code> method, then the peaks are found with <code class="docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_exp</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_sim</span><span class="p">)</span>
 
 <span class="n">ramsey_analysis</span><span class="o">.</span><span class="n">run_FFT</span><span class="p">()</span>
 <span class="n">ramsey_analysis</span><span class="o">.</span><span class="n">get_peaks_FFT</span><span class="p">()</span>
@@ -403,24 +401,16 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">B0</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span>
-<span class="p">)</span>
-
-<span class="n">w1</span> <span class="o">=</span> <span class="mi">30</span>
-
-<span class="n">podmr_exp_1</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_sim_1</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
     <span class="c1"># frequencies to scan in MHz</span>
     <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1400</span><span class="p">,</span> <span class="mi">4300</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys_2</span><span class="p">,</span>
+    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys_2</span><span class="o">.</span><span class="n">MW_H1</span>
 <span class="p">)</span>
 
-<span class="n">podmr_exp_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">podmr_sim_1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -433,20 +423,20 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>Two resonances can be observed, corresponding to the two electronic spin transitions and with a splitting given by the Zeeman interaction with the external magnetic field. To see the nuclear spin splitting, we need to reduce the Rabi frequency to have a better spectral resolution.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="mf">0.3</span>
 
-<span class="n">podmr_exp_2</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
+<span class="n">podmr_sim_2</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
     <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1745</span><span class="p">,</span> <span class="mi">1753</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys_2</span><span class="p">,</span>
+    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys_2</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">podmr_exp_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">podmr_sim_2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_2</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -459,25 +449,24 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>The two resonances now correspond to the two nuclear spin transitions. To get the splitting, we can fit them with Lorentzian Functions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_1</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_2</span><span class="p">)</span>
 
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
+<span class="n">podmr_analysis_1</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
     <span class="n">fit_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">fit_two_lorentz_sym</span><span class="p">),</span>
     <span class="c1"># initial guess for the fit parameters</span>
     <span class="n">guess</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;f_mean&#39;</span><span class="p">:</span><span class="mi">1749</span><span class="p">,</span> <span class="s1">&#39;f_delta&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
     <span class="p">)</span>
 
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">podmr_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+<span class="n">podmr_analysis_1</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
+<span class="n">podmr_analysis_1</span><span class="o">.</span><span class="n">fit_params</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <h2>Fit Result</h2> <p>Model: Model(fit_two_lorentz_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>24</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.11917557</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.6887e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-1142.37301</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-1126.99714</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.95699504</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.53978264</td><td style='text-align:left'> 0.01113652</td><td style='text-align:left'>(2.06%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.19906076</td><td style='text-align:left'> 0.00681328</td><td style='text-align:left'>(3.42%)</td><td style='text-align:left'>0.2</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00957</td><td style='text-align:left'> 0.00410519</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02851436</td><td style='text-align:left'> 0.00817499</td><td style='text-align:left'>(0.27%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 1.00473395</td><td style='text-align:left'> 0.00311813</td><td style='text-align:left'>(0.31%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.5631</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.5552</td></tr></table></div>
@@ -491,10 +480,10 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>From the fit we can extract the parallel component of the hyperfine splitting <span class="math notranslate nohighlight">\(a_{||}=3.03\)</span> MHz. However, the commonly used Lorentzian function does not completely describes all features of the resonace. A better fit is provided with a sinc function.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_exp_2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_2</span><span class="p">)</span>
 
 <span class="n">podmr_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
     <span class="n">fit_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">fit_two_sinc2_sym</span><span class="p">),</span>
@@ -507,8 +496,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <h2>Fit Result</h2> <p>Model: Model(fit_two_sinc2_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>37</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 1.1555e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.4547e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2252.56039</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2237.18453</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99995830</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.49679723</td><td style='text-align:left'> 2.6772e-04</td><td style='text-align:left'>(0.05%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.30066635</td><td style='text-align:left'> 1.1429e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>0.4</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00882</td><td style='text-align:left'> 1.2186e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02839469</td><td style='text-align:left'> 2.4162e-04</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 0.99916892</td><td style='text-align:left'> 8.0602e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.4124</td></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.2688</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.2126</td></tr></table></div>
