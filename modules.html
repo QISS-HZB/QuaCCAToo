@@ -52,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys"><code class="docutils literal notranslate"><span class="pre">QSys</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.add_spin"><code class="docutils literal notranslate"><span class="pre">QSys.add_spin()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.plot_energy"><code class="docutils literal notranslate"><span class="pre">QSys.plot_energy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.truncate"><code class="docutils literal notranslate"><span class="pre">QSys.truncate()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.qsys.qsys.compose_sys"><code class="docutils literal notranslate"><span class="pre">compose_sys()</span></code></a></li>
@@ -62,6 +63,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV"><code class="docutils literal notranslate"><span class="pre">NV</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.add_spin"><code class="docutils literal notranslate"><span class="pre">NV.add_spin()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.rho0_lowT"><code class="docutils literal notranslate"><span class="pre">NV.rho0_lowT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate"><code class="docutils literal notranslate"><span class="pre">NV.truncate()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -245,8 +247,17 @@
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.plot_energy" title="quaccatoo.qsys.qsys.QSys.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>([figsize, energy_lim])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_energy_levels</span></code>()</p></td>
+<td><p>Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.plot_energy" title="quaccatoo.qsys.qsys.QSys.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>([figsize, energy_lim])</p></td>
 <td><p>Plots the energy levels of the Hamiltonian defined in the system.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.add_spin" title="quaccatoo.qsys.qsys.QSys.add_spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_spin</span></code></a>(H_spin)</p></td>
+<td><p>Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.truncate" title="quaccatoo.qsys.qsys.QSys.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>(indexes)</p></td>
+<td><p>Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian, the initial state, the observable and the collapse operators.</p></td>
 </tr>
 </tbody>
 </table>
@@ -277,6 +288,9 @@ Checking all inputs and calculating the energy levels of the Hamiltonian.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.plot_energy" title="quaccatoo.qsys.qsys.QSys.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>([figsize, energy_lim])</p></td>
 <td><p>Plots the energy levels of the Hamiltonian defined in the system.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.truncate" title="quaccatoo.qsys.qsys.QSys.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>(indexes)</p></td>
+<td><p>Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian, the initial state, the observable and the collapse operators.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py method">
@@ -304,6 +318,23 @@ Updates the time-independent Hamiltonian, the energy levels, the initial state, 
 <dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure.</p>
 </dd>
 <dt><strong>energy_lim</strong><span class="classifier">list</span></dt><dd><p>limits of the energy levels.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.qsys.qsys.QSys.truncate">
+<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/qsys/qsys.html#QSys.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.qsys.QSys.truncate" title="Link to this definition"></a></dt>
+<dd><p>Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,
+the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,
+the indexes is set to 0 and the qsys is truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function
+to remove the specified indexes from the Hamiltonian and the initial state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>indexes</strong><span class="classifier">int or list of int</span></dt><dd><p>Index or list of indexes to be removed from the system.</p>
 </dd>
 </dl>
 </dd>
@@ -429,6 +460,15 @@ after checking if all parameters are valid.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_HyperfineN</span></code>()</p></td>
 <td><p>Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_Quadrupole</span></code>()</p></td>
+<td><p>Get the quadrupole term</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.add_spin" title="quaccatoo.qsys.NV_sys.NV.add_spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_spin</span></code></a>(H_spin)</p></td>
+<td><p>Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([mS, mI])</p></td>
+<td><p>Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.</p></td>
+</tr>
 </tbody>
 </table>
 <p>Constructor for the NV class.
@@ -471,6 +511,9 @@ Takes the nitrogen isotope, the magnetic field intensity and angles with the qua
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.rho0_lowT" title="quaccatoo.qsys.NV_sys.NV.rho0_lowT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho0_lowT</span></code></a>(temp[, units_temp])</p></td>
 <td><p>Calculates the initial state of the system at low temperatures using the Boltzmann distribution.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([mS, mI])</p></td>
+<td><p>Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py method">
@@ -504,6 +547,21 @@ At room temperatures and moderate fields, the initial state of the nuclear spins
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>rho0</strong><span class="classifier">Qobj</span></dt><dd><p>initial state of the system</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.qsys.NV_sys.NV.truncate">
+<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mI</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/qsys/NV_sys.html#NV.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="Link to this definition"></a></dt>
+<dd><p>Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.
+The indexes to be removed are calculated according to the mS and mI parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>indexes</strong><span class="classifier">list(int)</span></dt><dd><p>list of indexes to remove in the system</p>
 </dd>
 </dl>
 </dd>

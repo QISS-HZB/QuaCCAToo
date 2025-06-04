@@ -143,7 +143,13 @@
 <span class="sd">    _NuclearZeeman</span>
 <span class="sd">        get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect</span>
 <span class="sd">    _HyperfineN</span>
-<span class="sd">        get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    </span>
+<span class="sd">        get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen</span>
+<span class="sd">    _Quadrupole</span>
+<span class="sd">        get the quadrupole term</span>
+<span class="sd">    add_spin</span>
+<span class="sd">        adds an extra spin to the NV system</span>
+<span class="sd">    truncate</span>
+<span class="sd">        truncates the system to the given indexes   </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">B0</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">c_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units_B0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">phi_r</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">units_angles</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">temp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units_temp</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -517,6 +523,52 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="NV.truncate">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.truncate">[docs]</a>
+    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mS</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mI</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.</span>
+<span class="sd">        The indexes to be removed are calculated according to the mS and mI parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        indexes : list(int)</span>
+<span class="sd">            list of indexes to remove in the system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mS</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for mS. Expected either 1, 0 or -1, got </span><span class="si">{</span><span class="n">mS</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mI</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">mI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">mI</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">mI</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for mI. Expected either 1, 0 or -1, got </span><span class="si">{</span><span class="n">mI</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The nuclear spin is already truncated. The mI parameter will be ignored.&quot;</span><span class="p">)</span>
+
+        <span class="n">indexes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">indexes</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span></div>
 </div>
 
 </pre></div>
