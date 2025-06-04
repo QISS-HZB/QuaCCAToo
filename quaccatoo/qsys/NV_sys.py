@@ -452,32 +452,43 @@ class NV(QSys):
         indexes : list(int)
             list of indexes to remove in the system
         """
-        if mS is None:
-            indexes = []
-        elif mS == 1:
-            indexes = [0, 1, 2]
-        elif mS == 0:
-            indexes = [3, 4, 5]
-        elif mS == -1:
-            indexes = [6, 7, 8]
-        else:
+        if mS != 1 and mS != 0 and mS != -1 and mS is not None:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
+        if mI != 1 and mI != 0 and mI != -1 and mI is not None:
+            raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
         
-        if self.N == 14:
-            if mI is None:
-                pass
-            elif mI == 1:
+        indexes = []
+
+        if self.N == 0 or self.N is None:
+            if mS == 1:
+                indexes = 0
+            elif mS == 0:
+                indexes = 1
+            elif mS == -1:
+                indexes = 2
+        
+        elif self.N == 15:
+            if mS == 1:
+                indexes = [0, 1]
+            elif mS == 0:
+                indexes = [2, 3]
+            elif mS == -1:
+                indexes = [4, 5]
+        
+        elif self.N == 14:
+            if mS == 1:
+                indexes = [0, 1, 2]
+            elif mS == 0:
+                indexes = [3, 4, 5]
+            elif mS == -1:
+                indexes = [6, 7, 8]
+
+            if mI == 1:
                 indexes.extend([0, 3, 6])
             elif mI == 0:
                 indexes.extend([1, 4, 7])
             elif mI == -1:
                 indexes.extend([2, 5, 8])
-            else:
-                raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
-
-        elif self.N == 15 or self.N == 0 or self.N is None:
-            if mI is not None:
-                warnings.warn("The nuclear spin is already truncated. The mI parameter will be ignored.")
 
         indexes = sorted(set(indexes))
         super().truncate(indexes)
