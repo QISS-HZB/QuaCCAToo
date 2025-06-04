@@ -147,8 +147,14 @@ class QSys:
 
     Methods
     -------
+    _get_energy_levels
+        Calculates the eigenenergies of the Hamiltonian and sets the energy_levels and eigenstates attributes.
     plot_energy
         Plots the energy levels of the Hamiltonian.
+    add_spin
+        Adds another spin to the system's Hamiltonian and updates the system accordingly.
+    truncate
+        Truncates the quantum system by removing the states specified by the indexes from the system
     """
 
     def __init__(self, H0, rho0=None, c_ops=None, observable=None, units_H0=None):
@@ -305,3 +311,45 @@ class QSys:
 
         if self.c_ops is not None:
             self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
+
+    def truncate(self, indexes):
+        """
+        Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,
+        the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,
+        the indexes is set to 0 and the qsys is truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function
+        to remove the specified indexes from the Hamiltonian and the initial state.
+
+        Parameters
+        ----------
+        indexes : int or list of int
+            Index or list of indexes to be removed from the system.
+        """
+        if isinstance(indexes, int):
+            if indexes < 0 or indexes >= self.H0.shape[0]:
+                raise ValueError("sel must be a valid index of the Hamiltonian.")
+        if isinstance(indexes, (list, np.array)):
+            if not all(isinstance(i, int) for i in indexes) and not all(0 <= i < self.H0.shape[0] for i in indexes):
+                raise ValueError("All elements in sel must be valid indices of the Hamiltonian.")
+        else:
+            raise ValueError("sel must be an integer or a list of integers.")
+        
+        self.H0 = Qobj( np.delete(np.delete(self.H0.full(), indexes, axis=0), indexes, axis=1) )
+        self._get_energy_levels()
+
+        if self.observable is not None:
+            if isinstance(self.observable, Qobj):
+                self.observable = Qobj(np.delete(np.delete(self.observable.full(), indexes, axis=0), indexes, axis=1))
+            elif isinstance(self.observable, list):
+                self.observable = [Qobj(np.delete(np.delete(obs.full(), indexes, axis=0), indexes, axis=1)) for obs in self.observable]
+
+        if self.rho0 is not None:
+            if self.rho0.isket:
+                self.rho0 = Qobj(np.delete(self.rho0.full(), indexes, axis=0)).unit()
+            else:
+                self.rho0 = Qobj(np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)).unit()
+        
+        if self.c_ops is not None:
+            if isinstance(self.c_ops, Qobj):
+                self.c_ops = Qobj(np.delete(np.delete(self.c_ops.full(), indexes, axis=0), indexes, axis=1))
+            elif isinstance(self.c_ops, list):
+                self.c_ops = [Qobj(np.delete(np.delete(op.full(), indexes, axis=0), indexes, axis=1)) for op in self.c_ops]

@@ -66,7 +66,13 @@ class NV(QSys):
     _NuclearZeeman
         get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
     _HyperfineN
-        get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen    
+        get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen
+    _Quadrupole
+        get the quadrupole term
+    add_spin
+        adds an extra spin to the NV system
+    truncate
+        truncates the system to the given indexes   
     """
     def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0., phi_r=0., units_angles="deg", temp=None, units_temp="K", E=0):
         """
@@ -435,3 +441,46 @@ class NV(QSys):
 
         self.MW_H1 = tensor(self.MW_H1, qeye(self.dim_add_spin))
         self.RF_H1 = tensor(self.RF_H1, qeye(self.dim_add_spin))
+    
+    def truncate(self, mS=None, mI=None):
+        """
+        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.
+        The indexes to be removed are calculated according to the mS and mI parameters.
+
+        Parameters
+        ----------
+        indexes : list(int)
+            list of indexes to remove in the system
+        """
+        if mS is None:
+            indexes = []
+        elif mS == 1:
+            indexes = [0, 1, 2]
+        elif mS == 0:
+            indexes = [3, 4, 5]
+        elif mS == -1:
+            indexes = [6, 7, 8]
+        else:
+            raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
+        
+        if self.N == 14:
+            if mI is None:
+                pass
+            elif mI == 1:
+                indexes.extend([0, 3, 6])
+            elif mI == 0:
+                indexes.extend([1, 4, 7])
+            elif mI == -1:
+                indexes.extend([2, 5, 8])
+            else:
+                raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
+
+        elif self.N == 15 or self.N == 0 or self.N is None:
+            if mI is not None:
+                warnings.warn("The nuclear spin is already truncated. The mI parameter will be ignored.")
+
+        indexes = sorted(set(indexes))
+        super().truncate(indexes)
+
+        self.MW_H1 = Qobj( np.delete(np.delete(self.MW_H1.full(), indexes, axis=0), indexes, axis=1) )
+        self.RF_H1 = Qobj( np.delete(np.delete(self.RF_H1.full(), indexes, axis=0), indexes, axis=1) )
