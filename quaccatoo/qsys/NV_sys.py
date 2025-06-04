@@ -461,11 +461,11 @@ class NV(QSys):
 
         if self.N == 0 or self.N is None:
             if mS == 1:
-                indexes = 0
+                indexes = [0]
             elif mS == 0:
-                indexes = 1
+                indexes = [1]
             elif mS == -1:
-                indexes = 2
+                indexes = [2]
         
         elif self.N == 15:
             if mS == 1:
