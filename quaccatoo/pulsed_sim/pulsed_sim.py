@@ -249,6 +249,11 @@ class PulsedSim:
         ----------
         observable : Qobj
             observable to be measured after the sequence of operations
+
+        Returns
+        -------
+        results : float or list
+            measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
         """
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
             if not observable.isherm:
@@ -260,6 +265,8 @@ class PulsedSim:
 
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
+        
+        return self.results.copy()
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """
