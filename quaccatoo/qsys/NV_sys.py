@@ -452,46 +452,85 @@ class NV(QSys):
         indexes : list(int)
             list of indexes to remove in the system
         """
+        if mS is None and mI is None:
+            warnings.warn("No mS or mI parameters were given. The system will not be truncated.")
+            return
         if mS != 1 and mS != 0 and mS != -1 and mS is not None:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
-        if mI != 1 and mI != 0 and mI != -1 and mI is not None:
+        if mI == 1/2 or mI == -1/2:
+            warnings.warn("mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated.")
+        elif mI != 1 and mI != 0 and mI != -1 and mI is not None:
             raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
         
-        indexes = []
-
+        # set the indexes to be removed and the dimensions of the new objects according to the mS and mI parameters
         if self.N == 0 or self.N is None:
             if mS == 1:
-                indexes = [0]
+                indexes, dims = [0], [2]
             elif mS == 0:
-                indexes = [1]
+                indexes, dims = [1], [2]
             elif mS == -1:
-                indexes = [2]
-        
+                indexes, dims = [2], [2]
+                
         elif self.N == 15:
             if mS == 1:
-                indexes = [0, 1]
+                indexes, dims = [0, 1], [2, 2]
             elif mS == 0:
-                indexes = [2, 3]
+                indexes, dims = [2, 3], [2, 2]
             elif mS == -1:
-                indexes = [4, 5]
-        
+                indexes, dims = [4, 5], [2, 2]
+
         elif self.N == 14:
             if mS == 1:
-                indexes = [0, 1, 2]
+                indexes, dims = [0, 1, 2], [2]
             elif mS == 0:
-                indexes = [3, 4, 5]
+                indexes, dims = [3, 4, 5], [2]
             elif mS == -1:
-                indexes = [6, 7, 8]
+                indexes, dims = [6, 7, 8], [2]
+            else:
+                dims = [3]
 
             if mI == 1:
                 indexes.extend([0, 3, 6])
+                dims.append(2)
             elif mI == 0:
                 indexes.extend([1, 4, 7])
+                dims.append(2)
             elif mI == -1:
                 indexes.extend([2, 5, 8])
+                dims.append(2)
+            else:
+                dims.append(3)
 
         indexes = sorted(set(indexes))
         super().truncate(indexes)
 
         self.MW_H1 = Qobj( np.delete(np.delete(self.MW_H1.full(), indexes, axis=0), indexes, axis=1) )
         self.RF_H1 = Qobj( np.delete(np.delete(self.RF_H1.full(), indexes, axis=0), indexes, axis=1) )
+
+        # corrrect the dimensions of the objects
+        self.H0.dims = [dims, dims]
+        self.MW_H1.dims = [dims, dims]
+        self.RF_H1.dims = [dims, dims]
+
+        if self.observable is not None:
+            if isinstance(self.observable, Qobj):
+                self.observable.dims = [dims, dims]
+            elif isinstance(self.observable, list):
+                for obs in self.observable:
+                    obs.dims = [dims, dims]
+
+        if self.rho0 is not None:
+            if self.rho0.isket:
+                if len(dims) == 1:
+                    self.rho0.dims = [dims, [1]]
+                elif len(dims) == 2:
+                    self.rho0.dims = [dims, [1,1]]
+            else:
+                self.rho0.dims = [dims, dims]
+        
+        if self.c_ops is not None:
+            if isinstance(self.c_ops, Qobj):
+                self.c_ops.dims = [dims, dims]
+            elif isinstance(self.c_ops, list):
+                for c_op in self.c_ops:
+                    c_op.dims = [dims, dims]
