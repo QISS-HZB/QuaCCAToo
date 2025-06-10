@@ -240,7 +240,7 @@ class PulsedSim:
 
         self.total_time += duration
 
-    def measure_qsys(self, observable=None):
+    def measure_qsys(self, observable=None, tol=None):
         """
         Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
         If no observable is given, the observable of the qsys is used.
@@ -249,17 +249,26 @@ class PulsedSim:
         ----------
         observable : Qobj
             observable to be measured after the sequence of operations
+        tol : float
+            tolerance for the measurement, smallest value for the probabilities
+
+        Returns
+        -------
+        results : float or list
+            measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
         """
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
-            self.results, self.rho = measurement.measure_observable(self.rho, observable)
+            self.results, self.rho = measurement.measure_observable(self.rho, observable, tol)
 
         elif observable is None and (isinstance(self.system.observable, Qobj) and self.system.observable.shape == self.system.H0.shape):
-            self.results, self.rho = measurement.measure_observable(self.rho, self.system.observable)
+            self.results, self.rho = measurement.measure_observable(self.rho, self.system.observable, tol)
 
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
+        
+        return self.results.copy()
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
         """

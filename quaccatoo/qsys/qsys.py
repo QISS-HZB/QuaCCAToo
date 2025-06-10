@@ -34,7 +34,7 @@ def compose_sys(qsys1, qsys2):
         warnings.warn("The two systems have different units.")
 
     if isinstance(qsys1.H0, Qobj) and isinstance(qsys2.H0, Qobj):
-        H0 = tensor(qsys1.H0, qsys2.H0)
+        H0 = tensor(qsys1.H0, qeye(qsys2.H0.dims[0])) + tensor(qeye(qsys1.H0.dims[0]), qsys2.H0)
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
@@ -58,11 +58,24 @@ def compose_sys(qsys1, qsys2):
     if qsys1.c_ops is None and qsys2.c_ops is None:
         c_ops = None
     elif qsys1.c_ops is not None and qsys2.c_ops is None:
-        c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops]
+        if isinstance(qsys1.c_ops, Qobj):
+            c_ops = tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))
+        elif isinstance(qsys1.c_ops, list):
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops]
     elif qsys1.c_ops is None and qsys2.c_ops is not None:
-        c_ops = [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+        if isinstance(qsys2.c_ops, Qobj):
+            c_ops = tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
+        elif isinstance(qsys2.c_ops, list):
+            c_ops = [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
     elif qsys1.c_ops is not None and qsys2.c_ops is not None:
-        c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+        if isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, Qobj):
+            c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0])), tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)]
+        elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, list):
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+        elif isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, list):
+            c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+        elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, Qobj):
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)]
     else:
         raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
     
@@ -307,10 +320,16 @@ class QSys:
             self.rho0 = tensor(self.rho0, basis(self.dim_add_spin, 0)).unit()
 
         if self.observable is not None:
-            self.observable = tensor(self.observable, qeye(self.dim_add_spin ))
+            if isinstance(self.observable, Qobj):
+                self.observable = tensor(self.observable, qeye(self.dim_add_spin ))
+            elif isinstance(self.observable, list) and all(isinstance(obs, Qobj) for obs in self.observable):
+                self.observable = [tensor(obs, qeye(self.dim_add_spin )) for obs in self.observable]
 
         if self.c_ops is not None:
-            self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
+            if isinstance(self.c_ops, Qobj):
+                self.c_ops = tensor(self.c_ops, qeye(self.dim_add_spin ))
+            elif isinstance(self.c_ops, list) and all(isinstance(op, Qobj) for op in self.c_ops):
+                self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
 
     def truncate(self, indexes):
         """
