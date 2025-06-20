@@ -244,6 +244,7 @@ class PulsedSim:
         """
         Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
         If no observable is given, the observable of the qsys is used.
+        The rho attribute needs to be normalized before the measurement is performed, in order to avoid numerical errors within the measure_observable method.
 
         Parameters
         ----------
@@ -257,6 +258,8 @@ class PulsedSim:
         results : float or list
             measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
         """
+        self.rho = self.rho.unit()
+
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
