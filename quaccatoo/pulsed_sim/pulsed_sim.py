@@ -258,6 +258,9 @@ class PulsedSim:
         results : float or list
             measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
         """
+        if tol is not None and (not isinstance(tol, (int, float)) or tol < 0):
+            raise ValueError("tol must be a positive real number or None")
+
         self.rho = self.rho.unit()
 
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
