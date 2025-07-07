@@ -21,58 +21,62 @@ class NV(QSys):
     Attributes
     ----------
     B0 : float
-        magnetic field
+        Magnetic field
     N : 15, 14, 0 or None
-        nitrogen isotope, or 0 for no nuclear spin
+        Nitrogen isotope, or 0 for no nuclear spin
     units_B0 : str
-        units of the magnetic field (T, mT or G)
+        Units of the magnetic field (T, mT or G)
     theta : float
-        angle of the magnetic field with respect to the NV axis
+        Angle of the magnetic field with respect to the NV axis
     phi_r : float
-        azimutal angle of the magnetic field with the NV axis
+        Azimutal angle of the magnetic field with the NV axis
     units_angles : str
-        units of the angles (deg or rad)
+        Units of the angles (deg or rad)
     temp : float or None
-        temperature
+        Temperature
     units_temp : str
-        temperature units 'C' or 'K'
+        Temperature units 'C' or 'K'
     energy_levels : list
-        list of energy levels of the Hamiltonian
+        List of energy levels of the Hamiltonian
     MW_freqs : numpy.ndarray
-        microwave frequencies
+        Microwave frequencies
     RF_freqs : numpy.ndarray
         RF frequencies
     MW_H1 : Qobj
-        microwave Hamiltonian
+        Microwave Hamiltonian
     RF_H1 : Qobj
         RF Hamiltonian
     
     Methods
     -------
     rho0_lowT
-        calculates the initial state of the system at low temperatures using the Boltzmann distribution
+        Calculates the initial state of the system at low temperatures using the Boltzmann distribution
     _set_MW_freqs
-        sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
+        Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
     _set_RF_freqs
-        sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
+        Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
     _set_MW_H1
-        sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
+        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
     _set_RF_H1
-        sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions
+        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions
     _ZeroField
-        get the NV Hamiltonian term accounting for zero field splitting
+        Get the NV Hamiltonian term accounting for zero field splitting
     _ElectronZeeman
-        get the NV hamiltonian term accounting for the electron Zeeman effect
+        Get the NV hamiltonian term accounting for the electron Zeeman effect
     _NuclearZeeman
-        get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
+        Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
     _HyperfineN
-        get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen
+        Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen
     _Quadrupole
-        get the quadrupole term
+        Get the quadrupole term
     add_spin
-        adds an extra spin to the NV system
+        Adds an extra spin to the NV system
     truncate
-        truncates the system to the given indexes   
+        Truncates the system to the given indexes 
+
+    Notes
+    -----
+    The NV class inherits the methods and attributes from the QSys class.
     """
     def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0., phi_r=0., units_angles="deg", temp=None, units_temp="K", E=0):
         """
@@ -82,25 +86,25 @@ class NV(QSys):
         Parameters
         ----------
         B0 : float
-            magnetic field
+            Magnetic field
         N : 15/14/0/None
-            nitrogen isotope, or 0 for no nuclear spin
+            Nitrogen isotope, or 0 for no nuclear spin
         c_ops : list(Qobj)
-            list of collapse operators
+            List of collapse operators
         units_B0 : str
-            units of the magnetic field (T, mT or G)
+            Units of the magnetic field (T, mT or G)
         theta : float
-            angle of the magnetic field with respect to the NV axis
+            Angle of the magnetic field with respect to the NV axis
         phi_r : float
-            angle of the magnetic field in the xy plane
+            Angle of the magnetic field in the xy plane
         units_angles : str
-            units of the angles (deg or rad)
+            Units of the angles (deg or rad)
         temp : float
-            temperature
+            Temperature
         units_temp : str
-            temperature units ('C'/'K')
+            Temperature units ('C'/'K')
         E : float
-            perpedicular component of the zero field splitting
+            Perpedicular component of the zero field splitting
         """
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
@@ -178,14 +182,14 @@ class NV(QSys):
         Parameters
         ----------
         T : float
-            temperature
+            Temperature
         units_temp : str
-            units of the temperature (K or C)
+            Units of the temperature (K or C)
 
         Returns
         -------
         rho0 : Qobj
-            initial state of the system
+            Initial state of the system
         """
         if units_temp == "K":
             pass
@@ -450,7 +454,7 @@ class NV(QSys):
         Parameters
         ----------
         indexes : list(int)
-            list of indexes to remove in the system
+            List of indexes to remove in the system
         """
         if mS is None and mI is None:
             warnings.warn("No mS or mI parameters were given. The system will not be truncated.")

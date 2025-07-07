@@ -12,26 +12,26 @@ class ExpData:
     Attributes
     ----------
     variable : np.ndarray
-        array containing the variable data
+        Array containing the variable data
     results : np.ndarray or list of np.ndarray
-        array or list of arrays containing the results data
+        Array or list of arrays containing the results data
     variable_name : str
-        name of the variable
+        Name of the variable
     result_name : str
-        name of the results
+        Name of the results
 
     Methods
     -------
     subtract_results_columns:
-        subtracts the results of the negative column from the positive column
+        Subtracts the results of the negative column from the positive column
     offset_correction:
-        substracts a background value from the results
+        Substracts a background value from the results
     rescale_correction:
-        multiplies the results by a rescale value
+        Multiplies the results by a rescale value
     poly_baseline_correction:
-        performs a polynomial baseline correction to the results
+        Performs a polynomial baseline correction to the results
     plot_exp_data:
-        plots the experimental data
+        Plots the experimental data
     """
 
     def __init__(self, file_path, variable_column=0, results_columns=1, variable_name="Time", result_name="Expectation Value",
@@ -43,23 +43,23 @@ class ExpData:
         Parameters
         ----------
         file_path  : str
-            path to the file containing the experimental data
+            Path to the file containing the experimental data
         variable_column : int
-            column index of the variable
+            Column index of the variable
         results_columns : int or list of int
-            column index of the results
+            Column index of the results
         variable_name : str
-            name of the variable
+            Name of the variable
         result_name : str
-            name of the results
+            Name of the results
         plot : bool
-            if True, plot the experimental data
+            Boolean indicating whether to plot the experimental data or not
         figsize : tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle : str
-            title of the figure for the plot       
+            Title of the figure for the plot       
         **loadtxt_kwargs : dict
-            additional arguments for the np.loadtxt function
+            Additional arguments for the np.loadtxt function
         """
         if not isinstance(file_path, str):
             raise ValueError("file_path must be a string")
@@ -104,15 +104,15 @@ class ExpData:
         Parameters
         ----------
         pos_col: int
-            index of the positive column
+            Index of the positive column
         neg_col: int
-            index of the negative column
+            Index of the negative column
         plot: bool
-            if True, plot the experimental data
+            Boolean indicating whether to plot the experimental data or not
         figsize: tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle: str
-            title of the figure for the plot
+            Title of the figure for the plot
         """
         if not isinstance(self.results[pos_col], np.ndarray) or not isinstance(self.results[neg_col], np.ndarray):
             raise ValueError(f"pos_col={pos_col} and neg_col={neg_col} where not found in the results.")
@@ -131,13 +131,13 @@ class ExpData:
         Parameters
         ----------
         background_value : int or float
-            value to be substracted from the results
+            Value to be substracted from the results
         plot : bool
-            if True, plot the experimental data
+            Boolean indicating whether to plot the experimental data or not
         figsize : tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle : str
-            title of the figure for the plot
+            Title of the figure for the plot
         """
         if not isinstance(background_value, (int, float)):
             raise ValueError("background_value must be a number.")
@@ -161,13 +161,13 @@ class ExpData:
         Parameters
         ----------
         rescale_value : int or float
-            value to be multiplied by the results
+            Value to be multiplied by the results
         plot : bool
-            if True, plot the experimental data
+            Boolean indicating whether to plot the experimental data or not
         figsize : tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle : str
-            title of the figure for the plot
+            Title of the figure for the plot
         """
         if not isinstance(rescale_value, (int, float)):
             raise ValueError("rescale_value must be a number.")
@@ -192,17 +192,17 @@ class ExpData:
         Parameters
         ----------
         x_start : int or list of int
-            start index of the x axis for the baseline fit
+            Start index of the x axis for the baseline fit
         x_end : int or list of int
-            end index of the x axis for the baseline fit
+            End index of the x axis for the baseline fit
         poly_order : int
-            order of the polynomial to fit the baseline
+            Order of the polynomial to fit the baseline
         plot : bool
-            if True, plot the experimental data
+            Boolean indicating whether to plot the experimental data or not
         figsize : tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle : str
-            title of the figure for the plot
+            Title of the figure for the plot
                 
         """
         # check all variables
@@ -249,9 +249,9 @@ class ExpData:
         Parameters
         ----------
         figsize : tuple
-            size of the figure for the plot
+            Size of the figure for the plot
         figtitle : str
-            title of the figure for the plot        
+            Title of the figure for the plot        
         """
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")

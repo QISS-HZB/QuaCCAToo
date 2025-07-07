@@ -18,6 +18,9 @@ from lmfit.models import SineModel, LinearModel, GaussianModel, LorentzianModel,
 ############################################## Rabi - Periodic Oscillation ##############################################
 
 def guess_sin(data, x):
+    """
+    
+    """
     y = data - data.mean()
     frequencies = np.fft.fftfreq(len(x), abs(x[-1] - x[0]) / (len(x) - 1))
     fft = abs(np.fft.fft(y))
@@ -78,6 +81,9 @@ class RabiModel(Model):
 ################################################ Exponential Decay ####################################################
 
 def guess_exp(data,x):
+    """
+    
+    """
     y=np.log(np.abs(data))
     result = np.polynomial.Polynomial.fit(x,y,1)
     coeff = result.convert().coef

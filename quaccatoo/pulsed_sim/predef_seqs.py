@@ -19,7 +19,7 @@ from .pulse_shapes import square_pulse
 
 class Rabi(PulsedSim):
     """
-    A class containing Rabi experiments, inheriting from the PulsedSimulation class.
+    A class containing Rabi experiments.
 
     A Rabi sequence is composed of a resonant pulse of varying duration,
     such that the quantum system will undergo periodical transitions between the excited and ground states.
@@ -27,7 +27,11 @@ class Rabi(PulsedSim):
     Methods
     -------
     run :
-        runs the simulation and stores the results in the results attribute.
+        Runs the simulation and stores the results in the results attribute.
+
+    Notes
+    -----
+    The Rabi sequence inherits the methods and attributes from the PulsedSim class.
     """
 
     def __init__(self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None):
@@ -86,8 +90,7 @@ class Rabi(PulsedSim):
 
 class PMR(PulsedSim):
     """
-    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,
-    inheriting from the PulsedSim class.
+    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed.
 
     The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
     it will undergo some transition which will affect the observable.
@@ -109,6 +112,10 @@ class PMR(PulsedSim):
         To be called by the parallel_map in run method.
     plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
+
+    Notes
+    -----
+    The PMR sequence inherits the methods and attributes from the PulsedSim class.
     """
 
     def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
@@ -184,8 +191,6 @@ class PMR(PulsedSim):
         ----------
         f_pulse : float or int
             Frequency of the pulse to be plotted.
-
-        (Inherited from PulsedSimulation.plot_pulses)
         """
         # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
         if f_pulse is None:
@@ -204,14 +209,13 @@ class PMR(PulsedSim):
 
 class Ramsey(PulsedSim):
     """
-    A class containing Ramsey experiments, inheriting from the PulsedSimulation class.
+    A class containing Ramsey experiments.
+    
+    The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization axis,
+    which causes a phase accumulation between states in the system which can be used for sensing.
 
     Attributes
     ----------
-    free_duration : numpy.ndarray
-        Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
-    pi_pulse_duration : float or int
-        Duration of the pi pulse.
     projection_pulse : bool
         Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.
 
@@ -228,6 +232,10 @@ class Ramsey(PulsedSim):
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
+
+    Notes
+    -----
+    The Ramsey sequence inherits the methods and attributes from the PulsedSim class.
     """
 
     def __init__(
@@ -416,21 +424,16 @@ class Ramsey(PulsedSim):
 
 class Hahn(PulsedSim):
     """
-    A class containing Hahn echo experiments, inheriting from the PulsedSimulation class.
+    A class containing Hahn echo experiments.
 
     The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.
     The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 
     Attributes
     ----------
-    free_duration : numpy.ndarray
-        Time array of the free evolution times to run the simulation.
-    pi_pulse_duration : float or int
-        Duration of the pi pulse.
     projection_pulse : bool
         Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.
     
-
     Methods
     -------
     hahn_sequence :
@@ -443,6 +446,10 @@ class Hahn(PulsedSim):
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
+
+    Notes
+    -----
+    The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.
     """
 
     def __init__(
@@ -459,7 +466,7 @@ class Hahn(PulsedSim):
         time_steps=100,
     ):
         """
-        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.
+        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.
 
         Parameters
         ----------
