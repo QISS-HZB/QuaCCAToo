@@ -118,7 +118,7 @@ class PMR(PulsedSim):
     The PMR sequence inherits the methods and attributes from the PulsedSim class.
     """
 
-    def __init__(self, frequencies, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
+    def __init__(self, frequencies, system, pulse_duration, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
         """
         Constructor for the PMR pulsed experiment class.
 
@@ -126,10 +126,10 @@ class PMR(PulsedSim):
         ----------
         frequencies : numpy.ndarray
             Array of frequencies to run the simulation.
-        pulse_duration : float or int
-            Duration of the pulse.
         system : QSys
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+        pulse_duration : float or int
+            Duration of the pulse.
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
@@ -234,8 +234,8 @@ class Ramsey(PulsedSim):
     def __init__(
         self,
         free_duration,
-        pi_pulse_duration,
         system,
+        pi_pulse_duration,
         H1,
         H2=None,
         projection_pulse=True,
@@ -412,8 +412,8 @@ class Hahn(PulsedSim):
     def __init__(
         self,
         free_duration,
-        pi_pulse_duration,
         system,
+        pi_pulse_duration,
         H1,
         H2=None,
         projection_pulse=True,

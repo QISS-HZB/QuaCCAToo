@@ -32,18 +32,18 @@ class CPMG(PulsedSim):
     The CPMG sequence inherits the methods and attributes from the PulsedSim class.
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
+    def __init__(self, free_duration, system, M, pi_pulse_duration, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the Carr-Purcell-Meiboom-Gill sequence
 
         Parameters
         ----------
-        M : int
-            Order of the CPMG sequence
         free_duration : numpy array
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
         system : QSys
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+        M : int
+            Order of the CPMG sequence
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system
         pi_pulse_duration : float or int
@@ -223,18 +223,18 @@ class XY(PulsedSim):
     The XY sequence inherits the methods and attributes from the PulsedSim class.    
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
+    def __init__(self, free_duration, system, M, pi_pulse_duration, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
         """
         Class constructor for the XY sequence
 
         Parameters
         ----------
-        M : int
-            Order of the XY sequence
         free_duration : numpy array
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
         system : QSys
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+        M : int
+            Order of the XY sequence
         H1 : Qobj, list(Qobj)
             Control Hamiltonian of the system
         pi_pulse_duration : float, int
@@ -418,18 +418,18 @@ class XY8(PulsedSim):
     The XY8 sequence inherits the methods and attributes from the PulsedSim class.   
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100, RXY8=False):
+    def __init__(self, free_duration, system, M, pi_pulse_duration, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100, RXY8=False):
         """
         Class constructor for the XY8 sequence
 
         Parameters
         ----------
-        M : int
-            Order of the XY sequence
         free_duration : numpy array
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
         system : QSys
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+        M : int
+            Order of the XY sequence
         H1 : Qobj, list(Qobj)
             Control Hamiltonian of the system
         pi_pulse_duration : float, int
