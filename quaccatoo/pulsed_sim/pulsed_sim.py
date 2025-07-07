@@ -21,46 +21,50 @@ class PulsedSim:
     Attributes
     ----------
     system : QSys
-        quantum system object representing the quantum system
+        Quantum system object representing the quantum system
     H2 : list(Qobj, function)
-        time dependent sensing Hamiltonian of the system in the form [Qobj, function]
+        Time dependent sensing Hamiltonian of the system in the form [Qobj, function]
     H0_H2 : list
-        list of Hamiltonians for the pulse operation in the form [H0, H2]
+        List of Hamiltonians for the pulse operation in the form [H0, H2]
     total_time : float
-        total time of the experiment
+        Total time of the experiment
     variable : np.array
-        variable of the experiment which the results depend on
+        Variable of the experiment which the results depend on
     variable_name : str
-        name of the variable
+        Name of the variable
     pulse_profiles :list
-        list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
+        List of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
     results : list
-        results of the experiment to be later generated in the run method
+        Results of the experiment to be later generated in the run method
     sequence : callable
-        parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
+        Parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
     time_steps : int
-        number of time steps for the pulses
+        Number of time steps for the pulses
 
     Methods
     -------
-    add_pulse :
-        adds a pulse operation to the sequence of operations of the experiment
-    pulse :
-        updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
     add_free_evolution :
-        adds a free evolution operation to the sequence of operations of the experiment
+        Adds a free evolution operation to the sequence of operations of the experiment
     _free_evolution :
-        updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
+        Updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator
+    add_pulse :
+        Adds a pulse operation to the sequence of operations of the experiment
+    pulse :
+        Updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation
+    add_delta_pulse :
+        Adds a delta pulse with zero duration to the sequence of operations of the experiment
+    _delta_pulse :
+        Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R
     run :
-        runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
+        Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute
     _get_results :
-        gets the results of the experiment from the calculated rho, based on the observable of the system
+        Gets the results of the experiment from the calculated rho, based on the observable of the system
     measure_qsys :
-        measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
+        Measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable
     plot_pulses :
-        plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
+        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     _check_attr_predef_seqs :
-        checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
+        Checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
     """
     def __init__(self, system, H2=None):
         """
@@ -69,9 +73,9 @@ class PulsedSim:
         Parameters
         ----------
         system : QSys
-            quantum system object representing the quantum system
+            Quantum system object representing the quantum system
         H2 : Qobj
-            time dependent sensing Hamiltonian of the system
+            Time dependent sensing Hamiltonian of the system
         """
         if not isinstance(system, QSys):
             raise ValueError("system must be a QSys object")
@@ -102,6 +106,53 @@ class PulsedSim:
         self.sequence = None
         self.time_steps = None
 
+    def add_free_evolution(self, duration, options=None):
+        """
+        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.
+
+        Parameters
+        ----------
+        duration : float or int
+            Duration of the free evolution
+        options : dict
+            Options for the Qutip solver
+        """
+        # check if duration of the pulse is a positive real number
+        if not isinstance(duration, (int, float)) or duration < 0:
+            raise ValueError("duration must be a positive real number")
+        
+        if options is None:
+            options = {}
+        elif not isinstance(options, dict):
+            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
+
+        # add the free evolution to the pulse_profiles list
+        self.pulse_profiles.append([None, [self.total_time, duration + self.total_time], None, None])
+
+        self._free_evolution(duration, options)
+
+    def _free_evolution(self, duration, options):
+        """
+        Updates the total time of the experiment and applies the time-evolution operator to the initial state.
+        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+        If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.
+        Otherwise, the time-evolution operator is applied directlyby the exponential operator.
+
+        Parameters
+        ----------
+        duration : float or int
+            Duration of the free evolution
+        """
+        if self.system.c_ops is not None or self.H2 is not None:
+            self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
+        else:
+            if self.rho.isket:
+                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho
+            else:
+                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
+
+        self.total_time += duration
+
     def add_pulse(self, duration, H1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
@@ -110,17 +161,17 @@ class PulsedSim:
         Parameters
         ----------
         duration : float or int
-            duration of the pulse
+            Duration of the pulse
         H1 : Qobj or list(Qobj)
-            control Hamiltonian of the system
+            Control Hamiltonian of the system
         pulse_shape : callable or list(callable)
-            pulse shape function or list of pulse shape functions representing the time modulation of t H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of t H1
         pulse_params : dict
-            dictionary of parameters for the pulse_shape functions
+            Dictionary of parameters for the pulse_shape functions
         time_steps : int
-            number of time steps for the pulses
+            Number of time steps for the pulses
         options : dict
-            options for the Qutip solver
+            Options for the Qutip solver
         """
         # check all the parameters
         if options is None:
@@ -180,65 +231,49 @@ class PulsedSim:
         Parameters
         ----------
         Ht : list
-            list of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
+            List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
         tarray : np.array
-            time array for the pulse operation
+            Time array for the pulse operation
         options : dict
-            options for the Qutip solver
+            Pptions for the Qutip solver
         pulse_params : dict
-            dictionary of parameters for the pulse_shape functions
+            Dictionary of parameters for the pulse_shape functions
         """
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
         self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
 
         self.total_time += duration
 
-    def add_free_evolution(self, duration, options=None):
+    def add_delta_pulse(self, R):
         """
-        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.
-
-        Parameters
-        ----------
-        duration : float or int
-            duration of the free evolution
-        options : dict
-            options for the Qutip solver
-        """
-        # check if duration of the pulse is a positive real number
-        if not isinstance(duration, (int, float)) or duration < 0:
-            raise ValueError("duration must be a positive real number")
+        Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.
+        For adding a realistic finite length pulse, check add_pulse method.
         
-        if options is None:
-            options = {}
-        elif not isinstance(options, dict):
-            raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-
-        # add the free evolution to the pulse_profiles list
-        self.pulse_profiles.append([None, [self.total_time, duration + self.total_time], None, None])
-
-        self._free_evolution(duration, options)
-
-    def _free_evolution(self, duration, options):
-        """
-        Updates the total time of the experiment and applies the time-evolution operator to the initial state.
-        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
-        If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.
-        Otherwise, the time-evolution operator is applied directlyby the exponential operator.
-
         Parameters
         ----------
-        duration : float or int
-            duration of the free evolution
+        R : Qobj
+            Rotation operator of the delta pulse
         """
-        if self.system.c_ops is not None or self.H2 is not None:
-            self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
+        if not isinstance(R, Qobj) or R.shape != self.system.H0.shape:
+            raise ValueError("U must be a Qobj of the same shape as H0")
+        
+        self.pulse_profiles.append([R, [self.total_time], None, None])
+        self._delta_pulse(R)
+    
+    def _delta_pulse(self, R):
+        """
+        Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R.
+        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
+        
+        Parameters
+        ----------
+        R : Qobj
+            Rotation operator of the delta pulse
+        """
+        if self.rho.isket:
+            self.rho = R * self.rho
         else:
-            if self.rho.isket:
-                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho
-            else:
-                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
-
-        self.total_time += duration
+            self.rho = R * self.rho * R.dag()
 
     def measure_qsys(self, observable=None, tol=None):
         """
@@ -249,14 +284,14 @@ class PulsedSim:
         Parameters
         ----------
         observable : Qobj
-            observable to be measured after the sequence of operations
+            Observable to be measured after the sequence of operations
         tol : float
-            tolerance for the measurement, smallest value for the probabilities
+            Tolerance for the measurement, smallest value for the probabilities
 
         Returns
         -------
         results : float or list
-            measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
+            Measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs
         """
         if tol is not None and (not isinstance(tol, (int, float)) or tol < 0):
             raise ValueError("tol must be a positive real number or None")
@@ -286,11 +321,11 @@ class PulsedSim:
         variable : np.array
             xaxis variable of the plot representing the parameter being changed in the experiment
         sequence : callable
-            sequence of operations to be performed in the experiment
+            Sequence of operations to be performed in the experiment
         sequence_kwargs : dict
-            dictionary of arguments to be passed to the sequence function
+            Dictionary of arguments to be passed to the sequence function
         map_kw : dict
-            dictionary of options for the parallel_map function from QuTip
+            Dictionary of options for the parallel_map function from QuTip
         """
         # if no sequence is passed but the PulsedSim has one, uses the attribute sequence
         if sequence is None and self.sequence is not None:
@@ -352,13 +387,13 @@ class PulsedSim:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
-            label of the x-axis
+            Label of the x-axis
         ylabel : str
-            label of the y-axis
+            Label of the y-axis
         title : str
-            title of the plot
+            Title of the plot
         """
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
@@ -403,21 +438,21 @@ class PulsedSim:
         Parameters
         ----------
         H1 : Qobj or list(Qobj)
-            control Hamiltonian of the system
+            Control Hamiltonian of the system
         pulse_shape : callable or list(callable)
-            pulse shape function or list of pulse shape functions representing the time modulation of H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of H1
         pulse_params : dict
-            dictionary of parameters for the pulse_shape functions
+            Dictionary of parameters for the pulse_shape functions
         options : dict
-            options for the Qutip solver
+            Options for the Qutip solver
         time_steps : int
-            number of time steps for the pulses, if applicable
+            Number of time steps for the pulses, if applicable
         free_duration : np.array
-            free evolution times of the sequence, if applicable
+            Free evolution times of the sequence, if applicable
         pi_pulse_duration : float
-            duration of the pi pulse, if applicable
+            Duration of the pi pulse, if applicable
         M : int
-            order of the sequence, if applicable 
+            Order of the sequence, if applicable 
         """
         # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
