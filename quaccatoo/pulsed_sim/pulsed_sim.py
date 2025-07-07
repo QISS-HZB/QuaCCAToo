@@ -40,6 +40,26 @@ class PulsedSim:
         Parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
     time_steps : int
         Number of time steps for the pulses
+    rho : Qobj
+        Density matrix of the system
+    M : int
+        Order of the sequence, if applicable
+    pi_pulse_duration : float
+        Duration of the pi pulse, if applicable
+    free_duration : np.array
+        Free evolution times of the sequence, if applicable
+    pulse_shape : callable or list(callable)
+        Pulse shape function or list of pulse shape functions representing the time modulation of H1
+    pulse_params : dict
+        Dictionary of parameters for the pulse_shape functions
+    options : dict
+        Options for the Qutip solver, such as 'nsteps', 'atol', 'rtol', 'order'
+    H1 : Qobj or list(Qobj)
+        Control Hamiltonian of the system, which can be a single Qobj or a list of Qobjs
+    Ht : list
+        List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape], H2]
+    time_steps : int
+        Number of time steps for the pulses, if applicable
 
     Methods
     -------
@@ -235,7 +255,7 @@ class PulsedSim:
         tarray : np.array
             Time array for the pulse operation
         options : dict
-            Pptions for the Qutip solver
+            Options for the Qutip solver
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions
         """

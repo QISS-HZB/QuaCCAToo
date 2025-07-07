@@ -19,42 +19,42 @@ class Analysis:
     Attributes
     ----------
     experiment : PulsedSim or ExpData
-        experiment object to be analyzed containing the results and variable attributes
+        Experiment object to be analyzed containing the results and variable attributes
     FFT_values : tuple
-        tuple with the frequency values and the FFT values
+        Tuple with the frequency values and the FFT values
     FFT_peaks : array
-        array with the peaks of the FFT values
+        Array with the peaks of the FFT values
     fit_model : lmfit.Model or list(lmfit.Model)
-        list with the fitting model for each result
+        List with the fitting model for each result
     fit_params : list
-        list with the fitted parameters for each result
+        List with the fitted parameters for each result
     fit_cov : list
-        list with the covariance of the fitted parameters for each result
+        List with the covariance of the fitted parameters for each result
     pearson : float
         Pearson correlation coefficient between two experiments
     exp_comparison : PulsedSim or ExpData
-        experiment to be compared with the first one
+        Experiment to be compared with the first one
 
     Methods
     -------
     compare_with :
-        loads a second experiment to compare with the first one
+        Load a second experiment to compare with the first one
     plot_comparison :
-        plots the results of the experiment and the comparison experiment
+        Plot the results of the experiment and the comparison experiment
     run_FFT :
-        run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object
+        Run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object
     get_peaks_FFT :
-        find the peaks of the FFT values calculated by the run_FFT method
+        Find the peaks of the FFT values calculated by the run_FFT method
     plot_FFT :
-        plot the FFT values calculated by the run_FFT method
+        Plot the FFT values calculated by the run_FFT method
     run_fit :
-        run the fit method from lmfit to fit the results of the experiment with a given model
+        Run the fit method from lmfit to fit the results of the experiment with a given model
     plot_fit :
-        plot the results of the experiment with the fitted function
+        Plot the results of the experiment with the fitted function
     plot_results :
-        plot the results of the experiment
+        Plot the results of the experiment
     plot_bloch :
-        plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two
+        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two
     """
 
     def __init__(self, experiment):
@@ -64,7 +64,7 @@ class Analysis:
         Parameters
         ----------
         experiment : PulsedSim or ExpData
-            experiment object to be analyzed containing the results and variable attributes
+            Experiment object to be analyzed containing the results and variable attributes
         """
         if isinstance(experiment, PulsedSim) or isinstance(experiment, ExpData):
             self.experiment = experiment
@@ -95,13 +95,13 @@ class Analysis:
         Parameters
         ----------
         exp_comparison : PulsedSim or ExpData
-            experiment to be compared with the first one
+            Experiment to be compared with the first one
         results_index : int
-            index of the results to be compared if the results attribute is a list
+            Index of the results to be compared if the results attribute is a list
         comparison_index : int
-            index of the results to be compared if the results attribute of the exp_comparison is a list
+            Index of the results to be compared if the results attribute of the exp_comparison is a list
         linear_fit : bool
-            boolean indicating whether or not to perform a linear fit between the two data sets
+            Boolean indicating whether or not to perform a linear fit between the two data sets
 
         Returns
         -------
@@ -155,13 +155,13 @@ class Analysis:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
-            label of the x-axis
+            Label of the x-axis
         ylabel : str
-            label of the y-axis
+            Label of the y-axis
         title : str
-            title of the plot
+            Title of the plot
         """
         self.plot_results(figsize, xlabel, ylabel, title)
 
@@ -181,7 +181,7 @@ class Analysis:
         Returns
         -------
         FFT_values : tuple
-            tuple with the frequency values and the FFT values
+            Tuple with the frequency values and the FFT values
         """
         if isinstance(self.experiment.results, np.ndarray):
             y = np.abs(np.fft.rfft(self.experiment.results - np.mean(self.experiment.results)))
@@ -205,12 +205,12 @@ class Analysis:
         Parameters
         ----------
         find_peaks_kwargs : dict
-            dictionary with the arguments to be passed to the scipy.signal.find_peaks function
+            Dictionary with the arguments to be passed to the scipy.signal.find_peaks function
 
         Returns
         -------
         FFT_peaks : array
-            array with the peaks of the FFT values
+            Array with the peaks of the FFT values
         """
         if len(self.FFT_values) == 0:
             raise ValueError("No FFT values to analyze, you must run the FFT first")
@@ -234,13 +234,13 @@ class Analysis:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
-            label of the x-axis
+            Label of the x-axis
         ylabel : str
-            label of the y-axis
+            Label of the y-axis
         title : str
-            title of the plot
+            Title of the plot
         """
         if len(self.FFT_values) == 0:
             raise ValueError("No FFT values to plot, you must run the FFT first")
@@ -299,11 +299,11 @@ class Analysis:
         Parameters
         ----------
         fit_model : lmfit.Model
-            model to be used to fit the results
+            Model to be used to fit the results
         results_index : int
-            index of the results to be fitted if the results attribute is a list
+            Index of the results to be fitted if the results attribute is a list
         guess : dict
-            initial guess for the parameters of the model
+            Initial guess for the parameters of the model
             Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.
             See the definitions of the models in the fit_functions.py file for details.
 
@@ -378,13 +378,13 @@ class Analysis:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
-            label of the x-axis
+            Label of the x-axis
         ylabel : str
-            label of the y-axis
+            Label of the y-axis
         title : str
-            title of the plot
+            Title of the plot
         """
         self.plot_results(figsize, xlabel, ylabel, title)
 
@@ -407,13 +407,13 @@ class Analysis:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         xlabel : str
-            label of the x-axis
+            Label of the x-axis
         ylabel : str
-            label of the y-axis
+            Label of the y-axis
         title : str
-            title of the plot
+            Title of the plot
         """
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
@@ -456,7 +456,7 @@ class Analysis:
         Parameters
         ----------
         figsize : tuple
-            size of the figure to be passed to matplotlib.pyplot
+            Size of the figure to be passed to matplotlib.pyplot
         """
         if not isinstance(self.experiment, PulsedSim):
             raise ValueError("experiment must be a PulsedSim object")

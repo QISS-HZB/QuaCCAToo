@@ -2,7 +2,7 @@
 # TODO: implement eV units conversion to frequencies
 
 """
-This module contains the plot_energy_B0 function, compose_sys function and the QSys class part of QuaCCAToo package.
+This module contains the plot_energy_B0 function, compose_sys function and the QSys class.
 """
 
 import warnings
@@ -178,15 +178,15 @@ class QSys:
         Parameters
         ----------
         H0 : Qobj/array
-            time-independent internal Hamiltonian of the system
+            Time-independent internal Hamiltonian of the system
         rho0 : Qobj/array/int
-            initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
+            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
         c_ops : list(Qobj)
-            list of collapse operators
+            List of collapse operators
         observable : Qobj or list(Qobj)
-            observable to be measured
+            Observable to be measured
         units_H0 : str
-            units of the Hamiltonian
+            Units of the Hamiltonian
         """
         # if the units are in frequency, assign the Hamiltonian as it is
         if units_H0 is None:
@@ -261,9 +261,9 @@ class QSys:
         Parameters
         ----------
         figsize : tuple
-            size of the figure.
+            Size of the figure
         energy_lim : list
-            limits of the energy levels.
+            Limits of the energy levels
         """
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")

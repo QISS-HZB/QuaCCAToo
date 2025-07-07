@@ -13,11 +13,16 @@ def square_pulse(t, **pulse_params):
     Parameters
     ----------
     t : float
-        time parameter
+        Time parameter
     f_pulse : float
-        frequency of the pulse
+        Frequency of the pulse
     phi_t : float
-        phase of the pulse
+        Phase of the pulse
+
+    Returns
+    -------
+    float
+        Value of the square pulse at time t
     """
     return np.cos(pulse_params['f_pulse']*t + pulse_params['phi_t'])
 
@@ -29,13 +34,20 @@ def gaussian_pulse(t, **pulse_params):
     Parameters
     ----------
     t : float
-        time parameter
+        Time parameter
     t_mid : float
-        middle point of the pulse
+        Middle point of the pulse
     sigma : float
-        width of the pulse
-    f_pulse float): frequency of the pulse
-    phi_t (float): phase of the pulse
+        Width of the pulse
+    f_pulse : float
+        Frequency of the pulse
+    phi_t : float
+        Phase of the pulse
+
+    Returns
+    -------
+    float
+        Value of the Gaussian pulse at time t
     """
     return np.exp(-((t - pulse_params['t_mid'])**2)/(2*pulse_params['sigma']**2))*np.cos(pulse_params['f_pulse']*t + pulse_params['phi_t'])
 
@@ -47,14 +59,19 @@ def lorentzian_pulse(t, **pulse_params):
     Parameters
     ----------
     t : float
-        time parameter
+        Time parameter
     t_mid : float
-        middle point of the pulse
+        Middle point of the pulse
     gamma : float
-        width of the pulse
+        Width of the pulse
     f_pulse : float
-        frequency of the pulse
+        Frequency of the pulse
     phi_t : float
-        phase of the pulse
+        Phase of the pulse
+
+    Returns
+    -------
+    float
+        Value of the Lorentzian pulse at time t
     """
     return 1/(1 + ((t - pulse_params['t_mid'])/['gamma'])**2)*np.cos(pulse_params['f_pulse']*t+ pulse_params['phi_t'])
