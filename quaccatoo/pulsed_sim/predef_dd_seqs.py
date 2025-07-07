@@ -17,18 +17,11 @@ class CPMG(PulsedSim):
     The CPMG sequence consists of a series of pi pulses and free evolution times,
     such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.
 
-    Attributes
-    ----------
-    projection_pulse : bool
-        Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
-
     Methods
     -------
     CPMG_sequence :
         defines the Carr-Purcell-Meiboom-Gill sequence for a given free evolution time tau and the set of attributes defined in the constructor,
         returning the final state. The sequence is to be called by the parallel_map method of QuTip.
-    CPMG_sequence_proj :
-        CPMG sequence with a final pi/2 pulse.
     _get_pulse_profiles :
         Generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
@@ -67,29 +60,20 @@ class CPMG(PulsedSim):
             Number of time steps in the pulses for the simulation
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M, projection_pulse)
+        self.sequence = self.CPMG_sequence
 
-        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-        self.pulse_params = np.empty(2, dtype=dict)
-        # X pulse parameters are the first element in the list and Y pulses are the second element
-        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-
-        # If projection_pulse is True, the sequence is set to the CPMG_sequence_proj method with the initial and final projection pulses into the Sz basis
-        #  otherwise it is set to the CPMG_sequence method without the projection pulses
-        if projection_pulse:
-            self.sequence = self.CPMG_sequence_proj
-        elif not projection_pulse:
-            self.sequence = self.CPMG_sequence
-        else:
-            raise ValueError("projection_pulse must be a boolean")
-        
-        self.projection_pulse = projection_pulse
+        base_pulse = pulse_params.copy()
+        self.pulse_params = [
+            {**base_pulse, "phi_t": 0},           
+            {**base_pulse, "phi_t": -np.pi / 2}
+        ]
 
     def CPMG_sequence(self, tau):
         """
         Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -116,43 +100,12 @@ class CPMG(PulsedSim):
         # perform the last pi pulse on X
         self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
 
-        self._free_evolution(ps/2, self.options)
-
-        return self.rho
-
-    def CPMG_sequence_proj(self, tau):
-        """
-        Defines the CPMG sequence, but with a final pi/2 pulse in order to project the result into the Sz basis.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time
-
-        Returns
-        -------
-        rho : Qobj
-            Final state
-        """
-        ps = tau - self.pi_pulse_duration
-
-        # initial pi/2 pulse on Y
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
-            self._free_evolution(ps, self.options)
-
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
-
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # final pi/2 pulse on Y
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        if self.projection_pulse:
+            self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
+            # final pi/2 pulse on Y
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+        else:
+            self._free_evolution(ps/2, self.options)
 
         return self.rho
 
@@ -242,9 +195,7 @@ class CPMG(PulsedSim):
         title : str
             Title of the plot
         """
-
         self._get_pulse_profiles(tau)
-
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
@@ -257,18 +208,11 @@ class XY(PulsedSim):
     The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
     It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
 
-    Attributes
-    ----------
-    projection_pulse : bool
-        Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
-
     Methods
     -------
     XY_sequence :
         Defines the XY sequence for a given free evolution time tau and the set of attributes defined in the constructor,
         returning the final state. The sequence is to be called by the parallel_map method of QuTip.
-    XY_sequence_proj :
-        XY sequence with projection pulse.
     _get_pulse_profiles :
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
@@ -307,27 +251,19 @@ class XY(PulsedSim):
             Dictionary of solver options
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M, projection_pulse)
+        self.sequence = self.XY_sequence
 
-        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-        self.pulse_params = np.empty(2, dtype=dict)
-        # X pulse parameters are the first element in the list and Y pulses are the second element
-        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-
-        # If projection_pulse is True, the sequence is set to the XY_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY_sequence method without the projection pulse
-        if projection_pulse:
-            self.sequence = self.XY_sequence_proj
-        elif not projection_pulse:
-            self.sequence = self.XY_sequence
-        else:
-            raise ValueError("projection_pulse must be a boolean")
-
-        self.projection_pulse = projection_pulse
+        base_pulse = pulse_params.copy()
+        self.pulse_params = [
+            {**base_pulse, "phi_t": 0},           
+            {**base_pulse, "phi_t": -np.pi / 2}
+        ]
 
     def XY_sequence(self, tau):
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -352,41 +288,13 @@ class XY(PulsedSim):
             self._free_evolution(ps, self.options)
 
         self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
-        self._free_evolution(ps/2, self.options)
 
-        return self.rho
-
-    def XY_sequence_proj(self, tau):
-        """
-        Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time
-
-        Returns
-        -------
-        rho : Qobj
-            Final state
-        """
-        ps = tau - self.pi_pulse_duration
-
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
-        for itr_M in range(2 * self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 2])
-            self._free_evolution(ps, self.options)
-
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # final pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+        if self.projection_pulse:
+            self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
+            # final pi/2 pulse on X
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+        else:
+            self._free_evolution(ps/2, self.options)
 
         return self.rho
 
@@ -495,18 +403,11 @@ class XY8(PulsedSim):
     The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
     in order to improve noise suppression and pulse errors.
 
-    Attributes
-    ----------
-    projection_pulse : bool
-        Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis
-
     Methods
     -------
     XY_sequence :
         Defines the XY8-M sequence for a given free evolution time tau and the set of attributes defined in the constructor,
         returning the final state. The sequence is to be called by the parallel_map method of QuTip.
-    XY_sequence_proj :
-        XY8 sequence with projection pulse.
     _get_pulse_profiles :
         Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
@@ -517,7 +418,7 @@ class XY8(PulsedSim):
     The XY8 sequence inherits the methods and attributes from the PulsedSim class.   
     """
 
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
+    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100, RXY8=False):
         """
         Class constructor for the XY8 sequence
 
@@ -543,35 +444,41 @@ class XY8(PulsedSim):
             Number of time steps in the pulses for the simulation
         options : dict, optional
             Dictionary of solver options from Qutip
+        projection_pulse : bool
+            Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
+        RXY8 : bool
+            Boolen to determine if a random phase is to be added to each XY8 block
         """
         super().__init__(system, H2)
-        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M)
+        self._check_attr_predef_seqs(H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M, projection_pulse)
+        self.sequence = self.XY8_sequence
 
-        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-        self.pulse_params = np.empty(8, dtype=dict)
-        # define XY8 pulse parameters for the sequence: X-Y-X-Y-Y-X-Y-X
-        self.pulse_params[0] = {**pulse_params, **{"phi_t": 0}}
-        self.pulse_params[1] = {**pulse_params, **{"phi_t": -np.pi / 2}}
-        self.pulse_params[2] = self.pulse_params[0]
-        self.pulse_params[3] = self.pulse_params[1]
-        self.pulse_params[4] = self.pulse_params[1]
-        self.pulse_params[5] = self.pulse_params[0]
-        self.pulse_params[6] = self.pulse_params[1]
-        self.pulse_params[7] = self.pulse_params[0]
-
-        # If projection_pulse is True, the sequence is set to the XY8_sequence_proj method with the final projection pulse into the Sz basis, otherwise it is set to the XY8_sequence method without the projection pulse
-        if projection_pulse:
-            self.sequence = self.XY8_sequence_proj
-        elif not projection_pulse:
-            self.sequence = self.XY8_sequence
+        if RXY8:
+            random_phases = np.random.rand(M) * 2 * np.pi
+        elif not RXY8:
+            random_phases = np.zeros(M)
         else:
-            raise ValueError("projection_pulse must be a boolean")
+            raise ValueError("RXY8 must be a boolean value indicating weather to add a random phase to each XY8 block or not.")
 
-        self.projection_pulse = projection_pulse
+        base_pulse = self.pulse_params.copy()
 
+        self.pulse_params = []
+        for itr_M in range(M):
+            phi_x = 0 + random_phases[itr_M]
+            phi_y = -np.pi / 2 + random_phases[itr_M]
+
+            px = base_pulse.copy()
+            py = base_pulse.copy()
+            px["phi_t"] = phi_x
+            py["phi_t"] = phi_y
+
+            self.pulse_params.extend([px, py, px, py, py, px, py, px])
+    
     def XY8_sequence(self, tau):
         """
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        If random_phase is set to True, a random phase is added in each XY8 block.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -592,48 +499,17 @@ class XY8(PulsedSim):
 
         # repeat 8*M-1 times the pi pulse and free evolution of ps
         for itr_M in range(8*self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 8])
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
             self._free_evolution(ps, self.options)
 
         # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[-1])
 
-        self._free_evolution(ps/2, self.options)
-
-        return self.rho
-
-    def XY8_sequence_proj(self, tau):
-        """
-        Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time
-
-        Returns
-        -------
-        rho : Qobj
-            Final state
-        """
-        ps = tau - self.pi_pulse_duration
-
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8*self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 8])
-            self._free_evolution(ps, self.options)
-
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
-
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+        if self.projection_pulse:
+            self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+        else:
+            self._free_evolution(ps/2, self.options)
 
         return self.rho
 
@@ -727,202 +603,6 @@ class XY8(PulsedSim):
         title : str
             Title of the plot
         """
-
         self._get_pulse_profiles(tau)
-
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
-
-####################################################################################################
-
-class RXY8(XY8):
-    """
-    This contains the RXY8-M sequence, inheriting from XY8. The RXY8-M is a further improvement from the XY8-M sequence,
-    where a random phase is added in each XY8 block in order to improve noise suppression and pulse errors.
-
-    Methods
-    -------
-    RXY8_sequence :
-        Defines the RXY8 sequence for a given free evolution time tau and the set of attributes defined in the constructor,
-        returning the final state. The sequence is to be called by the parallel_map method of QuTip.
-    RXY8_sequence_proj :
-        RXY8 sequence with projection pulse.
-    _get_pulse_profiles :
-        Generates the pulse profiles for the RXY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-    plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the RXY8-M sequence for a given tau and then plot them.
-    """
-    def __init__(self, M, free_duration, pi_pulse_duration, system, H1, H2=None, projection_pulse=True, pulse_shape=square_pulse, pulse_params=None, options=None, time_steps=100):
-        """
-        Class constructor for the RXY8 sequence
-
-        Parameters
-        ----------
-        same as XY8
-        """
-        super().__init__(M, free_duration, pi_pulse_duration, system, H1, H2, projection_pulse, pulse_shape, pulse_params, options, time_steps)
-
-        if projection_pulse:
-            self.sequence = self.RXY8_sequence_proj
-        elif not projection_pulse:
-            self.sequence = self.RXY8_sequence
-        else:
-            raise ValueError("projection_pulse must be a boolean")
-        
-        # initialize the pulse_params attribute as a list of dictionaries for X and Y pulses
-        self.pulse_params = np.empty(M*8, dtype=dict)
-        # define RXY8 pulse parameters for the sequence: X-Y-X-Y-Y-X-Y-X with a random phase in each block
-        for itr_M in range(M):
-            random_phase = np.random.rand()*2*np.pi
-            self.pulse_params[0+8*itr_M] = {**pulse_params, **{"phi_t": 0 + random_phase}}
-            self.pulse_params[1+8*itr_M] = {**pulse_params, **{"phi_t": -np.pi / 2 + random_phase}}
-            self.pulse_params[2+8*itr_M] = self.pulse_params[0+8*itr_M]
-            self.pulse_params[3+8*itr_M] = self.pulse_params[1+8*itr_M]
-            self.pulse_params[4+8*itr_M] = self.pulse_params[1+8*itr_M]
-            self.pulse_params[5+8*itr_M] = self.pulse_params[0+8*itr_M]
-            self.pulse_params[6+8*itr_M] = self.pulse_params[1+8*itr_M]
-            self.pulse_params[7+8*itr_M] = self.pulse_params[0+8*itr_M]
-
-        
-    def RXY8_sequence(self, tau):
-        """
-        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-        A random phase is added in each XY8 block.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time
-
-        Returns
-        -------
-        rho : Qobj
-            Final state
-        """
-        ps = tau - self.pi_pulse_duration
-
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8*self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
-            self._free_evolution(ps, self.options)
-
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[-1])
-
-        self._free_evolution(ps/2, self.options)
-
-        return self.rho
- 
-    def RXY8_sequence_proj(self, tau):
-        """
-        Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
-        plus the projection pulse.
-        A random phase is added in each XY8 block.
-        The sequence is to be called by the parallel_map method of QuTip.
-
-        Parameters
-        ----------
-        tau : float
-            Free evolution time
-
-        Returns
-        -------
-        rho : Qobj
-            Final state
-        """
-        ps = tau - self.pi_pulse_duration
-
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8*self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
-            self._free_evolution(ps, self.options)
-
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[-1])
-
-        self._free_evolution(ps/2 - self.pi_pulse_duration/2, self.options)
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-
-        return self.rho
-    
-    def _get_pulse_profiles(self, tau=None):
-        """
-        Generates the pulse profiles for the RXY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
-
-        Parameters
-        ----------
-        tau : float
-            free evolution variable or pulse spacing for the sequence
-        """
-        # check if tau is correctly defined
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
-
-        self.pulse_profiles = []
-
-        # add the first pi/2 pulse on X axis
-        if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append([self.H1, np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
-        elif isinstance(self.H1, list):
-            self.pulse_profiles.append([[self.H1[i], np.linspace(0, self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
-
-        t0 = self.pi_pulse_duration / 2
-        ps = tau  - self.pi_pulse_duration
-
-        # add the first free evolution
-        self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration / 2], None, None])
-        t0 += ps/2 - self.pi_pulse_duration / 2
-
-        # add pulses and free evolution M-1 times
-        for itr_M in range(8 * self.M - 1):
-            # add a pi pulse
-            if isinstance(self.H1, Qobj):
-                self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[itr_M]])
-            elif isinstance(self.H1, list):
-                self.pulse_profiles.append(
-                    [[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[itr_M % 8]] for i in range(len(self.H1))]
-                )
-            t0 += self.pi_pulse_duration
-
-            # add a free evolution
-            self.pulse_profiles.append([None, [t0, t0 + ps], None, None])
-            t0 += ps
-
-        # add another pi pulse
-        if isinstance(self.H1, Qobj):
-            self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape, self.pulse_params[-1]])
-        elif isinstance(self.H1, list):
-            self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps), self.pulse_shape[i], self.pulse_params[-1]] for i in range(len(self.H1))])
-        t0 += self.pi_pulse_duration
-
-        if self.projection_pulse:
-            # add the last free evolution
-            self.pulse_profiles.append([None, [t0, t0 + ps/2 - self.pi_pulse_duration/2], None, None])
-            t0 += ps/2 - self.pi_pulse_duration/2
-
-            if isinstance(self.H1, Qobj):
-                # add the last pi/2 pulse
-                self.pulse_profiles.append([self.H1, np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape, self.pulse_params[0]])
-            elif isinstance(self.H1, list):
-                # add the first pi/2 pulse
-                self.pulse_profiles.append([[self.H1[i], np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps), self.pulse_shape[i], self.pulse_params[0]] for i in range(len(self.H1))])
-
-            t0 += self.pi_pulse_duration / 2
-        else:
-            # add the last free evolution
-            self.pulse_profiles.append([None, [t0, t0 + ps/2], None, None])
-            t0 += ps/2
-
-        # set the total_time attribute to the total time of the pulse sequence
-        self.total_time = t0

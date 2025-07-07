@@ -37,7 +37,7 @@ class PulsedSim:
     results : list
         Results of the experiment to be later generated in the run method
     sequence : callable
-        Parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user
+        Parallel sequence of operations to be overwritten in predef_seqs and predef_dd_seqs, or defined by the user
     time_steps : int
         Number of time steps for the pulses
     rho : Qobj
@@ -451,7 +451,7 @@ class PulsedSim:
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
         ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
 
-    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M):
+    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M, projection_pulse):
         """
         Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.
 
@@ -473,6 +473,8 @@ class PulsedSim:
             Duration of the pi pulse, if applicable
         M : int
             Order of the sequence, if applicable 
+        projection_pulse : bool
+            Whether the sequence contains a final projection pulse or not, if applicable
         """
         # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
         if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
@@ -551,3 +553,11 @@ class PulsedSim:
             raise ValueError("M must be a positive integer")
         else:
             self.M = M
+
+        # check whether projection_pulse is a boolean and if it is, assign it to the object
+        if projection_pulse is None:
+            pass
+        elif isinstance(projection_pulse, bool):
+            self.projection_pulse = projection_pulse
+        else: 
+            raise ValueError("projection_pulse must be a boolean")
