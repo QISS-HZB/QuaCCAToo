@@ -89,26 +89,26 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    variable : np.ndarray</span>
-<span class="sd">        array containing the variable data</span>
+<span class="sd">        Array containing the variable data</span>
 <span class="sd">    results : np.ndarray or list of np.ndarray</span>
-<span class="sd">        array or list of arrays containing the results data</span>
+<span class="sd">        Array or list of arrays containing the results data</span>
 <span class="sd">    variable_name : str</span>
-<span class="sd">        name of the variable</span>
+<span class="sd">        Name of the variable</span>
 <span class="sd">    result_name : str</span>
-<span class="sd">        name of the results</span>
+<span class="sd">        Name of the results</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    subtract_results_columns:</span>
-<span class="sd">        subtracts the results of the negative column from the positive column</span>
+<span class="sd">        Subtracts the results of the negative column from the positive column</span>
 <span class="sd">    offset_correction:</span>
-<span class="sd">        substracts a background value from the results</span>
+<span class="sd">        Substracts a background value from the results</span>
 <span class="sd">    rescale_correction:</span>
-<span class="sd">        multiplies the results by a rescale value</span>
+<span class="sd">        Multiplies the results by a rescale value</span>
 <span class="sd">    poly_baseline_correction:</span>
-<span class="sd">        performs a polynomial baseline correction to the results</span>
+<span class="sd">        Performs a polynomial baseline correction to the results</span>
 <span class="sd">    plot_exp_data:</span>
-<span class="sd">        plots the experimental data</span>
+<span class="sd">        Plots the experimental data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">variable_column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results_columns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">variable_name</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="n">result_name</span><span class="o">=</span><span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
@@ -120,23 +120,23 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        file_path  : str</span>
-<span class="sd">            path to the file containing the experimental data</span>
+<span class="sd">            Path to the file containing the experimental data</span>
 <span class="sd">        variable_column : int</span>
-<span class="sd">            column index of the variable</span>
+<span class="sd">            Column index of the variable</span>
 <span class="sd">        results_columns : int or list of int</span>
-<span class="sd">            column index of the results</span>
+<span class="sd">            Column index of the results</span>
 <span class="sd">        variable_name : str</span>
-<span class="sd">            name of the variable</span>
+<span class="sd">            Name of the variable</span>
 <span class="sd">        result_name : str</span>
-<span class="sd">            name of the results</span>
+<span class="sd">            Name of the results</span>
 <span class="sd">        plot : bool</span>
-<span class="sd">            if True, plot the experimental data</span>
+<span class="sd">            Boolean indicating whether to plot the experimental data or not</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle : str</span>
-<span class="sd">            title of the figure for the plot       </span>
+<span class="sd">            Title of the figure for the plot       </span>
 <span class="sd">        **loadtxt_kwargs : dict</span>
-<span class="sd">            additional arguments for the np.loadtxt function</span>
+<span class="sd">            Additional arguments for the np.loadtxt function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_path must be a string&quot;</span><span class="p">)</span>
@@ -183,15 +183,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pos_col: int</span>
-<span class="sd">            index of the positive column</span>
+<span class="sd">            Index of the positive column</span>
 <span class="sd">        neg_col: int</span>
-<span class="sd">            index of the negative column</span>
+<span class="sd">            Index of the negative column</span>
 <span class="sd">        plot: bool</span>
-<span class="sd">            if True, plot the experimental data</span>
+<span class="sd">            Boolean indicating whether to plot the experimental data or not</span>
 <span class="sd">        figsize: tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle: str</span>
-<span class="sd">            title of the figure for the plot</span>
+<span class="sd">            Title of the figure for the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pos_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">neg_col</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pos_col=</span><span class="si">{</span><span class="n">pos_col</span><span class="si">}</span><span class="s2"> and neg_col=</span><span class="si">{</span><span class="n">neg_col</span><span class="si">}</span><span class="s2"> where not found in the results.&quot;</span><span class="p">)</span>
@@ -213,13 +213,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        background_value : int or float</span>
-<span class="sd">            value to be substracted from the results</span>
+<span class="sd">            Value to be substracted from the results</span>
 <span class="sd">        plot : bool</span>
-<span class="sd">            if True, plot the experimental data</span>
+<span class="sd">            Boolean indicating whether to plot the experimental data or not</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle : str</span>
-<span class="sd">            title of the figure for the plot</span>
+<span class="sd">            Title of the figure for the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;background_value must be a number.&quot;</span><span class="p">)</span>
@@ -246,13 +246,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        rescale_value : int or float</span>
-<span class="sd">            value to be multiplied by the results</span>
+<span class="sd">            Value to be multiplied by the results</span>
 <span class="sd">        plot : bool</span>
-<span class="sd">            if True, plot the experimental data</span>
+<span class="sd">            Boolean indicating whether to plot the experimental data or not</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle : str</span>
-<span class="sd">            title of the figure for the plot</span>
+<span class="sd">            Title of the figure for the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rescale_value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rescale_value must be a number.&quot;</span><span class="p">)</span>
@@ -280,17 +280,17 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x_start : int or list of int</span>
-<span class="sd">            start index of the x axis for the baseline fit</span>
+<span class="sd">            Start index of the x axis for the baseline fit</span>
 <span class="sd">        x_end : int or list of int</span>
-<span class="sd">            end index of the x axis for the baseline fit</span>
+<span class="sd">            End index of the x axis for the baseline fit</span>
 <span class="sd">        poly_order : int</span>
-<span class="sd">            order of the polynomial to fit the baseline</span>
+<span class="sd">            Order of the polynomial to fit the baseline</span>
 <span class="sd">        plot : bool</span>
-<span class="sd">            if True, plot the experimental data</span>
+<span class="sd">            Boolean indicating whether to plot the experimental data or not</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle : str</span>
-<span class="sd">            title of the figure for the plot</span>
+<span class="sd">            Title of the figure for the plot</span>
 <span class="sd">                </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check all variables</span>
@@ -340,9 +340,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure for the plot</span>
+<span class="sd">            Size of the figure for the plot</span>
 <span class="sd">        figtitle : str</span>
-<span class="sd">            title of the figure for the plot        </span>
+<span class="sd">            Title of the figure for the plot        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>

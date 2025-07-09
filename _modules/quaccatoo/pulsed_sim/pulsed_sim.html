@@ -98,46 +98,70 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    system : QSys</span>
-<span class="sd">        quantum system object representing the quantum system</span>
+<span class="sd">        Quantum system object representing the quantum system</span>
 <span class="sd">    H2 : list(Qobj, function)</span>
-<span class="sd">        time dependent sensing Hamiltonian of the system in the form [Qobj, function]</span>
+<span class="sd">        Time dependent sensing Hamiltonian of the system in the form [Qobj, function]</span>
 <span class="sd">    H0_H2 : list</span>
-<span class="sd">        list of Hamiltonians for the pulse operation in the form [H0, H2]</span>
+<span class="sd">        List of Hamiltonians for the pulse operation in the form [H0, H2]</span>
 <span class="sd">    total_time : float</span>
-<span class="sd">        total time of the experiment</span>
+<span class="sd">        Total time of the experiment</span>
 <span class="sd">    variable : np.array</span>
-<span class="sd">        variable of the experiment which the results depend on</span>
+<span class="sd">        Variable of the experiment which the results depend on</span>
 <span class="sd">    variable_name : str</span>
-<span class="sd">        name of the variable</span>
+<span class="sd">        Name of the variable</span>
 <span class="sd">    pulse_profiles :list</span>
-<span class="sd">        list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]</span>
+<span class="sd">        List of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]</span>
 <span class="sd">    results : list</span>
-<span class="sd">        results of the experiment to be later generated in the run method</span>
+<span class="sd">        Results of the experiment to be later generated in the run method</span>
 <span class="sd">    sequence : callable</span>
-<span class="sd">        parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user</span>
+<span class="sd">        Parallel sequence of operations to be overwritten in predef_seqs and predef_dd_seqs, or defined by the user</span>
 <span class="sd">    time_steps : int</span>
-<span class="sd">        number of time steps for the pulses</span>
+<span class="sd">        Number of time steps for the pulses</span>
+<span class="sd">    rho : Qobj</span>
+<span class="sd">        Density matrix of the system</span>
+<span class="sd">    M : int</span>
+<span class="sd">        Order of the sequence, if applicable</span>
+<span class="sd">    pi_pulse_duration : float</span>
+<span class="sd">        Duration of the pi pulse, if applicable</span>
+<span class="sd">    free_duration : np.array</span>
+<span class="sd">        Free evolution times of the sequence, if applicable</span>
+<span class="sd">    pulse_shape : callable or list(callable)</span>
+<span class="sd">        Pulse shape function or list of pulse shape functions representing the time modulation of H1</span>
+<span class="sd">    pulse_params : dict</span>
+<span class="sd">        Dictionary of parameters for the pulse_shape functions</span>
+<span class="sd">    options : dict</span>
+<span class="sd">        Options for the Qutip solver, such as &#39;nsteps&#39;, &#39;atol&#39;, &#39;rtol&#39;, &#39;order&#39;</span>
+<span class="sd">    H1 : Qobj or list(Qobj)</span>
+<span class="sd">        Control Hamiltonian of the system, which can be a single Qobj or a list of Qobjs</span>
+<span class="sd">    Ht : list</span>
+<span class="sd">        List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape], H2]</span>
+<span class="sd">    time_steps : int</span>
+<span class="sd">        Number of time steps for the pulses, if applicable</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    add_pulse :</span>
-<span class="sd">        adds a pulse operation to the sequence of operations of the experiment</span>
-<span class="sd">    pulse :</span>
-<span class="sd">        updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation</span>
 <span class="sd">    add_free_evolution :</span>
-<span class="sd">        adds a free evolution operation to the sequence of operations of the experiment</span>
+<span class="sd">        Adds a free evolution operation to the sequence of operations of the experiment</span>
 <span class="sd">    _free_evolution :</span>
-<span class="sd">        updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator</span>
+<span class="sd">        Updates the total time of the experiment and applies the time-evolution operator to perform the free evolution operation with the exponential operator</span>
+<span class="sd">    add_pulse :</span>
+<span class="sd">        Adds a pulse operation to the sequence of operations of the experiment</span>
+<span class="sd">    pulse :</span>
+<span class="sd">        Updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation</span>
+<span class="sd">    add_delta_pulse :</span>
+<span class="sd">        Adds a delta pulse with zero duration to the sequence of operations of the experiment</span>
+<span class="sd">    _delta_pulse :</span>
+<span class="sd">        Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R</span>
 <span class="sd">    run :</span>
-<span class="sd">        runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute</span>
+<span class="sd">        Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute</span>
 <span class="sd">    _get_results :</span>
-<span class="sd">        gets the results of the experiment from the calculated rho, based on the observable of the system</span>
+<span class="sd">        Gets the results of the experiment from the calculated rho, based on the observable of the system</span>
 <span class="sd">    measure_qsys :</span>
-<span class="sd">        measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable</span>
+<span class="sd">        Measures the observable over the system, storing the measurement outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable</span>
 <span class="sd">    plot_pulses :</span>
-<span class="sd">        plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution</span>
+<span class="sd">        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution</span>
 <span class="sd">    _check_attr_predef_seqs :</span>
-<span class="sd">        checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly</span>
+<span class="sd">        Checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -146,9 +170,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            quantum system object representing the quantum system</span>
+<span class="sd">            Quantum system object representing the quantum system</span>
 <span class="sd">        H2 : Qobj</span>
-<span class="sd">            time dependent sensing Hamiltonian of the system</span>
+<span class="sd">            Time dependent sensing Hamiltonian of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">QSys</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;system must be a QSys object&quot;</span><span class="p">)</span>
@@ -179,6 +203,56 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="PulsedSim.add_free_evolution">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        duration : float or int</span>
+<span class="sd">            Duration of the free evolution</span>
+<span class="sd">        options : dict</span>
+<span class="sd">            Options for the Qutip solver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if duration of the pulse is a positive real number</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;duration must be a positive real number&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
+
+        <span class="c1"># add the free evolution to the pulse_profiles list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="n">duration</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the total time of the experiment and applies the time-evolution operator to the initial state.</span>
+<span class="sd">        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.</span>
+<span class="sd">        If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.</span>
+<span class="sd">        Otherwise, the time-evolution operator is applied directlyby the exponential operator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        duration : float or int</span>
+<span class="sd">            Duration of the free evolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+</span> <span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">)</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+=</span> <span class="n">duration</span>
+
 <div class="viewcode-block" id="PulsedSim.add_pulse">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse">[docs]</a>
     <span class="k">def</span> <span class="nf">add_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -189,17 +263,17 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        duration : float or int</span>
-<span class="sd">            duration of the pulse</span>
+<span class="sd">            Duration of the pulse</span>
 <span class="sd">        H1 : Qobj or list(Qobj)</span>
-<span class="sd">            control Hamiltonian of the system</span>
+<span class="sd">            Control Hamiltonian of the system</span>
 <span class="sd">        pulse_shape : callable or list(callable)</span>
-<span class="sd">            pulse shape function or list of pulse shape functions representing the time modulation of t H1</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of t H1</span>
 <span class="sd">        pulse_params : dict</span>
-<span class="sd">            dictionary of parameters for the pulse_shape functions</span>
+<span class="sd">            Dictionary of parameters for the pulse_shape functions</span>
 <span class="sd">        time_steps : int</span>
-<span class="sd">            number of time steps for the pulses</span>
+<span class="sd">            Number of time steps for the pulses</span>
 <span class="sd">        options : dict</span>
-<span class="sd">            options for the Qutip solver</span>
+<span class="sd">            Options for the Qutip solver</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check all the parameters</span>
         <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -260,68 +334,52 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        Ht : list</span>
-<span class="sd">            list of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]</span>
+<span class="sd">            List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]</span>
 <span class="sd">        tarray : np.array</span>
-<span class="sd">            time array for the pulse operation</span>
+<span class="sd">            Time array for the pulse operation</span>
 <span class="sd">        options : dict</span>
-<span class="sd">            options for the Qutip solver</span>
+<span class="sd">            Options for the Qutip solver</span>
 <span class="sd">        pulse_params : dict</span>
-<span class="sd">            dictionary of parameters for the pulse_shape functions</span>
+<span class="sd">            Dictionary of parameters for the pulse_shape functions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+</span> <span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">)</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span> <span class="o">=</span> <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">core_pulse_params</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+=</span> <span class="n">duration</span>
 
-<div class="viewcode-block" id="PulsedSim.add_free_evolution">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PulsedSim.add_delta_pulse">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</span>
-
+<span class="sd">        Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</span>
+<span class="sd">        For adding a realistic finite length pulse, check add_pulse method.</span>
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        duration : float or int</span>
-<span class="sd">            duration of the free evolution</span>
-<span class="sd">        options : dict</span>
-<span class="sd">            options for the Qutip solver</span>
+<span class="sd">        R : Qobj</span>
+<span class="sd">            Rotation operator of the delta pulse</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check if duration of the pulse is a positive real number</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;duration must be a positive real number&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">or</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;U must be a Qobj of the same shape as H0&quot;</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;options must be a dictionary of dynamic solver options from Qutip&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">R</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
 
-        <span class="c1"># add the free evolution to the pulse_profiles list</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="n">duration</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the total time of the experiment and applies the time-evolution operator to the initial state.</span>
+<span class="sd">        Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R.</span>
 <span class="sd">        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.</span>
-<span class="sd">        If the system has collapse operators or time dependent Hamiltonian H2, mesolve is used to perform the free evolution operation.</span>
-<span class="sd">        Otherwise, the time-evolution operator is applied directlyby the exponential operator.</span>
-
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        duration : float or int</span>
-<span class="sd">            duration of the free evolution</span>
+<span class="sd">        R : Qobj</span>
+<span class="sd">            Rotation operator of the delta pulse</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">mesolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+</span> <span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">)</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">e_ops</span><span class="o">=</span><span class="p">[],</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">*</span><span class="n">duration</span><span class="p">)</span><span class="o">.</span><span class="n">expm</span><span class="p">())</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+=</span> <span class="n">duration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PulsedSim.measure_qsys">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys">[docs]</a>
@@ -329,19 +387,25 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</span>
 <span class="sd">        If no observable is given, the observable of the qsys is used.</span>
+<span class="sd">        The rho attribute needs to be normalized before the measurement is performed, in order to avoid numerical errors within the measure_observable method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        observable : Qobj</span>
-<span class="sd">            observable to be measured after the sequence of operations</span>
+<span class="sd">            Observable to be measured after the sequence of operations</span>
 <span class="sd">        tol : float</span>
-<span class="sd">            tolerance for the measurement, smallest value for the probabilities</span>
+<span class="sd">            Tolerance for the measurement, smallest value for the probabilities</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        results : float or list</span>
-<span class="sd">            measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs</span>
+<span class="sd">            Measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tol</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">tol</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tol must be a positive real number or None&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">observable</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">observable</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed observable is not hermitian.&quot;</span><span class="p">)</span>
@@ -368,11 +432,11 @@
 <span class="sd">        variable : np.array</span>
 <span class="sd">            xaxis variable of the plot representing the parameter being changed in the experiment</span>
 <span class="sd">        sequence : callable</span>
-<span class="sd">            sequence of operations to be performed in the experiment</span>
+<span class="sd">            Sequence of operations to be performed in the experiment</span>
 <span class="sd">        sequence_kwargs : dict</span>
-<span class="sd">            dictionary of arguments to be passed to the sequence function</span>
+<span class="sd">            Dictionary of arguments to be passed to the sequence function</span>
 <span class="sd">        map_kw : dict</span>
-<span class="sd">            dictionary of options for the parallel_map function from QuTip</span>
+<span class="sd">            Dictionary of options for the parallel_map function from QuTip</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if no sequence is passed but the PulsedSim has one, uses the attribute sequence</span>
         <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -437,13 +501,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        xlabel : str</span>
-<span class="sd">            label of the x-axis</span>
+<span class="sd">            Label of the x-axis</span>
 <span class="sd">        ylabel : str</span>
-<span class="sd">            label of the y-axis</span>
+<span class="sd">            Label of the y-axis</span>
 <span class="sd">        title : str</span>
-<span class="sd">            title of the plot</span>
+<span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
@@ -482,28 +546,30 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">unique_legend</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_check_attr_predef_seqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">free_duration</span><span class="p">,</span> <span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_attr_predef_seqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">free_duration</span><span class="p">,</span> <span class="n">pi_pulse_duration</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">projection_pulse</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        H1 : Qobj or list(Qobj)</span>
-<span class="sd">            control Hamiltonian of the system</span>
+<span class="sd">            Control Hamiltonian of the system</span>
 <span class="sd">        pulse_shape : callable or list(callable)</span>
-<span class="sd">            pulse shape function or list of pulse shape functions representing the time modulation of H1</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of H1</span>
 <span class="sd">        pulse_params : dict</span>
-<span class="sd">            dictionary of parameters for the pulse_shape functions</span>
+<span class="sd">            Dictionary of parameters for the pulse_shape functions</span>
 <span class="sd">        options : dict</span>
-<span class="sd">            options for the Qutip solver</span>
+<span class="sd">            Options for the Qutip solver</span>
 <span class="sd">        time_steps : int</span>
-<span class="sd">            number of time steps for the pulses, if applicable</span>
+<span class="sd">            Number of time steps for the pulses, if applicable</span>
 <span class="sd">        free_duration : np.array</span>
-<span class="sd">            free evolution times of the sequence, if applicable</span>
+<span class="sd">            Free evolution times of the sequence, if applicable</span>
 <span class="sd">        pi_pulse_duration : float</span>
-<span class="sd">            duration of the pi pulse, if applicable</span>
+<span class="sd">            Duration of the pi pulse, if applicable</span>
 <span class="sd">        M : int</span>
-<span class="sd">            order of the sequence, if applicable </span>
+<span class="sd">            Order of the sequence, if applicable </span>
+<span class="sd">        projection_pulse : bool</span>
+<span class="sd">            Whether the sequence contains a final projection pulse or not, if applicable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">pulse_shape</span> <span class="ow">in</span> <span class="n">pulse_shape</span><span class="p">)):</span>
@@ -581,7 +647,15 @@
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">M</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;M must be a positive integer&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span>
+
+        <span class="c1"># check whether projection_pulse is a boolean and if it is, assign it to the object</span>
+        <span class="k">if</span> <span class="n">projection_pulse</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">projection_pulse</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span> <span class="o">=</span> <span class="n">projection_pulse</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;projection_pulse must be a boolean&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

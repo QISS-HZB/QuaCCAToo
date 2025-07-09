@@ -90,11 +90,16 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    t : float</span>
-<span class="sd">        time parameter</span>
+<span class="sd">        Time parameter</span>
 <span class="sd">    f_pulse : float</span>
-<span class="sd">        frequency of the pulse</span>
+<span class="sd">        Frequency of the pulse</span>
 <span class="sd">    phi_t : float</span>
-<span class="sd">        phase of the pulse</span>
+<span class="sd">        Phase of the pulse</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Value of the square pulse at time t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;phi_t&#39;</span><span class="p">])</span></div>
 
@@ -109,13 +114,20 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    t : float</span>
-<span class="sd">        time parameter</span>
+<span class="sd">        Time parameter</span>
 <span class="sd">    t_mid : float</span>
-<span class="sd">        middle point of the pulse</span>
+<span class="sd">        Middle point of the pulse</span>
 <span class="sd">    sigma : float</span>
-<span class="sd">        width of the pulse</span>
-<span class="sd">    f_pulse float): frequency of the pulse</span>
-<span class="sd">    phi_t (float): phase of the pulse</span>
+<span class="sd">        Width of the pulse</span>
+<span class="sd">    f_pulse : float</span>
+<span class="sd">        Frequency of the pulse</span>
+<span class="sd">    phi_t : float</span>
+<span class="sd">        Phase of the pulse</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Value of the Gaussian pulse at time t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;t_mid&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;phi_t&#39;</span><span class="p">])</span></div>
 
@@ -130,15 +142,20 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    t : float</span>
-<span class="sd">        time parameter</span>
+<span class="sd">        Time parameter</span>
 <span class="sd">    t_mid : float</span>
-<span class="sd">        middle point of the pulse</span>
+<span class="sd">        Middle point of the pulse</span>
 <span class="sd">    gamma : float</span>
-<span class="sd">        width of the pulse</span>
+<span class="sd">        Width of the pulse</span>
 <span class="sd">    f_pulse : float</span>
-<span class="sd">        frequency of the pulse</span>
+<span class="sd">        Frequency of the pulse</span>
 <span class="sd">    phi_t : float</span>
-<span class="sd">        phase of the pulse</span>
+<span class="sd">        Phase of the pulse</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Value of the Lorentzian pulse at time t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;t_mid&#39;</span><span class="p">])</span><span class="o">/</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">t</span><span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s1">&#39;phi_t&#39;</span><span class="p">])</span></div>
 

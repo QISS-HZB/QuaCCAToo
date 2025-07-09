@@ -77,7 +77,7 @@
 <span class="c1"># TODO: implement eV units conversion to frequencies</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module contains the plot_energy_B0 function, compose_sys function and the QSys class part of QuaCCAToo package.</span>
+<span class="sd">This module contains the plot_energy_B0 function, compose_sys function and the QSys class.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -261,15 +261,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        H0 : Qobj/array</span>
-<span class="sd">            time-independent internal Hamiltonian of the system</span>
+<span class="sd">            Time-independent internal Hamiltonian of the system</span>
 <span class="sd">        rho0 : Qobj/array/int</span>
-<span class="sd">            initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</span>
+<span class="sd">            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</span>
 <span class="sd">        c_ops : list(Qobj)</span>
-<span class="sd">            list of collapse operators</span>
+<span class="sd">            List of collapse operators</span>
 <span class="sd">        observable : Qobj or list(Qobj)</span>
-<span class="sd">            observable to be measured</span>
+<span class="sd">            Observable to be measured</span>
 <span class="sd">        units_H0 : str</span>
-<span class="sd">            units of the Hamiltonian</span>
+<span class="sd">            Units of the Hamiltonian</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if the units are in frequency, assign the Hamiltonian as it is</span>
         <span class="k">if</span> <span class="n">units_H0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -346,9 +346,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure.</span>
+<span class="sd">            Size of the figure</span>
 <span class="sd">        energy_lim : list</span>
-<span class="sd">            limits of the energy levels.</span>
+<span class="sd">            Limits of the energy levels</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>

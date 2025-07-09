@@ -74,12 +74,12 @@
              
   <h1>Source code for quaccatoo.analysis.analysis</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module contains the Analysis class as part of the QuaCCAToo package.</span>
+<span class="sd">This module contains the Analysis class and the plot_histogram method.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Bloch</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Bloch</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">fidelity</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span><span class="p">,</span> <span class="n">pearsonr</span>
 <span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
@@ -96,42 +96,42 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    experiment : PulsedSim or ExpData</span>
-<span class="sd">        experiment object to be analyzed containing the results and variable attributes</span>
+<span class="sd">        Experiment object to be analyzed containing the results and variable attributes</span>
 <span class="sd">    FFT_values : tuple</span>
-<span class="sd">        tuple with the frequency values and the FFT values</span>
+<span class="sd">        Tuple with the frequency values and the FFT values</span>
 <span class="sd">    FFT_peaks : array</span>
-<span class="sd">        array with the peaks of the FFT values</span>
+<span class="sd">        Array with the peaks of the FFT values</span>
 <span class="sd">    fit_model : lmfit.Model or list(lmfit.Model)</span>
-<span class="sd">        list with the fitting model for each result</span>
+<span class="sd">        List with the fitting model for each result</span>
 <span class="sd">    fit_params : list</span>
-<span class="sd">        list with the fitted parameters for each result</span>
+<span class="sd">        List with the fitted parameters for each result</span>
 <span class="sd">    fit_cov : list</span>
-<span class="sd">        list with the covariance of the fitted parameters for each result</span>
+<span class="sd">        List with the covariance of the fitted parameters for each result</span>
 <span class="sd">    pearson : float</span>
 <span class="sd">        Pearson correlation coefficient between two experiments</span>
 <span class="sd">    exp_comparison : PulsedSim or ExpData</span>
-<span class="sd">        experiment to be compared with the first one</span>
+<span class="sd">        Experiment to be compared with the first one</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    compare_with :</span>
-<span class="sd">        loads a second experiment to compare with the first one</span>
+<span class="sd">        Load a second experiment to compare with the first one</span>
 <span class="sd">    plot_comparison :</span>
-<span class="sd">        plots the results of the experiment and the comparison experiment</span>
+<span class="sd">        Plot the results of the experiment and the comparison experiment</span>
 <span class="sd">    run_FFT :</span>
-<span class="sd">        run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object</span>
+<span class="sd">        Run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object</span>
 <span class="sd">    get_peaks_FFT :</span>
-<span class="sd">        find the peaks of the FFT values calculated by the run_FFT method</span>
+<span class="sd">        Find the peaks of the FFT values calculated by the run_FFT method</span>
 <span class="sd">    plot_FFT :</span>
-<span class="sd">        plot the FFT values calculated by the run_FFT method</span>
+<span class="sd">        Plot the FFT values calculated by the run_FFT method</span>
 <span class="sd">    run_fit :</span>
-<span class="sd">        run the fit method from lmfit to fit the results of the experiment with a given model</span>
+<span class="sd">        Run the fit method from lmfit to fit the results of the experiment with a given model</span>
 <span class="sd">    plot_fit :</span>
-<span class="sd">        plot the results of the experiment with the fitted function</span>
+<span class="sd">        Plot the results of the experiment with the fitted function</span>
 <span class="sd">    plot_results :</span>
-<span class="sd">        plot the results of the experiment</span>
+<span class="sd">        Plot the results of the experiment</span>
 <span class="sd">    plot_bloch :</span>
-<span class="sd">        plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two</span>
+<span class="sd">        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">):</span>
@@ -141,7 +141,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        experiment : PulsedSim or ExpData</span>
-<span class="sd">            experiment object to be analyzed containing the results and variable attributes</span>
+<span class="sd">            Experiment object to be analyzed containing the results and variable attributes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">ExpData</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span> <span class="o">=</span> <span class="n">experiment</span>
@@ -174,13 +174,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        exp_comparison : PulsedSim or ExpData</span>
-<span class="sd">            experiment to be compared with the first one</span>
+<span class="sd">            Experiment to be compared with the first one</span>
 <span class="sd">        results_index : int</span>
-<span class="sd">            index of the results to be compared if the results attribute is a list</span>
+<span class="sd">            Index of the results to be compared if the results attribute is a list</span>
 <span class="sd">        comparison_index : int</span>
-<span class="sd">            index of the results to be compared if the results attribute of the exp_comparison is a list</span>
+<span class="sd">            Index of the results to be compared if the results attribute of the exp_comparison is a list</span>
 <span class="sd">        linear_fit : bool</span>
-<span class="sd">            boolean indicating whether or not to perform a linear fit between the two data sets</span>
+<span class="sd">            Boolean indicating whether or not to perform a linear fit between the two data sets</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -237,13 +237,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        xlabel : str</span>
-<span class="sd">            label of the x-axis</span>
+<span class="sd">            Label of the x-axis</span>
 <span class="sd">        ylabel : str</span>
-<span class="sd">            label of the y-axis</span>
+<span class="sd">            Label of the y-axis</span>
 <span class="sd">        title : str</span>
-<span class="sd">            title of the plot</span>
+<span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
 
@@ -266,7 +266,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        FFT_values : tuple</span>
-<span class="sd">            tuple with the frequency values and the FFT values</span>
+<span class="sd">            Tuple with the frequency values and the FFT values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)))</span>
@@ -293,12 +293,12 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        find_peaks_kwargs : dict</span>
-<span class="sd">            dictionary with the arguments to be passed to the scipy.signal.find_peaks function</span>
+<span class="sd">            Dictionary with the arguments to be passed to the scipy.signal.find_peaks function</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        FFT_peaks : array</span>
-<span class="sd">            array with the peaks of the FFT values</span>
+<span class="sd">            Array with the peaks of the FFT values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No FFT values to analyze, you must run the FFT first&quot;</span><span class="p">)</span>
@@ -325,13 +325,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        xlabel : str</span>
-<span class="sd">            label of the x-axis</span>
+<span class="sd">            Label of the x-axis</span>
 <span class="sd">        ylabel : str</span>
-<span class="sd">            label of the y-axis</span>
+<span class="sd">            Label of the y-axis</span>
 <span class="sd">        title : str</span>
-<span class="sd">            title of the plot</span>
+<span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No FFT values to plot, you must run the FFT first&quot;</span><span class="p">)</span>
@@ -393,11 +393,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        fit_model : lmfit.Model</span>
-<span class="sd">            model to be used to fit the results</span>
+<span class="sd">            Model to be used to fit the results</span>
 <span class="sd">        results_index : int</span>
-<span class="sd">            index of the results to be fitted if the results attribute is a list</span>
+<span class="sd">            Index of the results to be fitted if the results attribute is a list</span>
 <span class="sd">        guess : dict</span>
-<span class="sd">            initial guess for the parameters of the model</span>
+<span class="sd">            Initial guess for the parameters of the model</span>
 <span class="sd">            Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.</span>
 <span class="sd">            See the definitions of the models in the fit_functions.py file for details.</span>
 
@@ -475,13 +475,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        xlabel : str</span>
-<span class="sd">            label of the x-axis</span>
+<span class="sd">            Label of the x-axis</span>
 <span class="sd">        ylabel : str</span>
-<span class="sd">            label of the y-axis</span>
+<span class="sd">            Label of the y-axis</span>
 <span class="sd">        title : str</span>
-<span class="sd">            title of the plot</span>
+<span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
 
@@ -507,13 +507,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        xlabel : str</span>
-<span class="sd">            label of the x-axis</span>
+<span class="sd">            Label of the x-axis</span>
 <span class="sd">        ylabel : str</span>
-<span class="sd">            label of the y-axis</span>
+<span class="sd">            Label of the y-axis</span>
 <span class="sd">        title : str</span>
-<span class="sd">            title of the plot</span>
+<span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
@@ -559,7 +559,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        figsize : tuple</span>
-<span class="sd">            size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">            Size of the figure to be passed to matplotlib.pyplot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;experiment must be a PulsedSim object&quot;</span><span class="p">)</span>
@@ -583,6 +583,96 @@
         <span class="n">bloch</span><span class="o">.</span><span class="n">frame_alpha</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bloch</span><span class="o">.</span><span class="n">render</span><span class="p">()</span></div>
 </div>
+
+
+<div class="viewcode-block" id="plot_histogram">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.plot_histogram">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_comparison</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Matrix Histogram&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a 3D histogram of the final density matrix of the simulation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    component : str</span>
+<span class="sd">        Component of the density matrix to be plotted. Can be &#39;real&#39;, &#39;imag&#39;, or &#39;abs&#39;.</span>
+<span class="sd">    figsize : tuple</span>
+<span class="sd">        Size of the figure to be passed to matplotlib.pyplot</span>
+<span class="sd">    rho_comparison : Qobj, optional</span>
+<span class="sd">        A Qobj representing a density matrix to be compared with the final density matrix of the simulation</span>
+<span class="sd">    title : str</span>
+<span class="sd">        Title of the plot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check all parameters</span>
+    <span class="k">if</span> <span class="n">component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;imag&#39;</span><span class="p">,</span> <span class="s1">&#39;abs&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;component must be &#39;real&#39;, &#39;imag&#39;, or &#39;abs&#39;&quot;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rho must be a Qobj representing a square density matrix&quot;</span><span class="p">)</span>    
+        
+    <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+        <span class="n">rho_comparison</span> <span class="o">=</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rho_comparison must be a Qobj with the same shape as the density matrix to be compared with&quot;</span><span class="p">)</span>
+        
+    <span class="c1"># Create 3D plot</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">azim</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">elev</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+    <span class="c1"># Dimensions and positions for the bars</span>
+    <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span> <span class="o">=</span> <span class="n">xpos</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">ypos</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">zpos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xpos</span><span class="p">)</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">zpos</span><span class="p">)</span>
+
+    <span class="c1"># Prepare the data for the bars depending on the component</span>
+    <span class="k">if</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;real&#39;</span><span class="p">:</span>
+        <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> 
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span>          
+        <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        
+    
+    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;imag&#39;</span><span class="p">:</span>
+        <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span>
+        <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    
+    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;abs&#39;</span><span class="p">:</span>
+        <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span>
+        <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            
+    <span class="c1"># Plot the bars        </span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">zpos</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz_sim</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fidelity: </span><span class="si">{</span><span class="n">fidelity</span><span class="p">(</span><span class="n">Qobj</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span><span class="w"> </span><span class="n">Qobj</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">zpos</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz_comp</span><span class="p">,</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Aesthetics, labels, and title</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">set_pane_color</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;$|</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">\\</span><span class="s2">rangle$&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;$|</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="se">\\</span><span class="s2">rangle$&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span></div>
 
 </pre></div>
 

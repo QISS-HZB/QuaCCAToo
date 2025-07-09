@@ -93,13 +93,13 @@
   <p>In this example we simulate ambiguous resonances in multipulse quantum sensing with nitrogen vacancy (NV) centers in diamonds. This notebook closely follows the work from “Ambiguous Resonances in Multipulse Quantum Sensing with Nitrogen Vacancy Centers” available at <a class="reference external" href="https://doi.org/10.1103/PhysRevA.111.022606">https://doi.org/10.1103/PhysRevA.111.022606</a> .</p>
 <p>As this is a quite complex problem, physics discussions will be kept to a minimum here in favor of a focus to the simulation. For a detailed explanation of the problem, please refer to the original paper.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">qeye</span>
 
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">XY8</span><span class="p">,</span> <span class="n">RXY8</span><span class="p">,</span> <span class="n">Analysis</span>
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">XY8</span><span class="p">,</span> <span class="n">Analysis</span>
 </pre></div>
 </div>
 </div>
@@ -107,7 +107,7 @@
 <h1>1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling<a class="headerlink" href="#1.-Field-Misalignment-and-^{15}\text{N}-Coupling" title="Link to this heading"></a></h1>
 <p>We begin simulating a XY8-2 sequence with a misaligned magnetic field, as in Sec. IV A of the paper. Initially, we define the NV system with the experimental parameters of the paper and the XY8 pulse sequence.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -123,8 +123,8 @@
 <span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
     <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.36</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="c1"># MW frequency for the ms=0 --&gt; ms=+1 state transition</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]},</span>
@@ -216,7 +216,7 @@
 </div>
 <p>Now, changing the field for XY8-2 as in Fig. 3 (c). First, <span class="math notranslate nohighlight">\(B_0=33\)</span> mT and <span class="math notranslate nohighlight">\(\theta_0 = 5.1^\circ\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -228,10 +228,10 @@
 <span class="p">)</span>
 
 <span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.22</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -250,7 +250,7 @@
 </div>
 <p><span class="math notranslate nohighlight">\(B_0=26\)</span> mT and <span class="math notranslate nohighlight">\(\theta_0 = 9.3^\circ\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -262,10 +262,10 @@
 <span class="p">)</span>
 
 <span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.22</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -284,7 +284,7 @@
 </div>
 <p><span class="math notranslate nohighlight">\(B_0=17\)</span> mT and <span class="math notranslate nohighlight">\(\theta_0 = 17^\circ\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -296,10 +296,10 @@
 <span class="p">)</span>
 
 <span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -318,14 +318,14 @@
 </div>
 <p>If we now include a pulse length error, as in Fig. 6, we have:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY8_15N</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.45</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="o">*</span><span class="mf">.8</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="o">*</span><span class="mf">.8</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -347,7 +347,7 @@
 <h1>2. 13C Coupling<a class="headerlink" href="#2.-13C-Coupling" title="Link to this heading"></a></h1>
 <p>As in Sec. IV B, we need to define the coupling Hamiltonian <span class="math notranslate nohighlight">\(H_2\)</span> in the same way as Eq. 3 of the paper. We begin defining the coupling tensor shown in Appendix D and the Zeeman Hamiltonian.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
@@ -362,10 +362,10 @@
 <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.01</span>
 
 <span class="n">HhfC</span> <span class="o">=</span> <span class="p">(</span>
-<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>  <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
-<span class="p">)</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>  <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">Hzc</span><span class="p">(</span><span class="n">B0</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
     <span class="k">return</span> <span class="mf">10.705e-3</span><span class="o">*</span><span class="n">B0</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
@@ -374,7 +374,7 @@
 </div>
 <p>Now we define the NV Hamiltonian and use the <code class="docutils literal notranslate"><span class="pre">add_spin</span></code> method to introduce the 13C nuclear spin.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -388,10 +388,10 @@
 <span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
 
 <span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -410,7 +410,7 @@
 </div>
 <p>Increasing the field as in Fig. 4 (a) for <span class="math notranslate nohighlight">\(B_0=31\)</span> mT and <span class="math notranslate nohighlight">\(\theta_0 = 1.35^\circ\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -424,10 +424,10 @@
 <span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
 
 <span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -446,7 +446,7 @@
 </div>
 <p><span class="math notranslate nohighlight">\(B_0=40\)</span> mT and <span class="math notranslate nohighlight">\(\theta_0 = 1.14^\circ\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -460,10 +460,10 @@
 <span class="n">qsys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">HhfC</span> <span class="o">+</span> <span class="n">Hzc</span><span class="p">(</span><span class="n">qsys</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="n">qsys</span><span class="o">.</span><span class="n">theta</span><span class="p">))</span>
 
 <span class="n">XY8_13C</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.4</span><span class="p">,</span> <span class="mf">.85</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">)</span>
@@ -542,7 +542,7 @@
 <h1>3. RXY8 with H2<a class="headerlink" href="#3.-RXY8-with-H2" title="Link to this heading"></a></h1>
 <p>As discussed in Sec. IV C, the finite length of the pulses can lead to ambiguous resonances. Here, we define the NV Hamiltonian as usual and a time-dependent magnetic field <span class="math notranslate nohighlight">\(B_2(t)\)</span> as in Eq. 4.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
@@ -561,10 +561,10 @@
 <span class="n">H2</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">B2</span><span class="p">]</span>
 
 <span class="n">XY8_12_H2</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.06</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
     <span class="n">H2</span> <span class="o">=</span> <span class="n">H2</span>
@@ -583,19 +583,20 @@
 <img alt="../_images/tutorials_03_NV_ambiguous_resonances_38_0.png" src="../_images/tutorials_03_NV_ambiguous_resonances_38_0.png" />
 </div>
 </div>
-<p>These ambiguous resonances can be supressed with phase randomization, for that we use the RXY8 class.</p>
+<p>These ambiguous resonances can be supressed with phase randomization, for that we use the XY8 class with the RXY8 parameter set to True.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RXY8_12_H2</span>  <span class="o">=</span> <span class="n">RXY8</span><span class="p">(</span>
-    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RXY8_12_H2</span>  <span class="o">=</span> <span class="n">XY8</span><span class="p">(</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.06</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">M</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
     <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">qsys</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
-    <span class="n">H2</span> <span class="o">=</span> <span class="n">H2</span>
+    <span class="n">H2</span> <span class="o">=</span> <span class="n">H2</span><span class="p">,</span>
+    <span class="n">RXY8</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
 <span class="n">RXY8_12_H2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>

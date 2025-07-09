@@ -92,7 +92,12 @@
 
 <span class="c1">############################################## Rabi - Periodic Oscillation ##############################################</span>
 
+<div class="viewcode-block" id="guess_sin">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.guess_sin">[docs]</a>
 <span class="k">def</span> <span class="nf">guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">fft</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
@@ -100,7 +105,8 @@
     <span class="n">amp</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">fft</span><span class="p">[</span><span class="n">argmax</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fft</span><span class="p">)</span>
     <span class="n">frequency</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">frequencies</span><span class="p">[</span><span class="n">argmax</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span>
+    <span class="k">return</span> <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span></div>
+
 
 <div class="viewcode-block" id="fit_rabi">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.fit_rabi">[docs]</a>
@@ -158,13 +164,19 @@
 
 <span class="c1">################################################ Exponential Decay ####################################################</span>
 
+<div class="viewcode-block" id="guess_exp">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.guess_exp">[docs]</a>
 <span class="k">def</span> <span class="nf">guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">coeff</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span><span class="o">.</span><span class="n">coef</span>
     <span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="o">/</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">coeff</span>
+    <span class="k">return</span> <span class="n">coeff</span></div>
+
 
 <div class="viewcode-block" id="fit_exp_decay">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.fit_exp_decay">[docs]</a>

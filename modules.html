@@ -70,6 +70,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.pulsed_sim.pulsed_sim">pulsed_sim</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim"><code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_delta_pulse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_free_evolution()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="docutils literal notranslate"><span class="pre">PulsedSim.add_pulse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="docutils literal notranslate"><span class="pre">PulsedSim.measure_qsys()</span></code></a></li>
@@ -83,7 +84,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn"><code class="docutils literal notranslate"><span class="pre">Hahn</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="docutils literal notranslate"><span class="pre">Hahn.hahn_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="docutils literal notranslate"><span class="pre">Hahn.hahn_sequence_proj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="docutils literal notranslate"><span class="pre">Hahn.plot_pulses()</span></code></a></li>
 </ul>
 </li>
@@ -99,7 +99,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey"><code class="docutils literal notranslate"><span class="pre">Ramsey</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="docutils literal notranslate"><span class="pre">Ramsey.plot_pulses()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="docutils literal notranslate"><span class="pre">Ramsey.ramsey_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="docutils literal notranslate"><span class="pre">Ramsey.ramsey_sequence_proj()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -107,24 +106,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.pulsed_sim.predef_dd_seqs">predef_dd_seqs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG"><code class="docutils literal notranslate"><span class="pre">CPMG</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj"><code class="docutils literal notranslate"><span class="pre">CPMG.CPMG_sequence_proj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="docutils literal notranslate"><span class="pre">CPMG.plot_pulses()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8"><code class="docutils literal notranslate"><span class="pre">RXY8</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj"><code class="docutils literal notranslate"><span class="pre">RXY8.RXY8_sequence_proj()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY"><code class="docutils literal notranslate"><span class="pre">XY</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence"><code class="docutils literal notranslate"><span class="pre">XY.XY_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj"><code class="docutils literal notranslate"><span class="pre">XY.XY_sequence_proj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="docutils literal notranslate"><span class="pre">XY.plot_pulses()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8"><code class="docutils literal notranslate"><span class="pre">XY8</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence"><code class="docutils literal notranslate"><span class="pre">XY8.XY8_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj"><code class="docutils literal notranslate"><span class="pre">XY8.XY8_sequence_proj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="docutils literal notranslate"><span class="pre">XY8.plot_pulses()</span></code></a></li>
 </ul>
 </li>
@@ -149,11 +140,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.analysis.Analysis.run_fit"><code class="docutils literal notranslate"><span class="pre">Analysis.run_fit()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.analysis.plot_histogram"><code class="docutils literal notranslate"><span class="pre">plot_histogram()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.analysis.fit_functions">fit_functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.guess_sin"><code class="docutils literal notranslate"><span class="pre">guess_sin()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi"><code class="docutils literal notranslate"><span class="pre">fit_rabi()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel"><code class="docutils literal notranslate"><span class="pre">RabiModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.guess_exp"><code class="docutils literal notranslate"><span class="pre">guess_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay"><code class="docutils literal notranslate"><span class="pre">fit_rabi_decay()</span></code></a></li>
@@ -217,7 +211,7 @@
 <h1>QuaCCAToo modules<a class="headerlink" href="#quaccatoo-modules" title="Link to this heading"></a></h1>
 <section id="module-quaccatoo.qsys.qsys">
 <span id="qsys"></span><h2>qsys<a class="headerlink" href="#module-quaccatoo.qsys.qsys" title="Link to this heading"></a></h2>
-<p>This module contains the plot_energy_B0 function, compose_sys function and the QSys class part of QuaCCAToo package.</p>
+<p>This module contains the plot_energy_B0 function, compose_sys function and the QSys class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.qsys.qsys.QSys">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.qsys.qsys.</span></span><span class="sig-name descname"><span class="pre">QSys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/qsys/qsys.html#QSys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.qsys.QSys" title="Link to this definition"></a></dt>
@@ -266,15 +260,15 @@ Checking all inputs and calculating the energy levels of the Hamiltonian.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>H0</strong><span class="classifier">Qobj/array</span></dt><dd><p>time-independent internal Hamiltonian of the system</p>
+<dt><strong>H0</strong><span class="classifier">Qobj/array</span></dt><dd><p>Time-independent internal Hamiltonian of the system</p>
 </dd>
-<dt><strong>rho0</strong><span class="classifier">Qobj/array/int</span></dt><dd><p>initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</p>
+<dt><strong>rho0</strong><span class="classifier">Qobj/array/int</span></dt><dd><p>Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</p>
 </dd>
-<dt><strong>c_ops</strong><span class="classifier">list(Qobj)</span></dt><dd><p>list of collapse operators</p>
+<dt><strong>c_ops</strong><span class="classifier">list(Qobj)</span></dt><dd><p>List of collapse operators</p>
 </dd>
-<dt><strong>observable</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>observable to be measured</p>
+<dt><strong>observable</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>Observable to be measured</p>
 </dd>
-<dt><strong>units_H0</strong><span class="classifier">str</span></dt><dd><p>units of the Hamiltonian</p>
+<dt><strong>units_H0</strong><span class="classifier">str</span></dt><dd><p>Units of the Hamiltonian</p>
 </dd>
 </dl>
 </dd>
@@ -315,9 +309,9 @@ Updates the time-independent Hamiltonian, the energy levels, the initial state, 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure.</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure</p>
 </dd>
-<dt><strong>energy_lim</strong><span class="classifier">list</span></dt><dd><p>limits of the energy levels.</p>
+<dt><strong>energy_lim</strong><span class="classifier">list</span></dt><dd><p>Limits of the energy levels</p>
 </dd>
 </dl>
 </dd>
@@ -401,29 +395,29 @@ after checking if all parameters are valid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>B0</strong><span class="classifier">float</span></dt><dd><p>magnetic field</p>
+<dt><strong>B0</strong><span class="classifier">float</span></dt><dd><p>Magnetic field</p>
 </dd>
-<dt><strong>N</strong><span class="classifier">15, 14, 0 or None</span></dt><dd><p>nitrogen isotope, or 0 for no nuclear spin</p>
+<dt><strong>N</strong><span class="classifier">15, 14, 0 or None</span></dt><dd><p>Nitrogen isotope, or 0 for no nuclear spin</p>
 </dd>
-<dt><strong>units_B0</strong><span class="classifier">str</span></dt><dd><p>units of the magnetic field (T, mT or G)</p>
+<dt><strong>units_B0</strong><span class="classifier">str</span></dt><dd><p>Units of the magnetic field (T, mT or G)</p>
 </dd>
-<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>angle of the magnetic field with respect to the NV axis</p>
+<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>Angle of the magnetic field with respect to the NV axis</p>
 </dd>
-<dt><strong>phi_r</strong><span class="classifier">float</span></dt><dd><p>azimutal angle of the magnetic field with the NV axis</p>
+<dt><strong>phi_r</strong><span class="classifier">float</span></dt><dd><p>Azimutal angle of the magnetic field with the NV axis</p>
 </dd>
-<dt><strong>units_angles</strong><span class="classifier">str</span></dt><dd><p>units of the angles (deg or rad)</p>
+<dt><strong>units_angles</strong><span class="classifier">str</span></dt><dd><p>Units of the angles (deg or rad)</p>
 </dd>
-<dt><strong>temp</strong><span class="classifier">float or None</span></dt><dd><p>temperature</p>
+<dt><strong>temp</strong><span class="classifier">float or None</span></dt><dd><p>Temperature</p>
 </dd>
-<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>temperature units ‘C’ or ‘K’</p>
+<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>Temperature units ‘C’ or ‘K’</p>
 </dd>
-<dt><strong>energy_levels</strong><span class="classifier">list</span></dt><dd><p>list of energy levels of the Hamiltonian</p>
+<dt><strong>energy_levels</strong><span class="classifier">list</span></dt><dd><p>List of energy levels of the Hamiltonian</p>
 </dd>
-<dt><strong>MW_freqs</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>microwave frequencies</p>
+<dt><strong>MW_freqs</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Microwave frequencies</p>
 </dd>
 <dt><strong>RF_freqs</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>RF frequencies</p>
 </dd>
-<dt><strong>MW_H1</strong><span class="classifier">Qobj</span></dt><dd><p>microwave Hamiltonian</p>
+<dt><strong>MW_H1</strong><span class="classifier">Qobj</span></dt><dd><p>Microwave Hamiltonian</p>
 </dd>
 <dt><strong>RF_H1</strong><span class="classifier">Qobj</span></dt><dd><p>RF Hamiltonian</p>
 </dd>
@@ -471,30 +465,32 @@ after checking if all parameters are valid.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The NV class inherits the methods and attributes from the QSys class.</p>
 <p>Constructor for the NV class.
 Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>B0</strong><span class="classifier">float</span></dt><dd><p>magnetic field</p>
+<dt><strong>B0</strong><span class="classifier">float</span></dt><dd><p>Magnetic field</p>
 </dd>
-<dt><strong>N</strong><span class="classifier">15/14/0/None</span></dt><dd><p>nitrogen isotope, or 0 for no nuclear spin</p>
+<dt><strong>N</strong><span class="classifier">15/14/0/None</span></dt><dd><p>Nitrogen isotope, or 0 for no nuclear spin</p>
 </dd>
-<dt><strong>c_ops</strong><span class="classifier">list(Qobj)</span></dt><dd><p>list of collapse operators</p>
+<dt><strong>c_ops</strong><span class="classifier">list(Qobj)</span></dt><dd><p>List of collapse operators</p>
 </dd>
-<dt><strong>units_B0</strong><span class="classifier">str</span></dt><dd><p>units of the magnetic field (T, mT or G)</p>
+<dt><strong>units_B0</strong><span class="classifier">str</span></dt><dd><p>Units of the magnetic field (T, mT or G)</p>
 </dd>
-<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>angle of the magnetic field with respect to the NV axis</p>
+<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>Angle of the magnetic field with respect to the NV axis</p>
 </dd>
-<dt><strong>phi_r</strong><span class="classifier">float</span></dt><dd><p>angle of the magnetic field in the xy plane</p>
+<dt><strong>phi_r</strong><span class="classifier">float</span></dt><dd><p>Angle of the magnetic field in the xy plane</p>
 </dd>
-<dt><strong>units_angles</strong><span class="classifier">str</span></dt><dd><p>units of the angles (deg or rad)</p>
+<dt><strong>units_angles</strong><span class="classifier">str</span></dt><dd><p>Units of the angles (deg or rad)</p>
 </dd>
-<dt><strong>temp</strong><span class="classifier">float</span></dt><dd><p>temperature</p>
+<dt><strong>temp</strong><span class="classifier">float</span></dt><dd><p>Temperature</p>
 </dd>
-<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>temperature units (‘C’/’K’)</p>
+<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>Temperature units (‘C’/’K’)</p>
 </dd>
-<dt><strong>E</strong><span class="classifier">float</span></dt><dd><p>perpedicular component of the zero field splitting</p>
+<dt><strong>E</strong><span class="classifier">float</span></dt><dd><p>Perpedicular component of the zero field splitting</p>
 </dd>
 </dl>
 </dd>
@@ -538,15 +534,15 @@ At room temperatures and moderate fields, the initial state of the nuclear spins
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>temperature</p>
+<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>Temperature</p>
 </dd>
-<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>units of the temperature (K or C)</p>
+<dt><strong>units_temp</strong><span class="classifier">str</span></dt><dd><p>Units of the temperature (K or C)</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>rho0</strong><span class="classifier">Qobj</span></dt><dd><p>initial state of the system</p>
+<dt><strong>rho0</strong><span class="classifier">Qobj</span></dt><dd><p>Initial state of the system</p>
 </dd>
 </dl>
 </dd>
@@ -561,7 +557,7 @@ The indexes to be removed are calculated according to the mS and mI parameters.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>indexes</strong><span class="classifier">list(int)</span></dt><dd><p>list of indexes to remove in the system</p>
+<dt><strong>indexes</strong><span class="classifier">list(int)</span></dt><dd><p>List of indexes to remove in the system</p>
 </dd>
 </dl>
 </dd>
@@ -584,25 +580,45 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>quantum system object representing the quantum system</p>
+<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object representing the quantum system</p>
 </dd>
-<dt><strong>H2</strong><span class="classifier">list(Qobj, function)</span></dt><dd><p>time dependent sensing Hamiltonian of the system in the form [Qobj, function]</p>
+<dt><strong>H2</strong><span class="classifier">list(Qobj, function)</span></dt><dd><p>Time dependent sensing Hamiltonian of the system in the form [Qobj, function]</p>
 </dd>
-<dt><strong>H0_H2</strong><span class="classifier">list</span></dt><dd><p>list of Hamiltonians for the pulse operation in the form [H0, H2]</p>
+<dt><strong>H0_H2</strong><span class="classifier">list</span></dt><dd><p>List of Hamiltonians for the pulse operation in the form [H0, H2]</p>
 </dd>
-<dt><strong>total_time</strong><span class="classifier">float</span></dt><dd><p>total time of the experiment</p>
+<dt><strong>total_time</strong><span class="classifier">float</span></dt><dd><p>Total time of the experiment</p>
 </dd>
-<dt><strong>variable</strong><span class="classifier">np.array</span></dt><dd><p>variable of the experiment which the results depend on</p>
+<dt><strong>variable</strong><span class="classifier">np.array</span></dt><dd><p>Variable of the experiment which the results depend on</p>
 </dd>
-<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>name of the variable</p>
+<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>Name of the variable</p>
 </dd>
-<dt><strong>pulse_profiles :list</strong></dt><dd><p>list of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]</p>
+<dt><strong>pulse_profiles :list</strong></dt><dd><p>List of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]</p>
 </dd>
-<dt><strong>results</strong><span class="classifier">list</span></dt><dd><p>results of the experiment to be later generated in the run method</p>
+<dt><strong>results</strong><span class="classifier">list</span></dt><dd><p>Results of the experiment to be later generated in the run method</p>
 </dd>
-<dt><strong>sequence</strong><span class="classifier">callable</span></dt><dd><p>parallel sequence of operations to be overwritten in PredefSeqs and PredefDDSeqs, or defined by the user</p>
+<dt><strong>sequence</strong><span class="classifier">callable</span></dt><dd><p>Parallel sequence of operations to be overwritten in predef_seqs and predef_dd_seqs, or defined by the user</p>
 </dd>
-<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>number of time steps for the pulses</p>
+<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>Number of time steps for the pulses</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Density matrix of the system</p>
+</dd>
+<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the sequence, if applicable</p>
+</dd>
+<dt><strong>pi_pulse_duration</strong><span class="classifier">float</span></dt><dd><p>Duration of the pi pulse, if applicable</p>
+</dd>
+<dt><strong>free_duration</strong><span class="classifier">np.array</span></dt><dd><p>Free evolution times of the sequence, if applicable</p>
+</dd>
+<dt><strong>pulse_shape</strong><span class="classifier">callable or list(callable)</span></dt><dd><p>Pulse shape function or list of pulse shape functions representing the time modulation of H1</p>
+</dd>
+<dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of parameters for the pulse_shape functions</p>
+</dd>
+<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>Options for the Qutip solver, such as ‘nsteps’, ‘atol’, ‘rtol’, ‘order’</p>
+</dd>
+<dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system, which can be a single Qobj or a list of Qobjs</p>
+</dd>
+<dt><strong>Ht</strong><span class="classifier">list</span></dt><dd><p>List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape], H2]</p>
+</dd>
+<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>Number of time steps for the pulses, if applicable</p>
 </dd>
 </dl>
 </dd>
@@ -610,14 +626,20 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
+<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_free_evolution</span></code>(duration, options)</p></td>
+<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial state.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code></a>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_free_evolution</span></code>(duration, options)</p></td>
-<td><p>Updates the total time of the experiment and applies the time-evolution operator to the initial state.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_delta_pulse</span></code>(R)</p></td>
+<td><p>Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
@@ -639,7 +661,7 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <table class="docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><strong>pulse</strong></p></td>
-<td><p>updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation</p></td>
+<td><p>Updates the total time of the experiment, sets the phase for the pulse and calls mesolve from QuTip to perform the pulse operation</p></td>
 </tr>
 </tbody>
 </table>
@@ -647,9 +669,9 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>quantum system object representing the quantum system</p>
+<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object representing the quantum system</p>
 </dd>
-<dt><strong>H2</strong><span class="classifier">Qobj</span></dt><dd><p>time dependent sensing Hamiltonian of the system</p>
+<dt><strong>H2</strong><span class="classifier">Qobj</span></dt><dd><p>Time dependent sensing Hamiltonian of the system</p>
 </dd>
 </dl>
 </dd>
@@ -657,23 +679,41 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code></a>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code></a>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, pulse_shape, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code></a>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code></a>([observable, tol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code></a>([observable, tol])</p></td>
 <td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse">
+<span class="sig-name descname"><span class="pre">add_delta_pulse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_delta_pulse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse" title="Link to this definition"></a></dt>
+<dd><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.
+For adding a realistic finite length pulse, check add_pulse method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>R</strong><span class="classifier">Qobj</span></dt><dd><p>Rotation operator of the delta pulse</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution">
 <span class="sig-name descname"><span class="pre">add_free_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.add_free_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution" title="Link to this definition"></a></dt>
@@ -681,9 +721,9 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the free evolution</p>
+<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the free evolution</p>
 </dd>
-<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>options for the Qutip solver</p>
+<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>Options for the Qutip solver</p>
 </dd>
 </dl>
 </dd>
@@ -698,17 +738,17 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the pulse</p>
+<dt><strong>duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pulse</p>
 </dd>
-<dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>control Hamiltonian of the system</p>
+<dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system</p>
 </dd>
-<dt><strong>pulse_shape</strong><span class="classifier">callable or list(callable)</span></dt><dd><p>pulse shape function or list of pulse shape functions representing the time modulation of t H1</p>
+<dt><strong>pulse_shape</strong><span class="classifier">callable or list(callable)</span></dt><dd><p>Pulse shape function or list of pulse shape functions representing the time modulation of t H1</p>
 </dd>
-<dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>dictionary of parameters for the pulse_shape functions</p>
+<dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of parameters for the pulse_shape functions</p>
 </dd>
-<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>number of time steps for the pulses</p>
+<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>Number of time steps for the pulses</p>
 </dd>
-<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>options for the Qutip solver</p>
+<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>Options for the Qutip solver</p>
 </dd>
 </dl>
 </dd>
@@ -719,19 +759,20 @@ control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and 
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys">
 <span class="sig-name descname"><span class="pre">measure_qsys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.measure_qsys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys" title="Link to this definition"></a></dt>
 <dd><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
-If no observable is given, the observable of the qsys is used.</p>
+If no observable is given, the observable of the qsys is used.
+The rho attribute needs to be normalized before the measurement is performed, in order to avoid numerical errors within the measure_observable method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>observable</strong><span class="classifier">Qobj</span></dt><dd><p>observable to be measured after the sequence of operations</p>
+<dt><strong>observable</strong><span class="classifier">Qobj</span></dt><dd><p>Observable to be measured after the sequence of operations</p>
 </dd>
-<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>tolerance for the measurement, smallest value for the probabilities</p>
+<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>Tolerance for the measurement, smallest value for the probabilities</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>results</strong><span class="classifier">float or list</span></dt><dd><p>measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs</p>
+<dt><strong>results</strong><span class="classifier">float or list</span></dt><dd><p>Measurement outcome of the observable, which can be a float or a list of floats if the observable is a list of Qobjs</p>
 </dd>
 </dl>
 </dd>
@@ -745,13 +786,13 @@ If no observable is given, the observable of the qsys is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
-<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>label of the x-axis</p>
+<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>Label of the x-axis</p>
 </dd>
-<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>label of the y-axis</p>
+<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>title of the plot</p>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
 </dd>
 </dl>
 </dd>
@@ -768,11 +809,11 @@ The rho attribute is updated.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>variable</strong><span class="classifier">np.array</span></dt><dd><p>xaxis variable of the plot representing the parameter being changed in the experiment</p>
 </dd>
-<dt><strong>sequence</strong><span class="classifier">callable</span></dt><dd><p>sequence of operations to be performed in the experiment</p>
+<dt><strong>sequence</strong><span class="classifier">callable</span></dt><dd><p>Sequence of operations to be performed in the experiment</p>
 </dd>
-<dt><strong>sequence_kwargs</strong><span class="classifier">dict</span></dt><dd><p>dictionary of arguments to be passed to the sequence function</p>
+<dt><strong>sequence_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of arguments to be passed to the sequence function</p>
 </dd>
-<dt><strong>map_kw</strong><span class="classifier">dict</span></dt><dd><p>dictionary of options for the parallel_map function from QuTip</p>
+<dt><strong>map_kw</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of options for the parallel_map function from QuTip</p>
 </dd>
 </dl>
 </dd>
@@ -796,40 +837,27 @@ The rho attribute is updated.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Hahn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn" title="Link to this definition"></a></dt>
-<dd><p>A class containing Hahn echo experiments, inheriting from the PulsedSimulation class.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Hahn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn" title="Link to this definition"></a></dt>
+<dd><p>A class containing Hahn echo experiments.</p>
 <p>The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.
 The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>free_duration</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Time array of the free evolution times to run the simulation.</p>
-</dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pi pulse.</p>
-</dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the Hahn echo sequence for a given tau.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</p></td>
 </tr>
 </tbody>
 </table>
-<p>Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation and the pi_pulse_duration.</p>
+<p class="rubric">Notes</p>
+<p>The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.</p>
+<p>Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -860,16 +888,16 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence</span></code></a>(tau)</p></td>
-<td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence_proj</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hahn_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
@@ -887,29 +915,7 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence">
 <span class="sig-name descname"><span class="pre">hahn_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn.hahn_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence" title="Link to this definition"></a></dt>
 <dd><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p>
-<p>The sequence consists of an initial pi/2 pulse and two free evolutions with a pi pulse between them.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj">
-<span class="sig-name descname"><span class="pre">hahn_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Hahn.hahn_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p>
-<p>The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse.
+<p>The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -953,9 +959,8 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.PMR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">PMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#PMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.PMR" title="Link to this definition"></a></dt>
-<dd><p>A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed,
-inheriting from the PulsedSim class.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">PMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequencies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#PMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.PMR" title="Link to this definition"></a></dt>
+<dd><p>A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed.</p>
 <p>The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
 it will undergo some transition which will affect the observable.
 This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.
@@ -982,15 +987,17 @@ however the method can be more general.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The PMR sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Constructor for the PMR pulsed experiment class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>frequencies</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of frequencies to run the simulation.</p>
 </dd>
-<dt><strong>pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pulse.</p>
-</dd>
 <dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</p>
+</dd>
+<dt><strong>pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pulse.</p>
 </dd>
 <dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system.</p>
 </dd>
@@ -1013,19 +1020,22 @@ however the method can be more general.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.PMR_sequence" title="quaccatoo.pulsed_sim.predef_seqs.PMR.PMR_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PMR_sequence</span></code></a>(f)</p></td>
 <td><p>Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
 <td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
 <td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
 </tr>
 </tbody>
@@ -1060,7 +1070,6 @@ To be called by the parallel_map in run method.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>f_pulse</strong><span class="classifier">float or int</span></dt><dd><p>Frequency of the pulse to be plotted.</p>
 </dd>
-<dt><strong>(Inherited from PulsedSimulation.plot_pulses)</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -1071,7 +1080,7 @@ To be called by the parallel_map in run method.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Rabi">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi" title="Link to this definition"></a></dt>
-<dd><p>A class containing Rabi experiments, inheriting from the PulsedSimulation class.</p>
+<dd><p>A class containing Rabi experiments.</p>
 <p>A Rabi sequence is composed of a resonant pulse of varying duration,
 such that the quantum system will undergo periodical transitions between the excited and ground states.</p>
 <p class="rubric">Methods</p>
@@ -1082,6 +1091,8 @@ such that the quantum system will undergo periodical transitions between the exc
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The Rabi sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Constructor for the Rabi pulsed experiment class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1106,19 +1117,22 @@ such that the quantum system will undergo periodical transitions between the exc
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
 <td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, title])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, title])</p></td>
 <td><p>Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi.run" title="quaccatoo.pulsed_sim.predef_seqs.Rabi.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Rabi.run" title="quaccatoo.pulsed_sim.predef_seqs.Rabi.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
 <td><p>Overwrites the run method of the parent class.</p></td>
 </tr>
 </tbody>
@@ -1137,37 +1151,26 @@ thus the run method from the parent class is overwritten.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Ramsey">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Ramsey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey" title="Link to this definition"></a></dt>
-<dd><p>A class containing Ramsey experiments, inheriting from the PulsedSimulation class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>free_duration</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.</p>
-</dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pi pulse.</p>
-</dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis.</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_seqs.</span></span><span class="sig-name descname"><span class="pre">Ramsey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey" title="Link to this definition"></a></dt>
+<dd><p>A class containing Ramsey experiments.</p>
+<p>The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization axis,
+which causes a phase accumulation between states in the system which can be used for sensing.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the Ramsey sequence for a given tau.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</p></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The Ramsey sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Class constructor for the Ramsey pulsed experiment class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1199,22 +1202,22 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
 <td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
 <td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
-<td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence_proj</span></code></a>(tau)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ramsey_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
@@ -1249,28 +1252,7 @@ If True, a final pi/2 pulse is included in order to project the result into the 
 <span class="sig-name descname"><span class="pre">ramsey_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey.ramsey_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence" title="Link to this definition"></a></dt>
 <dd><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
 The sequence consists of an initial pi/2 pulse and a single free evolution.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj">
-<span class="sig-name descname"><span class="pre">ramsey_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_seqs.html#Ramsey.ramsey_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-The sequence consists of an initial pi/2 pulse, a single free evolution, and a final pi/2 pulse to project the result into the Sz basis.
+If the projection_pulse is set to True, a final pi/2 pulse is included in order to project the result into the Sz basis.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1296,64 +1278,49 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <p>This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">CPMG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG" title="Link to this definition"></a></dt>
-<dd><p>This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments, inheriting from the PulsedSim class.
-The CPMG sequence consists of a series of pi pulses and free evolution times,
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">CPMG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG" title="Link to this definition"></a></dt>
+<dd><p>This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments.</p>
+<p>The CPMG sequence consists of a series of pi pulses and free evolution times,
 such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>number of pulses (order) in the CPMG sequence</p>
-</dd>
-<dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
-</dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the pi pulse</p>
-</dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPMG_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPMG_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the CPMG sequence, but with a final pi/2 pulse in order to project the result into the Sz basis.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the CPMG sequence for a given tau.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
 <td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.</p></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The CPMG sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Class constructor for the Carr-Purcell-Meiboom-Gill sequence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>order of the CPMG sequence</p>
+<dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
 </dd>
-<dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
+<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators</p>
 </dd>
-<dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators</p>
+<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the CPMG sequence</p>
 </dd>
-<dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>control Hamiltonian of the system</p>
+<dt><strong>H1</strong><span class="classifier">Qobj or list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system</p>
 </dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>duration of the pi pulse</p>
+<dt><strong>pi_pulse_duration</strong><span class="classifier">float or int</span></dt><dd><p>Duration of the pi pulse</p>
 </dd>
-<dt><strong>H2</strong><span class="classifier">list(Qobj or function)</span></dt><dd><p>time dependent sensing Hamiltonian of the system</p>
+<dt><strong>H2</strong><span class="classifier">list(Qobj or function)</span></dt><dd><p>Time dependent sensing Hamiltonian of the system</p>
 </dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis</p>
+<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis</p>
 </dd>
-<dt><strong>pulse_shape</strong><span class="classifier">FunctionType or list(FunctionType)</span></dt><dd><p>pulse shape function or list of pulse shape functions representing the time modulation of H1</p>
+<dt><strong>pulse_shape</strong><span class="classifier">FunctionType or list(FunctionType)</span></dt><dd><p>Pulse shape function or list of pulse shape functions representing the time modulation of H1</p>
 </dd>
-<dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>dictionary of parameters for the pulse_shape functions</p>
+<dt><strong>pulse_params</strong><span class="classifier">dict</span></dt><dd><p>Dictionary of parameters for the pulse_shape functions</p>
 </dd>
-<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>number of time steps in the pulses for the simulation</p>
+<dt><strong>time_steps</strong><span class="classifier">int</span></dt><dd><p>Number of time steps in the pulses for the simulation</p>
 </dd>
 </dl>
 </dd>
@@ -1364,8 +1331,8 @@ such that these periodicals inversions will cancel out oscillating noises except
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPMG_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPMG_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the CPMG sequence, but with a final pi/2 pulse in order to project the result into the Sz basis.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
@@ -1389,38 +1356,18 @@ such that these periodicals inversions will cancel out oscillating noises except
 <span class="sig-name descname"><span class="pre">CPMG_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG.CPMG_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence" title="Link to this definition"></a></dt>
 <dd><p>Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
 The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
+If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>free evolution time</p>
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>final state</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj">
-<span class="sig-name descname"><span class="pre">CPMG_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#CPMG.CPMG_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.CPMG.CPMG_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the CPMG sequence, but with a final pi/2 pulse in order to project the result into the Sz basis.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>free evolution time</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>final state</p>
+<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state</p>
 </dd>
 </dl>
 </dd>
@@ -1452,164 +1399,36 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">RXY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#RXY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8" title="Link to this definition"></a></dt>
-<dd><p>This contains the RXY8-M sequence, inheriting from XY8. The RXY8-M is a further improvement from the XY8-M sequence,
-where a random phase is added in each XY8 block in order to improve noise suppression and pulse errors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>same as XY8</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence</span></code></a>(tau)</p></td>
-<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times, plus the projection pulse.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
-<td><p>Generates the pulse profiles for the RXY8-M sequence for a given tau.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
-<td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
-</tr>
-</tbody>
-</table>
-<p>Class constructor for the RXY8 sequence</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>same as XY8</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence</span></code></a>(tau)</p></td>
-<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RXY8_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times, plus the projection pulse.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence</span></code>(tau)</p></td>
-<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence_proj</span></code>(tau)</p></td>
-<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
-<td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pulse</span></code>(duration, H1[, pulse_shape, ...])</p></td>
-<td><p>Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse, control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">measure_qsys</span></code>([observable, tol])</p></td>
-<td><p>Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code>([figsize, xlabel, ylabel, ...])</p></td>
-<td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>([variable, sequence, sequence_kwargs, ...])</p></td>
-<td><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence">
-<span class="sig-name descname"><span class="pre">RXY8_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#RXY8.RXY8_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence" title="Link to this definition"></a></dt>
-<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-A random phase is added in each XY8 block.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj">
-<span class="sig-name descname"><span class="pre">RXY8_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#RXY8.RXY8_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.RXY8.RXY8_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the RXY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times,
-plus the projection pulse.
-A random phase is added in each XY8 block.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY" title="Link to this definition"></a></dt>
-<dd><p>This class contains the XY-M pulse sequence, inheriting from PulsedSim class.
-The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY" title="Link to this definition"></a></dt>
+<dd><p>This class contains the XY-M pulse sequence.</p>
+<p>The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
 It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
-</dd>
-<dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
-</dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float, int</span></dt><dd><p>Duration of the pi pulse</p>
-</dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
 <td><p>Generates the pulse profiles for the XY-M sequence for a given tau.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.</p></td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>The XY sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Class constructor for the XY sequence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
-</dd>
 <dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
 </dd>
 <dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators</p>
+</dd>
+<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
 </dd>
 <dt><strong>H1</strong><span class="classifier">Qobj, list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system</p>
 </dd>
@@ -1634,8 +1453,8 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
@@ -1658,27 +1477,7 @@ It acts similar to the CPMG sequence, but the alternation of the pulse improves 
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence">
 <span class="sig-name descname"><span class="pre">XY_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY.XY_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence" title="Link to this definition"></a></dt>
 <dd><p>Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj">
-<span class="sig-name descname"><span class="pre">XY_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY.XY_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY.XY_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the XY-M sequence with an initial pi/2 pulse and a final pi/2 pulse in order to project the measurement in the Sz basis.
+If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1722,53 +1521,39 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY8">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8" title="Link to this definition"></a></dt>
-<dd><p>This contains the XY8-M sequence, inheriting from Pulsed Simulation.
-The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.pulsed_sim.predef_dd_seqs.</span></span><span class="sig-name descname"><span class="pre">XY8</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi_pulse_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H2=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_pulse=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_shape=&lt;function</span> <span class="pre">square_pulse&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RXY8=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8" title="Link to this definition"></a></dt>
+<dd><p>This contains the XY8-M sequence.</p>
+<p>The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
 in order to improve noise suppression and pulse errors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
-</dd>
-<dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
-</dd>
-<dt><strong>pi_pulse_duration</strong><span class="classifier">float, int</span></dt><dd><p>Duration of the pi pulse</p>
-</dd>
-<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement in the Sz basis</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
-<table class="docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>XY8_sequence(tau)</strong></p></td>
-<td><p>Defines the XY8 sequence for a given free evolution time tau and the set of attributes defined in the constructor, returning the final state. The sequence is to be called by the parallel_map method of QuTip.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_pulse_profiles</span></code>([tau])</p></td>
+<td><p>Generates the pulse profiles for the XY8-M sequence for a given tau.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>XY8_sequence_proj(tau)</strong></p></td>
-<td><p>XY8 sequence with projection pulse.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>XY8_sequence_H2(tau)</strong></p></td>
-<td><p>XY8 sequence with time dependent H2 or collapse operators.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>XY8_sequence_proj_H2(tau)</strong></p></td>
-<td><p>XY8 sequence with time dependent H2 or collapse operators and a final pi/2 pulse.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>_get_pulse_profiles(tau)</strong></p></td>
-<td><p>Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.plot_pulses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pulses</span></code></a>([figsize, xlabel, ylabel, ...])</p></td>
+<td><p>Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.</p></td>
 </tr>
 </tbody>
 </table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>XY_sequence</strong></p></td>
+<td><p>Defines the XY8-M sequence for a given free evolution time tau and the set of attributes defined in the constructor, returning the final state. The sequence is to be called by the parallel_map method of QuTip.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The XY8 sequence inherits the methods and attributes from the PulsedSim class.</p>
 <p>Class constructor for the XY8 sequence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
-</dd>
 <dt><strong>free_duration</strong><span class="classifier">numpy array</span></dt><dd><p>Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation</p>
 </dd>
 <dt><strong>system</strong><span class="classifier">QSys</span></dt><dd><p>Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators</p>
+</dd>
+<dt><strong>M</strong><span class="classifier">int</span></dt><dd><p>Order of the XY sequence</p>
 </dd>
 <dt><strong>H1</strong><span class="classifier">Qobj, list(Qobj)</span></dt><dd><p>Control Hamiltonian of the system</p>
 </dd>
@@ -1784,6 +1569,10 @@ in order to improve noise suppression and pulse errors.</p>
 </dd>
 <dt><strong>options</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary of solver options from Qutip</p>
 </dd>
+<dt><strong>projection_pulse</strong><span class="classifier">bool</span></dt><dd><p>Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis</p>
+</dd>
+<dt><strong>RXY8</strong><span class="classifier">bool</span></dt><dd><p>Boolen to determine if a random phase is to be added to each XY8 block</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -1793,8 +1582,8 @@ in order to improve noise suppression and pulse errors.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence</span></code></a>(tau)</p></td>
 <td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj" title="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XY8_sequence_proj</span></code></a>(tau)</p></td>
-<td><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_delta_pulse</span></code>(R)</p></td>
+<td><p>Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_free_evolution</span></code>(duration[, options])</p></td>
 <td><p>Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</p></td>
@@ -1817,27 +1606,8 @@ in order to improve noise suppression and pulse errors.</p>
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence">
 <span class="sig-name descname"><span class="pre">XY8_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8.XY8_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence" title="Link to this definition"></a></dt>
 <dd><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-The sequence is to be called by the parallel_map method of QuTip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Free evolution time</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>rho</strong><span class="classifier">Qobj</span></dt><dd><p>Final state</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj">
-<span class="sig-name descname"><span class="pre">XY8_sequence_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/predef_dd_seqs.html#XY8.XY8_sequence_proj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.predef_dd_seqs.XY8.XY8_sequence_proj" title="Link to this definition"></a></dt>
-<dd><p>Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+If random_phase is set to True, a random phase is added in each XY8 block.
+If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
 The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1890,14 +1660,22 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>time parameter</p>
+<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>Time parameter</p>
 </dd>
-<dt><strong>t_mid</strong><span class="classifier">float</span></dt><dd><p>middle point of the pulse</p>
+<dt><strong>t_mid</strong><span class="classifier">float</span></dt><dd><p>Middle point of the pulse</p>
 </dd>
-<dt><strong>sigma</strong><span class="classifier">float</span></dt><dd><p>width of the pulse</p>
+<dt><strong>sigma</strong><span class="classifier">float</span></dt><dd><p>Width of the pulse</p>
 </dd>
-<dt><strong>f_pulse float): frequency of the pulse</strong></dt><dd></dd>
-<dt><strong>phi_t (float): phase of the pulse</strong></dt><dd></dd>
+<dt><strong>f_pulse</strong><span class="classifier">float</span></dt><dd><p>Frequency of the pulse</p>
+</dd>
+<dt><strong>phi_t</strong><span class="classifier">float</span></dt><dd><p>Phase of the pulse</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>Value of the Gaussian pulse at time t</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -1910,15 +1688,21 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>time parameter</p>
+<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>Time parameter</p>
 </dd>
-<dt><strong>t_mid</strong><span class="classifier">float</span></dt><dd><p>middle point of the pulse</p>
+<dt><strong>t_mid</strong><span class="classifier">float</span></dt><dd><p>Middle point of the pulse</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>width of the pulse</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the pulse</p>
 </dd>
-<dt><strong>f_pulse</strong><span class="classifier">float</span></dt><dd><p>frequency of the pulse</p>
+<dt><strong>f_pulse</strong><span class="classifier">float</span></dt><dd><p>Frequency of the pulse</p>
 </dd>
-<dt><strong>phi_t</strong><span class="classifier">float</span></dt><dd><p>phase of the pulse</p>
+<dt><strong>phi_t</strong><span class="classifier">float</span></dt><dd><p>Phase of the pulse</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>Value of the Lorentzian pulse at time t</p>
 </dd>
 </dl>
 </dd>
@@ -1932,11 +1716,17 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>time parameter</p>
+<dt><strong>t</strong><span class="classifier">float</span></dt><dd><p>Time parameter</p>
 </dd>
-<dt><strong>f_pulse</strong><span class="classifier">float</span></dt><dd><p>frequency of the pulse</p>
+<dt><strong>f_pulse</strong><span class="classifier">float</span></dt><dd><p>Frequency of the pulse</p>
 </dd>
-<dt><strong>phi_t</strong><span class="classifier">float</span></dt><dd><p>phase of the pulse</p>
+<dt><strong>phi_t</strong><span class="classifier">float</span></dt><dd><p>Phase of the pulse</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>Value of the square pulse at time t</p>
 </dd>
 </dl>
 </dd>
@@ -1946,7 +1736,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 </section>
 <section id="module-quaccatoo.analysis.analysis">
 <span id="analysis"></span><h2>analysis<a class="headerlink" href="#module-quaccatoo.analysis.analysis" title="Link to this heading"></a></h2>
-<p>This module contains the Analysis class as part of the QuaCCAToo package.</p>
+<p>This module contains the Analysis class and the plot_histogram method.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.analysis.analysis.Analysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.analysis.</span></span><span class="sig-name descname"><span class="pre">Analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#Analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.Analysis" title="Link to this definition"></a></dt>
@@ -1954,21 +1744,21 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>experiment</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>experiment object to be analyzed containing the results and variable attributes</p>
+<dt><strong>experiment</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>Experiment object to be analyzed containing the results and variable attributes</p>
 </dd>
-<dt><strong>FFT_values</strong><span class="classifier">tuple</span></dt><dd><p>tuple with the frequency values and the FFT values</p>
+<dt><strong>FFT_values</strong><span class="classifier">tuple</span></dt><dd><p>Tuple with the frequency values and the FFT values</p>
 </dd>
-<dt><strong>FFT_peaks</strong><span class="classifier">array</span></dt><dd><p>array with the peaks of the FFT values</p>
+<dt><strong>FFT_peaks</strong><span class="classifier">array</span></dt><dd><p>Array with the peaks of the FFT values</p>
 </dd>
-<dt><strong>fit_model</strong><span class="classifier">lmfit.Model or list(lmfit.Model)</span></dt><dd><p>list with the fitting model for each result</p>
+<dt><strong>fit_model</strong><span class="classifier">lmfit.Model or list(lmfit.Model)</span></dt><dd><p>List with the fitting model for each result</p>
 </dd>
-<dt><strong>fit_params</strong><span class="classifier">list</span></dt><dd><p>list with the fitted parameters for each result</p>
+<dt><strong>fit_params</strong><span class="classifier">list</span></dt><dd><p>List with the fitted parameters for each result</p>
 </dd>
-<dt><strong>fit_cov</strong><span class="classifier">list</span></dt><dd><p>list with the covariance of the fitted parameters for each result</p>
+<dt><strong>fit_cov</strong><span class="classifier">list</span></dt><dd><p>List with the covariance of the fitted parameters for each result</p>
 </dd>
 <dt><strong>pearson</strong><span class="classifier">float</span></dt><dd><p>Pearson correlation coefficient between two experiments</p>
 </dd>
-<dt><strong>exp_comparison</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>experiment to be compared with the first one</p>
+<dt><strong>exp_comparison</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>Experiment to be compared with the first one</p>
 </dd>
 </dl>
 </dd>
@@ -2009,7 +1799,7 @@ The sequence is to be called by the parallel_map method of QuTip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>experiment</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>experiment object to be analyzed containing the results and variable attributes</p>
+<dt><strong>experiment</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>Experiment object to be analyzed containing the results and variable attributes</p>
 </dd>
 </dl>
 </dd>
@@ -2055,13 +1845,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>exp_comparison</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>experiment to be compared with the first one</p>
+<dt><strong>exp_comparison</strong><span class="classifier">PulsedSim or ExpData</span></dt><dd><p>Experiment to be compared with the first one</p>
 </dd>
-<dt><strong>results_index</strong><span class="classifier">int</span></dt><dd><p>index of the results to be compared if the results attribute is a list</p>
+<dt><strong>results_index</strong><span class="classifier">int</span></dt><dd><p>Index of the results to be compared if the results attribute is a list</p>
 </dd>
-<dt><strong>comparison_index</strong><span class="classifier">int</span></dt><dd><p>index of the results to be compared if the results attribute of the exp_comparison is a list</p>
+<dt><strong>comparison_index</strong><span class="classifier">int</span></dt><dd><p>Index of the results to be compared if the results attribute of the exp_comparison is a list</p>
 </dd>
-<dt><strong>linear_fit</strong><span class="classifier">bool</span></dt><dd><p>boolean indicating whether or not to perform a linear fit between the two data sets</p>
+<dt><strong>linear_fit</strong><span class="classifier">bool</span></dt><dd><p>Boolean indicating whether or not to perform a linear fit between the two data sets</p>
 </dd>
 </dl>
 </dd>
@@ -2081,13 +1871,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>find_peaks_kwargs</strong><span class="classifier">dict</span></dt><dd><p>dictionary with the arguments to be passed to the scipy.signal.find_peaks function</p>
+<dt><strong>find_peaks_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with the arguments to be passed to the scipy.signal.find_peaks function</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>FFT_peaks</strong><span class="classifier">array</span></dt><dd><p>array with the peaks of the FFT values</p>
+<dt><strong>FFT_peaks</strong><span class="classifier">array</span></dt><dd><p>Array with the peaks of the FFT values</p>
 </dd>
 </dl>
 </dd>
@@ -2101,13 +1891,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
-<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>label of the x-axis</p>
+<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>Label of the x-axis</p>
 </dd>
-<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>label of the y-axis</p>
+<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>title of the plot</p>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2121,7 +1911,7 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
 </dl>
 </dd>
@@ -2135,13 +1925,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
-<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>label of the x-axis</p>
+<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>Label of the x-axis</p>
 </dd>
-<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>label of the y-axis</p>
+<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>title of the plot</p>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2155,13 +1945,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
-<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>label of the x-axis</p>
+<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>Label of the x-axis</p>
 </dd>
-<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>label of the y-axis</p>
+<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>title of the plot</p>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2175,13 +1965,13 @@ Otherwise the Pearson correlation coefficient without linear fit is calculated b
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure to be passed to matplotlib.pyplot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
 </dd>
-<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>label of the x-axis</p>
+<dt><strong>xlabel</strong><span class="classifier">str</span></dt><dd><p>Label of the x-axis</p>
 </dd>
-<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>label of the y-axis</p>
+<dt><strong>ylabel</strong><span class="classifier">str</span></dt><dd><p>Label of the y-axis</p>
 </dd>
-<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>title of the plot</p>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2196,7 +1986,7 @@ The results are centered around the mean value before the FFT is calculated in o
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>FFT_values</strong><span class="classifier">tuple</span></dt><dd><p>tuple with the frequency values and the FFT values</p>
+<dt><strong>FFT_values</strong><span class="classifier">tuple</span></dt><dd><p>Tuple with the frequency values and the FFT values</p>
 </dd>
 </dl>
 </dd>
@@ -2211,11 +2001,11 @@ guess for the initial parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>fit_model</strong><span class="classifier">lmfit.Model</span></dt><dd><p>model to be used to fit the results</p>
+<dt><strong>fit_model</strong><span class="classifier">lmfit.Model</span></dt><dd><p>Model to be used to fit the results</p>
 </dd>
-<dt><strong>results_index</strong><span class="classifier">int</span></dt><dd><p>index of the results to be fitted if the results attribute is a list</p>
+<dt><strong>results_index</strong><span class="classifier">int</span></dt><dd><p>Index of the results to be fitted if the results attribute is a list</p>
 </dd>
-<dt><strong>guess</strong><span class="classifier">dict</span></dt><dd><p>initial guess for the parameters of the model
+<dt><strong>guess</strong><span class="classifier">dict</span></dt><dd><p>Initial guess for the parameters of the model
 Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.
 See the definitions of the models in the fit_functions.py file for details.</p>
 </dd>
@@ -2253,6 +2043,26 @@ parameters can be referred to from the source file (fit_functions.py).</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.analysis.analysis.plot_histogram">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_comparison</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'real'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(5,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Matrix</span> <span class="pre">Histogram'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#plot_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.plot_histogram" title="Link to this definition"></a></dt>
+<dd><p>Plot a 3D histogram of the final density matrix of the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>component</strong><span class="classifier">str</span></dt><dd><p>Component of the density matrix to be plotted. Can be ‘real’, ‘imag’, or ‘abs’.</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure to be passed to matplotlib.pyplot</p>
+</dd>
+<dt><strong>rho_comparison</strong><span class="classifier">Qobj, optional</span></dt><dd><p>A Qobj representing a density matrix to be compared with the final density matrix of the simulation</p>
+</dd>
+<dt><strong>title</strong><span class="classifier">str</span></dt><dd><p>Title of the plot</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-quaccatoo.analysis.fit_functions">
 <span id="fit-functions"></span><h2>fit_functions<a class="headerlink" href="#module-quaccatoo.analysis.fit_functions" title="Link to this heading"></a></h2>
@@ -2261,6 +2071,11 @@ parameters can be referred to from the source file (fit_functions.py).</p>
 <p>The general mechanism is the same as that of lmfit. So a lot of functions have been taken from there.
 To create additional fit models, simply instantiate an lmfit model with the target fit function.</p>
 <p>Refer to the documentation of analysis.run_fit for usage details.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.guess_sin">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">guess_sin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#guess_sin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.guess_sin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_rabi">
 <span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi" title="Link to this definition"></a></dt>
@@ -2350,6 +2165,11 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.guess_exp">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">guess_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#guess_exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.guess_exp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_exp_decay">
@@ -2760,13 +2580,13 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>variable</strong><span class="classifier">np.ndarray</span></dt><dd><p>array containing the variable data</p>
+<dt><strong>variable</strong><span class="classifier">np.ndarray</span></dt><dd><p>Array containing the variable data</p>
 </dd>
-<dt><strong>results</strong><span class="classifier">np.ndarray or list of np.ndarray</span></dt><dd><p>array or list of arrays containing the results data</p>
+<dt><strong>results</strong><span class="classifier">np.ndarray or list of np.ndarray</span></dt><dd><p>Array or list of arrays containing the results data</p>
 </dd>
-<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>name of the variable</p>
+<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>Name of the variable</p>
 </dd>
-<dt><strong>result_name</strong><span class="classifier">str</span></dt><dd><p>name of the results</p>
+<dt><strong>result_name</strong><span class="classifier">str</span></dt><dd><p>Name of the results</p>
 </dd>
 </dl>
 </dd>
@@ -2775,19 +2595,19 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <table class="docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><strong>subtract_results_columns:</strong></p></td>
-<td><p>subtracts the results of the negative column from the positive column</p></td>
+<td><p>Subtracts the results of the negative column from the positive column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>offset_correction:</strong></p></td>
-<td><p>substracts a background value from the results</p></td>
+<td><p>Substracts a background value from the results</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>rescale_correction:</strong></p></td>
-<td><p>multiplies the results by a rescale value</p></td>
+<td><p>Multiplies the results by a rescale value</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>poly_baseline_correction:</strong></p></td>
-<td><p>performs a polynomial baseline correction to the results</p></td>
+<td><p>Performs a polynomial baseline correction to the results</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>plot_exp_data:</strong></p></td>
-<td><p>plots the experimental data</p></td>
+<td><p>Plots the experimental data</p></td>
 </tr>
 </tbody>
 </table>
@@ -2796,23 +2616,23 @@ It loads experimental data from a file and sets the variable and results attribu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>path to the file containing the experimental data</p>
+<dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>Path to the file containing the experimental data</p>
 </dd>
-<dt><strong>variable_column</strong><span class="classifier">int</span></dt><dd><p>column index of the variable</p>
+<dt><strong>variable_column</strong><span class="classifier">int</span></dt><dd><p>Column index of the variable</p>
 </dd>
-<dt><strong>results_columns</strong><span class="classifier">int or list of int</span></dt><dd><p>column index of the results</p>
+<dt><strong>results_columns</strong><span class="classifier">int or list of int</span></dt><dd><p>Column index of the results</p>
 </dd>
-<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>name of the variable</p>
+<dt><strong>variable_name</strong><span class="classifier">str</span></dt><dd><p>Name of the variable</p>
 </dd>
-<dt><strong>result_name</strong><span class="classifier">str</span></dt><dd><p>name of the results</p>
+<dt><strong>result_name</strong><span class="classifier">str</span></dt><dd><p>Name of the results</p>
 </dd>
-<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>Boolean indicating whether to plot the experimental data or not</p>
 </dd>
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>Title of the figure for the plot</p>
 </dd>
-<dt><strong>**loadtxt_kwargs</strong><span class="classifier">dict</span></dt><dd><p>additional arguments for the np.loadtxt function</p>
+<dt><strong>**loadtxt_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional arguments for the np.loadtxt function</p>
 </dd>
 </dl>
 </dd>
@@ -2844,13 +2664,13 @@ It loads experimental data from a file and sets the variable and results attribu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>background_value</strong><span class="classifier">int or float</span></dt><dd><p>value to be substracted from the results</p>
+<dt><strong>background_value</strong><span class="classifier">int or float</span></dt><dd><p>Value to be substracted from the results</p>
 </dd>
-<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>Boolean indicating whether to plot the experimental data or not</p>
 </dd>
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>Title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2864,9 +2684,9 @@ It loads experimental data from a file and sets the variable and results attribu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>Title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2881,17 +2701,17 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>x_start</strong><span class="classifier">int or list of int</span></dt><dd><p>start index of the x axis for the baseline fit</p>
+<dt><strong>x_start</strong><span class="classifier">int or list of int</span></dt><dd><p>Start index of the x axis for the baseline fit</p>
 </dd>
-<dt><strong>x_end</strong><span class="classifier">int or list of int</span></dt><dd><p>end index of the x axis for the baseline fit</p>
+<dt><strong>x_end</strong><span class="classifier">int or list of int</span></dt><dd><p>End index of the x axis for the baseline fit</p>
 </dd>
-<dt><strong>poly_order</strong><span class="classifier">int</span></dt><dd><p>order of the polynomial to fit the baseline</p>
+<dt><strong>poly_order</strong><span class="classifier">int</span></dt><dd><p>Order of the polynomial to fit the baseline</p>
 </dd>
-<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>Boolean indicating whether to plot the experimental data or not</p>
 </dd>
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>Title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2905,13 +2725,13 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>rescale_value</strong><span class="classifier">int or float</span></dt><dd><p>value to be multiplied by the results</p>
+<dt><strong>rescale_value</strong><span class="classifier">int or float</span></dt><dd><p>Value to be multiplied by the results</p>
 </dd>
-<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>if True, plot the experimental data</p>
+<dt><strong>plot</strong><span class="classifier">bool</span></dt><dd><p>Boolean indicating whether to plot the experimental data or not</p>
 </dd>
-<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize</strong><span class="classifier">tuple</span></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle</strong><span class="classifier">str</span></dt><dd><p>Title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
@@ -2925,15 +2745,15 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>pos_col: int</strong></dt><dd><p>index of the positive column</p>
+<dt><strong>pos_col: int</strong></dt><dd><p>Index of the positive column</p>
 </dd>
-<dt><strong>neg_col: int</strong></dt><dd><p>index of the negative column</p>
+<dt><strong>neg_col: int</strong></dt><dd><p>Index of the negative column</p>
 </dd>
-<dt><strong>plot: bool</strong></dt><dd><p>if True, plot the experimental data</p>
+<dt><strong>plot: bool</strong></dt><dd><p>Boolean indicating whether to plot the experimental data or not</p>
 </dd>
-<dt><strong>figsize: tuple</strong></dt><dd><p>size of the figure for the plot</p>
+<dt><strong>figsize: tuple</strong></dt><dd><p>Size of the figure for the plot</p>
 </dd>
-<dt><strong>figtitle: str</strong></dt><dd><p>title of the figure for the plot</p>
+<dt><strong>figtitle: str</strong></dt><dd><p>Title of the figure for the plot</p>
 </dd>
 </dl>
 </dd>
