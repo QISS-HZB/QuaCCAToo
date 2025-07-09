@@ -1,10 +1,10 @@
 """
-This module contains the Analysis class as part of the QuaCCAToo package.
+This module contains the Analysis class and the plot_histogram method.
 """
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Bloch
+from qutip import Bloch, Qobj, fidelity
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
 from lmfit import Model
@@ -479,3 +479,90 @@ class Analysis:
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
         bloch.frame_alpha = 0
         bloch.render()
+
+def plot_histogram(rho, rho_comparison=None, component='real', figsize=(5,5), title="Matrix Histogram"):
+    """
+    Plot a 3D histogram of the final density matrix of the simulation.
+    
+    Parameters
+    ----------
+    component : str
+        Component of the density matrix to be plotted. Can be 'real', 'imag', or 'abs'.
+    figsize : tuple
+        Size of the figure to be passed to matplotlib.pyplot
+    rho_comparison : Qobj, optional
+        A Qobj representing a density matrix to be compared with the final density matrix of the simulation
+    title : str
+        Title of the plot
+    """
+    # Check all parameters
+    if component not in ['real', 'imag', 'abs']:
+        raise ValueError("component must be 'real', 'imag', or 'abs'")
+        
+    if not (isinstance(figsize, tuple) or len(figsize) == 2):
+        raise ValueError("figsize must be a tuple of two positive floats")
+    
+    if isinstance(rho, Qobj) and rho.shape[0] == rho.shape[1]:
+        N = rho.shape[0]
+        rho = rho.full()
+    else:
+        raise ValueError("rho must be a Qobj representing a square density matrix")    
+        
+    if rho_comparison is None:
+        pass
+    elif isinstance(rho_comparison, Qobj) and rho_comparison.shape[0] == rho_comparison.shape[1] == N:
+        rho_comparison = rho_comparison.full()
+    else:
+        raise ValueError("rho_comparison must be a Qobj with the same shape as the density matrix to be compared with")
+        
+    # Create 3D plot
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.view_init(azim=-50, elev=30)
+
+    # Dimensions and positions for the bars
+    xpos, ypos = np.meshgrid(np.arange(N), np.arange(N))
+    xpos, ypos = xpos.flatten(), ypos.flatten()
+    zpos = np.zeros_like(xpos)
+    dx = dy = 0.5 * np.ones_like(zpos)
+
+    # Prepare the data for the bars depending on the component
+    if component == 'real':
+        dz_sim = np.real(rho).flatten() 
+        color='C0'          
+        if rho_comparison is not None:
+            dz_comp = np.real(rho_comparison).flatten()
+        
+    
+    elif component == 'imag':
+        dz_sim = np.imag(rho).flatten()
+        color='C1'
+        if rho_comparison is not None:
+            dz_comp = np.imag(rho_comparison).flatten()
+    
+    elif component == 'abs':
+        dz_sim = np.abs(rho).flatten()
+        color='C2'
+        if rho_comparison is not None:
+            dz_comp = np.abs(rho_comparison).flatten()
+            
+    # Plot the bars        
+    ax.bar3d(xpos, ypos, zpos, dx, dy, dz_sim,
+            color=color, linewidth=0, alpha=0.3, zorder=0)
+    
+    if rho_comparison is not None:
+        print(f"Fidelity: {fidelity(Qobj(rho), Qobj(rho_comparison))}")
+        ax.bar3d(xpos, ypos, zpos, dx, dy, dz_comp,
+            edgecolor='k', linewidth=1, linestyle='dotted', alpha=0, zorder=1)
+
+    # Aesthetics, labels, and title
+    ax.grid(False)
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    fig.suptitle(title, fontsize=12, x=0.2, y=0.85)
+    ax.set_xticks(np.arange(N) + 0.5)
+    ax.set_yticks(np.arange(N) + 0.5)
+    ax.set_xticklabels([f"$|{i}\\rangle$" for i in range(N)])
+    ax.set_yticklabels([f"$|{i}\\rangle$" for i in range(N)])
+    ax.set_zticks([-1, -0.5, 0, 0.5, 1.0])
