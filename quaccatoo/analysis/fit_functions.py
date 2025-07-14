@@ -1,5 +1,3 @@
-# TODO: expand, document
-
 """
 Collection of in built fit models and functions.
 
@@ -17,9 +15,23 @@ from lmfit.models import SineModel, LinearModel, GaussianModel, LorentzianModel,
 
 ############################################## Rabi - Periodic Oscillation ##############################################
 
-def guess_sin(data, x):
+def _guess_sin(data, x):
     """
-    
+    Internal helper function to provide decent first guesses for sinusoidal functions.
+
+    Parameters
+    ----------
+    data: array_like
+        The dependent variable over which fit is to be performed
+    x: array_like
+        The independent variable in the fitting
+
+    Returns
+    -------
+    amp: float
+        Guessed amplitude
+    frequency: float
+        Guessed frequency
     """
     y = data - data.mean()
     frequencies = np.fft.fftfreq(len(x), abs(x[-1] - x[0]) / (len(x) - 1))
@@ -64,7 +76,7 @@ class RabiModel(Model):
 
     def guess(self, data, x, **kwargs):
         offset=data.mean()
-        amp, frequency = guess_sin(data, x)
+        amp, frequency = _guess_sin(data, x)
         data = data - data.mean()
 
         # try shifts in the range [0, 2*pi) and take the one with best residual
@@ -80,9 +92,21 @@ class RabiModel(Model):
 
 ################################################ Exponential Decay ####################################################
 
-def guess_exp(data,x):
+def _guess_exp(data,x):
     """
-    
+    Internal helper function to provide decent first guesses for exponential functions.
+
+    Parameters
+    ----------
+    data: array_like
+        The dependent variable over which fit is to be performed
+    x: array_like
+        The independent variable in the fitting
+
+    Returns
+    -------
+    coeff: array
+        An array with amplitude and decay time as its elements.
     """
     y=np.log(np.abs(data))
     result = np.polynomial.Polynomial.fit(x,y,1)
@@ -121,7 +145,7 @@ class ExpDecayModel(Model):
         super().__init__(fit_exp_decay, **kwargs)
 
     def guess(self, data, x, **kwargs):
-        coeff = guess_exp(data,x)
+        coeff = _guess_exp(data,x)
         pars = self.make_params(amp=coeff[0], Tc=coeff[1], offset = data[-1])
         return update_param_vals(pars, self.prefix, **kwargs)
 
@@ -162,10 +186,10 @@ class RabiDecayModel(Model):
 
     def guess(self, data, x, **kwargs):
         offset=data.mean()
-        amp, frequency = guess_sin(data, x)
+        amp, frequency = _guess_sin(data, x)
         data = data - data.mean()
 
-        coeff = guess_exp(data, x)
+        coeff = _guess_exp(data, x)
 
         shift_guesses = np.linspace(0, 2*np.pi, 11, endpoint=False)
         errors = [np.linalg.norm(self.eval(x=x, amp=amp,

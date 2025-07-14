@@ -25,6 +25,7 @@ with the `--runslow` CLI flag passed to `pytest`.
 """
 
 
+# QSys fixture for reuse in multiple tests
 @pytest.fixture
 def qsys():
     delta = 1
@@ -33,6 +34,7 @@ def qsys():
     )
 
 
+# Test if the eigenstates of the qsys fixture are correct
 class TestQSys:
     def test_states(self, qsys):
         assert (qsys.eigenstates[0], qsys.eigenstates[1]) == (
@@ -44,6 +46,7 @@ class TestQSys:
         assert np.array_equal(qsys.energy_levels, np.array([0, 1]))
 
 
+# Rabi object (fixture) used in the TestRabi class below
 @pytest.fixture
 def rabi_exp(qsys):
     w1 = 0.1
@@ -64,6 +67,8 @@ def rabi_exp(qsys):
 
 
 class TestRabi:
+    # Uses the rabi fixture defined above to check if the rabi frequency fit
+    # is close to the expected value
     def test_tpi(self, rabi_exp):
         rabi_exp.run()
         rabi_analysis = Analysis(rabi_exp)
@@ -71,6 +76,7 @@ class TestRabi:
         assert np.isclose(rabi_analysis.fit_params.best_values["Tpi"], 5, atol=1e-3)
 
 
+# Hahn object (fixture) used in the Test class below
 @pytest.fixture
 def hahn_exp(qsys):
     w1 = 0.1
@@ -93,6 +99,9 @@ def hahn_exp(qsys):
 class TestHahn:
     # @pytest.mark.slow
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
+
+    # Uses the Hahn fixture defined above to check if the decay rate
+    # is close to the expected value
     def test_decay(self, hahn_exp):
         hahn_exp.run()
         hahn_analysis = Analysis(hahn_exp)
@@ -102,6 +111,10 @@ class TestHahn:
 
 class TestXY8:
     @pytest.mark.slow
+
+    # Runs the XY8 sequence on an NV object
+    # and checks if the center of the peak is in the expected position.
+    # We don't use an outside fixture here since we need handcrafted values for this test
     def test_xy8_exp(self):
         qsys = NV(
             N=15,
@@ -128,6 +141,10 @@ class TestXY8:
 
 class TestPODMR:
     @pytest.mark.slow
+
+    # Runs the PODMR sequence on an NV object
+    # and checks if the frequencies are close to the expected values
+    # We don't use an outside fixture here since we need handcrafted values for this test
     def test_podmr(self):
         qsys = NV(N=15, B0=40, units_B0="mT")
         w1 = 0.3
