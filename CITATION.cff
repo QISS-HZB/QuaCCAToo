@@ -49,12 +49,7 @@ affiliations:
     department: Berlin Joint EPR Laboratory
     address: Arnimallee 14, Berlin, 14195, Berlin, Germany
 
-identifiers:
-  - type: doi
-    value: pending
-
 repository-code: 'https://github.com/QISS-HZB/QuaCCAToo'
 repository-name: QuaCCAToo
 
 license: GPL-3.0
-version: '0.5.3'

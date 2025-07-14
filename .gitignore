@@ -5,3 +5,4 @@ build/
 #*.ipynb
 hidden_files/
 .ipynb_checkpoints
+dist/
