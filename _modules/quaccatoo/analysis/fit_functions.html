@@ -73,9 +73,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for quaccatoo.analysis.fit_functions</h1><div class="highlight"><pre>
-<span></span><span class="c1"># TODO: expand, document</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Collection of in built fit models and functions.</span>
 
 <span class="sd">The predefined model classes take a (fit) function and implement a guess subroutine for intelligent initial values.</span>
@@ -92,11 +90,23 @@
 
 <span class="c1">############################################## Rabi - Periodic Oscillation ##############################################</span>
 
-<div class="viewcode-block" id="guess_sin">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.guess_sin">[docs]</a>
-<span class="k">def</span> <span class="nf">guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    </span>
+<span class="sd">    Internal helper function to provide decent first guesses for sinusoidal functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: array_like</span>
+<span class="sd">        The dependent variable over which fit is to be performed</span>
+<span class="sd">    x: array_like</span>
+<span class="sd">        The independent variable in the fitting</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    amp: float</span>
+<span class="sd">        Guessed amplitude</span>
+<span class="sd">    frequency: float</span>
+<span class="sd">        Guessed frequency</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
@@ -105,8 +115,7 @@
     <span class="n">amp</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">fft</span><span class="p">[</span><span class="n">argmax</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">fft</span><span class="p">)</span>
     <span class="n">frequency</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">frequencies</span><span class="p">[</span><span class="n">argmax</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span></div>
-
+    <span class="k">return</span> <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span>
 
 <div class="viewcode-block" id="fit_rabi">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.fit_rabi">[docs]</a>
@@ -147,7 +156,7 @@
 
     <span class="k">def</span> <span class="nf">guess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">offset</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="n">guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="n">_guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
         <span class="c1"># try shifts in the range [0, 2*pi) and take the one with best residual</span>
@@ -164,19 +173,28 @@
 
 <span class="c1">################################################ Exponential Decay ####################################################</span>
 
-<div class="viewcode-block" id="guess_exp">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.guess_exp">[docs]</a>
-<span class="k">def</span> <span class="nf">guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    </span>
+<span class="sd">    Internal helper function to provide decent first guesses for exponential functions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: array_like</span>
+<span class="sd">        The dependent variable over which fit is to be performed</span>
+<span class="sd">    x: array_like</span>
+<span class="sd">        The independent variable in the fitting</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coeff: array</span>
+<span class="sd">        An array with amplitude and decay time as its elements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">coeff</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span><span class="o">.</span><span class="n">coef</span>
     <span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="o">/</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">coeff</span></div>
-
+    <span class="k">return</span> <span class="n">coeff</span>
 
 <div class="viewcode-block" id="fit_exp_decay">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.fit_functions.fit_exp_decay">[docs]</a>
@@ -213,7 +231,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fit_exp_decay</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">guess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">coeff</span> <span class="o">=</span> <span class="n">guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">coeff</span> <span class="o">=</span> <span class="n">_guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
         <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">amp</span><span class="o">=</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Tc</span><span class="o">=</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">update_param_vals</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -260,10 +278,10 @@
 
     <span class="k">def</span> <span class="nf">guess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">offset</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="n">guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">amp</span><span class="p">,</span> <span class="n">frequency</span> <span class="o">=</span> <span class="n">_guess_sin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-        <span class="n">coeff</span> <span class="o">=</span> <span class="n">guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">coeff</span> <span class="o">=</span> <span class="n">_guess_exp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
         <span class="n">shift_guesses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">,</span>

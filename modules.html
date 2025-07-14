@@ -144,10 +144,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.analysis.fit_functions">fit_functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.guess_sin"><code class="docutils literal notranslate"><span class="pre">guess_sin()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi"><code class="docutils literal notranslate"><span class="pre">fit_rabi()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel"><code class="docutils literal notranslate"><span class="pre">RabiModel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.guess_exp"><code class="docutils literal notranslate"><span class="pre">guess_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay"><code class="docutils literal notranslate"><span class="pre">fit_rabi_decay()</span></code></a></li>
@@ -2072,11 +2070,6 @@ parameters can be referred to from the source file (fit_functions.py).</p>
 To create additional fit models, simply instantiate an lmfit model with the target fit function.</p>
 <p>Refer to the documentation of analysis.run_fit for usage details.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.guess_sin">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">guess_sin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#guess_sin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.guess_sin" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_rabi">
 <span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi" title="Link to this definition"></a></dt>
 <dd><p>Fit a cosine function to Rabi oscillations.</p>
@@ -2165,11 +2158,6 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.guess_exp">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">guess_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#guess_exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.guess_exp" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_exp_decay">
