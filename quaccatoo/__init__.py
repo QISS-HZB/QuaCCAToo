@@ -5,4 +5,4 @@ from .pulsed_sim import *
 from .qsys import *
 from .utils import *
 
-__version__ = "0.5.4"
+__version__ = "0.7.0"
