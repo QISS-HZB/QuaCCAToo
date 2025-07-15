@@ -15,7 +15,14 @@ copyright = "2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov"
 author = "Lucas Tsunaki, Anmol Singh, Sergei Trofimov"
 
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "numpydoc", "sphinx.ext.githubpages", "sphinx_rtd_theme", "nbsphinx"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "numpydoc",
+    "sphinx.ext.githubpages",
+    "sphinx_rtd_theme",
+    "nbsphinx",
+]
 source_suffix = ".rst"
 templates_path = ["_templates"]
 exclude_patterns = [
@@ -33,7 +40,7 @@ autodoc_inherit_docstrings = False
 
 # -- Options for HTML output -------------------------------------------------
 
-html_baseurl = 'https://qiss-hzb.github.io/quaccatoo'
+html_baseurl = "https://qiss-hzb.github.io/quaccatoo"
 html_theme = "sphinx_rtd_theme"
 # html_logo ='./QuaCCAToo_v3.png'
 # html_theme_options = {'full_logo': False}

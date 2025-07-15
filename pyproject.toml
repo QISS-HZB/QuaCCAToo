@@ -56,3 +56,15 @@ features = [
 [tool.ruff]
 line-length = 109
 extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E741"]
+task-tags = [""]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+

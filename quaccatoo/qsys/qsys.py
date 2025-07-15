@@ -6,9 +6,11 @@ This module contains the plot_energy_B0 function, compose_sys function and the Q
 """
 
 import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, qeye, tensor, basis
+from qutip import Qobj, basis, qeye, tensor
+
 
 def compose_sys(qsys1, qsys2):
     """
@@ -29,7 +31,7 @@ def compose_sys(qsys1, qsys2):
     """
     if not isinstance(qsys1, QSys) or not isinstance(qsys2, QSys):
         raise ValueError("Both qsys1 and qsys2 must be instances of the QSys class.")
-    
+
     if qsys1.units_H0 != qsys2.units_H0:
         warnings.warn("The two systems have different units.")
 
@@ -38,23 +40,23 @@ def compose_sys(qsys1, qsys2):
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
-    if qsys1.rho0.isherm and qsys2.rho0.isherm:
-        rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
-    elif qsys1.rho0.isket and qsys2.rho0.isket:
+    if qsys1.rho0.isherm and qsys2.rho0.isherm or qsys1.rho0.isket and qsys2.rho0.isket:
         rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
     else:
         rho0 = None
-        
+
     if qsys1.observable is not None and qsys2.observable is not None:
         if isinstance(qsys1.observable, Qobj) and isinstance(qsys2.observable, Qobj):
             observable = tensor(qsys1.observable, qsys2.observable)
         elif isinstance(qsys1.observable, list) and isinstance(qsys2.observable, list):
-            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable]
+            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [
+                tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable
+            ]
         else:
             raise ValueError("Both observables must be Qobj or None")
     else:
         observable = None
-    
+
     if qsys1.c_ops is None and qsys2.c_ops is None:
         c_ops = None
     elif qsys1.c_ops is not None and qsys2.c_ops is None:
@@ -69,17 +71,27 @@ def compose_sys(qsys1, qsys2):
             c_ops = [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
     elif qsys1.c_ops is not None and qsys2.c_ops is not None:
         if isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, Qobj):
-            c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0])), tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)]
+            c_ops = [
+                tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0])),
+                tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops),
+            ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, list):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
+                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+            ]
         elif isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, list):
-            c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))] + [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+            c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))] + [
+                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+            ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, Qobj):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)]
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
+                tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
+            ]
     else:
         raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
-    
+
     return QSys(H0, rho0, c_ops, observable, qsys1.units_H0)
+
 
 def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Field", ylabel="Energy (MHz)"):
     """
@@ -133,7 +145,9 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Fie
 
     fig.suptitle("Energy Levels")
 
+
 ####################################################################################################
+
 
 class QSys:
     """
@@ -195,8 +209,10 @@ class QSys:
         elif units_H0 in ["MHz", "GHz", "kHz", "eV"]:
             self.units_H0 = units_H0
         else:
-            raise ValueError(f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz.")
-        
+            raise ValueError(
+                f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz."
+            )
+
         self.H0 = Qobj(H0)
 
         if not self.H0.isherm:
@@ -207,14 +223,19 @@ class QSys:
         # check if rho0 is correctly defined
         if rho0 is None:
             warnings.warn("Initial state not provided.")
-        elif rho0 in range(0, len(self.eigenstates)):
+        elif rho0 in range(len(self.eigenstates)):
             self.rho0 = self.eigenstates[rho0]  # In this case the initial state is the i-th energy state
-        elif Qobj(rho0).isket and Qobj(rho0).shape[0] == H0.shape[0]:
-            self.rho0 = Qobj(rho0)
-        elif Qobj(rho0).isherm and Qobj(rho0).shape == H0.shape:
+        elif (
+            Qobj(rho0).isket
+            and Qobj(rho0).shape[0] == H0.shape[0]
+            or Qobj(rho0).isherm
+            and Qobj(rho0).shape == H0.shape
+        ):
             self.rho0 = Qobj(rho0)
         else:
-            raise ValueError("rho0 must be a Qobj, None or an index number indicating the system eigenstates")
+            raise ValueError(
+                "rho0 must be a Qobj, None or an index number indicating the system eigenstates"
+            )
 
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj
         if observable is None:
@@ -223,17 +244,21 @@ class QSys:
             self.observable = observable
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
-        elif isinstance(observable, list) and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable) and all(obs.shape == H0.shape for obs in observable):
+        elif (
+            isinstance(observable, list)
+            and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable)
+            and all(obs.shape == H0.shape for obs in observable)
+        ):
             self.observable = observable
             if not all(obs.isherm for obs in observable):
                 warnings.warn("Passed observables are not hermitian.")
         else:
-            raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0.")
+            raise ValueError(
+                "Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0."
+            )
 
         # check if c_ops is a list of Qobj with the same dimensions as H0
-        if c_ops is None:
-            self.c_ops = c_ops
-        elif isinstance(c_ops, Qobj) and c_ops.shape == self.H0.shape:
+        if c_ops is None or isinstance(c_ops, Qobj) and c_ops.shape == self.H0.shape:
             self.c_ops = c_ops
         elif isinstance(c_ops, list):
             if all(isinstance(op, (Qobj, np.ndarray)) and op.shape == self.H0.shape for op in c_ops):
@@ -242,7 +267,7 @@ class QSys:
                 raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
         else:
             raise ValueError("c_ops must be a list of Qobj or None")
-        
+
     def _get_energy_levels(self):
         """
         Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.
@@ -252,7 +277,6 @@ class QSys:
         self.energy_levels = H_eig - H_eig[0]
 
         self.eigenstates = self.H0.eigenstates()[1]
-
 
     def plot_energy(self, figsize=(2, 6), energy_lim=None):
         """
@@ -289,7 +313,7 @@ class QSys:
             ax.set_ylim(energy_lim[0], energy_lim[1])
         else:
             raise ValueError("freq_lim must be a tuple of two floats")
-        
+
     def add_spin(self, H_spin):
         """
         Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.
@@ -298,38 +322,40 @@ class QSys:
         Parameters
         ----------
         H_spin : Qobj
-            Hamiltonian of the new spin        
+            Hamiltonian of the new spin
         """
         if not isinstance(H_spin, Qobj):
-            raise ValueError("H_spin must be a Qobj in the form of a tensor with the original Hamiltonian H0.")
-        
+            raise ValueError(
+                "H_spin must be a Qobj in the form of a tensor with the original Hamiltonian H0."
+            )
+
         if not Qobj(H_spin).isherm:
             warnings.warn("Passed H_spin is not a hermitian object.")
-        
-        self.dim_add_spin = int(H_spin.shape[0]/self.H0.shape[0])
-        
+
+        self.dim_add_spin = int(H_spin.shape[0] / self.H0.shape[0])
+
         if self.dim_add_spin <= 1:
             raise ValueError("H_spin must be a Qobj with a dimension higher than H0.")
-        
-        self.H0 = tensor(self.H0, qeye(self.dim_add_spin )) +  H_spin
+
+        self.H0 = tensor(self.H0, qeye(self.dim_add_spin)) + H_spin
         self._get_energy_levels()
-        
+
         if self.rho0.isherm:
-            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin )).unit()
+            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin)).unit()
         elif self.rho0.isket:
             self.rho0 = tensor(self.rho0, basis(self.dim_add_spin, 0)).unit()
 
         if self.observable is not None:
             if isinstance(self.observable, Qobj):
-                self.observable = tensor(self.observable, qeye(self.dim_add_spin ))
+                self.observable = tensor(self.observable, qeye(self.dim_add_spin))
             elif isinstance(self.observable, list) and all(isinstance(obs, Qobj) for obs in self.observable):
-                self.observable = [tensor(obs, qeye(self.dim_add_spin )) for obs in self.observable]
+                self.observable = [tensor(obs, qeye(self.dim_add_spin)) for obs in self.observable]
 
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
-                self.c_ops = tensor(self.c_ops, qeye(self.dim_add_spin ))
+                self.c_ops = tensor(self.c_ops, qeye(self.dim_add_spin))
             elif isinstance(self.c_ops, list) and all(isinstance(op, Qobj) for op in self.c_ops):
-                self.c_ops = [tensor(op, qeye(self.dim_add_spin )) for op in self.c_ops]
+                self.c_ops = [tensor(op, qeye(self.dim_add_spin)) for op in self.c_ops]
 
     def truncate(self, indexes):
         """
@@ -347,28 +373,40 @@ class QSys:
             if indexes < 0 or indexes >= self.H0.shape[0]:
                 raise ValueError("sel must be a valid index of the Hamiltonian.")
         if isinstance(indexes, (list, np.array)):
-            if not all(isinstance(i, int) for i in indexes) and not all(0 <= i < self.H0.shape[0] for i in indexes):
+            if not all(isinstance(i, int) for i in indexes) and not all(
+                0 <= i < self.H0.shape[0] for i in indexes
+            ):
                 raise ValueError("All elements in sel must be valid indices of the Hamiltonian.")
         else:
             raise ValueError("sel must be an integer or a list of integers.")
-        
-        self.H0 = Qobj( np.delete(np.delete(self.H0.full(), indexes, axis=0), indexes, axis=1) )
+
+        self.H0 = Qobj(np.delete(np.delete(self.H0.full(), indexes, axis=0), indexes, axis=1))
         self._get_energy_levels()
 
         if self.observable is not None:
             if isinstance(self.observable, Qobj):
-                self.observable = Qobj(np.delete(np.delete(self.observable.full(), indexes, axis=0), indexes, axis=1))
+                self.observable = Qobj(
+                    np.delete(np.delete(self.observable.full(), indexes, axis=0), indexes, axis=1)
+                )
             elif isinstance(self.observable, list):
-                self.observable = [Qobj(np.delete(np.delete(obs.full(), indexes, axis=0), indexes, axis=1)) for obs in self.observable]
+                self.observable = [
+                    Qobj(np.delete(np.delete(obs.full(), indexes, axis=0), indexes, axis=1))
+                    for obs in self.observable
+                ]
 
         if self.rho0 is not None:
             if self.rho0.isket:
                 self.rho0 = Qobj(np.delete(self.rho0.full(), indexes, axis=0)).unit()
             else:
-                self.rho0 = Qobj(np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)).unit()
-        
+                self.rho0 = Qobj(
+                    np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)
+                ).unit()
+
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
                 self.c_ops = Qobj(np.delete(np.delete(self.c_ops.full(), indexes, axis=0), indexes, axis=1))
             elif isinstance(self.c_ops, list):
-                self.c_ops = [Qobj(np.delete(np.delete(op.full(), indexes, axis=0), indexes, axis=1)) for op in self.c_ops]
+                self.c_ops = [
+                    Qobj(np.delete(np.delete(op.full(), indexes, axis=0), indexes, axis=1))
+                    for op in self.c_ops
+                ]
