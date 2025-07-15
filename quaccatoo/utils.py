@@ -3,14 +3,16 @@ This module provides functions to save and load quaccatoo objects, such as insta
 """
 
 import inspect
-import shutil
 import os
+import shutil
 import zipfile
-import dill
-import quaccatoo
-import numpy as np
 
+import dill
+import numpy as np
 from qutip import Qobj, fileio
+
+import quaccatoo
+
 
 def save(object, file_name):
     """
@@ -27,36 +29,44 @@ def save(object, file_name):
     """
     if not isinstance(file_name, str):
         raise ValueError("file_name must be a string")
-    
+
     # create a temporary directory to store files
-    tmp_dir = 'tmp'
+    tmp_dir = "tmp"
     os.makedirs(tmp_dir, exist_ok=True)
 
     try:
         # Get a list of all the attributes defined in the object
-        attributes = [attr for attr in dir(object) if not attr.startswith('__') and not (inspect.isfunction(getattr(object, attr)) or inspect.ismethod(getattr(object, attr)))]
+        attributes = [
+            attr
+            for attr in dir(object)
+            if not attr.startswith("__")
+            and not (inspect.isfunction(getattr(object, attr)) or inspect.ismethod(getattr(object, attr)))
+        ]
         py_attr = []
 
         # Separate attributes into Python and Qobj types
         for attr in attributes:
             value = getattr(object, attr)
-            if isinstance(value, Qobj) or (isinstance(value, (list, np.ndarray)) and all(isinstance(item, Qobj) for item in value)):
+            if isinstance(value, Qobj) or (
+                isinstance(value, (list, np.ndarray)) and all(isinstance(item, Qobj) for item in value)
+            ):
                 # Save Qobj attributes to a file in the temporary directory
                 fileio.qsave(value, os.path.join(tmp_dir, str(attr)))
-            else:         
+            else:
                 py_attr.append(attr)
-                
+
         # Create a dictionary to store the python attributes names and values
-        py_data = {'__type__': object.__class__.__name__,
-                **{attr: getattr(object, attr) for attr in py_attr}
+        py_data = {
+            "__type__": object.__class__.__name__,
+            **{attr: getattr(object, attr) for attr in py_attr},
         }
-    
+
         # Save the python data to a file in the temporary directory
-        with open(os.path.join(tmp_dir, 'py_data.pkl'), 'wb') as f_pkl:
+        with open(os.path.join(tmp_dir, "py_data.pkl"), "wb") as f_pkl:
             dill.dump(py_data, f_pkl)
 
         # Create a zip file to store all the files
-        with zipfile.ZipFile(file_name, 'w') as zip_file:
+        with zipfile.ZipFile(file_name, "w") as zip_file:
             for root, _, files in os.walk(tmp_dir):
                 for file in files:
                     file_path = os.path.join(root, file)
@@ -66,6 +76,7 @@ def save(object, file_name):
     finally:
         # Remove the temporary directory
         shutil.rmtree(tmp_dir)
+
 
 def load(file_name):
     """
@@ -86,37 +97,37 @@ def load(file_name):
         raise ValueError("file_name must be a string")
 
     # Extract the zip file to a temporary directory
-    tmp_dir = 'tmp'
+    tmp_dir = "tmp"
     os.makedirs(tmp_dir, exist_ok=True)
 
     try:
-        with zipfile.ZipFile(file_name, 'r') as zip_file:
+        with zipfile.ZipFile(file_name, "r") as zip_file:
             zip_file.extractall(tmp_dir)
 
         # Load the py_data.pkl file
-        with open(os.path.join(tmp_dir, 'py_data.pkl'), 'rb') as f_pkl:
+        with open(os.path.join(tmp_dir, "py_data.pkl"), "rb") as f_pkl:
             py_data = dill.load(f_pkl)
 
         # Get the object name from the py_data
-        cls = getattr(quaccatoo, py_data['__type__'])
-        
+        cls = getattr(quaccatoo, py_data["__type__"])
+
         # Create an empty instance
         obj = cls.__new__(cls)
 
         # Load the attributes from the py_data
         for attr, value in py_data.items():
-            if attr != '__type__':
+            if attr != "__type__":
                 setattr(obj, attr, value)
 
         # Load the Qobj attributes from the files
         for file in os.listdir(tmp_dir):
-            if file != 'py_data.pkl':
+            if file != "py_data.pkl":
                 attr_name = os.path.splitext(file)[0]
                 value = fileio.qload(os.path.join(tmp_dir, attr_name))
-                setattr(obj, attr_name, value)         
+                setattr(obj, attr_name, value)
 
         return obj
-    
+
     finally:
         # Remove the temporary directory
         shutil.rmtree(tmp_dir)

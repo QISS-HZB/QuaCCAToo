@@ -4,13 +4,14 @@ This module contains the Analysis class and the plot_histogram method.
 
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit import Model
 from qutip import Bloch, Qobj, fidelity
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
-from lmfit import Model
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
+
 
 class Analysis:
     """
@@ -66,15 +67,22 @@ class Analysis:
         experiment : PulsedSim or ExpData
             Experiment object to be analyzed containing the results and variable attributes
         """
-        if isinstance(experiment, PulsedSim) or isinstance(experiment, ExpData):
+        if isinstance(experiment, (ExpData, PulsedSim)):
             self.experiment = experiment
         else:
             raise ValueError("experiment must be a PulsedSimulation or ExpData object")
 
-        if not isinstance(experiment.results, np.ndarray) and not (isinstance(experiment.results, list) and all(isinstance(res, np.ndarray) for res in experiment.results)):
-            raise ValueError("Results attribute of the experiment must be a numpy array or a list of numpy arrays")
+        if not isinstance(experiment.results, np.ndarray) and not (
+            isinstance(experiment.results, list)
+            and all(isinstance(res, np.ndarray) for res in experiment.results)
+        ):
+            raise ValueError(
+                "Results attribute of the experiment must be a numpy array or a list of numpy arrays"
+            )
 
-        if len(experiment.results) != len(experiment.variable) and any(len(experiment.variable) != len(res) for res in experiment.results):
+        if len(experiment.results) != len(experiment.variable) and any(
+            len(experiment.variable) != len(res) for res in experiment.results
+        ):
             raise ValueError("Results and Variable attributes of experiment must have the same length")
 
         self.FFT_values = []
@@ -113,11 +121,16 @@ class Analysis:
 
         if not isinstance(results_index, int) or not isinstance(comparison_index, int):
             raise ValueError("results_index and comparison_index must be integers")
-        elif results_index > len(self.experiment.results) - 1 or comparison_index > len(exp_comparison.results) - 1:
+        elif (
+            results_index > len(self.experiment.results) - 1
+            or comparison_index > len(exp_comparison.results) - 1
+        ):
             raise ValueError("results_index and comparison_index must be less than the number of results")
 
         if not isinstance(linear_fit, bool):
-            raise ValueError("linear_fit must be a boolean indicating whether or not to perform a linear fit between the two data sets.")
+            raise ValueError(
+                "linear_fit must be a boolean indicating whether or not to perform a linear fit between the two data sets."
+            )
 
         if len(self.experiment.variable) != len(exp_comparison.variable):
             raise ValueError("The variable attributes of the experiments must have the same length")
@@ -131,7 +144,9 @@ class Analysis:
                 self.exp_comparison.results = r[0] * exp_comparison.results + r[1]
             else:
                 # if the results are a list, index the results and perform the linear fit
-                r = linregress(exp_comparison.results[comparison_index], self.experiment.results[results_index])
+                r = linregress(
+                    exp_comparison.results[comparison_index], self.experiment.results[results_index]
+                )
                 self.exp_comparison.results = r[0] * exp_comparison.results[comparison_index] + r[1]
 
             self.pearson = r[2]
@@ -140,7 +155,9 @@ class Analysis:
             if isinstance(exp_comparison.results, np.ndarray):
                 r = pearsonr(exp_comparison.results, self.experiment.results)
             else:
-                r = pearsonr(exp_comparison.results[comparison_index], self.experiment.results[results_index])
+                r = pearsonr(
+                    exp_comparison.results[comparison_index], self.experiment.results[results_index]
+                )
 
             self.exp_comparison.results = exp_comparison.results
             self.pearson = r[0]
@@ -168,7 +185,13 @@ class Analysis:
         if self.pearson is None:
             raise ValueError("You must run the compare_with method before plotting the comparison")
 
-        plt.scatter(self.exp_comparison.variable, self.exp_comparison.results, label="Compared Experiment", alpha=0.7, s=15)
+        plt.scatter(
+            self.exp_comparison.variable,
+            self.exp_comparison.results,
+            label="Compared Experiment",
+            alpha=0.7,
+            s=15,
+        )
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
     ######################################################## FFT Methods ########################################################
@@ -186,13 +209,17 @@ class Analysis:
         if isinstance(self.experiment.results, np.ndarray):
             y = np.abs(np.fft.rfft(self.experiment.results - np.mean(self.experiment.results)))
 
-        elif isinstance(self.experiment.results, list) and all(isinstance(res, np.ndarray) for res in self.experiment.results):
+        elif isinstance(self.experiment.results, list) and all(
+            isinstance(res, np.ndarray) for res in self.experiment.results
+        ):
             y = [np.abs(np.fft.rfft(res - np.mean(res))) for res in self.experiment.results]
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
 
-        freqs = np.fft.rfftfreq(len(self.experiment.variable), self.experiment.variable[1] - self.experiment.variable[0])
+        freqs = np.fft.rfftfreq(
+            len(self.experiment.variable), self.experiment.variable[1] - self.experiment.variable[0]
+        )
 
         self.FFT_values = (freqs, y)
 
@@ -227,7 +254,9 @@ class Analysis:
 
         return self.FFT_peaks
 
-    def plot_FFT(self, freq_lim=None, figsize=(6, 4), xlabel=None, ylabel="FFT Intensity", title="FFT of the Results"):
+    def plot_FFT(
+        self, freq_lim=None, figsize=(6, 4), xlabel=None, ylabel="FFT Intensity", title="FFT of the Results"
+    ):
         """
         Plots the FFT
 
@@ -263,14 +292,26 @@ class Analysis:
         if isinstance(self.FFT_values[1], np.ndarray):
             ax.plot(self.FFT_values[0], self.FFT_values[1])
             if len(self.FFT_peaks) != 0:
-                ax.scatter(self.FFT_peaks, self.FFT_values[1][self.FFT_peaks_index[0]], color="red", label="Peaks", s=50)
+                ax.scatter(
+                    self.FFT_peaks,
+                    self.FFT_values[1][self.FFT_peaks_index[0]],
+                    color="red",
+                    label="Peaks",
+                    s=50,
+                )
 
         elif isinstance(self.FFT_values[1], list):
             # if the FFT_peaks attribute is not empty, then plot them with the FFT
             if len(self.FFT_peaks) != 0:
                 for itr in range(len(self.FFT_values[1])):
                     ax.plot(self.FFT_values[0], self.FFT_values[1][itr], label=f"FFT {itr}")
-                    ax.scatter(self.FFT_peaks[itr], self.FFT_values[1][itr][self.FFT_peaks_index[itr][0]], color="red", label=f"Peaks {itr}", s=50)
+                    ax.scatter(
+                        self.FFT_peaks[itr],
+                        self.FFT_values[1][itr][self.FFT_peaks_index[itr][0]],
+                        color="red",
+                        label=f"Peaks {itr}",
+                        s=50,
+                    )
             else:
                 for itr in range(len(self.FFT_values[1])):
                     ax.plot(self.FFT_values[0], self.FFT_values[1][itr], label=f"FFT {itr}")
@@ -289,7 +330,6 @@ class Analysis:
         ax.set_title(title)
 
     ######################################################## FIT Methods ########################################################
-
 
     def run_fit(self, fit_model, results_index=0, guess=None):
         """
@@ -337,7 +377,9 @@ class Analysis:
 
         """
         if not isinstance(fit_model, Model):
-            raise TypeError("fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.")
+            raise TypeError(
+                "fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses."
+            )
 
         # if there is only one result, just fit the results with the model
         if isinstance(self.experiment.results, np.ndarray):
@@ -347,28 +389,46 @@ class Analysis:
             else:
                 try:
                     params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
-                    self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                    self.fit_params = fit_model.fit(
+                        self.experiment.results, x=self.experiment.variable, params=params
+                    )
                 except NotImplementedError:
                     params = fit_model.make_params()
-                    self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, params=params)
+                    self.fit_params = fit_model.fit(
+                        self.experiment.results, x=self.experiment.variable, params=params
+                    )
 
             return self.fit_params.best_values
 
         # if there are multiple results, check if the results_index is an integer and if it is less than the number of results then fit
         elif isinstance(self.experiment.results, list):
-            if not isinstance(results_index, int) or results_index < 0 or results_index >= len(self.experiment.results):
-                raise ValueError("results_index must be a non-negative integer less than the number of results")
+            if (
+                not isinstance(results_index, int)
+                or results_index < 0
+                or results_index >= len(self.experiment.results)
+            ):
+                raise ValueError(
+                    "results_index must be a non-negative integer less than the number of results"
+                )
 
             self.fit_model[results_index] = fit_model
             if guess:
-                self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, **guess)
+                self.fit_params[results_index] = fit_model.fit(
+                    self.experiment.results[results_index], x=self.experiment.variable, **guess
+                )
             else:
                 try:
-                    params = fit_model.guess(self.experiment.results[results_index], x=self.experiment.variable)
-                    self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+                    params = fit_model.guess(
+                        self.experiment.results[results_index], x=self.experiment.variable
+                    )
+                    self.fit_params[results_index] = fit_model.fit(
+                        self.experiment.results[results_index], x=self.experiment.variable, params=params
+                    )
                 except NotImplementedError:
                     params = fit_model.make_params()
-                    self.fit_params[results_index] = fit_model.fit(self.experiment.results[results_index], x=self.experiment.variable, params=params)
+                    self.fit_params[results_index] = fit_model.fit(
+                        self.experiment.results[results_index], x=self.experiment.variable, params=params
+                    )
             return self.fit_params[results_index].best_values
 
     def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
@@ -436,7 +496,13 @@ class Analysis:
             # if it is a list, iterate over the observables and plot each one
             for itr in range(len(self.experiment.system.observable)):
                 # plot all observables in the results
-                ax.plot(self.experiment.variable, self.experiment.results[itr], label=f"Observable {itr}", lw=2, alpha=0.7)
+                ax.plot(
+                    self.experiment.variable,
+                    self.experiment.results[itr],
+                    label=f"Observable {itr}",
+                    lw=2,
+                    alpha=0.7,
+                )
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
@@ -480,10 +546,11 @@ class Analysis:
         bloch.frame_alpha = 0
         bloch.render()
 
-def plot_histogram(rho, rho_comparison=None, component='real', figsize=(5,5), title="Matrix Histogram"):
+
+def plot_histogram(rho, rho_comparison=None, component="real", figsize=(5, 5), title="Matrix Histogram"):
     """
     Plot a 3D histogram of the final density matrix of the simulation.
-    
+
     Parameters
     ----------
     component : str
@@ -496,28 +563,30 @@ def plot_histogram(rho, rho_comparison=None, component='real', figsize=(5,5), ti
         Title of the plot
     """
     # Check all parameters
-    if component not in ['real', 'imag', 'abs']:
+    if component not in ["real", "imag", "abs"]:
         raise ValueError("component must be 'real', 'imag', or 'abs'")
-        
+
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
         raise ValueError("figsize must be a tuple of two positive floats")
-    
+
     if isinstance(rho, Qobj) and rho.shape[0] == rho.shape[1]:
         N = rho.shape[0]
         rho = rho.full()
     else:
-        raise ValueError("rho must be a Qobj representing a square density matrix")    
-        
+        raise ValueError("rho must be a Qobj representing a square density matrix")
+
     if rho_comparison is None:
         pass
     elif isinstance(rho_comparison, Qobj) and rho_comparison.shape[0] == rho_comparison.shape[1] == N:
         rho_comparison = rho_comparison.full()
     else:
-        raise ValueError("rho_comparison must be a Qobj with the same shape as the density matrix to be compared with")
-        
+        raise ValueError(
+            "rho_comparison must be a Qobj with the same shape as the density matrix to be compared with"
+        )
+
     # Create 3D plot
     fig = plt.figure(figsize=(3, 3))
-    ax = fig.add_subplot(111, projection='3d')
+    ax = fig.add_subplot(111, projection="3d")
     ax.view_init(azim=-50, elev=30)
 
     # Dimensions and positions for the bars
@@ -527,33 +596,42 @@ def plot_histogram(rho, rho_comparison=None, component='real', figsize=(5,5), ti
     dx = dy = 0.5 * np.ones_like(zpos)
 
     # Prepare the data for the bars depending on the component
-    if component == 'real':
-        dz_sim = np.real(rho).flatten() 
-        color='C0'          
+    if component == "real":
+        dz_sim = np.real(rho).flatten()
+        color = "C0"
         if rho_comparison is not None:
             dz_comp = np.real(rho_comparison).flatten()
-        
-    
-    elif component == 'imag':
+
+    elif component == "imag":
         dz_sim = np.imag(rho).flatten()
-        color='C1'
+        color = "C1"
         if rho_comparison is not None:
             dz_comp = np.imag(rho_comparison).flatten()
-    
-    elif component == 'abs':
+
+    elif component == "abs":
         dz_sim = np.abs(rho).flatten()
-        color='C2'
+        color = "C2"
         if rho_comparison is not None:
             dz_comp = np.abs(rho_comparison).flatten()
-            
-    # Plot the bars        
-    ax.bar3d(xpos, ypos, zpos, dx, dy, dz_sim,
-            color=color, linewidth=0, alpha=0.3, zorder=0)
-    
+
+    # Plot the bars
+    ax.bar3d(xpos, ypos, zpos, dx, dy, dz_sim, color=color, linewidth=0, alpha=0.3, zorder=0)
+
     if rho_comparison is not None:
         print(f"Fidelity: {fidelity(Qobj(rho), Qobj(rho_comparison))}")
-        ax.bar3d(xpos, ypos, zpos, dx, dy, dz_comp,
-            edgecolor='k', linewidth=1, linestyle='dotted', alpha=0, zorder=1)
+        ax.bar3d(
+            xpos,
+            ypos,
+            zpos,
+            dx,
+            dy,
+            dz_comp,
+            edgecolor="k",
+            linewidth=1,
+            linestyle="dotted",
+            alpha=0,
+            zorder=1,
+        )
 
     # Aesthetics, labels, and title
     ax.grid(False)

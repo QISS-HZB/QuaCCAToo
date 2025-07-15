@@ -5,14 +5,17 @@ This module contains NV class, which is a subclass of QSys.
 """
 
 import warnings
+
 import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
+
 from .qsys import QSys
 
-gamma_e = cte.value("electron gyromag. ratio in MHz/T")*1e-3  # MHz/mT
+gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
 gamma_N14 = 3.077e-3
 gamma_N15 = -4.316e-3
+
 
 class NV(QSys):
     """
@@ -46,7 +49,7 @@ class NV(QSys):
         Microwave Hamiltonian
     RF_H1 : Qobj
         RF Hamiltonian
-    
+
     Methods
     -------
     rho0_lowT
@@ -72,13 +75,26 @@ class NV(QSys):
     add_spin
         Adds an extra spin to the NV system
     truncate
-        Truncates the system to the given indexes 
+        Truncates the system to the given indexes
 
     Notes
     -----
     The NV class inherits the methods and attributes from the QSys class.
     """
-    def __init__(self, B0, N, c_ops=None, units_B0=None, theta=0., phi_r=0., units_angles="deg", temp=None, units_temp="K", E=0):
+
+    def __init__(
+        self,
+        B0,
+        N,
+        c_ops=None,
+        units_B0=None,
+        theta=0.0,
+        phi_r=0.0,
+        units_angles="deg",
+        temp=None,
+        units_temp="K",
+        E=0,
+    ):
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
@@ -112,7 +128,9 @@ class NV(QSys):
             self.B0 = B0
 
         if units_B0 is None:
-            warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
+            warnings.warn(
+                "No units for the magnetic field were given. The magnetic field will be considered in mT."
+            )
         elif units_B0 == "T":
             self.B0 = B0 * 1e3
         elif units_B0 == "mT":
@@ -120,19 +138,24 @@ class NV(QSys):
         elif units_B0 == "G":
             self.B0 = B0 * 1e-1
         else:
-            raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
+            raise ValueError(
+                f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
+            )
 
         if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
-            raise TypeError(f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}.")
+            raise TypeError(
+                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}."
+            )
+        elif units_angles == "deg":
+            theta = np.deg2rad(theta)
+            phi_r = np.deg2rad(phi_r)
+        elif units_angles == "rad":
+            pass
         else:
-            if units_angles == "deg":
-                theta = np.deg2rad(theta)
-                phi_r = np.deg2rad(phi_r)
-            elif units_angles == "rad":
-                pass
-            else:
-                raise ValueError(f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}.")
-            
+            raise ValueError(
+                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}."
+            )
+
         if not isinstance(E, (int, float)):
             raise TypeError(f"E must be a real number, got {E}: {type(E)}.")
         else:
@@ -144,19 +167,22 @@ class NV(QSys):
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-
             H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman()
             rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
-            
-            H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman() + self._Quadrupole()
+            H0 = (
+                self._ZeroField()
+                + self._ElectronZeeman()
+                + self._HyperfineN()
+                + self._NuclearZeeman()
+                + self._Quadrupole()
+            )
             rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
-
             H0 = self._ZeroField() + self._ElectronZeeman()
             rho0 = basis(3, 1)
             observable = fock_dm(3, 1)
@@ -232,23 +258,42 @@ class NV(QSys):
                 max_2 = proj_2
                 index_2 = itr
 
-        beta = -cte.h*1e6 / (cte.Boltzmann * temp)
+        beta = -cte.h * 1e6 / (cte.Boltzmann * temp)
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
             Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2])
 
-            self.rho0 = tensor(fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0], [0, np.exp(beta * self.energy_levels[index_2])]]) / Z)
+            self.rho0 = tensor(
+                fock_dm(3, 1),
+                Qobj(
+                    [
+                        [np.exp(beta * self.energy_levels[index_1]), 0],
+                        [0, np.exp(beta * self.energy_levels[index_2])],
+                    ]
+                )
+                / Z,
+            )
 
         elif self.N == 14:
-            Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2]) + np.exp(beta * self.energy_levels[index_3])
+            Z = (
+                np.exp(beta * self.energy_levels[index_1])
+                + np.exp(beta * self.energy_levels[index_2])
+                + np.exp(beta * self.energy_levels[index_3])
+            )
 
             self.rho0 = tensor(
-                fock_dm(3, 1), Qobj([[np.exp(beta * self.energy_levels[index_1]), 0, 0],
-                                     [0, np.exp(beta * self.energy_levels[index_2]), 0],
-                                     [0, 0, np.exp(beta * self.energy_levels[index_3])]]) / Z
+                fock_dm(3, 1),
+                Qobj(
+                    [
+                        [np.exp(beta * self.energy_levels[index_1]), 0, 0],
+                        [0, np.exp(beta * self.energy_levels[index_2]), 0],
+                        [0, 0, np.exp(beta * self.energy_levels[index_3])],
+                    ]
+                )
+                / Z,
             )
-        elif self.N ==0 or self.N is None:
+        elif self.N == 0 or self.N is None:
             self.rho0 = basis(3, 1)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
@@ -285,19 +330,19 @@ class NV(QSys):
         elif self.N == 14:
             # the order of the ms states changes above the GSLAC
             if self.B0 <= 102.5:
-                f1 = self.energy_levels[2] - self.energy_levels[1] # 0 -> -1 at ms=0
-                f2 = self.energy_levels[2] # 0 -> +1 at ms=0
-                f3 = self.energy_levels[5] - self.energy_levels[3] # 0 -> -1 at ms=-1
-                f4 = self.energy_levels[5] - self.energy_levels[4] # 0 -> +1 at ms=-1
-                f5 = self.energy_levels[8] - self.energy_levels[7] # 0 -> -1 at ms=+1
-                f6 = self.energy_levels[8] - self.energy_levels[6] # 0 -> +1 at ms=-1
+                f1 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> -1 at ms=0
+                f2 = self.energy_levels[2]  # 0 -> +1 at ms=0
+                f3 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> -1 at ms=-1
+                f4 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> +1 at ms=-1
+                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
             else:
-                f1 = self.energy_levels[2] # 0 -> -1 at ms=-1
-                f2 = self.energy_levels[2] - self.energy_levels[1] # 0 -> +1 at ms=-1
-                f3 = self.energy_levels[5] - self.energy_levels[4] # 0 -> -1 at ms=0
-                f4 = self.energy_levels[5] - self.energy_levels[3] # 0 -> +1 at ms=0
-                f5 = self.energy_levels[8] - self.energy_levels[7] # 0 -> -1 at ms=+1
-                f6 = self.energy_levels[8] - self.energy_levels[6] # 0 -> +1 at ms=-1
+                f1 = self.energy_levels[2]  # 0 -> -1 at ms=-1
+                f2 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> +1 at ms=-1
+                f3 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> -1 at ms=0
+                f4 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> +1 at ms=0
+                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
 
             self.RF_freqs = np.array([f1, f2, f3, f4, f5, f6])
         elif self.N == 0 or self.N is None:
@@ -346,11 +391,15 @@ class NV(QSys):
         Zero Field Hamiltonian : Qobj
         """
         if self.N == 14:
-            return tensor(2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3))
+            return tensor(
+                2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3)
+            )
         elif self.N == 15:
-            return tensor(2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2))
+            return tensor(
+                2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2)
+            )
         elif self.N == 0:
-            return 2.87e3 * jmat(1, "z") ** 2  + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
+            return 2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -365,14 +414,36 @@ class NV(QSys):
 
         if self.N == 14:
             return tensor(
-                gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(3)
+                gamma_e
+                * self.B0
+                * (
+                    np.cos(self.theta) * jmat(1, "z")
+                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
+                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
+                ),
+                qeye(3),
             )
         elif self.N == 15:
             return tensor(
-                gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")), qeye(2)
+                gamma_e
+                * self.B0
+                * (
+                    np.cos(self.theta) * jmat(1, "z")
+                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
+                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
+                ),
+                qeye(2),
             )
         elif self.N == 0 or self.N is None:
-            return gamma_e * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.theta) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
+            return (
+                gamma_e
+                * self.B0
+                * (
+                    np.cos(self.theta) * jmat(1, "z")
+                    + np.sin(self.theta) * np.cos(self.theta) * jmat(1, "x")
+                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
+                )
+            )
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -386,12 +457,26 @@ class NV(QSys):
         """
 
         if self.N == 14:
-            return -tensor(qeye(3), 
-                gamma_N14 * self.B0 * (np.cos(self.theta) * jmat(1, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y"))
+            return -tensor(
+                qeye(3),
+                gamma_N14
+                * self.B0
+                * (
+                    np.cos(self.theta) * jmat(1, "z")
+                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
+                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
+                ),
             )
         elif self.N == 15:
-            return -tensor(qeye(3),
-                gamma_N15 * self.B0 * (np.cos(self.theta) * jmat(1/2, "z") + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1/2, "x") + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1/2, "y"))
+            return -tensor(
+                qeye(3),
+                gamma_N15
+                * self.B0
+                * (
+                    np.cos(self.theta) * jmat(1 / 2, "z")
+                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1 / 2, "x")
+                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1 / 2, "y")
+                ),
             )
         elif self.N == 0 or self.N is None:
             return 0
@@ -407,14 +492,18 @@ class NV(QSys):
         Hyperfine Hamiltonian : Qobj
         """
         if self.N == 14:
-            return -2.14 * tensor(jmat(1, "z"), jmat(1, "z")) - 2.7 * (tensor(jmat(1, "x"), jmat(1, "x")) + tensor(jmat(1, "y"), jmat(1, "y")))
+            return -2.14 * tensor(jmat(1, "z"), jmat(1, "z")) - 2.7 * (
+                tensor(jmat(1, "x"), jmat(1, "x")) + tensor(jmat(1, "y"), jmat(1, "y"))
+            )
         elif self.N == 15:
-            return +3.03 * tensor(jmat(1, "z"), jmat(1 / 2, "z")) + 3.65 * (tensor(jmat(1, "x"), jmat(1 / 2, "x")) + tensor(jmat(1, "y"), jmat(1 / 2, "y")))
+            return +3.03 * tensor(jmat(1, "z"), jmat(1 / 2, "z")) + 3.65 * (
+                tensor(jmat(1, "x"), jmat(1 / 2, "x")) + tensor(jmat(1, "y"), jmat(1 / 2, "y"))
+            )
         if self.N == 0 or self.N is None:
             return 0
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
-        
+
     def _Quadrupole(self):
         """
         Get the quadrupole term
@@ -423,15 +512,15 @@ class NV(QSys):
         -------
         Quadrupole Hamiltonian : Qobj
         """
-        if self.N==14:
-            return - 5.01*tensor(qeye(3), jmat(1,'z')**2)
-        elif self.N==15:
-            return None
-        elif self.N==0:
+        if self.N == 14:
+            return -5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
+        elif self.N == 15 or self.N == 0:
             return None
         else:
-            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
-        
+            raise ValueError(
+                f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}."
+            )
+
     def add_spin(self, H_spin):
         """
         Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes
@@ -439,13 +528,13 @@ class NV(QSys):
         Parameters
         ----------
         H_spin : Qobj
-            Hamiltonian of the extra spin       
+            Hamiltonian of the extra spin
         """
         super().add_spin(H_spin)
 
         self.MW_H1 = tensor(self.MW_H1, qeye(self.dim_add_spin))
         self.RF_H1 = tensor(self.RF_H1, qeye(self.dim_add_spin))
-    
+
     def truncate(self, mS=None, mI=None):
         """
         Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.
@@ -461,11 +550,13 @@ class NV(QSys):
             return
         if mS != 1 and mS != 0 and mS != -1 and mS is not None:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
-        if mI == 1/2 or mI == -1/2:
-            warnings.warn("mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated.")
+        if mI == 1 / 2 or mI == -1 / 2:
+            warnings.warn(
+                "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated."
+            )
         elif mI != 1 and mI != 0 and mI != -1 and mI is not None:
             raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
-        
+
         # set the indexes to be removed and the dimensions of the new objects according to the mS and mI parameters
         if self.N == 0 or self.N is None:
             if mS == 1:
@@ -474,7 +565,7 @@ class NV(QSys):
                 indexes, dims = [1], [2]
             elif mS == -1:
                 indexes, dims = [2], [2]
-                
+
         elif self.N == 15:
             if mS == 1:
                 indexes, dims = [0, 1], [2, 2]
@@ -508,8 +599,8 @@ class NV(QSys):
         indexes = sorted(set(indexes))
         super().truncate(indexes)
 
-        self.MW_H1 = Qobj( np.delete(np.delete(self.MW_H1.full(), indexes, axis=0), indexes, axis=1) )
-        self.RF_H1 = Qobj( np.delete(np.delete(self.RF_H1.full(), indexes, axis=0), indexes, axis=1) )
+        self.MW_H1 = Qobj(np.delete(np.delete(self.MW_H1.full(), indexes, axis=0), indexes, axis=1))
+        self.RF_H1 = Qobj(np.delete(np.delete(self.RF_H1.full(), indexes, axis=0), indexes, axis=1))
 
         # corrrect the dimensions of the objects
         self.H0.dims = [dims, dims]
@@ -528,10 +619,10 @@ class NV(QSys):
                 if len(dims) == 1:
                     self.rho0.dims = [dims, [1]]
                 elif len(dims) == 2:
-                    self.rho0.dims = [dims, [1,1]]
+                    self.rho0.dims = [dims, [1, 1]]
             else:
                 self.rho0.dims = [dims, dims]
-        
+
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
                 self.c_ops.dims = [dims, dims]

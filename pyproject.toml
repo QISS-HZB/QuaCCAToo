@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "QuaCCAToo"
+dynamic = ["version"]
+description = "Quantum Color Centers Analysis Toolbox"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.9"
+authors = [
+    { name = "Lucas Tsunaki", email = "lucas.tsunaki@helmholtz-berlin.de" },
+    { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
+    { name = "Sergei Trofimov", email = "sergei.trofimov@helmholtz-berlin.de" },
+]
+dependencies = [
+    "lmfit",
+    "matplotlib",
+    "numpy",
+    "qutip",
+    "scipy",
+]
+
+[project.urls]
+Homepage = "https://github.com/QISS-HZB/QuaCCAToo"
+
+[tool.hatch.version]
+path = "quaccatoo/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "./quaccatoo",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "quaccatoo",
+    "tests",
+]
+exclude =[
+    "docs"
+]
+
+[project.optional-dependencies]
+dev = [
+    "hatch",
+    "pytest",
+]
+
+[tool.hatch.envs.dev]
+features = [
+  "dev",
+]
+
+[tool.ruff]
+line-length = 109
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E741"]
+task-tags = [""]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+

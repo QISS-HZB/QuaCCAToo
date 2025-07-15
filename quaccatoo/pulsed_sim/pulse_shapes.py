@@ -6,6 +6,7 @@ This module contains pulse shape functions to be used in the PulsedSim classes a
 
 import numpy as np
 
+
 def square_pulse(t, **pulse_params):
     """
     Square pulse envelope modulation
@@ -24,7 +25,7 @@ def square_pulse(t, **pulse_params):
     float
         Value of the square pulse at time t
     """
-    return np.cos(pulse_params['f_pulse']*t + pulse_params['phi_t'])
+    return np.cos(pulse_params["f_pulse"] * t + pulse_params["phi_t"])
 
 
 def gaussian_pulse(t, **pulse_params):
@@ -49,7 +50,9 @@ def gaussian_pulse(t, **pulse_params):
     float
         Value of the Gaussian pulse at time t
     """
-    return np.exp(-((t - pulse_params['t_mid'])**2)/(2*pulse_params['sigma']**2))*np.cos(pulse_params['f_pulse']*t + pulse_params['phi_t'])
+    return np.exp(-((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2)) * np.cos(
+        pulse_params["f_pulse"] * t + pulse_params["phi_t"]
+    )
 
 
 def lorentzian_pulse(t, **pulse_params):
@@ -74,4 +77,8 @@ def lorentzian_pulse(t, **pulse_params):
     float
         Value of the Lorentzian pulse at time t
     """
-    return 1/(1 + ((t - pulse_params['t_mid'])/['gamma'])**2)*np.cos(pulse_params['f_pulse']*t+ pulse_params['phi_t'])
+    return (
+        1
+        / (1 + ((t - pulse_params["t_mid"]) / ["gamma"]) ** 2)
+        * np.cos(pulse_params["f_pulse"] * t + pulse_params["phi_t"])
+    )

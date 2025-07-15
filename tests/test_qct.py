@@ -1,14 +1,14 @@
-import pytest
 import numpy as np
-from qutip import sigmax, sigmay, sigmaz, fock_dm, Qobj, basis
+import pytest
 from lmfit import Model
+from qutip import basis, fock_dm, sigmax, sigmay, sigmaz
 
-from quaccatoo import QSys, Analysis, Rabi, Hahn, square_pulse, NV, XY8, PMR
+from quaccatoo import NV, PMR, XY8, Analysis, ExpData, Hahn, QSys, Rabi, square_pulse
 from quaccatoo.analysis.fit_functions import (
-    fit_two_lorentz_sym,
-    RabiModel,
-    GaussianModel,
     ExpDecayModel,
+    GaussianModel,
+    RabiModel,
+    fit_two_lorentz_sym,
 )
 
 """
@@ -29,9 +29,7 @@ with the `--runslow` CLI flag passed to `pytest`.
 @pytest.fixture
 def qsys():
     delta = 1
-    return QSys(
-        H0=delta / 2 * sigmaz(), rho0=fock_dm(2, 0), observable=sigmaz(), units_H0="MHz"
-    )
+    return QSys(H0=delta / 2 * sigmaz(), rho0=fock_dm(2, 0), observable=sigmaz(), units_H0="MHz")
 
 
 # Test if the eigenstates of the qsys fixture are correct
@@ -165,6 +163,32 @@ class TestPODMR:
         )
         assert np.isclose(
             podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
-        ) and np.isclose(
-            podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3
+        ) and np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
+
+
+class TestExpData:
+    def test_expdata(self):
+        qsys_exp = NV(
+            N=15,
+            units_B0="mT",
+            B0=38.4,
+        )
+        exp_data = ExpData(file_path="./docs/tutorials/exp_data_tutorials/Ex02_NV_rabi.dat")
+        w1_exp = 16.72
+
+        rabi_sim_exp = Rabi(
+            pulse_duration=np.arange(0, 0.15, 3e-3),
+            system=qsys_exp,
+            H1=w1_exp * qsys_exp.MW_H1,
+            pulse_params={"f_pulse": qsys_exp.MW_freqs[0]},
+        )
+
+        rabi_sim_exp.run()
+        rabi_analysis_exp = Analysis(rabi_sim_exp)
+        exp_data.variable *= 1e6
+        rabi_analysis_exp.compare_with(exp_data)
+        rabi_analysis_exp.pearson
+        print(rabi_analysis_exp.pearson.intercept)
+        assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3) and np.isclose(
+            rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3
         )

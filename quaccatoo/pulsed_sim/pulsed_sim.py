@@ -4,12 +4,15 @@
 This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations, part of the QuaCAAToo package.
 """
 
+import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
-import warnings
-from qutip import Qobj, mesolve, parallel_map, measurement
-from .pulse_shapes import square_pulse
+from qutip import Qobj, measurement, mesolve, parallel_map
+
 from ..qsys.qsys import QSys
+from .pulse_shapes import square_pulse
+
 
 class PulsedSim:
     """
@@ -86,6 +89,7 @@ class PulsedSim:
     _check_attr_predef_seqs :
         Checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
     """
+
     def __init__(self, system, H2=None):
         """
         Initializes a general PulsedSim object with a quantum system, time dependent Hamiltonian and collapse operators.
@@ -112,7 +116,9 @@ class PulsedSim:
         if H2 is None:
             self.H2 = None
         elif H2[0].shape != self.system.H0.shape or not callable(H2[1]):
-            raise ValueError("H2 must be a list where the first element is a Qobj of the same shape as H0 and the second element is a time dependent function")
+            raise ValueError(
+                "H2 must be a list where the first element is a Qobj of the same shape as H0 and the second element is a time dependent function"
+            )
         else:
             self.H2 = H2
             self.H0_H2 = [self.system.H0, self.H2]
@@ -140,7 +146,7 @@ class PulsedSim:
         # check if duration of the pulse is a positive real number
         if not isinstance(duration, (int, float)) or duration < 0:
             raise ValueError("duration must be a positive real number")
-        
+
         if options is None:
             options = {}
         elif not isinstance(options, dict):
@@ -164,16 +170,28 @@ class PulsedSim:
             Duration of the free evolution
         """
         if self.system.c_ops is not None or self.H2 is not None:
-            self.rho = mesolve(self.H0_H2, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options=options).states[-1]
+            self.rho = mesolve(
+                self.H0_H2,
+                self.rho,
+                2 * np.pi * np.linspace(self.total_time, self.total_time + duration, self.time_steps),
+                self.system.c_ops,
+                e_ops=[],
+                options=options,
+            ).states[-1]
+        elif self.rho.isket:
+            self.rho = (-1j * 2 * np.pi * self.system.H0 * duration).expm() * self.rho
         else:
-            if self.rho.isket:
-                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho
-            else:
-                self.rho = (-1j*2*np.pi*self.system.H0*duration).expm() * self.rho * ((-1j*2*np.pi*self.system.H0*duration).expm()).dag()
+            self.rho = (
+                (-1j * 2 * np.pi * self.system.H0 * duration).expm()
+                * self.rho
+                * ((-1j * 2 * np.pi * self.system.H0 * duration).expm()).dag()
+            )
 
         self.total_time += duration
 
-    def add_pulse(self, duration, H1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None):
+    def add_pulse(
+        self, duration, H1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None
+    ):
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
         control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
@@ -207,36 +225,60 @@ class PulsedSim:
         if not isinstance(duration, (int, float)) and duration <= 0:
             raise ValueError("duration must be a positive real number")
 
-        if not (callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))):
+        if not (
+            callable(pulse_shape)
+            or (isinstance(pulse_shape, list) and all(callable(p) for p in pulse_shape))
+        ):
             raise ValueError("pulse_shape must be a python function or a list of python functions")
 
         if pulse_params is None:
             pulse_params = {}
         elif not isinstance(pulse_params, dict):
-            raise ValueError('pulse_params must be a dictionary of parameters for the pulse function')
-        
+            raise ValueError("pulse_params must be a dictionary of parameters for the pulse function")
+
         # if the user doesn't provide a phi_t, set it to 0
-        if 'phi_t' not in pulse_params:
-            pulse_params['phi_t'] = 0
+        if "phi_t" not in pulse_params:
+            pulse_params["phi_t"] = 0
 
         # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0
         if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             # append it to the pulse_profiles list
-            self.pulse_profiles.append([H1, np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape, pulse_params])
+            self.pulse_profiles.append(
+                [
+                    H1,
+                    np.linspace(self.total_time, self.total_time + duration, self.time_steps),
+                    pulse_shape,
+                    pulse_params,
+                ]
+            )
             if self.H2 is None:
                 Ht = [self.system.H0, [H1, pulse_shape]]
             else:
                 Ht = [self.system.H0, [H1, pulse_shape], self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
-            self.pulse_profiles = [[H1[i], np.linspace(self.total_time, self.total_time + duration, self.time_steps), pulse_shape[i], pulse_params] for i in range(len(H1))]
+        elif (
+            isinstance(H1, list)
+            and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
+            and len(H1) == len(pulse_shape)
+        ):
+            self.pulse_profiles = [
+                [
+                    H1[i],
+                    np.linspace(self.total_time, self.total_time + duration, self.time_steps),
+                    pulse_shape[i],
+                    pulse_params,
+                ]
+                for i in range(len(H1))
+            ]
             if self.H2 is None:
                 Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
             else:
                 Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
 
         else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list")
+            raise ValueError(
+                "H1 must be a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list"
+            )
 
         # add the pulse operation to the sequence of operations by calling the pulse method
         self._pulse(Ht, duration, options, pulse_params)
@@ -260,7 +302,15 @@ class PulsedSim:
             Dictionary of parameters for the pulse_shape functions
         """
         # perform the pulse operation. The time array is multiplied by 2*pi so that [H*t] has units of radians
-        self.rho = mesolve(Ht, self.rho, 2*np.pi*np.linspace(self.total_time, self.total_time + duration, self.time_steps) , self.system.c_ops, e_ops=[], options = options, args = core_pulse_params).states[-1]
+        self.rho = mesolve(
+            Ht,
+            self.rho,
+            2 * np.pi * np.linspace(self.total_time, self.total_time + duration, self.time_steps),
+            self.system.c_ops,
+            e_ops=[],
+            options=options,
+            args=core_pulse_params,
+        ).states[-1]
 
         self.total_time += duration
 
@@ -268,7 +318,7 @@ class PulsedSim:
         """
         Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.
         For adding a realistic finite length pulse, check add_pulse method.
-        
+
         Parameters
         ----------
         R : Qobj
@@ -276,15 +326,15 @@ class PulsedSim:
         """
         if not isinstance(R, Qobj) or R.shape != self.system.H0.shape:
             raise ValueError("U must be a Qobj of the same shape as H0")
-        
+
         self.pulse_profiles.append([R, [self.total_time], None, None])
         self._delta_pulse(R)
-    
+
     def _delta_pulse(self, R):
         """
         Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
-        
+
         Parameters
         ----------
         R : Qobj
@@ -323,12 +373,14 @@ class PulsedSim:
                 warnings.warn("Passed observable is not hermitian.")
             self.results, self.rho = measurement.measure_observable(self.rho, observable, tol)
 
-        elif observable is None and (isinstance(self.system.observable, Qobj) and self.system.observable.shape == self.system.H0.shape):
+        elif observable is None and (
+            isinstance(self.system.observable, Qobj) and self.system.observable.shape == self.system.H0.shape
+        ):
             self.results, self.rho = measurement.measure_observable(self.rho, self.system.observable, tol)
 
         else:
             raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
-        
+
         return self.results.copy()
 
     def run(self, variable=None, sequence=None, sequence_kwargs=None, map_kw=None):
@@ -363,18 +415,22 @@ class PulsedSim:
             pass
         else:
             raise ValueError("variable must be a numpy array")
-        
+
         # check if map_kw and sequence_kwargs are None or dictionaries
         if map_kw is None:
-            map_kw = {'num_cpus': None}
+            map_kw = {"num_cpus": None}
         elif not isinstance(map_kw, dict):
-            raise ValueError("map_kw must be a dictionary of options for the parallel_map function from QuTip")
+            raise ValueError(
+                "map_kw must be a dictionary of options for the parallel_map function from QuTip"
+            )
 
         if sequence_kwargs is None:
             sequence_kwargs = {}
         elif not isinstance(sequence_kwargs, dict):
-            raise ValueError("sequence_args must be a dictionary of arguments to be passed to the sequence function")
-        
+            raise ValueError(
+                "sequence_args must be a dictionary of arguments to be passed to the sequence function"
+            )
+
         # the rho attribute needs to be reset to the initial state, so it doesnt run over the previous simulation
         self.rho = self.system.rho0.copy()
 
@@ -391,16 +447,23 @@ class PulsedSim:
         if self.rho[0].isket:
             if isinstance(self.system.observable, Qobj):
                 # np.real is used to ensure no imaginary components will be attributed to results
-                self.results = np.array([np.real(rho.dag()*self.system.observable*rho) for rho in self.rho])  
+                self.results = np.array(
+                    [np.real(rho.dag() * self.system.observable * rho) for rho in self.rho]
+                )
             elif isinstance(self.system.observable, list):
-                self.results = [np.array([np.real(rho.dag()*observable*rho) for rho in self.rho]) for observable in self.system.observable]
-        else:
-            if isinstance(self.system.observable, Qobj):
-                self.results = np.array([np.real((rho*self.system.observable).tr()) for rho in self.rho])  
-            elif isinstance(self.system.observable, list):
-                self.results = [np.array([np.real((rho*observable).tr()) for rho in self.rho]) for observable in self.system.observable]
+                self.results = [
+                    np.array([np.real(rho.dag() * observable * rho) for rho in self.rho])
+                    for observable in self.system.observable
+                ]
+        elif isinstance(self.system.observable, Qobj):
+            self.results = np.array([np.real((rho * self.system.observable).tr()) for rho in self.rho])
+        elif isinstance(self.system.observable, list):
+            self.results = [
+                np.array([np.real((rho * observable).tr()) for rho in self.rho])
+                for observable in self.system.observable
+            ]
 
-    def plot_pulses(self, figsize=(6, 4), xlabel=None, ylabel='Pulse Intensity', title='Pulse Profiles'):
+    def plot_pulses(self, figsize=(6, 4), xlabel=None, ylabel="Pulse Intensity", title="Pulse Profiles"):
         """
         Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.
 
@@ -427,18 +490,43 @@ class PulsedSim:
 
         # iterate over all operations in the sequence
         for itr_pulses in range(len(self.pulse_profiles)):
-
             # if the pulse profile is a free evolution, plot a horizontal line at 0
             if self.pulse_profiles[itr_pulses][0] is None:
-                ax.plot(self.pulse_profiles[itr_pulses][1], [0, 0], label='Free Evolution', lw=2, alpha=0.7, color='C0')
+                ax.plot(
+                    self.pulse_profiles[itr_pulses][1],
+                    [0, 0],
+                    label="Free Evolution",
+                    lw=2,
+                    alpha=0.7,
+                    color="C0",
+                )
 
             # if the pulse has operators, plot the pulse profiles
             elif isinstance(self.pulse_profiles[itr_pulses][0], Qobj):
-                ax.plot(self.pulse_profiles[itr_pulses][1], self.pulse_profiles[itr_pulses][2](2*np.pi*self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]), label='H1', lw=2, alpha=0.7, color='C1')
+                ax.plot(
+                    self.pulse_profiles[itr_pulses][1],
+                    self.pulse_profiles[itr_pulses][2](
+                        2 * np.pi * self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]
+                    ),
+                    label="H1",
+                    lw=2,
+                    alpha=0.7,
+                    color="C1",
+                )
 
             elif isinstance(self.pulse_profiles[itr_pulses][0], list):
                 for itr_op in range(len(self.pulse_profiles[itr_pulses])):
-                    ax.plot(self.pulse_profiles[itr_pulses][itr_op][1], self.pulse_profiles[itr_pulses][itr_op][2](2*np.pi*self.pulse_profiles[itr_pulses][itr_op][1], **self.pulse_profiles[itr_pulses][itr_op][3]), label=f'H1_{itr_op}', lw=2, alpha=0.7, color=f'C{2+itr_op}')
+                    ax.plot(
+                        self.pulse_profiles[itr_pulses][itr_op][1],
+                        self.pulse_profiles[itr_pulses][itr_op][2](
+                            2 * np.pi * self.pulse_profiles[itr_pulses][itr_op][1],
+                            **self.pulse_profiles[itr_pulses][itr_op][3],
+                        ),
+                        label=f"H1_{itr_op}",
+                        lw=2,
+                        alpha=0.7,
+                        color=f"C{2 + itr_op}",
+                    )
 
         ax.set_xlim(0, self.total_time)
         ax.set_xlabel(xlabel)
@@ -449,9 +537,20 @@ class PulsedSim:
         # Adapted from user Julien J in https://stackoverflow.com/questions/19385639/duplicate-items-in-legend-in-matplotlib/40870637#40870637
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
-        ax.legend(*zip(*unique_legend), loc='upper right', bbox_to_anchor=(1.2, 1))
+        ax.legend(*zip(*unique_legend), loc="upper right", bbox_to_anchor=(1.2, 1))
 
-    def _check_attr_predef_seqs(self, H1, pulse_shape, pulse_params, options, time_steps, free_duration, pi_pulse_duration, M, projection_pulse):
+    def _check_attr_predef_seqs(
+        self,
+        H1,
+        pulse_shape,
+        pulse_params,
+        options,
+        time_steps,
+        free_duration,
+        pi_pulse_duration,
+        M,
+        projection_pulse,
+    ):
         """
         Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.
 
@@ -472,12 +571,14 @@ class PulsedSim:
         pi_pulse_duration : float
             Duration of the pi pulse, if applicable
         M : int
-            Order of the sequence, if applicable 
+            Order of the sequence, if applicable
         projection_pulse : bool
             Whether the sequence contains a final projection pulse or not, if applicable
         """
         # check whether pulse_shape is a python function or a list of python functions and if it is, assign it to the object
-        if callable(pulse_shape) or (isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)):
+        if callable(pulse_shape) or (
+            isinstance(pulse_shape, list) and all(callable(pulse_shape) for pulse_shape in pulse_shape)
+        ):
             self.pulse_shape = pulse_shape
         else:
             raise ValueError("pulse_shape must be a python function or a list of python functions")
@@ -488,8 +589,10 @@ class PulsedSim:
         elif isinstance(pulse_params, dict):
             self.pulse_params = pulse_params
         else:
-            raise ValueError("pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function")
-        
+            raise ValueError(
+                "pulse_params must be a dictionary or a list of dictionaries of parameters for the pulse function"
+            )
+
         # if phi_t is not in the pulse_params dictionary, assign it as 0
         if "phi_t" not in self.pulse_params:
             self.pulse_params["phi_t"] = 0
@@ -501,7 +604,7 @@ class PulsedSim:
             self.options = options
         else:
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
-        
+
         # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
         if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
             self.H1 = H1
@@ -511,7 +614,11 @@ class PulsedSim:
                 self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
                 self.H0_H2 = [self.system.H0, self.H2]
 
-        elif isinstance(H1, list) and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1) and len(H1) == len(pulse_shape):
+        elif (
+            isinstance(H1, list)
+            and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
+            and len(H1) == len(pulse_shape)
+        ):
             self.H1 = H1
             if self.H2 is None:
                 self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
@@ -520,8 +627,10 @@ class PulsedSim:
                 self.H0_H2 = [self.system.H0, self.H2]
 
         else:
-            raise ValueError("H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list")
-        
+            raise ValueError(
+                "H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
+            )
+
         # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
@@ -531,17 +640,27 @@ class PulsedSim:
         # check whether free_duration is a numpy array of real and positive elements and if it is, assign it to the object
         if free_duration is None:
             pass
-        elif not isinstance(free_duration, (np.ndarray, list)) or not np.all(np.isreal(free_duration)) or not np.all(np.greater_equal(free_duration, 0)):
+        elif (
+            not isinstance(free_duration, (np.ndarray, list))
+            or not np.all(np.isreal(free_duration))
+            or not np.all(np.greater_equal(free_duration, 0))
+        ):
             raise ValueError("free_duration must be a numpy array with real positive elements")
         else:
             self.variable = free_duration
             self.variable_name = f"Tau (1/{self.system.units_H0})"
-        
+
         # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
         if pi_pulse_duration is None:
             pass
-        elif not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration <= 0 or pi_pulse_duration > free_duration[0]:
-            warnings.warn("pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap")
+        elif (
+            not isinstance(pi_pulse_duration, (int, float))
+            or pi_pulse_duration <= 0
+            or pi_pulse_duration > free_duration[0]
+        ):
+            warnings.warn(
+                "pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap"
+            )
             self.pi_pulse_duration = pi_pulse_duration
         else:
             self.pi_pulse_duration = pi_pulse_duration
@@ -559,5 +678,5 @@ class PulsedSim:
             pass
         elif isinstance(projection_pulse, bool):
             self.projection_pulse = projection_pulse
-        else: 
+        else:
             raise ValueError("projection_pulse must be a boolean")
