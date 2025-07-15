@@ -79,13 +79,14 @@
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Bloch</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">fidelity</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span><span class="p">,</span> <span class="n">pearsonr</span>
-<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
 
 <span class="kn">from</span> <span class="nn">..exp_data.exp_data</span> <span class="kn">import</span> <span class="n">ExpData</span>
 <span class="kn">from</span> <span class="nn">..pulsed_sim.pulsed_sim</span> <span class="kn">import</span> <span class="n">PulsedSim</span>
+
 
 <div class="viewcode-block" id="Analysis">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis">[docs]</a>
@@ -143,15 +144,22 @@
 <span class="sd">        experiment : PulsedSim or ExpData</span>
 <span class="sd">            Experiment object to be analyzed containing the results and variable attributes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">ExpData</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="p">(</span><span class="n">ExpData</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span> <span class="o">=</span> <span class="n">experiment</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;experiment must be a PulsedSimulation or ExpData object&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results attribute of the experiment must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Results attribute of the experiment must be a numpy array or a list of numpy arrays&quot;</span>
+            <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">results</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results and Variable attributes of experiment must have the same length&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span> <span class="o">=</span> <span class="p">[]</span>
@@ -192,11 +200,16 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparison_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;results_index and comparison_index must be integers&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">results_index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">comparison_index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">results_index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="ow">or</span> <span class="n">comparison_index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;results_index and comparison_index must be less than the number of results&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linear_fit</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linear_fit must be a boolean indicating whether or not to perform a linear fit between the two data sets.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;linear_fit must be a boolean indicating whether or not to perform a linear fit between the two data sets.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">variable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The variable attributes of the experiments must have the same length&quot;</span><span class="p">)</span>
@@ -210,7 +223,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># if the results are a list, index the results and perform the linear fit</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">comparison_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">])</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span>
+                    <span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">comparison_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span>
+                <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">comparison_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">pearson</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -219,7 +234,9 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">comparison_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">])</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span>
+                    <span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">comparison_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span>
+                <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pearson</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -250,7 +267,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pearson</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must run the compare_with method before plotting the comparison&quot;</span><span class="p">)</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Compared Experiment&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exp_comparison</span><span class="o">.</span><span class="n">results</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Compared Experiment&quot;</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
@@ -271,13 +294,17 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)))</span>
 
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span>
+        <span class="p">):</span>
             <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">res</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">res</span><span class="p">)))</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
 
-        <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftfreq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftfreq</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -318,7 +345,9 @@
 
 <div class="viewcode-block" id="Analysis.plot_FFT">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_FFT">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_FFT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;FFT Intensity&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;FFT of the Results&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_FFT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">freq_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;FFT Intensity&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;FFT of the Results&quot;</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the FFT</span>
 
@@ -354,14 +383,26 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Peaks&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Peaks&quot;</span><span class="p">,</span>
+                    <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
             <span class="c1"># if the FFT_peaks attribute is not empty, then plot them with the FFT</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">itr</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;FFT </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">itr</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks_index</span><span class="p">[</span><span class="n">itr</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Peaks </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">itr</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_peaks_index</span><span class="p">[</span><span class="n">itr</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Peaks </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">FFT_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">itr</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;FFT </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -381,7 +422,6 @@
 
 
     <span class="c1">######################################################## FIT Methods ########################################################</span>
-
 
 <div class="viewcode-block" id="Analysis.run_fit">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.run_fit">[docs]</a>
@@ -431,7 +471,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fit_model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;fit_model must be an instance of lmfit.Model. Remember to instantiate the class by adding parentheses.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># if there is only one result, just fit the results with the model</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -441,28 +483,46 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+                    <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
                     <span class="n">params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+                    <span class="p">)</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="o">.</span><span class="n">best_values</span>
 
         <span class="c1"># if there are multiple results, check if the results_index is an integer and if it is less than the number of results then fit</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">results_index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">results_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;results_index must be a non-negative integer less than the number of results&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">results_index</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                <span class="ow">or</span> <span class="n">results_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;results_index must be a non-negative integer less than the number of results&quot;</span>
+                <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">fit_model</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span>
             <span class="k">if</span> <span class="n">guess</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="o">**</span><span class="n">guess</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="o">**</span><span class="n">guess</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+                    <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
                     <span class="n">params</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">results_index</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+                    <span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span><span class="p">[</span><span class="n">results_index</span><span class="p">]</span><span class="o">.</span><span class="n">best_values</span></div>
 
 
@@ -536,7 +596,13 @@
             <span class="c1"># if it is a list, iterate over the observables and plot each one</span>
             <span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">observable</span><span class="p">)):</span>
                 <span class="c1"># plot all observables in the results</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Observable </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span>
+                    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Observable </span><span class="si">{</span><span class="n">itr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Results must be a numpy array or a list of numpy arrays&quot;</span><span class="p">)</span>
@@ -585,12 +651,13 @@
 </div>
 
 
+
 <div class="viewcode-block" id="plot_histogram">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.plot_histogram">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_comparison</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Matrix Histogram&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_comparison</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Matrix Histogram&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot a 3D histogram of the final density matrix of the simulation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    component : str</span>
@@ -603,28 +670,30 @@
 <span class="sd">        Title of the plot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check all parameters</span>
-    <span class="k">if</span> <span class="n">component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;real&#39;</span><span class="p">,</span> <span class="s1">&#39;imag&#39;</span><span class="p">,</span> <span class="s1">&#39;abs&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;abs&quot;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;component must be &#39;real&#39;, &#39;imag&#39;, or &#39;abs&#39;&quot;</span><span class="p">)</span>
-        
+
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="n">N</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rho must be a Qobj representing a square density matrix&quot;</span><span class="p">)</span>    
-        
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rho must be a Qobj representing a square density matrix&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
         <span class="n">rho_comparison</span> <span class="o">=</span> <span class="n">rho_comparison</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rho_comparison must be a Qobj with the same shape as the density matrix to be compared with&quot;</span><span class="p">)</span>
-        
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;rho_comparison must be a Qobj with the same shape as the density matrix to be compared with&quot;</span>
+        <span class="p">)</span>
+
     <span class="c1"># Create 3D plot</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">azim</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">elev</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 
     <span class="c1"># Dimensions and positions for the bars</span>
@@ -634,33 +703,42 @@
     <span class="n">dx</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">zpos</span><span class="p">)</span>
 
     <span class="c1"># Prepare the data for the bars depending on the component</span>
-    <span class="k">if</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;real&#39;</span><span class="p">:</span>
-        <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> 
-        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span>          
+    <span class="k">if</span> <span class="n">component</span> <span class="o">==</span> <span class="s2">&quot;real&quot;</span><span class="p">:</span>
+        <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C0&quot;</span>
         <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        
-    
-    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;imag&#39;</span><span class="p">:</span>
+
+    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s2">&quot;imag&quot;</span><span class="p">:</span>
         <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span>
         <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-    
-    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s1">&#39;abs&#39;</span><span class="p">:</span>
+
+    <span class="k">elif</span> <span class="n">component</span> <span class="o">==</span> <span class="s2">&quot;abs&quot;</span><span class="p">:</span>
         <span class="n">dz_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C2&quot;</span>
         <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dz_comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-            
-    <span class="c1"># Plot the bars        </span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">zpos</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz_sim</span><span class="p">,</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    
+
+    <span class="c1"># Plot the bars</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">zpos</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz_sim</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">rho_comparison</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fidelity: </span><span class="si">{</span><span class="n">fidelity</span><span class="p">(</span><span class="n">Qobj</span><span class="p">(</span><span class="n">rho</span><span class="p">),</span><span class="w"> </span><span class="n">Qobj</span><span class="p">(</span><span class="n">rho_comparison</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">zpos</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz_comp</span><span class="p">,</span>
-            <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">bar3d</span><span class="p">(</span>
+            <span class="n">xpos</span><span class="p">,</span>
+            <span class="n">ypos</span><span class="p">,</span>
+            <span class="n">zpos</span><span class="p">,</span>
+            <span class="n">dx</span><span class="p">,</span>
+            <span class="n">dy</span><span class="p">,</span>
+            <span class="n">dz_comp</span><span class="p">,</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dotted&quot;</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="c1"># Aesthetics, labels, and title</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
