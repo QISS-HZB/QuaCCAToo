@@ -173,7 +173,7 @@ class TestExpData:
             units_B0="mT",
             B0=38.4,
         )
-        exp_data = ExpData(file_path="./docs/tutorials/exp_data_tutorials/Ex02_NV_rabi.dat")
+        exp_data = ExpData(file_path="./tests/data//Ex02_NV_rabi.dat")
         w1_exp = 16.72
 
         rabi_sim_exp = Rabi(
