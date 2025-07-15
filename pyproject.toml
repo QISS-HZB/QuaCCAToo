@@ -52,3 +52,7 @@ dev = [
 features = [
   "dev",
 ]
+
+[tool.ruff]
+line-length = 109
+extend-exclude = ["*.ipynb"]
