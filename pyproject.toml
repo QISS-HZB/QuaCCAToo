@@ -7,13 +7,22 @@ name = "QuaCCAToo"
 dynamic = ["version"]
 description = "Quantum Color Centers Analysis Toolbox"
 readme = "README.md"
+
 license = "GPL-3.0-or-later"
+license-files = ["LICENCSE"]
+
 requires-python = ">=3.9"
+
 authors = [
     { name = "Lucas Tsunaki", email = "lucas.tsunaki@helmholtz-berlin.de" },
     { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
     { name = "Sergei Trofimov", email = "sergei.trofimov@helmholtz-berlin.de" },
 ]
+
+maintainers = [
+    { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
+]
+
 dependencies = [
     "lmfit",
     "matplotlib",
@@ -23,7 +32,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/QISS-HZB/QuaCCAToo"
+homepage = "https://github.com/QISS-HZB/QuaCCAToo"
+source = "https://github.com/QISS-HZB/QuaCCAToo"
+documentation = "https://qiss-hzb.github.io/QuaCCAToo/"
+issues = "https://github.com/QISS-HZB/QuaCCAToo/issues"
 
 [tool.hatch.version]
 path = "quaccatoo/__init__.py"
@@ -46,6 +58,7 @@ exclude =[
 dev = [
     "hatch",
     "pytest",
+    "ruff",
 ]
 
 [tool.hatch.envs.dev]
@@ -68,3 +81,11 @@ convention = "numpy"
 [tool.ruff.lint.pycodestyle]
 ignore-overlong-task-comments = true
 
+classifiers = [
+"Intended Audience :: Education",
+"Intended Audience :: Science/Research",
+"Natural Language :: English",
+"Programming Language :: Python :: 3",
+"Topic :: Scientific/Engineering :: Physics",
+"Topic :: Scientific/Engineering :: Quantum Computing",
+]
