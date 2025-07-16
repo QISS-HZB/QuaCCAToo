@@ -627,8 +627,7 @@ def plot_histogram(rho, rho_comparison=None, component="real", figsize=(5, 5), t
             dy,
             dz_comp,
             edgecolor="k",
-            linewidth=1,
-            linestyle="dotted",
+            linewidth=.5,
             alpha=0,
             zorder=1,
         )
