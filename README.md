@@ -53,3 +53,8 @@ Any contribution or bug report are welcome.
 - Module level refactors require corresponding changes in the `sphinx` setup, too.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center
   instead of centre.
+
+## Links
+- Repository: https://github.com/QISS-HZB/QuaCCAToo
+- Documentation: https://qiss-hzb.github.io/QuaCCAToo/
+- PyPI: https://pypi.org/project/QuaCCAToo/
