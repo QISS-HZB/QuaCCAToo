@@ -80,7 +80,6 @@ line-length = 109
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["E", "F"]
 ignore = ["E741"]
 task-tags = [""]
 
