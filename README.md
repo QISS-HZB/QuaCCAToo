@@ -1,25 +1,33 @@
 # Quantum Color Centers Analysis Toolbox
 ![Logo](./docs/QuaCCAToo_logo.svg)
 
-QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum
-technology applications, without using rotating wave approximations. The software serves as an extension for
-QuTip, inheriting its object-oriented framework and the `Qobj` class. This way, the software combines
-accessibility from the high level of abstraction and human-readability of Python with the efficiency of
-compiled programming languages provided by Qutip's parallelization and the matrix algebra from Scipy
-and Numpy. 
+QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
+The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. 
+The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
+This way, the software provides accessibility from the high level of abstraction and human-readability of Python, but at the expense of limited performance compared to  compiled programming languages.
 
-Documentation and usage tutorial available at https://qiss-hzb.github.io/QuaCCAToo/
+For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/notebooks.html) section.
+
+If you used QuaCCAToo in you work, please cite this repository and [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
+
+## Links
+- Repository: https://github.com/QISS-HZB/QuaCCAToo
+- Documentation: https://qiss-hzb.github.io/QuaCCAToo/
+- PyPI: https://pypi.org/project/QuaCCAToo/
 
 ## Installation
 
-We strongly recommend using a virtual environment (use whichever tool like `venv`/`conda`/`uv` that you
-prefer) so that the system Python remains untouched.
+We strongly recommend using a virtual environment (use whichever tool like `venv`/`conda`/`uv` that you prefer) so that the system Python remains untouched.
 
 ``` sh
 pip install quaccatoo
 ```
 
 Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detailed installation instructions.
+
+## Featured In
+
+- Tsunaki, L., Singh, A., Volkova, K., Trofimov, S., Pregnolato, T., Schröder, T., & Naydenov, B. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606)
 
 ## Class Hierarchy
 
@@ -53,8 +61,3 @@ Any contribution or bug report are welcome.
 - Module level refactors require corresponding changes in the `sphinx` setup, too.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center
   instead of centre.
-
-## Links
-- Repository: https://github.com/QISS-HZB/QuaCCAToo
-- Documentation: https://qiss-hzb.github.io/QuaCCAToo/
-- PyPI: https://pypi.org/project/QuaCCAToo/
