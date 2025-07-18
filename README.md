@@ -27,7 +27,8 @@ Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detaile
 
 ## Featured In
 
-- Tsunaki, L., Singh, A., Volkova, K., Trofimov, S., Pregnolato, T., Schröder, T., & Naydenov, B. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606)
+- L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606)
+- S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. arXiv:2507.13295 quant-ph. [2507.13295](https://arxiv.org/abs/2507.13295).
 
 ## Class Hierarchy
 
