@@ -3,7 +3,7 @@ import pytest
 from lmfit import Model
 from qutip import basis, fock_dm, sigmax, sigmay, sigmaz
 
-from quaccatoo import NV, PMR, XY8, Analysis, ExpData, Hahn, QSys, Rabi, square_pulse
+from quaccatoo import CPMG, NV, PMR, XY8, Analysis, ExpData, Hahn, QSys, Rabi, square_pulse
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
     GaussianModel,
@@ -113,7 +113,7 @@ class TestXY8:
     # Runs the XY8 sequence on an NV object
     # and checks if the center of the peak is in the expected position.
     # We don't use an outside fixture here since we need handcrafted values for this test
-    def test_xy8_exp(self):
+    def test_xy8(self):
         qsys = NV(
             N=15,
             B0=39.4,
@@ -136,6 +136,30 @@ class TestXY8:
         XY8_analysis.run_fit(fit_model=GaussianModel())
         assert 0.29 <= XY8_analysis.fit_params.best_values["center"] <= 0.31
 
+class TestCPMG:
+    # Runs the CPMG sequence on an NV object
+    # and checks if the center of the peak is in the expected position.
+    def test_cpmg(self):
+        qsys = NV(
+            N=15,
+            B0=40,
+            units_B0="mT",
+            theta=2,
+            units_angles="deg",
+        )
+        w1 = 40
+        cpmg = CPMG(
+            free_duration=np.linspace(0.2,0.5,100),
+            system=qsys,
+            M=2,
+            pi_pulse_duration=1/2/w1,
+            pulse_params={"f_pulse": qsys.MW_freqs[1]},
+            H1=w1*qsys.MW_H1
+        )
+        cpmg.run()
+        cpmg_analysis=Analysis(cpmg)
+        cpmg_analysis.run_fit(fit_model=GaussianModel())
+        assert np.isclose(cpmg_analysis.fit_params.best_values["center"], 0.353, atol=1e-3)
 
 class TestPODMR:
     @pytest.mark.slow
