@@ -43,23 +43,44 @@ class TestQSys:
     def test_levels(self, qsys):
         assert np.array_equal(qsys.energy_levels, np.array([0, 1]))
 
+
 # Tests for the NV class methods
 class TestNV:
     def test_addspin(self):
-        sys = NV(B0 =200 , units_B0 ='mT', N=0)
+        sys = NV(B0=200, units_B0="mT", N=0)
         GAMMA_C = 10.7084e-3
         azz = -130
-        H2 = azz* tensor(jmat (1,'z'),jmat(1/2 , 'z')) -GAMMA_C *sys.B0* tensor(qeye (3), jmat (1/2 , 'z'))
+        H2 = azz * tensor(jmat(1, "z"), jmat(1 / 2, "z")) - GAMMA_C * sys.B0 * tensor(
+            qeye(3), jmat(1 / 2, "z")
+        )
         sys.add_spin(H2)
-        assert np.allclose(sys.energy_levels, np.array([0, 127.85832, 2797.84859722, 2799.99027722, 11207.83887444, 11339.98055444]))
+        assert np.allclose(
+            sys.energy_levels,
+            np.array([0, 127.85832, 2797.84859722, 2799.99027722, 11207.83887444, 11339.98055444]),
+        )
 
     def test_comp_trunc(self):
-        NVb = NV(B0=18, units_B0 ='mT', N=0)
-        NVa = NV(B0=25, units_B0 ='mT', N=14)
-        NVb.truncate(mS =1)
-        NVa.truncate(mS=1,mI =1)
-        sys = compose_sys(NVb , NVa)
-        assert np.allclose(sys.energy_levels, np.array([0, 4.93642778, 2167.23956813, 2174.31599591, 2365.55087505, 2370.48730283, 4532.79044318, 4539.86687097]))
+        NVb = NV(B0=18, units_B0="mT", N=0)
+        NVa = NV(B0=25, units_B0="mT", N=14)
+        NVb.truncate(mS=1)
+        NVa.truncate(mS=1, mI=1)
+        sys = compose_sys(NVb, NVa)
+        assert np.allclose(
+            sys.energy_levels,
+            np.array(
+                [
+                    0,
+                    4.93642778,
+                    2167.23956813,
+                    2174.31599591,
+                    2365.55087505,
+                    2370.48730283,
+                    4532.79044318,
+                    4539.86687097,
+                ]
+            ),
+        )
+
 
 # Rabi object (fixture) used in the TestRabi class below
 @pytest.fixture
@@ -90,11 +111,11 @@ class TestRabi:
         rabi_analysis = Analysis(rabi_exp)
         rabi_analysis.run_fit(fit_model=RabiModel())
         assert np.isclose(rabi_analysis.fit_params.best_values["Tpi"], 5, atol=1e-3)
+
     def test_fft(self, rabi_exp):
         rabi_analysis = Analysis(rabi_exp)
         rabi_analysis.run_FFT()
-        assert np.isclose(rabi_analysis.get_peaks_FFT()[0], 1/2/5, atol=1e-3)
-
+        assert np.isclose(rabi_analysis.get_peaks_FFT()[0], 1 / 2 / 5, atol=1e-3)
 
 
 # Hahn object (fixture) used in the Test class below
@@ -187,6 +208,7 @@ class TestXY8:
         XY8_analysis.run_fit(fit_model=GaussianModel())
         assert 0.29 <= XY8_analysis.fit_params.best_values["center"] <= 0.31
 
+
 class TestCPMG:
     # Runs the CPMG sequence on an NV object
     # and checks if the center of the peak is in the expected position.
@@ -200,17 +222,18 @@ class TestCPMG:
         )
         w1 = 40
         cpmg = CPMG(
-            free_duration=np.linspace(0.2,0.5,100),
+            free_duration=np.linspace(0.2, 0.5, 100),
             system=qsys,
             M=2,
-            pi_pulse_duration=1/2/w1,
+            pi_pulse_duration=1 / 2 / w1,
             pulse_params={"f_pulse": qsys.MW_freqs[1]},
-            H1=w1*qsys.MW_H1
+            H1=w1 * qsys.MW_H1,
         )
         cpmg.run()
-        cpmg_analysis=Analysis(cpmg)
+        cpmg_analysis = Analysis(cpmg)
         cpmg_analysis.run_fit(fit_model=GaussianModel())
         assert np.isclose(cpmg_analysis.fit_params.best_values["center"], 0.353, atol=1e-3)
+
 
 class TestPODMR:
     @pytest.mark.slow
@@ -267,3 +290,9 @@ class TestExpData:
         assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3) and np.isclose(
             rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3
         )
+
+    def test_subtract(self):
+        f = ExpData(file_path="./tests/data/xy82.dat", results_columns=[0, 1])
+        sig = f.results[1] - f.results[0]
+        f.subtract_results_columns(pos_col=1, neg_col=0)
+        assert np.allclose(sig, f.results)
