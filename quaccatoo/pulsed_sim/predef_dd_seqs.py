@@ -40,7 +40,7 @@ class CPMG(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1=None,
+        h1=None,
         Rx=None,
         Ry=None,
         H2=None,
@@ -63,7 +63,7 @@ class CPMG(PulsedSim):
             Order of the CPMG sequence
         pi_pulse_duration : float, int or 0
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
-        H1 : Qobj or list of Qobj
+        h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
             Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
@@ -74,7 +74,7 @@ class CPMG(PulsedSim):
         projection_pulse : bool
             Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions
         time_steps : int
@@ -82,7 +82,7 @@ class CPMG(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1,
+            h1,
             Rx,
             Ry,
             pulse_shape,
@@ -173,25 +173,25 @@ class CPMG(PulsedSim):
         self.pulse_profiles = []
 
         # add the first pi/2 pulse on Y
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[1],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[1],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
 
@@ -205,25 +205,25 @@ class CPMG(PulsedSim):
         # add pulses and free evolution 8*M-1 times
         for itr_M in range(8 * self.M - 1):
             # add a pi pulse on X
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[0],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[0],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
             t0 += self.pi_pulse_duration
@@ -232,25 +232,25 @@ class CPMG(PulsedSim):
             t0 += ps
 
         # add another pi pulse on X
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[0],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[0],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
         t0 += self.pi_pulse_duration
@@ -260,27 +260,27 @@ class CPMG(PulsedSim):
             self.pulse_profiles.append([None, [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
             t0 += ps / 2 - self.pi_pulse_duration / 2
 
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 # add the last pi/2 pulse
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[1],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 # add the first pi/2 pulse
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[1],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
 
@@ -347,7 +347,7 @@ class XY(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1=None,
+        h1=None,
         Rx=None,
         Ry=None,
         H2=None,
@@ -370,7 +370,7 @@ class XY(PulsedSim):
             Order of the XY sequence
         pi_pulse_duration : float, int or 0
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
-        H1 : Qobj or list of Qobj
+        h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
             Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
@@ -379,7 +379,7 @@ class XY(PulsedSim):
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1
         pulse_params : dict, optional
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
@@ -389,7 +389,7 @@ class XY(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1,
+            h1,
             Rx,
             Ry,
             pulse_shape,
@@ -482,25 +482,25 @@ class XY(PulsedSim):
         self.pulse_profiles = []
 
         # add the first pi/2 pulse on X axis
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[0],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[0],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
 
@@ -514,25 +514,25 @@ class XY(PulsedSim):
         # add pulses and free evolution M-1 times
         for itr_M in range(2 * self.M - 1):
             # add a pi pulse
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[itr_M % 2],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[itr_M % 2],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
             t0 += self.pi_pulse_duration
@@ -542,25 +542,25 @@ class XY(PulsedSim):
             t0 += ps
 
         # add another pi pulse
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[1],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[1],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
         t0 += self.pi_pulse_duration
@@ -570,27 +570,27 @@ class XY(PulsedSim):
             self.pulse_profiles.append([None, [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
             t0 += ps / 2 - self.pi_pulse_duration / 2
 
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 # add the last pi/2 pulse
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[0],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 # add the first pi/2 pulse
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[0],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
 
@@ -659,7 +659,7 @@ class XY8(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1=None,
+        h1=None,
         Rx=None,
         Ry=None,
         H2=None,
@@ -683,7 +683,7 @@ class XY8(PulsedSim):
             Order of the XY sequence
         pi_pulse_duration : float, int or 0
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
-        H1 : Qobj or list of Qobj
+        h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
             Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
@@ -692,7 +692,7 @@ class XY8(PulsedSim):
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1
         pulse_params : dict, optional
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
@@ -706,7 +706,7 @@ class XY8(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1,
+            h1,
             Rx,
             Ry,
             pulse_shape,
@@ -834,25 +834,25 @@ class XY8(PulsedSim):
         self.pulse_profiles = []
 
         # add the first pi/2 pulse on X axis
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[0],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[0],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
 
@@ -866,25 +866,25 @@ class XY8(PulsedSim):
         # add pulses and free evolution M-1 times
         for itr_M in range(8 * self.M - 1):
             # add a pi pulse
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[itr_M % 8],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[itr_M % 8],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
             t0 += self.pi_pulse_duration
@@ -894,25 +894,25 @@ class XY8(PulsedSim):
             t0 += ps
 
         # add another pi pulse
-        if isinstance(self.H1, Qobj):
+        if isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params[0],
                 ]
             )
-        elif isinstance(self.H1, list):
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params[0],
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
         t0 += self.pi_pulse_duration
@@ -922,27 +922,27 @@ class XY8(PulsedSim):
             self.pulse_profiles.append([None, [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
             t0 += ps / 2 - self.pi_pulse_duration / 2
 
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 # add the last pi/2 pulse
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params[0],
                     ]
                 )
-            elif isinstance(self.H1, list):
+            elif isinstance(self.h1, list):
                 # add the first pi/2 pulse
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params[0],
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
 
