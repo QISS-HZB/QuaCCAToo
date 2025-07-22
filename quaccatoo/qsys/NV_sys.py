@@ -45,9 +45,9 @@ class NV(QSys):
         Microwave frequencies
     RF_freqs : numpy.ndarray
         RF frequencies
-    MW_H1 : Qobj
+    MW_h1 : Qobj
         Microwave Hamiltonian
-    RF_H1 : Qobj
+    RF_h1 : Qobj
         RF Hamiltonian
 
     Methods
@@ -58,9 +58,9 @@ class NV(QSys):
         Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
     _set_RF_freqs
         Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
-    _set_MW_H1
+    _set_MW_h1
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
-    _set_RF_H1
+    _set_RF_h1
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions
     _ZeroField
         Get the NV Hamiltonian term accounting for zero field splitting
@@ -197,8 +197,8 @@ class NV(QSys):
 
         self._set_MW_freqs()
         self._set_RF_freqs()
-        self._set_MW_H1()
-        self._set_RF_H1()
+        self._set_MW_h1()
+        self._set_RF_h1()
 
     def rho0_lowT(self, temp, units_temp="K"):
         """
@@ -350,29 +350,29 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_MW_H1(self):
+    def _set_MW_h1(self):
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         """
         if self.N == 15:
-            self.MW_H1 = tensor(jmat(1, "x"), qeye(2)) * 2**0.5
+            self.MW_h1 = tensor(jmat(1, "x"), qeye(2)) * 2**0.5
         elif self.N == 14:
-            self.MW_H1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
+            self.MW_h1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
         elif self.N == 0 or self.N is None:
-            self.MW_H1 = tensor(jmat(1, "x")) * 2**0.5
+            self.MW_h1 = tensor(jmat(1, "x")) * 2**0.5
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_RF_H1(self):
+    def _set_RF_h1(self):
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         """
         if self.N == 15:
-            self.RF_H1 = tensor(qeye(3), jmat(1 / 2, "x")) * 2
+            self.RF_h1 = tensor(qeye(3), jmat(1 / 2, "x")) * 2
         elif self.N == 14:
-            self.RF_H1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
+            self.RF_h1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
         elif self.N == 0 or self.N is None:
-            self.RF_H1 = qeye(3)
+            self.RF_h1 = qeye(3)
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -523,7 +523,7 @@ class NV(QSys):
 
     def add_spin(self, H_spin):
         """
-        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes
+        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes
 
         Parameters
         ----------
@@ -532,12 +532,12 @@ class NV(QSys):
         """
         super().add_spin(H_spin)
 
-        self.MW_H1 = tensor(self.MW_H1, qeye(self.dim_add_spin))
-        self.RF_H1 = tensor(self.RF_H1, qeye(self.dim_add_spin))
+        self.MW_h1 = tensor(self.MW_h1, qeye(self.dim_add_spin))
+        self.RF_h1 = tensor(self.RF_h1, qeye(self.dim_add_spin))
 
     def truncate(self, mS=None, mI=None):
         """
-        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.
+        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.
         The indexes to be removed are calculated according to the mS and mI parameters.
 
         Parameters
@@ -599,13 +599,13 @@ class NV(QSys):
         indexes = sorted(set(indexes))
         super().truncate(indexes)
 
-        self.MW_H1 = Qobj(np.delete(np.delete(self.MW_H1.full(), indexes, axis=0), indexes, axis=1))
-        self.RF_H1 = Qobj(np.delete(np.delete(self.RF_H1.full(), indexes, axis=0), indexes, axis=1))
+        self.MW_h1 = Qobj(np.delete(np.delete(self.MW_h1.full(), indexes, axis=0), indexes, axis=1))
+        self.RF_h1 = Qobj(np.delete(np.delete(self.RF_h1.full(), indexes, axis=0), indexes, axis=1))
 
         # corrrect the dimensions of the objects
         self.H0.dims = [dims, dims]
-        self.MW_H1.dims = [dims, dims]
-        self.RF_H1.dims = [dims, dims]
+        self.MW_h1.dims = [dims, dims]
+        self.RF_h1.dims = [dims, dims]
 
         if self.observable is not None:
             if isinstance(self.observable, Qobj):

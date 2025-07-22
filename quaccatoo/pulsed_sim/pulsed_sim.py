@@ -8,7 +8,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, measurement, mesolve, parallel_map, qeye
+from qutip import Qobj, measurement, mesolve, parallel_map
 
 from ..qsys.qsys import QSys
 from .pulse_shapes import square_pulse
@@ -36,7 +36,7 @@ class PulsedSim:
     variable_name : str
         Name of the variable
     pulse_profiles :list
-        List of pulse profiles for plotting purposes, where each element is a list [H1, tarray, pulse_shape, pulse_params]
+        List of pulse profiles for plotting purposes, where each element is a list [h1, tarray, pulse_shape, pulse_params]
     results : list
         Results of the experiment to be later generated in the run method
     sequence : callable
@@ -52,15 +52,15 @@ class PulsedSim:
     free_duration : np.array
         Free evolution times of the sequence, if applicable
     pulse_shape : callable or list(callable)
-        Pulse shape function or list of pulse shape functions representing the time modulation of H1
+        Pulse shape function or list of pulse shape functions representing the time modulation of h1
     pulse_params : dict
         Dictionary of parameters for the pulse_shape functions
     options : dict
         Options for the Qutip solver, such as 'nsteps', 'atol', 'rtol', 'order'
-    H1 : Qobj or list(Qobj)
+    h1 : Qobj or list(Qobj)
         Control Hamiltonian of the system, which can be a single Qobj or a list of Qobjs
     Ht : list
-        List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape], H2]
+        List of Hamiltonians for the pulse operation in the form [H0, [h1, pulse_shape], H2]
     time_steps : int
         Number of time steps for the pulses, if applicable
 
@@ -190,20 +190,20 @@ class PulsedSim:
         self.total_time += duration
 
     def add_pulse(
-        self, duration, H1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None
+        self, duration, h1, pulse_shape=square_pulse, pulse_params=None, time_steps=100, options=None
     ):
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
-        control Hamiltonian H1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
+        control Hamiltonian h1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.
 
         Parameters
         ----------
         duration : float or int
             Duration of the pulse
-        H1 : Qobj or list(Qobj)
+        h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system
         pulse_shape : callable or list(callable)
-            Pulse shape function or list of pulse shape functions representing the time modulation of t H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of t h1
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions
         time_steps : int
@@ -240,44 +240,44 @@ class PulsedSim:
         if "phi_t" not in pulse_params:
             pulse_params["phi_t"] = 0
 
-        # check if H1 is a Qobj or a list of Qobj with the same dimensions as H0
-        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
+        # check if h1 is a Qobj or a list of Qobj with the same dimensions as H0
+        if isinstance(h1, Qobj) and h1.shape == self.system.H0.shape:
             # append it to the pulse_profiles list
             self.pulse_profiles.append(
                 [
-                    H1,
+                    h1,
                     np.linspace(self.total_time, self.total_time + duration, self.time_steps),
                     pulse_shape,
                     pulse_params,
                 ]
             )
             if self.H2 is None:
-                Ht = [self.system.H0, [H1, pulse_shape]]
+                Ht = [self.system.H0, [h1, pulse_shape]]
             else:
-                Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                Ht = [self.system.H0, [h1, pulse_shape], self.H2]
 
         elif (
-            isinstance(H1, list)
-            and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
-            and len(H1) == len(pulse_shape)
+            isinstance(h1, list)
+            and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in h1)
+            and len(h1) == len(pulse_shape)
         ):
             self.pulse_profiles = [
                 [
-                    H1[i],
+                    h1[i],
                     np.linspace(self.total_time, self.total_time + duration, self.time_steps),
                     pulse_shape[i],
                     pulse_params,
                 ]
-                for i in range(len(H1))
+                for i in range(len(h1))
             ]
             if self.H2 is None:
-                Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+                Ht = [self.system.H0] + [[h1[i], pulse_shape[i]] for i in range(len(h1))]
             else:
-                Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                Ht = [self.system.H0] + [[h1[i], pulse_shape[i]] for i in range(len(h1))] + self.H2
 
         else:
             raise ValueError(
-                "H1 must be a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list"
+                "h1 must be a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list"
             )
 
         # add the pulse operation to the sequence of operations by calling the pulse method
@@ -293,7 +293,7 @@ class PulsedSim:
         Parameters
         ----------
         Ht : list
-            List of Hamiltonians for the pulse operation in the form [H0, [H1, pulse_shape]]
+            List of Hamiltonians for the pulse operation in the form [H0, [h1, pulse_shape]]
         tarray : np.array
             Time array for the pulse operation
         options : dict
@@ -379,7 +379,7 @@ class PulsedSim:
             self.results, self.rho = measurement.measure_observable(self.rho, self.system.observable, tol)
 
         else:
-            raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and H1.")
+            raise ValueError("observable must be a Qobj of the same shape as rho0, H0 and h1.")
 
         return self.results.copy()
 
@@ -508,7 +508,7 @@ class PulsedSim:
                     self.pulse_profiles[itr_pulses][2](
                         2 * np.pi * self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]
                     ),
-                    label="H1",
+                    label="h1",
                     lw=2,
                     alpha=0.7,
                     color="C1",
@@ -522,7 +522,7 @@ class PulsedSim:
                             2 * np.pi * self.pulse_profiles[itr_pulses][itr_op][1],
                             **self.pulse_profiles[itr_pulses][itr_op][3],
                         ),
-                        label=f"H1_{itr_op}",
+                        label=f"h1_{itr_op}",
                         lw=2,
                         alpha=0.7,
                         color=f"C{2 + itr_op}",
@@ -541,7 +541,7 @@ class PulsedSim:
 
     def _check_attr_predef_seqs(
         self,
-        H1,
+        h1,
         Rx,
         Ry,
         pulse_shape,
@@ -558,10 +558,10 @@ class PulsedSim:
 
         Parameters
         ----------
-        H1 : Qobj or list(Qobj)
+        h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system
         pulse_shape : callable or list(callable)
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions
         options : dict
@@ -657,7 +657,7 @@ class PulsedSim:
         else:
             raise ValueError("projection_pulse must be a boolean")
 
-        # if pi_pulse_duration is 0, check if Rx and Ry are correctly defined, otherwise check if H1 is correct
+        # if pi_pulse_duration is 0, check if Rx and Ry are correctly defined, otherwise check if h1 is correct
         if pi_pulse_duration == 0:
             # check whether Rx and Ry are Qobjs of the same shape as H0 and if they are, assign them to the object
             if isinstance(Rx, Qobj) and Rx.shape == self.system.H0.shape:
@@ -677,28 +677,28 @@ class PulsedSim:
                 raise ValueError("Ry must be a Qobj of the same shape as H0")
             
         else:
-            # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
-            if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-                self.H1 = H1
+            # check whether h1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+            if isinstance(h1, Qobj) and h1.shape == self.system.H0.shape:
+                self.h1 = h1
                 if self.H2 is None:
-                    self.Ht = [self.system.H0, [H1, pulse_shape]]
+                    self.Ht = [self.system.H0, [h1, pulse_shape]]
                 else:
-                    self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                    self.Ht = [self.system.H0, [h1, pulse_shape], self.H2]
                     self.H0_H2 = [self.system.H0, self.H2]
 
             elif (
-                isinstance(H1, list)
-                and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
-                and len(H1) == len(pulse_shape)
+                isinstance(h1, list)
+                and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in h1)
+                and len(h1) == len(pulse_shape)
             ):
-                self.H1 = H1
+                self.h1 = h1
                 if self.H2 is None:
-                    self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+                    self.Ht = [self.system.H0] + [[h1[i], pulse_shape[i]] for i in range(len(h1))]
                 else:
-                    self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                    self.Ht = [self.system.H0] + [[h1[i], pulse_shape[i]] for i in range(len(h1))] + self.H2
                     self.H0_H2 = [self.system.H0, self.H2]
 
             else:
                 raise ValueError(
-                    "H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
+                    "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )

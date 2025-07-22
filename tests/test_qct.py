@@ -98,7 +98,7 @@ def rabi_exp(qsys):
     rabi_exp = Rabi(
         pulse_duration=np.linspace(0, 40, 1000),
         system=qsys,
-        H1=[w1 * sigmax() / 2, w1 * sigmay() / 2],
+        h1=[w1 * sigmax() / 2, w1 * sigmay() / 2],
         pulse_shape=[custom_pulseX, custom_pulseY],
     )
     rabi_exp.run()
@@ -133,7 +133,7 @@ def hahn_exp(qsys):
         pi_pulse_duration=1 / 2 / w1,
         projection_pulse=True,
         system=qsys,
-        H1=w1 * sigmax(),
+        h1=w1 * sigmax(),
         pulse_shape=square_pulse,
         pulse_params={"f_pulse": delta},
     )
@@ -200,7 +200,7 @@ class TestXY8:
             free_duration=np.linspace(0.25, 0.36, 100),
             pi_pulse_duration=1 / 2 / w1,
             system=qsys,
-            H1=w1 * qsys.MW_H1,
+            h1=w1 * qsys.MW_h1,
             pulse_params={"f_pulse": qsys.MW_freqs[1]},
             time_steps=100,
         )
@@ -250,7 +250,7 @@ class TestPODMR:
             frequencies=np.arange(1745, 1753, 0.05),
             pulse_duration=1 / 2 / w1,
             system=qsys,
-            H1=w1 * qsys.MW_H1,
+            h1=w1 * qsys.MW_h1,
         )
 
         podmr_exp.run()
@@ -278,7 +278,7 @@ class TestExpData:
         rabi_sim_exp = Rabi(
             pulse_duration=np.arange(0, 0.15, 3e-3),
             system=qsys_exp,
-            H1=w1_exp * qsys_exp.MW_H1,
+            h1=w1_exp * qsys_exp.MW_h1,
             pulse_params={"f_pulse": qsys_exp.MW_freqs[0]},
         )
 

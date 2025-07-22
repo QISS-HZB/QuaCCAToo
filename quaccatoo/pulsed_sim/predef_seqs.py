@@ -36,7 +36,7 @@ class Rabi(PulsedSim):
     """
 
     def __init__(
-        self, pulse_duration, system, H1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None
+        self, pulse_duration, system, h1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None
     ):
         """
         Constructor for the Rabi pulsed experiment class.
@@ -47,12 +47,12 @@ class Rabi(PulsedSim):
             Time array for the simulation representing the pulse duration to be used as the variable for the simulation.
         system : QSys
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
-        H1 : Qobj or list(Qobj)
+        h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
             Time-dependent sensing Hamiltonian of the system.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1.
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         options : dict
@@ -60,7 +60,7 @@ class Rabi(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1, None, None, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None, None
+            h1, None, None, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None, None
         )
 
         # check whether pulse_duration is a numpy array and if it is, assign it to the object
@@ -75,11 +75,11 @@ class Rabi(PulsedSim):
             self.variable = pulse_duration
             self.variable_name = f"Pulse Duration (1/{self.system.units_H0})"
 
-        if isinstance(H1, Qobj):
-            self.pulse_profiles = [[H1, pulse_duration, pulse_shape, self.pulse_params]]
+        if isinstance(h1, Qobj):
+            self.pulse_profiles = [[h1, pulse_duration, pulse_shape, self.pulse_params]]
         else:
             self.pulse_profiles = [
-                [H1[i], pulse_duration, pulse_shape[i], self.pulse_params] for i in range(len(H1))
+                [h1[i], pulse_duration, pulse_shape[i], self.pulse_params] for i in range(len(h1))
             ]
 
     def run(self):
@@ -150,7 +150,7 @@ class PMR(PulsedSim):
         frequencies,
         system,
         pulse_duration,
-        H1,
+        h1,
         H2=None,
         pulse_shape=square_pulse,
         pulse_params=None,
@@ -168,12 +168,12 @@ class PMR(PulsedSim):
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         pulse_duration : float or int
             Duration of the pulse.
-        H1 : Qobj or list(Qobj)
+        h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
             Time-dependent sensing Hamiltonian of the system.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1.
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -183,7 +183,7 @@ class PMR(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1, None, None, pulse_shape, pulse_params, options, time_steps, None, None, None, None
+            h1, None, None, pulse_shape, pulse_params, options, time_steps, None, None, None, None
         )
 
         # check whether frequencies is a numpy array or list and if it is, assign it to the object
@@ -284,7 +284,7 @@ class Ramsey(PulsedSim):
         free_duration,
         system,
         pi_pulse_duration,
-        H1=None,
+        h1=None,
         Rx=None,
         H2=None,
         projection_pulse=True,
@@ -304,7 +304,7 @@ class Ramsey(PulsedSim):
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         pi_pulse_duration : float, int or 0
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
-        H1 : Qobj or list(Qobj)
+        h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         Rx : Qobj or None
             Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
@@ -316,7 +316,7 @@ class Ramsey(PulsedSim):
             Boolean to determine if the measurement is to be performed in the Sz basis or not.
             If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as for most color centers.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1.
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -326,7 +326,7 @@ class Ramsey(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1,
+            h1,
             Rx,
             Rx,
             pulse_shape,
@@ -397,10 +397,10 @@ class Ramsey(PulsedSim):
             ps = tau - self.pi_pulse_duration
 
             # if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -411,7 +411,7 @@ class Ramsey(PulsedSim):
                 t0 += ps
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -419,17 +419,17 @@ class Ramsey(PulsedSim):
                 )
                 t0 += self.pi_pulse_duration / 2
 
-            # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles
-            elif isinstance(self.H1, list):
+            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 = self.pi_pulse_duration / 2
@@ -438,12 +438,12 @@ class Ramsey(PulsedSim):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 += self.pi_pulse_duration / 2
@@ -453,10 +453,10 @@ class Ramsey(PulsedSim):
             ps = tau - self.pi_pulse_duration / 2
 
             # if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -466,17 +466,17 @@ class Ramsey(PulsedSim):
                 self.pulse_profiles.append([None, [t0, ps + t0], None, None])
                 t0 += ps
 
-            # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles
-            elif isinstance(self.H1, list):
+            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 = self.pi_pulse_duration / 2
@@ -547,7 +547,7 @@ class Hahn(PulsedSim):
         free_duration,
         system,
         pi_pulse_duration,
-        H1=None,
+        h1=None,
         Rx=None,
         H2=None,
         projection_pulse=True,
@@ -567,7 +567,7 @@ class Hahn(PulsedSim):
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
         pi_pulse_duration : float, int or 0
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
-        H1 : Qobj or list of Qobj
+        h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
             Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
@@ -577,7 +577,7 @@ class Hahn(PulsedSim):
             Boolean to determine if the measurement is to be performed in the Sz basis or not.
             If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
         pulse_shape : FunctionType or list of FunctionType
-            Pulse shape function or list of pulse shape functions representing the time modulation of H1.
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -587,7 +587,7 @@ class Hahn(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1,
+            h1,
             Rx,
             Rx,
             pulse_shape,
@@ -665,10 +665,10 @@ class Hahn(PulsedSim):
         # if projection_pulse is True, include the final pi/2 pulse in the pulse_profiles
         if self.projection_pulse:
             # if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method
-            if isinstance(self.H1, Qobj):
+            if isinstance(self.h1, Qobj):
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -679,7 +679,7 @@ class Hahn(PulsedSim):
                 t0 += tau - self.pi_pulse_duration
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -690,7 +690,7 @@ class Hahn(PulsedSim):
                 t0 += tau - self.pi_pulse_duration
                 self.pulse_profiles.append(
                     [
-                        self.H1,
+                        self.h1,
                         np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape,
                         self.pulse_params,
@@ -698,17 +698,17 @@ class Hahn(PulsedSim):
                 )
                 t0 += self.pi_pulse_duration / 2
 
-            # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
-            elif isinstance(self.H1, list):
+            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
+            elif isinstance(self.h1, list):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 = self.pi_pulse_duration / 2
@@ -717,12 +717,12 @@ class Hahn(PulsedSim):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 += self.pi_pulse_duration
@@ -731,21 +731,21 @@ class Hahn(PulsedSim):
                 self.pulse_profiles.append(
                     [
                         [
-                            self.H1[i],
+                            self.h1[i],
                             np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
                             self.pulse_shape[i],
                             self.pulse_params,
                         ]
-                        for i in range(len(self.H1))
+                        for i in range(len(self.h1))
                     ]
                 )
                 t0 += self.pi_pulse_duration / 2
 
         # if projection_pulse is False, do not include the final pi/2 pulse in the pulse_profiles
-        elif isinstance(self.H1, Qobj):
+        elif isinstance(self.h1, Qobj):
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params,
@@ -756,7 +756,7 @@ class Hahn(PulsedSim):
             t0 += tau - self.pi_pulse_duration
             self.pulse_profiles.append(
                 [
-                    self.H1,
+                    self.h1,
                     np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                     self.pulse_shape,
                     self.pulse_params,
@@ -766,17 +766,17 @@ class Hahn(PulsedSim):
             self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration / 2], None, None])
             t0 += tau - self.pi_pulse_duration / 2
 
-        # otherwise if a list of control Hamiltonians is given, it sums over all H1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
-        elif isinstance(self.H1, list):
+        # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
+        elif isinstance(self.h1, list):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params,
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
             t0 = self.pi_pulse_duration / 2
@@ -785,12 +785,12 @@ class Hahn(PulsedSim):
             self.pulse_profiles.append(
                 [
                     [
-                        self.H1[i],
+                        self.h1[i],
                         np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
                         self.pulse_shape[i],
                         self.pulse_params,
                     ]
-                    for i in range(len(self.H1))
+                    for i in range(len(self.h1))
                 ]
             )
             t0 += self.pi_pulse_duration
