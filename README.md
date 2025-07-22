@@ -4,11 +4,10 @@
 QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
 The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. 
 The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
-This way, the software provides accessibility from the high level of abstraction and human-readability of Python, but at the expense of limited performance compared to  compiled programming languages.
 
 For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/notebooks.html) section.
 
-If you used QuaCCAToo in you work, please cite this repository and [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
+If you used QuaCCAToo in your work, please cite this repository and [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
 
 ## Links
 - Repository: https://github.com/QISS-HZB/QuaCCAToo
