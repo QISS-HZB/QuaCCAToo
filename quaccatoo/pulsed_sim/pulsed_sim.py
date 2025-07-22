@@ -8,7 +8,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qutip import Qobj, measurement, mesolve, parallel_map
+from qutip import Qobj, measurement, mesolve, parallel_map, qeye
 
 from ..qsys.qsys import QSys
 from .pulse_shapes import square_pulse
@@ -542,6 +542,8 @@ class PulsedSim:
     def _check_attr_predef_seqs(
         self,
         H1,
+        Rx,
+        Ry,
         pulse_shape,
         pulse_params,
         options,
@@ -605,32 +607,6 @@ class PulsedSim:
         else:
             raise ValueError("options must be a dictionary of dynamic solver options from Qutip")
 
-        # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
-        if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0, [H1, pulse_shape]]
-            else:
-                self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        elif (
-            isinstance(H1, list)
-            and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
-            and len(H1) == len(pulse_shape)
-        ):
-            self.H1 = H1
-            if self.H2 is None:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
-            else:
-                self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
-                self.H0_H2 = [self.system.H0, self.H2]
-
-        else:
-            raise ValueError(
-                "H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
-            )
-
         # check whether time_steps is a positive integer and if it is, assign it to the object
         if not isinstance(time_steps, int) or time_steps <= 0:
             raise ValueError("time_steps must be a positive integer")
@@ -655,7 +631,7 @@ class PulsedSim:
             pass
         elif (
             not isinstance(pi_pulse_duration, (int, float))
-            or pi_pulse_duration <= 0
+            or pi_pulse_duration < 0
             or pi_pulse_duration > free_duration[0]
         ):
             warnings.warn(
@@ -680,3 +656,49 @@ class PulsedSim:
             self.projection_pulse = projection_pulse
         else:
             raise ValueError("projection_pulse must be a boolean")
+
+        # if pi_pulse_duration is 0, check if Rx and Ry are correctly defined, otherwise check if H1 is correct
+        if pi_pulse_duration == 0:
+            # check whether Rx and Ry are Qobjs of the same shape as H0 and if they are, assign them to the object
+            if isinstance(Rx, Qobj) and Rx.shape == self.system.H0.shape:
+                self.Rx = Rx
+                self.Rx_half = Rx.sqrtm()
+            elif Rx is None:
+                raise ValueError("If pi_pulse_duration is 0, the rotation operator Rx must be provided")
+            else:
+                raise ValueError("Rx must be a Qobj of the same shape as H0")
+
+            if isinstance(Ry, Qobj) and Ry.shape == self.system.H0.shape:
+                self.Ry = Ry
+                self.Ry_half = Ry.sqrtm()
+            elif Ry is None:
+                raise ValueError("If pi_pulse_duration is 0, the rotation operator Ry must be provided")
+            else:
+                raise ValueError("Ry must be a Qobj of the same shape as H0")
+            
+        else:
+            # check whether H1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
+            if isinstance(H1, Qobj) and H1.shape == self.system.H0.shape:
+                self.H1 = H1
+                if self.H2 is None:
+                    self.Ht = [self.system.H0, [H1, pulse_shape]]
+                else:
+                    self.Ht = [self.system.H0, [H1, pulse_shape], self.H2]
+                    self.H0_H2 = [self.system.H0, self.H2]
+
+            elif (
+                isinstance(H1, list)
+                and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in H1)
+                and len(H1) == len(pulse_shape)
+            ):
+                self.H1 = H1
+                if self.H2 is None:
+                    self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))]
+                else:
+                    self.Ht = [self.system.H0] + [[H1[i], pulse_shape[i]] for i in range(len(H1))] + self.H2
+                    self.H0_H2 = [self.system.H0, self.H2]
+
+            else:
+                raise ValueError(
+                    "H1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
+                )

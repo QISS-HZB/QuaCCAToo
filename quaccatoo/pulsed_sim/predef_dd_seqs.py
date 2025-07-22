@@ -2,6 +2,7 @@
 This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.
 """
 
+import warnings
 import numpy as np
 from qutip import Qobj
 
@@ -39,7 +40,9 @@ class CPMG(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1,
+        H1=None,
+        Rx=None,
+        Ry=None,
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
@@ -58,10 +61,14 @@ class CPMG(PulsedSim):
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
         M : int
             Order of the CPMG sequence
-        H1 : Qobj or list(Qobj)
-            Control Hamiltonian of the system
-        pi_pulse_duration : float or int
-            Duration of the pi pulse
+        pi_pulse_duration : float, int or 0
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        H1 : Qobj or list of Qobj
+            Control Hamiltonian of the system.
+        Rx : Qobj or None
+            Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
+        Ry : Qobj or None
+            Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.
         H2 : list(Qobj or function)
             Time dependent sensing Hamiltonian of the system
         projection_pulse : bool
@@ -76,6 +83,8 @@ class CPMG(PulsedSim):
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
             H1,
+            Rx,
+            Ry,
             pulse_shape,
             pulse_params,
             options,
@@ -87,7 +96,7 @@ class CPMG(PulsedSim):
         )
         self.sequence = self.CPMG_sequence
 
-        base_pulse = pulse_params.copy()
+        base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
     def CPMG_sequence(self, tau):
@@ -95,6 +104,7 @@ class CPMG(PulsedSim):
         Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
         If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -107,26 +117,41 @@ class CPMG(PulsedSim):
         rho : Qobj
             Final state
         """
-        ps = tau - self.pi_pulse_duration
+        if self.pi_pulse_duration == 0:
+            # initial pi/2 pulse on Y
+            self._delta_pulse(self.Ry_half)
+            self._free_evolution(tau/2, self.options)
 
-        # initial pi/2 pulse on Y
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
-        self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+            # repeat M-1 times the pi pulse and free evolution of tau
+            for itr_M in range(self.M):
+                self._delta_pulse(self.Rx)
+                if itr_M != self.M - 1:
+                    self._free_evolution(tau, self.options)
 
-        # repeat M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
-            self._free_evolution(ps, self.options)
+            self._free_evolution(tau/2, self.options)
 
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+            if self.projection_pulse:
+                # final pi/2 pulse on Y
+                self._delta_pulse(self.Ry_half)
 
-        if self.projection_pulse:
-            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
-            # final pi/2 pulse on Y
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
         else:
-            self._free_evolution(ps / 2, self.options)
+            ps = tau - self.pi_pulse_duration
+            # initial pi/2 pulse on Y
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+
+            # repeat M-1 times the pi pulse and free evolution of ps
+            for itr_M in range(self.M):
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+                if itr_M != self.M - 1:
+                    self._free_evolution(ps, self.options)
+
+            if self.projection_pulse:
+                self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+                # final pi/2 pulse on Y
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+            else:
+                self._free_evolution(ps / 2, self.options)
 
         return self.rho
 
@@ -322,7 +347,9 @@ class XY(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1,
+        H1=None,
+        Rx=None,
+        Ry=None,
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
@@ -341,10 +368,14 @@ class XY(PulsedSim):
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
         M : int
             Order of the XY sequence
-        H1 : Qobj, list(Qobj)
-            Control Hamiltonian of the system
-        pi_pulse_duration : float, int
-            Duration of the pi pulse
+        pi_pulse_duration : float, int or 0
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        H1 : Qobj or list of Qobj
+            Control Hamiltonian of the system.
+        Rx : Qobj or None
+            Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
+        Ry : Qobj or None
+            Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
@@ -359,6 +390,8 @@ class XY(PulsedSim):
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
             H1,
+            Rx,
+            Ry,
             pulse_shape,
             pulse_params,
             options,
@@ -370,13 +403,14 @@ class XY(PulsedSim):
         )
         self.sequence = self.XY_sequence
 
-        base_pulse = pulse_params.copy()
+        base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
     def XY_sequence(self, tau):
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -389,25 +423,43 @@ class XY(PulsedSim):
         rho : Qobj
             Final state
         """
-        ps = tau - self.pi_pulse_duration
+        if self.pi_pulse_duration == 0:
+            # initial pi/2 pulse on X
+            self._delta_pulse(self.Rx_half)
+            self._free_evolution(tau/2, self.options)
 
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+            # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
+            for itr_M in range(self.M):
+                self._delta_pulse(self.Rx)
+                self._free_evolution(tau, self.options)
+                self._delta_pulse(self.Ry)
+                if itr_M != self.M - 1:
+                    self._free_evolution(tau, self.options)
 
-        # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
-        for itr_M in range(2 * self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 2])
-            self._free_evolution(ps, self.options)
+            self._free_evolution(tau, self.options)    
 
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
-
-        if self.projection_pulse:
-            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
-            # final pi/2 pulse on X
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            if self.projection_pulse:
+                self._delta_pulse(self.Rx_half)
+        
         else:
-            self._free_evolution(ps / 2, self.options)
+            ps = tau - self.pi_pulse_duration
+            # initial pi/2 pulse on X
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+
+            # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
+            for itr_M in range(2 * self.M - 1):
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 2])
+                self._free_evolution(ps, self.options)
+
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
+
+            if self.projection_pulse:
+                self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+                # final pi/2 pulse on X
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            else:
+                self._free_evolution(ps / 2, self.options)
 
         return self.rho
 
@@ -607,7 +659,9 @@ class XY8(PulsedSim):
         system,
         M,
         pi_pulse_duration,
-        H1,
+        H1=None,
+        Rx=None,
+        Ry=None,
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
@@ -627,10 +681,14 @@ class XY8(PulsedSim):
             Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
         M : int
             Order of the XY sequence
-        H1 : Qobj, list(Qobj)
-            Control Hamiltonian of the system
-        pi_pulse_duration : float, int
-            Duration of the pi pulse
+        pi_pulse_duration : float, int or 0
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        H1 : Qobj or list of Qobj
+            Control Hamiltonian of the system.
+        Rx : Qobj or None
+            Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
+        Ry : Qobj or None
+            Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
@@ -649,6 +707,8 @@ class XY8(PulsedSim):
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
             H1,
+            Rx,
+            Ry,
             pulse_shape,
             pulse_params,
             options,
@@ -660,7 +720,9 @@ class XY8(PulsedSim):
         )
         self.sequence = self.XY8_sequence
 
-        if RXY8:
+        if self.pi_pulse_duration == 0 and RXY8:
+            warnings.warn('RXY8 with delta pulses is not implemented, as it has not experimental relevance.')
+        elif RXY8:
             random_phases = np.random.rand(M) * 2 * np.pi
         elif not RXY8:
             random_phases = np.zeros(M)
@@ -668,7 +730,8 @@ class XY8(PulsedSim):
             raise ValueError(
                 "RXY8 must be a boolean value indicating weather to add a random phase to each XY8 block or not."
             )
-
+        
+        # generate the pulse parameters for the XY8 sequence with the correct order of the x and y pulses
         base_pulse = self.pulse_params.copy()
 
         self.pulse_params = []
@@ -688,6 +751,7 @@ class XY8(PulsedSim):
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If random_phase is set to True, a random phase is added in each XY8 block.
         If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -700,25 +764,55 @@ class XY8(PulsedSim):
         rho : Qobj
             Final state
         """
-        ps = tau - self.pi_pulse_duration
+        if self.pi_pulse_duration == 0:
+            # initial pi/2 pulse on X
+            self._delta_pulse(self.Rx_half)
+            self._free_evolution(tau/2, self.options)
 
-        # initial pi/2 pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
-        self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+            # repeat 8*M-1 times the pi pulse and free evolution of ps
+            for itr_M in range(self.M):
+                self._delta_pulse(self.Rx)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Ry)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Rx)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Ry)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Ry)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Rx)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Ry)
+                self.add_free_evolution(tau, self.options)
+                self._delta_pulse(self.Rx)
+                if itr_M != self.M-1:
+                    self.add_free_evolution(tau)
+            
+            self._free_evolution(tau/2, self.options)
 
-        # repeat 8*M-1 times the pi pulse and free evolution of ps
-        for itr_M in range(8 * self.M - 1):
-            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
-            self._free_evolution(ps, self.options)
+            if self.projection_pulse:
+                self._delta_pulse(self.Rx_half)
 
-        # perform the last pi pulse on X
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[-1])
-
-        if self.projection_pulse:
-            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
         else:
-            self._free_evolution(ps / 2, self.options)
+            ps = tau - self.pi_pulse_duration
+            # initial pi/2 pulse on X
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+
+            # repeat 8*M-1 times the pi pulse and free evolution of ps
+            for itr_M in range(8 * self.M - 1):
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
+                self._free_evolution(ps, self.options)
+
+            # perform the last pi pulse on X
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[-1])
+
+            if self.projection_pulse:
+                self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            else:
+                self._free_evolution(ps / 2, self.options)
 
         return self.rho
 
