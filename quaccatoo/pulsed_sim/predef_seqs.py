@@ -60,7 +60,7 @@ class Rabi(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None, None
+            H1, None, None, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None, None
         )
 
         # check whether pulse_duration is a numpy array and if it is, assign it to the object
@@ -183,7 +183,7 @@ class PMR(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            H1, pulse_shape, pulse_params, options, time_steps, None, None, None, None
+            H1, None, None, pulse_shape, pulse_params, options, time_steps, None, None, None, None
         )
 
         # check whether frequencies is a numpy array or list and if it is, assign it to the object
@@ -284,7 +284,8 @@ class Ramsey(PulsedSim):
         free_duration,
         system,
         pi_pulse_duration,
-        H1,
+        H1=None,
+        Rx=None,
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
@@ -301,8 +302,12 @@ class Ramsey(PulsedSim):
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
         system : QSys
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+        pi_pulse_duration : float, int or 0
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         H1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
+        Rx : Qobj or None
+            Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
         pi_pulse_duration : float or int
             Duration of the pi pulse.
         H2 : Qobj or list(Qobj)
@@ -322,6 +327,8 @@ class Ramsey(PulsedSim):
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
             H1,
+            Rx,
+            Rx,
             pulse_shape,
             pulse_params,
             options,
@@ -338,6 +345,7 @@ class Ramsey(PulsedSim):
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
         If the projection_pulse is set to True, a final pi/2 pulse is included in order to project the result into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -350,12 +358,19 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final state.
         """
+        if self.pi_pulse_duration == 0:
+            self._delta_pulse(self.Rx_half)
+            self._free_evolution(tau, self.options)
 
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(tau - self.pi_pulse_duration / 2, self.options)
+            if self.projection_pulse:
+                self._delta_pulse(self.Rx_half)
 
-        if self.projection_pulse:
+        else:
             self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+            self._free_evolution(tau - self.pi_pulse_duration / 2, self.options)
+
+            if self.projection_pulse:
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
         return self.rho
 
@@ -532,7 +547,8 @@ class Hahn(PulsedSim):
         free_duration,
         system,
         pi_pulse_duration,
-        H1,
+        H1=None,
+        Rx=None,
         H2=None,
         projection_pulse=True,
         pulse_shape=square_pulse,
@@ -549,10 +565,12 @@ class Hahn(PulsedSim):
             Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
         system : QSys
             Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+        pi_pulse_duration : float, int or 0
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         H1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
-        pi_pulse_duration : float or int
-            Duration of the pi pulse.
+        Rx : Qobj or None
+            Rotation operator around the x-axis, used only if the pi_pulse_duration is set to 0.
         H2 : Qobj or list of Qobj
             Time dependent sensing Hamiltonian of the system.
         projection_pulse : bool
@@ -570,6 +588,8 @@ class Hahn(PulsedSim):
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
             H1,
+            Rx,
+            Rx,
             pulse_shape,
             pulse_params,
             options,
@@ -584,8 +604,8 @@ class Hahn(PulsedSim):
     def hahn_sequence(self, tau):
         """
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-
         The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -598,18 +618,29 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final state.
         """
-        # pulse separation time
-        ps = tau - self.pi_pulse_duration
+        # if pi_pulse_duration is 0, use the delta pulse method
+        if self.pi_pulse_duration == 0:
+            self._delta_pulse(self.Rx_half)
+            self._free_evolution(tau, self.options)
+            self._delta_pulse(self.Rx)
+            self._free_evolution(tau, self.options)
 
-        self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-        self._free_evolution(ps, self.options)
-        self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+            if self.projection_pulse:
+                self._delta_pulse(self.Rx_half)
 
-        if self.projection_pulse:
-            self._free_evolution(ps, self.options)
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
         else:
-            self._free_evolution(ps + self.pi_pulse_duration / 2, self.options)
+            # pulse separation time
+            ps = tau - self.pi_pulse_duration
+
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+            self._free_evolution(ps, self.options)
+            self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
+
+            if self.projection_pulse:
+                self._free_evolution(ps, self.options)
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+            else:
+                self._free_evolution(ps + self.pi_pulse_duration / 2, self.options)
 
         return self.rho
 
