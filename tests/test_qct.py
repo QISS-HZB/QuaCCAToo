@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 from lmfit import Model
-from qutip import basis, fock_dm, sigmax, sigmay, sigmaz
+from qutip import basis, fock_dm, jmat, qeye, sigmax, sigmay, sigmaz, tensor
 
-from quaccatoo import CPMG, NV, PMR, XY8, Analysis, ExpData, Hahn, QSys, Rabi, square_pulse
+from quaccatoo import CPMG, NV, PMR, XY, XY8, Analysis, ExpData, Hahn, QSys, Rabi, compose_sys, square_pulse
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
     GaussianModel,
@@ -43,6 +43,23 @@ class TestQSys:
     def test_levels(self, qsys):
         assert np.array_equal(qsys.energy_levels, np.array([0, 1]))
 
+# Tests for the NV class methods
+class TestNV:
+    def test_addspin(self):
+        sys = NV(B0 =200 , units_B0 ='mT', N=0)
+        GAMMA_C = 10.7084e-3
+        azz = -130
+        H2 = azz* tensor(jmat (1,'z'),jmat(1/2 , 'z')) -GAMMA_C *sys.B0* tensor(qeye (3), jmat (1/2 , 'z'))
+        sys.add_spin(H2)
+        assert np.allclose(sys.energy_levels, np.array([0, 127.85832, 2797.84859722, 2799.99027722, 11207.83887444, 11339.98055444]))
+
+    def test_comp_trunc(self):
+        NVb = NV(B0=18, units_B0 ='mT', N=0)
+        NVa = NV(B0=25, units_B0 ='mT', N=14)
+        NVb.truncate(mS =1)
+        NVa.truncate(mS=1,mI =1)
+        sys = compose_sys(NVb , NVa)
+        assert np.allclose(sys.energy_levels, np.array([0, 4.93642778, 2167.23956813, 2174.31599591, 2365.55087505, 2370.48730283, 4532.79044318, 4539.86687097]))
 
 # Rabi object (fixture) used in the TestRabi class below
 @pytest.fixture
@@ -56,22 +73,28 @@ def rabi_exp(qsys):
     def custom_pulseY(t):
         return np.cos(delta * t - np.pi / 2)
 
-    return Rabi(
+    rabi_exp = Rabi(
         pulse_duration=np.linspace(0, 40, 1000),
         system=qsys,
         H1=[w1 * sigmax() / 2, w1 * sigmay() / 2],
         pulse_shape=[custom_pulseX, custom_pulseY],
     )
+    rabi_exp.run()
+    return rabi_exp
 
 
 class TestRabi:
-    # Uses the rabi fixture defined above to check if the rabi frequency fit
+    # Uses the rabi fixture defined above to check if the rabi frequency
     # is close to the expected value
     def test_tpi(self, rabi_exp):
-        rabi_exp.run()
         rabi_analysis = Analysis(rabi_exp)
         rabi_analysis.run_fit(fit_model=RabiModel())
         assert np.isclose(rabi_analysis.fit_params.best_values["Tpi"], 5, atol=1e-3)
+    def test_fft(self, rabi_exp):
+        rabi_analysis = Analysis(rabi_exp)
+        rabi_analysis.run_FFT()
+        assert np.isclose(rabi_analysis.get_peaks_FFT()[0], 1/2/5, atol=1e-3)
+
 
 
 # Hahn object (fixture) used in the Test class below
@@ -105,6 +128,34 @@ class TestHahn:
         hahn_analysis = Analysis(hahn_exp)
         hahn_analysis.run_fit(fit_model=ExpDecayModel())
         assert np.isclose(hahn_analysis.fit_params.best_values["Tc"], 3.953, atol=1e-3)
+
+
+class TestXY:
+    # Runs the XY sequence on an NV object
+    # and checks if the center of the peak is in the expected position.
+    # We don't use an outside fixture here since we need handcrafted values for this test
+    def test_xy(self):
+        qsys = NV(
+            N=15,
+            B0=39.4,
+            units_B0="mT",
+            theta=2.6,
+            units_angles="deg",
+        )
+        w1 = 20
+        XY_15N = XY(
+            M=2,
+            free_duration=np.linspace(0.25, 0.36, 100),
+            pi_pulse_duration=1 / 2 / w1,
+            system=qsys,
+            H1=w1 * qsys.MW_H1,
+            pulse_params={"f_pulse": qsys.MW_freqs[1]},
+            time_steps=100,
+        )
+        XY_15N.run()
+        XY_analysis = Analysis(XY_15N)
+        XY_analysis.run_fit(fit_model=GaussianModel())
+        assert 0.30 <= XY_analysis.fit_params.best_values["center"] <= 0.32
 
 
 class TestXY8:
