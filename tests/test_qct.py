@@ -59,7 +59,6 @@ class TestNV:
             np.array([0, 127.85832, 2797.84859722, 2799.99027722, 11207.83887444, 11339.98055444]),
         )
 
-    @pytest.mark.filterwarnings("ignore::UserWarning")
     def test_comp_trunc(self):
         NVb = NV(B0=18, units_B0="mT", N=0)
         NVa = NV(B0=25, units_B0="mT", N=14)
@@ -170,7 +169,7 @@ class TestXY:
             free_duration=np.linspace(0.25, 0.36, 100),
             pi_pulse_duration=1 / 2 / w1,
             system=qsys,
-            H1=w1 * qsys.MW_H1,
+            h1=w1 * qsys.MW_h1,
             pulse_params={"f_pulse": qsys.MW_freqs[1]},
             time_steps=100,
         )
@@ -228,7 +227,7 @@ class TestCPMG:
             M=2,
             pi_pulse_duration=1 / 2 / w1,
             pulse_params={"f_pulse": qsys.MW_freqs[1]},
-            H1=w1 * qsys.MW_H1,
+            h1=w1 * qsys.MW_h1,
         )
         cpmg.run()
         cpmg_analysis = Analysis(cpmg)
