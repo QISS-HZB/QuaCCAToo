@@ -30,10 +30,23 @@ contain:
   simulation of nitrogen vacancy centers in diamond, first calculating
   the energy levels, then performing Rabi and comparing with
   experimental data. Ramsey and PODMR are also simulated.
-- `03 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_ambiguous_resonances.html>`__:
+- `03 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_conditional_gates.html>`__:
+  conditional gates with resonant MW and RF pulses of an NV center strongly coupled to a 13C nuclear spin from
+  `Observation of Coherent Oscillation of a Single Nuclear Spin and Realization of a Two-Qubit Conditional
+  Quantum Gate <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.93.130501>`__.
+- `04 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/04_NV_sensing_control_by_DD.html>`__:
+  `Coherent dynamics of coupled electron and nuclear spin qubits in diamond
+  <https://www.science.org/doi/10.1126/science.1131871>`__ and
+  `Detection and control of individual nuclear spins using a weakly coupled electron spin
+  <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.137602>`__.
+- `05 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/05_NV_ambiguous_resonances.html>`__:
   simulation of `Ambiguous Resonances in Multipulse Quantum Sensing with
   Nitrogen Vacancy
   Centers <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
+- `06 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/06_NV_teleportation.html>`__:
+  simulation of NV teleportation protocol in
+  `Unconditional quantum teleportation between distant solid-state quantum bits
+  <https://www.science.org/doi/10.1126/science.1253512>`__.
 
 
 .. toctree::

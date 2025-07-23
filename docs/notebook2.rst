@@ -1,4 +1,4 @@
-02 - NV: Ramsey and PODMR
+02 - Ramsey and PODMR with NV
 =========================
 
 .. toctree::
