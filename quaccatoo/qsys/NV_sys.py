@@ -54,7 +54,10 @@ class NV(QSys):
     -------
     rho0_lowT
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution
-
+    _set_MW
+        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
+    _set_RF
+        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions    
     ZeroField
         Get the NV Hamiltonian term accounting for zero field splitting
     ElectronZeeman
@@ -292,6 +295,7 @@ class NV(QSys):
     def _set_MW(self):
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
+        Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.
         """
         Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
         Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
@@ -331,6 +335,7 @@ class NV(QSys):
     def _set_RF(self):
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
+        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.
         """
         Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
         Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
