@@ -675,7 +675,7 @@ class PulsedSim:
                 raise ValueError("If pi_pulse_duration is 0, the rotation operator Ry must be provided")
             else:
                 raise ValueError("Ry must be a Qobj of the same shape as H0")
-            
+
         else:
             # check whether h1 is a Qobj or a list of Qobjs of the same shape as H0 and with the same length as the pulse_shape list and if it is, assign it to the object
             if isinstance(h1, Qobj) and h1.shape == self.system.H0.shape:

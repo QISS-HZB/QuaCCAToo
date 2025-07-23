@@ -120,7 +120,7 @@ class CPMG(PulsedSim):
         if self.pi_pulse_duration == 0:
             # initial pi/2 pulse on Y
             self._delta_pulse(self.Ry_half)
-            self._free_evolution(tau/2, self.options)
+            self._free_evolution(tau / 2, self.options)
 
             # repeat M-1 times the pi pulse and free evolution of tau
             for itr_M in range(self.M):
@@ -128,7 +128,7 @@ class CPMG(PulsedSim):
                 if itr_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
-            self._free_evolution(tau/2, self.options)
+            self._free_evolution(tau / 2, self.options)
 
             if self.projection_pulse:
                 # final pi/2 pulse on Y
@@ -426,7 +426,7 @@ class XY(PulsedSim):
         if self.pi_pulse_duration == 0:
             # initial pi/2 pulse on X
             self._delta_pulse(self.Rx_half)
-            self._free_evolution(tau/2, self.options)
+            self._free_evolution(tau / 2, self.options)
 
             # repeat M-1 times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
             for itr_M in range(self.M):
@@ -436,11 +436,11 @@ class XY(PulsedSim):
                 if itr_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
-            self._free_evolution(tau, self.options)    
+            self._free_evolution(tau, self.options)
 
             if self.projection_pulse:
                 self._delta_pulse(self.Rx_half)
-        
+
         else:
             ps = tau - self.pi_pulse_duration
             # initial pi/2 pulse on X
@@ -721,7 +721,7 @@ class XY8(PulsedSim):
         self.sequence = self.XY8_sequence
 
         if self.pi_pulse_duration == 0 and RXY8:
-            warnings.warn('RXY8 with delta pulses is not implemented, as it has not experimental relevance.')
+            warnings.warn("RXY8 with delta pulses is not implemented, as it has not experimental relevance.")
         elif RXY8:
             random_phases = np.random.rand(M) * 2 * np.pi
         elif not RXY8:
@@ -730,7 +730,7 @@ class XY8(PulsedSim):
             raise ValueError(
                 "RXY8 must be a boolean value indicating weather to add a random phase to each XY8 block or not."
             )
-        
+
         # generate the pulse parameters for the XY8 sequence with the correct order of the x and y pulses
         base_pulse = self.pulse_params.copy()
 
@@ -767,7 +767,7 @@ class XY8(PulsedSim):
         if self.pi_pulse_duration == 0:
             # initial pi/2 pulse on X
             self._delta_pulse(self.Rx_half)
-            self._free_evolution(tau/2, self.options)
+            self._free_evolution(tau / 2, self.options)
 
             # repeat 8*M-1 times the pi pulse and free evolution of ps
             for itr_M in range(self.M):
@@ -786,10 +786,10 @@ class XY8(PulsedSim):
                 self._delta_pulse(self.Ry)
                 self.add_free_evolution(tau, self.options)
                 self._delta_pulse(self.Rx)
-                if itr_M != self.M-1:
+                if itr_M != self.M - 1:
                     self.add_free_evolution(tau)
-            
-            self._free_evolution(tau/2, self.options)
+
+            self._free_evolution(tau / 2, self.options)
 
             if self.projection_pulse:
                 self._delta_pulse(self.Rx_half)
