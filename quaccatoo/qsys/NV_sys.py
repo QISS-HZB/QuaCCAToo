@@ -195,10 +195,8 @@ class NV(QSys):
         if temp is not None:
             self.rho0_lowT(temp, units_temp)
 
-        self._set_MW_freqs()
-        self._set_RF_freqs()
-        self._set_MW_h1()
-        self._set_RF_h1()
+        self._set_MW()
+        self._set_RF()
 
     def rho0_lowT(self, temp, units_temp="K"):
         """
@@ -298,25 +296,6 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_MW_freqs(self):
-        """
-        Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.
-        """
-        if self.N == 15:
-            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[1:2])) / 2
-            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[1:2])) / 2
-            self.MW_freqs = np.array([f1, f2])
-        elif self.N == 14:
-            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[1:3])) / 3
-            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[1:3])) / 3
-            self.MW_freqs = np.array([f1, f2])
-        elif self.N == 0 or self.N is None:
-            f1 = self.energy_levels[1]
-            f2 = self.energy_levels[2]
-            self.MW_freqs = np.array([f1, f2])
-        else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
-
     def _set_RF_freqs(self):
         """
         Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
@@ -350,29 +329,105 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_MW_h1(self):
+    def _set_MW(self):
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         """
+        Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
+        Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
+        Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
+        Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
+
         if self.N == 15:
             self.MW_h1 = tensor(jmat(1, "x"), qeye(2)) * 2**0.5
+            self.MW_Rx = [tensor(Rx_0, qeye(2)),
+                          tensor(Rx_1, qeye(2))]
+            self.MW_Ry = [tensor(Ry_0, qeye(2)),
+                          tensor(Ry_1, qeye(2))]
+            
+            f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[1:2])) / 2
+            f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[1:2])) / 2
+            self.MW_freqs = np.array([f1, f2])
+
         elif self.N == 14:
             self.MW_h1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
+            self.MW_Rx = [tensor(Rx_0, qeye(3)),
+                          tensor(Rx_1, qeye(3))]
+            self.MW_Ry = [tensor(Ry_0, qeye(3)),
+                          tensor(Ry_1, qeye(3))]
+            
+            f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[1:3])) / 3
+            f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[1:3])) / 3
+            self.MW_freqs = np.array([f1, f2])
+
         elif self.N == 0 or self.N is None:
             self.MW_h1 = tensor(jmat(1, "x")) * 2**0.5
+            self.MW_Rx = [Rx_0, Rx_1]
+            self.MW_Ry = [Ry_0, Ry_1]
+
+            f1 = self.energy_levels[1]
+            f2 = self.energy_levels[2]
+            self.MW_freqs = np.array([f1, f2])
+
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_RF_h1(self):
+    def _set_RF(self):
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         """
+        Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
+        Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
+        Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
+        Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
+
+
         if self.N == 15:
             self.RF_h1 = tensor(qeye(3), jmat(1 / 2, "x")) * 2
+            self.RF_Rx = self.RF_h1.copy()
+            self.RF_Ry = tensor(qeye(3), jmat(1 / 2, "y")) * 2
+
+            f1 = self.energy_levels[1]
+            f2 = self.energy_levels[3] - self.energy_levels[2]
+            f3 = self.energy_levels[5] - self.energy_levels[4]
+            self.RF_freqs = np.array([f1, f2, f3])
+
         elif self.N == 14:
             self.RF_h1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
+
+            Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
+            Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
+            Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
+            Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
+            self.RF_Rx = [tensor(qeye(3), Rx_0),
+                          tensor(qeye(3), Rx_1)]
+            self.RF_Ry = [tensor(qeye(3), Ry_0),
+                          tensor(qeye(3), Ry_1)]
+            
+            # for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1
+            # the order of the ms states changes above the GSLAC
+            if self.B0 <= 102.5:
+                f1 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> -1 at ms=0
+                f2 = self.energy_levels[2]  # 0 -> +1 at ms=0
+                f3 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> -1 at ms=-1
+                f4 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> +1 at ms=-1
+                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
+            else:
+                f1 = self.energy_levels[2]  # 0 -> -1 at ms=-1
+                f2 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> +1 at ms=-1
+                f3 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> -1 at ms=0
+                f4 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> +1 at ms=0
+                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
+                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
+
+            self.RF_freqs = np.array([f1, f2, f3, f4, f5, f6])
+
         elif self.N == 0 or self.N is None:
             self.RF_h1 = qeye(3)
+            self.RF_Rx = qeye(3)
+            self.RF_Ry = qeye(3)
+
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
