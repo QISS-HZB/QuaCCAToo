@@ -43,9 +43,9 @@ def compose_sys(qsys1, qsys2):
     if qsys1.rho0.isherm and qsys2.rho0.isherm or qsys1.rho0.isket and qsys2.rho0.isket:
         rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
     elif qsys1.rho0.isherm and qsys2.rho0.isket:
-        rho0 = tensor(qsys1.rho0, qsys2.rho0*qsys2.rho0.dag()).unit()
+        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag()).unit()
     elif qsys1.rho0.isket and qsys2.rho0.isherm:
-        rho0 = tensor(qsys1.rho0*qsys1.rho0.dag(), qsys2.rho0).unit()
+        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0).unit()
     else:
         rho0 = None
 

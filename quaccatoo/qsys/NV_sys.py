@@ -340,22 +340,18 @@ class NV(QSys):
 
         if self.N == 15:
             self.MW_h1 = tensor(jmat(1, "x"), qeye(2)) * 2**0.5
-            self.MW_Rx = [tensor(Rx_0, qeye(2)),
-                          tensor(Rx_1, qeye(2))]
-            self.MW_Ry = [tensor(Ry_0, qeye(2)),
-                          tensor(Ry_1, qeye(2))]
-            
+            self.MW_Rx = [tensor(Rx_0, qeye(2)), tensor(Rx_1, qeye(2))]
+            self.MW_Ry = [tensor(Ry_0, qeye(2)), tensor(Ry_1, qeye(2))]
+
             f1 = (np.sum(self.energy_levels[2:4]) - np.sum(self.energy_levels[1:2])) / 2
             f2 = (np.sum(self.energy_levels[4:6]) - np.sum(self.energy_levels[1:2])) / 2
             self.MW_freqs = np.array([f1, f2])
 
         elif self.N == 14:
             self.MW_h1 = tensor(jmat(1, "x"), qeye(3)) * 2**0.5
-            self.MW_Rx = [tensor(Rx_0, qeye(3)),
-                          tensor(Rx_1, qeye(3))]
-            self.MW_Ry = [tensor(Ry_0, qeye(3)),
-                          tensor(Ry_1, qeye(3))]
-            
+            self.MW_Rx = [tensor(Rx_0, qeye(3)), tensor(Rx_1, qeye(3))]
+            self.MW_Ry = [tensor(Ry_0, qeye(3)), tensor(Ry_1, qeye(3))]
+
             f1 = (np.sum(self.energy_levels[3:6]) - np.sum(self.energy_levels[1:3])) / 3
             f2 = (np.sum(self.energy_levels[6:9]) - np.sum(self.energy_levels[1:3])) / 3
             self.MW_freqs = np.array([f1, f2])
@@ -381,7 +377,6 @@ class NV(QSys):
         Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
         Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
 
-
         if self.N == 15:
             self.RF_h1 = tensor(qeye(3), jmat(1 / 2, "x")) * 2
             self.RF_Rx = self.RF_h1.copy()
@@ -399,11 +394,9 @@ class NV(QSys):
             Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
             Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
             Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
-            self.RF_Rx = [tensor(qeye(3), Rx_0),
-                          tensor(qeye(3), Rx_1)]
-            self.RF_Ry = [tensor(qeye(3), Ry_0),
-                          tensor(qeye(3), Ry_1)]
-            
+            self.RF_Rx = [tensor(qeye(3), Rx_0), tensor(qeye(3), Rx_1)]
+            self.RF_Ry = [tensor(qeye(3), Ry_0), tensor(qeye(3), Ry_1)]
+
             # for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1
             # the order of the ms states changes above the GSLAC
             if self.B0 <= 102.5:
