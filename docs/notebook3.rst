@@ -1,4 +1,4 @@
-03 - Conditional Gates
+03 - Conditional Gates with NV-13C
 ======================
 
 .. toctree::

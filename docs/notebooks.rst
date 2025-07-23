@@ -8,3 +8,5 @@ Tutorials
    notebook2
    notebook3
    notebook4
+   notebook5
+   notebook6
