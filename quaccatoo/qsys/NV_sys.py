@@ -54,23 +54,16 @@ class NV(QSys):
     -------
     rho0_lowT
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution
-    _set_MW_freqs
-        Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions
-    _set_RF_freqs
-        Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions
-    _set_MW_h1
-        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions
-    _set_RF_h1
-        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions
-    _ZeroField
+
+    ZeroField
         Get the NV Hamiltonian term accounting for zero field splitting
-    _ElectronZeeman
+    ElectronZeeman
         Get the NV hamiltonian term accounting for the electron Zeeman effect
-    _NuclearZeeman
+    NuclearZeeman
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
-    _HyperfineN
+    HyperfineN
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen
-    _Quadrupole
+    Quadrupole
         Get the quadrupole term
     add_spin
         Adds an extra spin to the NV system
@@ -167,23 +160,23 @@ class NV(QSys):
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-            H0 = self._ZeroField() + self._ElectronZeeman() + self._HyperfineN() + self._NuclearZeeman()
+            H0 = self.ZeroField() + self.ElectronZeeman() + self.HyperfineN() + self.NuclearZeeman()
             rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
             H0 = (
-                self._ZeroField()
-                + self._ElectronZeeman()
-                + self._HyperfineN()
-                + self._NuclearZeeman()
-                + self._Quadrupole()
+                self.ZeroField()
+                + self.ElectronZeeman()
+                + self.HyperfineN()
+                + self.NuclearZeeman()
+                + self.Quadrupole()
             )
             rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
-            H0 = self._ZeroField() + self._ElectronZeeman()
+            H0 = self.ZeroField() + self.ElectronZeeman()
             rho0 = basis(3, 1)
             observable = fock_dm(3, 1)
 
@@ -296,39 +289,6 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_RF_freqs(self):
-        """
-        Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.
-        """
-        if self.N == 15:
-            f1 = self.energy_levels[1]
-            f2 = self.energy_levels[3] - self.energy_levels[2]
-            f3 = self.energy_levels[5] - self.energy_levels[4]
-            self.RF_freqs = np.array([f1, f2, f3])
-        # for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1
-        elif self.N == 14:
-            # the order of the ms states changes above the GSLAC
-            if self.B0 <= 102.5:
-                f1 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> -1 at ms=0
-                f2 = self.energy_levels[2]  # 0 -> +1 at ms=0
-                f3 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> -1 at ms=-1
-                f4 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> +1 at ms=-1
-                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
-                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
-            else:
-                f1 = self.energy_levels[2]  # 0 -> -1 at ms=-1
-                f2 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> +1 at ms=-1
-                f3 = self.energy_levels[5] - self.energy_levels[4]  # 0 -> -1 at ms=0
-                f4 = self.energy_levels[5] - self.energy_levels[3]  # 0 -> +1 at ms=0
-                f5 = self.energy_levels[8] - self.energy_levels[7]  # 0 -> -1 at ms=+1
-                f6 = self.energy_levels[8] - self.energy_levels[6]  # 0 -> +1 at ms=-1
-
-            self.RF_freqs = np.array([f1, f2, f3, f4, f5, f6])
-        elif self.N == 0 or self.N is None:
-            self.RF_freqs = None
-        else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
-
     def _set_MW(self):
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
@@ -424,7 +384,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _ZeroField(self):
+    def ZeroField(self):
         """Get the NV Hamiltonian term accounting for zero field splitting.
 
         Parameters
@@ -451,7 +411,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _ElectronZeeman(self):
+    def ElectronZeeman(self):
         """
         Get the NV hamiltonian term accounting for the electron Zeeman effect.
 
@@ -495,7 +455,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _NuclearZeeman(self):
+    def NuclearZeeman(self):
         """
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
 
@@ -531,7 +491,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _HyperfineN(self):
+    def HyperfineN(self):
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -552,7 +512,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _Quadrupole(self):
+    def Quadrupole(self):
         """
         Get the quadrupole term
 
