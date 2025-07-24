@@ -147,11 +147,31 @@ class TestHahn:
             atol=1e-3,
         )
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
+    def test_hahn_delta(self,qsys):
+        gamma=0.1
+        qsys.c_ops = gamma * sigmaz()
+        hahn_sim_delta = Hahn(
+        free_duration = np.linspace(2.5, 25, 30),
+        system = qsys,
+        pi_pulse_duration= 0,
+        Rx = sigmax()
+        )
+        hahn_sim_delta.run()
+        hahn_analysis = Analysis(hahn_sim_delta)
+        hahn_analysis.run_fit(fit_model=ExpDecayModel())
+        assert np.allclose(
+            [hahn_analysis.fit_params.best_values["Tc"], hahn_analysis.fit_params.best_values["amp"]],
+            [3.9774, 1.0002],
+            atol=1e-3,
+        )
+
 
 class TestXY:
     # Runs the XY sequence on an NV object
     # and checks if the center of the peak is in the expected position.
     # We don't use an outside fixture here since we need handcrafted values for this test
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_xy(self):
         qsys = NV(
             N=15,
@@ -220,6 +240,7 @@ class TestXY8:
 class TestCPMG:
     # Runs the CPMG sequence on an NV object
     # and checks if the center of the peak is in the expected position.
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_cpmg(self):
         qsys = NV(
             N=15,
