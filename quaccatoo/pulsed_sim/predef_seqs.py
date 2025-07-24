@@ -200,7 +200,6 @@ class PMR(PulsedSim):
         self.sequence = self.PMR_sequence
         self._append_pulse_to_profile(0, self.total_time)
 
-
     def PMR_sequence(self, f):
         """
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
@@ -359,14 +358,14 @@ class Ramsey(PulsedSim):
                 self._delta_pulse(self.Rx_half)
 
         else:
-            self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
-            self._free_evolution(tau - self.pi_pulse_duration/2, self.options)
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+            self._free_evolution(tau - self.pi_pulse_duration / 2, self.options)
 
             if self.projection_pulse:
-                self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
 
         return self.rho
-    
+
     def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the Ramsey sequence for a given tau.
@@ -385,16 +384,16 @@ class Ramsey(PulsedSim):
 
         self.pulse_profiles = []
 
-        self._append_pulse_to_profile(0, self.pi_pulse_duration/2)
-        t0 = self.pi_pulse_duration/2
-        
-        self.pulse_profiles.append(['free_evo', [t0, t0+tau], None, None])
+        self._append_pulse_to_profile(0, self.pi_pulse_duration / 2)
+        t0 = self.pi_pulse_duration / 2
+
+        self.pulse_profiles.append(["free_evo", [t0, t0 + tau], None, None])
         t0 += tau
 
         if self.projection_pulse:
-            self._append_pulse_to_profile(t0, self.pi_pulse_duration/2)
-            t0 += self.pi_pulse_duration/2
-        
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2)
+            t0 += self.pi_pulse_duration / 2
+
         self.total_time = t0
 
     def plot_pulses(
@@ -544,15 +543,15 @@ class Hahn(PulsedSim):
             # pulse separation time
             ps = tau - self.pi_pulse_duration
 
-            self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
             self._free_evolution(ps, self.options)
             self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
 
             if self.projection_pulse:
                 self._free_evolution(ps, self.options)
-                self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
             else:
-                self._free_evolution(ps + self.pi_pulse_duration/2, self.options)
+                self._free_evolution(ps + self.pi_pulse_duration / 2, self.options)
 
         return self.rho
 
@@ -576,10 +575,10 @@ class Hahn(PulsedSim):
         ps = tau - self.pi_pulse_duration
 
         # pi/2 pulse
-        self._append_pulse_to_profile(0, self.pi_pulse_duration/2)
-        t0 = self.pi_pulse_duration/2
+        self._append_pulse_to_profile(0, self.pi_pulse_duration / 2)
+        t0 = self.pi_pulse_duration / 2
         # free evolution
-        self.pulse_profiles.append(['free_evo', [t0, t0+ps], None, None])
+        self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
         t0 += ps
         # pi pulse
         self._append_pulse_to_profile(t0, self.pi_pulse_duration)
@@ -587,17 +586,17 @@ class Hahn(PulsedSim):
 
         if self.projection_pulse:
             # free evolution
-            self.pulse_profiles.append(['free_evo', [t0, t0+ps], None, None])
+            self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
             t0 += ps
             # pi/2 pulse
-            self._append_pulse_to_profile(t0, self.pi_pulse_duration/2)
-            t0 += self.pi_pulse_duration/2
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2)
+            t0 += self.pi_pulse_duration / 2
         else:
             # free evolution
-            self.pulse_profiles.append(['free_evo', [t0, t0+ps+self.pi_pulse_duration/2], None, None])
-            t0 += ps + self.pi_pulse_duration/2
+            self.pulse_profiles.append(["free_evo", [t0, t0 + ps + self.pi_pulse_duration / 2], None, None])
+            t0 += ps + self.pi_pulse_duration / 2
 
-        self.total_time = t0        
+        self.total_time = t0
 
     def plot_pulses(
         self, figsize=(6, 6), xlabel="Time", ylabel="Pulse Intensity", title="Pulse Profiles", tau=None

@@ -148,14 +148,11 @@ class TestHahn:
         )
 
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
-    def test_hahn_delta(self,qsys):
-        gamma=0.1
+    def test_hahn_delta(self, qsys):
+        gamma = 0.1
         qsys.c_ops = gamma * sigmaz()
         hahn_sim_delta = Hahn(
-        free_duration = np.linspace(2.5, 25, 30),
-        system = qsys,
-        pi_pulse_duration= 0,
-        Rx = sigmax()
+            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=sigmax()
         )
         hahn_sim_delta.run()
         hahn_analysis = Analysis(hahn_sim_delta)
