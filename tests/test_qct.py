@@ -118,37 +118,34 @@ class TestRabi:
         assert np.isclose(rabi_analysis.get_peaks_FFT()[0], 1 / 2 / 5, atol=1e-3)
 
 
-# Hahn object (fixture) used in the Test class below
-@pytest.fixture
-def hahn_exp(qsys):
-    w1 = 0.1
-    delta = 1
-    gamma = 0.1
-
-    qsys.c_ops = gamma * sigmaz()
-
-    return Hahn(
-        free_duration=np.linspace(5, 25, 30),
-        pi_pulse_duration=1 / 2 / w1,
-        projection_pulse=True,
-        system=qsys,
-        h1=w1 * sigmax(),
-        pulse_shape=square_pulse,
-        pulse_params={"f_pulse": delta},
-    )
-
-
 class TestHahn:
     # @pytest.mark.slow
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 
-    # Uses the Hahn fixture defined above to check if the decay rate
-    # is close to the expected value
-    def test_decay(self, hahn_exp):
+    # check if the decay rate is close to the expected value
+    def test_decay(self, qsys):
+        w1 = 0.1
+        delta = 1
+        gamma = 0.1
+
+        qsys.c_ops = gamma * sigmaz()
+        hahn_exp = Hahn(
+            free_duration=np.linspace(5, 25, 30),
+            pi_pulse_duration=1 / 2 / w1,
+            projection_pulse=True,
+            system=qsys,
+            h1=w1 * sigmax(),
+            pulse_shape=square_pulse,
+            pulse_params={"f_pulse": delta},
+        )
         hahn_exp.run()
         hahn_analysis = Analysis(hahn_exp)
         hahn_analysis.run_fit(fit_model=ExpDecayModel())
-        assert np.isclose(hahn_analysis.fit_params.best_values["Tc"], 3.953, atol=1e-3)
+        assert np.allclose(
+            [hahn_analysis.fit_params.best_values["Tc"], hahn_analysis.fit_params.best_values["amp"]],
+            [3.953, 1.905],
+            atol=1e-3,
+        )
 
 
 class TestXY:
@@ -176,7 +173,11 @@ class TestXY:
         XY_15N.run()
         XY_analysis = Analysis(XY_15N)
         XY_analysis.run_fit(fit_model=GaussianModel())
-        assert 0.30 <= XY_analysis.fit_params.best_values["center"] <= 0.32
+        assert np.allclose(
+            [XY_analysis.fit_params.best_values["center"], XY_analysis.fit_params.best_values["amplitude"]],
+            [0.317, 0.010],
+            atol=1e-3,
+        )
 
 
 class TestXY8:
@@ -206,7 +207,14 @@ class TestXY8:
         XY8_15N.run()
         XY8_analysis = Analysis(XY8_15N)
         XY8_analysis.run_fit(fit_model=GaussianModel())
-        assert 0.29 <= XY8_analysis.fit_params.best_values["center"] <= 0.31
+        assert np.allclose(
+            [
+                XY8_analysis.fit_params.best_values["center"],
+                XY8_analysis.fit_params.best_values["amplitude"],
+            ],
+            [0.297, 0.024],
+            atol=1e-3,
+        )
 
 
 class TestCPMG:
@@ -232,7 +240,14 @@ class TestCPMG:
         cpmg.run()
         cpmg_analysis = Analysis(cpmg)
         cpmg_analysis.run_fit(fit_model=GaussianModel())
-        assert np.isclose(cpmg_analysis.fit_params.best_values["center"], 0.353, atol=1e-3)
+        assert np.allclose(
+            [
+                cpmg_analysis.fit_params.best_values["center"],
+                cpmg_analysis.fit_params.best_values["amplitude"],
+            ],
+            [0.353, 0.003],
+            atol=1e-3,
+        )
 
 
 class TestPODMR:
