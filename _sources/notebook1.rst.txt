@@ -1,4 +1,4 @@
-01 - Rabi and Hahn of a spin half system
+01 - Rabi and Hahn of a Spin Half System
 ========================================
 
 .. toctree::

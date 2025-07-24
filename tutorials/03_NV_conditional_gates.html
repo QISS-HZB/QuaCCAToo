@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. System Definition &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorials/03_NV_conditional_gates.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="04 - Sensing and Control of 13C Spin with NV" href="../notebook4.html" />
+    <link rel="prev" title="03 - Conditional Gates with NV-13C" href="../notebook3.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook3.html">03 - Conditional Gates with NV-13C</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. System Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Electron-Spin-Rabi">2. Electron Spin Rabi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Nuclear-Spin-Rabi">3. Nuclear Spin Rabi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="../notebook3.html">03 - Conditional Gates with NV-13C</a></li>
+      <li class="breadcrumb-item active">1. System Definition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/03_NV_conditional_gates.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Conditional gates form the building block for quantum information processing applications involving more than one qubit. In case of the NV center, the energy level structure permits to realize them straightforwardly through selective MW and RF pulses. To begin illustrating the use of the NV software component, we introduce a simple application of a two-qubit conditional gate between the electron spin of the NV and a nuclear spin from a strongly coupled 13C from the diamond lattice, first
+observed in:</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="6">
+<li><p>Jelezko, T. Gaebel, I. Popa, M. Domhan, A. Gruber,and J. Wrachtrup, Observation of coherent oscillation of a single nuclear spin and realization of a two-qubit conditional quantum gate, Phys. Rev. Lett. 93, 130501 (2004).</p></li>
+</ol>
+</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">basis</span>
+</pre></div>
+</div>
+</div>
+<section id="1.-System-Definition">
+<h1>1. System Definition<a class="headerlink" href="#1.-System-Definition" title="Link to this heading"></a></h1>
+<p>First, the NV system is represented by an instance of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> class for a given external magnetic field <span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span>. This can be obtained simply through the following code:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span><span class="n">B0</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>where the parameter <code class="docutils literal notranslate"><span class="pre">N</span></code> representing the nitrogen isotope is set to 0. This way, we neglect the nitrogen nuclear spin, which is not used in this application. The external magnetic field is assumed to be aligned with the NV axis and to have a magnitude of <span class="math notranslate nohighlight">\(B_0 = 200\)</span> mT. The <code class="docutils literal notranslate"><span class="pre">NV</span></code> class internally calculates the system’s observable <span class="math notranslate nohighlight">\(\hat{F}_S\)</span> and Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>, in units of MHz by default. This way, the time units are in microseconds.</p>
+<p>So far, only the electron spin of the NV is defined. To add the 13C spin to the system, the <span class="math notranslate nohighlight">\(\hat{H}_2\)</span> Hamiltonian needs to be defined. In this case, the internal Hamiltonian of the 13C spin is simply given by a Zeeman interaction along the <span class="math notranslate nohighlight">\(z\)</span>-axis, while the hyperfine coupling between the two spins can be expressed in terms of a single component of <span class="math notranslate nohighlight">\(a_{zz}^c=-130\)</span> MHz, even though other spatial components might exist. Hence,</p>
+<div class="math notranslate nohighlight">
+\[\hat{H}_2 = a_{zz}^c \hat{S}_z \hat{I}^c_z - \gamma^c B_0 \hat{I}^c_z\]</div>
+<p>with gyromagnetic ratio <span class="math notranslate nohighlight">\(\gamma^c= 10.7084\)</span> MHz/T. To model this interaction and to add the carbon spin to the NV, the <code class="docutils literal notranslate"><span class="pre">add_spin</span></code> method can be used as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GAMMA_C</span> <span class="o">=</span> <span class="mf">10.7084e-3</span>
+<span class="n">azz</span> <span class="o">=</span> <span class="o">-</span><span class="mi">130</span>
+
+<span class="n">H2</span> <span class="o">=</span> <span class="n">azz</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span> <span class="o">-</span> <span class="n">GAMMA_C</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">B0</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">H2</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>with <code class="docutils literal notranslate"><span class="pre">tensor</span></code> representing the tensor product, <code class="docutils literal notranslate"><span class="pre">jmat</span></code> giving the spin matrices, <code class="docutils literal notranslate"><span class="pre">basis</span></code> the <span class="math notranslate nohighlight">\(Z\)</span> basis states, and <code class="docutils literal notranslate"><span class="pre">qeye</span></code> the identity matrices, all imported from QuTiP. The initial state of the nuclear spin in this application is polarized, where <span class="math notranslate nohighlight">\(\ket{m_S=0}\otimes\ket{m_{I^c}=-1/2}\)</span> is set to the <code class="docutils literal notranslate"><span class="pre">rho0</span></code> attribute as shown above. Therefore, the states are pure and can be represented as kets, instead of density matrices. Which makes the simulation computationally less
+costly, given that there are fewer ODEs to be solved in the ket state as compared to the whole density matrix.</p>
+<p>The energy levels of the system can be plotted with the <code class="docutils literal notranslate"><span class="pre">plot_energy</span></code> method:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_03_NV_conditional_gates_8_0.png" src="../_images/tutorials_03_NV_conditional_gates_8_0.png" />
+</div>
+</div>
+<p>At such magnetic field above GSLAC <span class="math notranslate nohighlight">\(B_0 &gt; B_{\textrm{GSLAC}}\)</span>, the <span class="math notranslate nohighlight">\(m_S=0\)</span> state has a higher energy than <span class="math notranslate nohighlight">\(m_S=-1\)</span>. Furthermore, the nuclear states at <span class="math notranslate nohighlight">\(m_S=0\)</span> are only split by its Zeeman interaction, while the sublevels at <span class="math notranslate nohighlight">\(m_S=-1\)</span> have a contribution from the hyperfine coupling as well. In this application, it is important that the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> transitions have very distinct frequencies at <span class="math notranslate nohighlight">\(m_{I^c}=+1/2\)</span> and
+<span class="math notranslate nohighlight">\(m_{I^c}=-1/2\)</span> nuclear states, in order to avoid unwanted excitations. This is ensured by the high intensity magnetic field <span class="math notranslate nohighlight">\(B_0\)</span> and hyperfine coupling <span class="math notranslate nohighlight">\(a^c_{zz}\)</span>, which leads to these energy differences being much larger than the bandwidth of the pulses.</p>
+<p>The interaction with an external excitation field needs to be represented through the operator <span class="math notranslate nohighlight">\(\hat{h}_1\)</span>. Assuming <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> along the <span class="math notranslate nohighlight">\(x\)</span>-axis and Rabi frequencies of <span class="math notranslate nohighlight">\(\omega_{1,S} = 20\)</span> MHz and <span class="math notranslate nohighlight">\(\omega_{1,I} = 0.8\)</span> MHz for the electron and nuclear spins, respectively, we have:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1_S</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">w1_I</span> <span class="o">=</span> <span class="mf">0.8</span>
+
+<span class="n">h1</span> <span class="o">=</span> <span class="n">w1_S</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span><span class="p">,</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">w1_I</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">w0_mw</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">w0_rf</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>where we also define the frequencies of the pulses <code class="docutils literal notranslate"><span class="pre">w0_mw</span></code> and <code class="docutils literal notranslate"><span class="pre">w0_rf</span></code> in resonance with the transitions. By default, in QuaCCAToo, the lowest energy state in system is 0, <code class="docutils literal notranslate"><span class="pre">sys.energy_levels[0]=0</span></code>.</p>
+</section>
+<section id="2.-Electron-Spin-Rabi">
+<h1>2. Electron Spin Rabi<a class="headerlink" href="#2.-Electron-Spin-Rabi" title="Link to this heading"></a></h1>
+<p>Finally, for simulating this interaction of the excitation with the electron spin, we use the <code class="docutils literal notranslate"><span class="pre">Rabi</span></code> class and the <code class="docutils literal notranslate"><span class="pre">square_pulse</span></code> function to model the <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> field. Typically, in a Rabi experiment, the MW (or RF) pulse length is varied, which causes a periodic oscillation of the observable with frequency <span class="math notranslate nohighlight">\(\omega_1\)</span>. Given the necessary parameters defined previously and an array for the pulse durations, this is achieved by:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tp_S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">rabi_S_sim</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">sys</span><span class="p">,</span>
+    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">tp_S</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_mw</span><span class="p">},</span>
+    <span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">square_pulse</span>
+    <span class="p">)</span>
+
+<span class="n">rabi_S_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> method is used to execute the simulation, by setting and solving the coupled ODEs, where the results of the simulations are stored in the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">rabi_S_sim</span></code> object. Here, the frequency of the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> is passed to the object through the <code class="docutils literal notranslate"><span class="pre">f_pulse</span></code> key of the <code class="docutils literal notranslate"><span class="pre">pulse_params</span></code> dictionary variable.</p>
+<p>The resulting expectation value of the fluorescence observable as a function of the pulse length can be plotted with the <code class="docutils literal notranslate"><span class="pre">plot_results</span></code> method from the <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> class. The electron spin performs full Rabi oscillations between the <span class="math notranslate nohighlight">\(m_S=0\)</span> and <span class="math notranslate nohighlight">\(m_S=-1\)</span> levels, conditioned to the 13C spin being at the <span class="math notranslate nohighlight">\(m_{I^c}=-1/2\)</span> state. The <span class="math notranslate nohighlight">\(m_S=+1\)</span> levels and the nuclear states are not affected by this pulse, as expected.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_S_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_03_NV_conditional_gates_16_0.png" src="../_images/tutorials_03_NV_conditional_gates_16_0.png" />
+</div>
+</div>
+</section>
+<section id="3.-Nuclear-Spin-Rabi">
+<h1>3. Nuclear Spin Rabi<a class="headerlink" href="#3.-Nuclear-Spin-Rabi" title="Link to this heading"></a></h1>
+<p>Apart from a conditional rotation of the electron spin, the carbon nuclear spin can also be excited by setting <code class="docutils literal notranslate"><span class="pre">f_pulse</span></code> in resonance with <code class="docutils literal notranslate"><span class="pre">w0_rf</span></code>. Now, we consider <span class="math notranslate nohighlight">\(\ket{m_S=-1}\otimes\ket{m_{I^c}=+1/2}\)</span> as the initial state and define an observable for the nuclear spin as</p>
+<div class="math notranslate nohighlight">
+\[\hat{F}_{I^c} = \hat{1} \otimes \ket{+1/2}\bra{+1/2} .\]</div>
+<p>Experimentally, this is indirectly measured through the electron by electron-nuclear double magnetic resonance (ENDOR). To model the decoherence of the spin, we assume <span class="math notranslate nohighlight">\(\hat{C}=\hat{I}^c_z\)</span> as the collapse operator, with rate <span class="math notranslate nohighlight">\(\Gamma_2 = 0.5\)</span> MHz. Altogether, the time-evolution of the nuclear spin within these considerations is simulated by:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">dag</span><span class="p">())</span>
+
+<span class="n">gamma2</span> <span class="o">=</span> <span class="mf">.5</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">gamma2</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+
+<span class="n">tp_I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">rabi_I_sim</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">sys</span><span class="p">,</span>
+    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">tp_I</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="n">rabi_I_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_I_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_03_NV_conditional_gates_19_0.png" src="../_images/tutorials_03_NV_conditional_gates_19_0.png" />
+</div>
+</div>
+<p>where the <code class="docutils literal notranslate"><span class="pre">c_ops</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> instance, which was previously empty, is now set to the operator. The <code class="docutils literal notranslate"><span class="pre">pulse_shape</span></code> parameter is set to square pulses by default, which will be omitted from now on.</p>
+<p>Differently from the electron spin, the oscillation is damped by decoherence of the nuclear spin and has a much smaller Rabi frequency due to the smaller gyromagnetic ratio and thus, weaker coupling to the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span>. The software component accurately reproduces the results presented in the reference, apart from the fact that the simulations present a much larger contrast. This can be attributed to an imperfect initialization of the spins in the experiments, which
+are not accounted in the simulations. Together with unconditional excitations, these two rotations form the computational basis for arbitrary quantum gates with the NV-<span class="math notranslate nohighlight">\(^{13}\)</span>C pair, which will be further explored in the subsequent tutorials.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook3.html" class="btn btn-neutral float-left" title="03 - Conditional Gates with NV-13C" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebook4.html" class="btn btn-neutral float-right" title="04 - Sensing and Control of 13C Spin with NV" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

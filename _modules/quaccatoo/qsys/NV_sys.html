@@ -8,6 +8,7 @@
   <title>quaccatoo.qsys.NV_sys &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
 
   
     <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/_modules/quaccatoo/qsys/NV_sys.html" />
@@ -16,6 +17,8 @@
       <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -122,32 +125,28 @@
 <span class="sd">        Microwave frequencies</span>
 <span class="sd">    RF_freqs : numpy.ndarray</span>
 <span class="sd">        RF frequencies</span>
-<span class="sd">    MW_H1 : Qobj</span>
+<span class="sd">    MW_h1 : Qobj</span>
 <span class="sd">        Microwave Hamiltonian</span>
-<span class="sd">    RF_H1 : Qobj</span>
+<span class="sd">    RF_h1 : Qobj</span>
 <span class="sd">        RF Hamiltonian</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    rho0_lowT</span>
 <span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann distribution</span>
-<span class="sd">    _set_MW_freqs</span>
-<span class="sd">        Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions</span>
-<span class="sd">    _set_RF_freqs</span>
-<span class="sd">        Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions</span>
-<span class="sd">    _set_MW_H1</span>
-<span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions</span>
-<span class="sd">    _set_RF_H1</span>
-<span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions</span>
-<span class="sd">    _ZeroField</span>
+<span class="sd">    _set_MW</span>
+<span class="sd">        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions</span>
+<span class="sd">    _set_RF</span>
+<span class="sd">        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions</span>
+<span class="sd">    zero_field</span>
 <span class="sd">        Get the NV Hamiltonian term accounting for zero field splitting</span>
-<span class="sd">    _ElectronZeeman</span>
+<span class="sd">    electron_zeeman</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the electron Zeeman effect</span>
-<span class="sd">    _NuclearZeeman</span>
+<span class="sd">    nuclear_zeeman</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect</span>
-<span class="sd">    _HyperfineN</span>
+<span class="sd">    hyperfine_N</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen</span>
-<span class="sd">    _Quadrupole</span>
+<span class="sd">    quadrupole</span>
 <span class="sd">        Get the quadrupole term</span>
 <span class="sd">    add_spin</span>
 <span class="sd">        Adds an extra spin to the NV system</span>
@@ -244,23 +243,23 @@
 
         <span class="c1"># calculates the Hamiltonian for the given field and nitrogen isotope</span>
         <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ZeroField</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ElectronZeeman</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HyperfineN</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NuclearZeeman</span><span class="p">()</span>
+            <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_field</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperfine_N</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclear_zeeman</span><span class="p">()</span>
             <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
             <span class="n">H0</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ZeroField</span><span class="p">()</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ElectronZeeman</span><span class="p">()</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HyperfineN</span><span class="p">()</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NuclearZeeman</span><span class="p">()</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Quadrupole</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">zero_field</span><span class="p">()</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperfine_N</span><span class="p">()</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclear_zeeman</span><span class="p">()</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrupole</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ZeroField</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ElectronZeeman</span><span class="p">()</span>
+            <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_field</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span>
             <span class="n">rho0</span> <span class="o">=</span> <span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -272,10 +271,8 @@
         <span class="k">if</span> <span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rho0_lowT</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">units_temp</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MW_freqs</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_RF_freqs</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MW_H1</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_RF_H1</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MW</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_RF</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NV.rho0_lowT">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.rho0_lowT">[docs]</a>
@@ -378,36 +375,77 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_set_MW_freqs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_MW</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard resonant microwave frequencies for the NV center corresponding to the electronic spin transitions.</span>
+<span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</span>
+<span class="sd">        Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Rx_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">Rx_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">Ry_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">Ry_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Rx</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Rx_0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Rx_1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Ry</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Ry_0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Ry_1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
+
             <span class="n">f1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="n">f2</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">MW_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Rx</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Rx_0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Rx_1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Ry</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Ry_0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Ry_1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span>
+
             <span class="n">f1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">3</span>
             <span class="n">f2</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">3</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">MW_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Rx</span> <span class="o">=</span> <span class="p">[</span><span class="n">Rx_0</span><span class="p">,</span> <span class="n">Rx_1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MW_Ry</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ry_0</span><span class="p">,</span> <span class="n">Ry_1</span><span class="p">]</span>
+
             <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">f2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">MW_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">])</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_RF_freqs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_RF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard resonant RF frequencies for the NV center corresponding to the nuclear spin transitions.</span>
+<span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</span>
+<span class="sd">        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Rx_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">Rx_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">Ry_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">Ry_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Rx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Ry</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+
             <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">f2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">f3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">])</span>
-        <span class="c1"># for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
+
+            <span class="n">Rx_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+            <span class="n">Rx_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+            <span class="n">Ry_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+            <span class="n">Ry_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Rx</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Rx_0</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Rx_1</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Ry</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Ry_0</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Ry_1</span><span class="p">)]</span>
+
+            <span class="c1"># for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1</span>
             <span class="c1"># the order of the ms states changes above the GSLAC</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span> <span class="o">&lt;=</span> <span class="mf">102.5</span><span class="p">:</span>
                 <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 0 -&gt; -1 at ms=0</span>
@@ -425,38 +463,18 @@
                 <span class="n">f6</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>  <span class="c1"># 0 -&gt; +1 at ms=-1</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">f3</span><span class="p">,</span> <span class="n">f4</span><span class="p">,</span> <span class="n">f5</span><span class="p">,</span> <span class="n">f6</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">RF_freqs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Rx</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_Ry</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_MW_H1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_set_RF_H1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_ZeroField</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NV.zero_field">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.zero_field">[docs]</a>
+    <span class="k">def</span> <span class="nf">zero_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the NV Hamiltonian term accounting for zero field splitting.</span>
 
 <span class="sd">        Parameters</span>
@@ -481,9 +499,12 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">2.87e3</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_ElectronZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NV.electron_zeeman">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.electron_zeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">electron_zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the electron Zeeman effect.</span>
 
@@ -525,9 +546,12 @@
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_NuclearZeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NV.nuclear_zeeman">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.nuclear_zeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">nuclear_zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.</span>
 
@@ -561,9 +585,12 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_HyperfineN</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NV.hyperfine_N">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.hyperfine_N">[docs]</a>
+    <span class="k">def</span> <span class="nf">hyperfine_N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.</span>
 
@@ -582,15 +609,18 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_Quadrupole</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NV.quadrupole">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.quadrupole">[docs]</a>
+    <span class="k">def</span> <span class="nf">quadrupole</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the quadrupole term</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Quadrupole Hamiltonian : Qobj</span>
+<span class="sd">        quadrupole Hamiltonian : Qobj</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="mf">5.01</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
@@ -599,13 +629,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Invalid value for nitrogen isotope N. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="NV.add_spin">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.add_spin">[docs]</a>
     <span class="k">def</span> <span class="nf">add_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_spin</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes</span>
+<span class="sd">        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -614,15 +645,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">H_spin</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="NV.truncate">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.truncate">[docs]</a>
     <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mS</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mI</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the parent class method by calling it and updating MW_H1 and RF_H1 attributes.</span>
+<span class="sd">        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.</span>
 <span class="sd">        The indexes to be removed are calculated according to the mS and mI parameters.</span>
 
 <span class="sd">        Parameters</span>
@@ -684,13 +715,13 @@
         <span class="n">indexes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">indexes</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># corrrect the dimensions of the objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">MW_H1</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RF_H1</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>

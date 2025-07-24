@@ -1,0 +1,801 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. System Definition &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorials/06_NV_teleportation.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="QuaCCAToo modules" href="../modules.html" />
+    <link rel="prev" title="06 - Teleportation Protocol with NV Pair" href="../notebook6.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook6.html">06 - Teleportation Protocol with NV Pair</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. System Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Hadamard-Gate-Optimization">2. Hadamard Gate Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Teleportation-Protocol">3. Teleportation Protocol</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#3.1-Z-Input">3.1 Z Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#3.2-X-Input">3.2 X Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#3.3-Y-Input">3.3 Y Input</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="../notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
+      <li class="breadcrumb-item active">1. System Definition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/06_NV_teleportation.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>While Tutorial 3 focuses on basic operations with the NV component and Tutorial 4 and 5 discuss three applications related to sensing and computing, this tutorial introduces a problem relevant to quantum communication and cryptography. The process of quantum teleportation consists of transferring the state of one qubit to another spatially separated one, through non-local properties of quantum entanglement. This way, making itself a corner stone of quantum networks. Here, we simulate an adapted
+version of an unconditional teleportation between two NV centers, as originally demonstrated by:</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="23">
+<li><p>Pfaff, B. J. Hensen, H. Bernien, S. B. van Dam, M. S. Blok, T. H. Taminiau, M. J. Tiggelman, R. N. Schouten, M. Markham, D. J. Twitchen, and R. Hanson, Unconditional quantum teleportation between distant solid-state quantum bits, Science 345, 532 (2014).</p></li>
+</ol>
+</li>
+</ul>
+<p>Specifically, we focus on simulating a simplified version of the MW and RF pulses implementation, rather than the photonic component of the experiment, which is on itself the greatest technical challenge of the experiment and the main source of errors.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">compose_sys</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">plot_histogram</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">ptrace</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+</pre></div>
+</div>
+</div>
+<section id="1.-System-Definition">
+<h1>1. System Definition<a class="headerlink" href="#1.-System-Definition" title="Link to this heading"></a></h1>
+<p>This simple form of teleportation consists of two network parties: ‘Alice’ and ‘Bob’. Alice has a 14NV center with two qubits, the nitrogen nuclear spin and the electron spin. Bob has another distant NV, where the nuclear spin can be neglected. This system can be defined in QuaCCAToo using:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">NVa</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span><span class="n">B0</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">NVb</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span><span class="n">B0</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">NVa</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">mS</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mI</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">NVb</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">mS</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">sys</span> <span class="o">=</span> <span class="n">compose_sys</span><span class="p">(</span><span class="n">NVb</span><span class="p">,</span> <span class="n">NVa</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>where we assume some typical values for <span class="math notranslate nohighlight">\(B_0\)</span>. To avoid performance issues of simulating a large Hilbert space with dimension <span class="math notranslate nohighlight">\(d=3^2=27\)</span> from the three spins-1 subsystems, the <code class="docutils literal notranslate"><span class="pre">truncate</span></code> method is used to exclude the <span class="math notranslate nohighlight">\(\ket{m_S=+1}\)</span> and <span class="math notranslate nohighlight">\(\ket{m_I=+1}\)</span> levels. Which, as seen in the previous tutorials, does not compromise the modeling of the system, as long as the transition frequencies are well separated compared to the spectral width of the excitation. This way, the
+system is defined within the subspaces <span class="math notranslate nohighlight">\(m_{S,I}=0,-1\)</span>, with a total dimension of <span class="math notranslate nohighlight">\(d=2^3=8\)</span> instead. Lastly, the <code class="docutils literal notranslate"><span class="pre">compose_sys</span></code> function is used to compose the two NV centers from Alice and Bob, which internally calculates the new attributes of the <code class="docutils literal notranslate"><span class="pre">sys</span></code> object.</p>
+<p>Initially, the two NVs’ electron spins are in a maximally entangled Bell state <span class="math notranslate nohighlight">\(\ket{\Psi^-} = (\ket{01} - \ket{10})/\sqrt{2}\)</span>, where <span class="math notranslate nohighlight">\(\ket{0} \equiv \ket{m_S=0}\)</span> and <span class="math notranslate nohighlight">\(\ket{1} \equiv \ket{m_S=-1}\)</span>. While this is presented as a postulate for the simulation applications, the experimental generation of the Bell state poses a great technological challenge, given the poor spectral stability of NVs and high relative background counts. This is achieved through a photon emission mixing
+by a beam splitter and mutual photon detection, which thus heralds an entanglement event for the two NVs’ electron spins. The optical properties of the NVs optical emission can be nonetheless improved by micro-engineering of the diamond surface.</p>
+<p>Apart from the initial state of the electron, the state <span class="math notranslate nohighlight">\(\ket{\psi} = \alpha \ket{0} + \beta \ket{1}\)</span> to be teleported between Alice and Bob is initially stored in Alice’s 14N spin. Experimentally, it can initialized into the state <span class="math notranslate nohighlight">\(\ket{1} \equiv \ket{m_I = -1}\)</span> by a projective measurement of the electron spin. Which is then rotated to the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span> with the appropriate resonance pulses, as discussed in Tutorial 3. In the software component, the initial state of the
+three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket{\psi}\)</span> is hence represented by:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Psi_</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="n">tensor</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">psi</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Psi_</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>for given values of <span class="math notranslate nohighlight">\(\alpha, \beta \in \mathbb{C}\)</span>. By taking <span class="math notranslate nohighlight">\(\alpha=\beta=1/\sqrt{2}\)</span> we have the initial state <span class="math notranslate nohighlight">\(\ket{+X}\)</span>, with <span class="math notranslate nohighlight">\(\alpha=1/\sqrt{2}\)</span> and <span class="math notranslate nohighlight">\(\beta=i/\sqrt{2}\)</span> we have <span class="math notranslate nohighlight">\(\ket{+Y}\)</span>, and finally with <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=0\)</span> we have <span class="math notranslate nohighlight">\(\ket{+Z}\)</span>. Here, we first consider the <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> state.</p>
+<p>To define the remaining experimental constants of the experiment we use:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rabi frequencies of the spins in MHz</span>
+<span class="n">w1_rf</span> <span class="o">=</span> <span class="mf">.2</span>
+<span class="n">w1_mwa</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">w1_mwb</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="n">w1_cnot</span> <span class="o">=</span> <span class="mf">2.14</span><span class="o">/</span><span class="mi">3</span><span class="o">**</span><span class="mf">.5</span>
+
+<span class="c1"># pi pulse times</span>
+<span class="n">tpi_rf</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w1_rf</span><span class="p">)</span>
+<span class="n">tpi_mwa</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w1_mwa</span><span class="p">)</span>
+<span class="n">tpi_mwb</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w1_mwb</span><span class="p">)</span>
+<span class="n">tpi_cnot</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w1_cnot</span><span class="p">)</span>
+
+<span class="c1"># Larmor frequencies of the spins</span>
+<span class="n">w0_rf</span> <span class="o">=</span> <span class="n">NVa</span><span class="o">.</span><span class="n">RF_freqs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">w0_mwa</span> <span class="o">=</span> <span class="n">NVa</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">w0_cnot</span> <span class="o">=</span> <span class="n">NVa</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">w0_mwb</span> <span class="o">=</span> <span class="n">NVb</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Hamiltonian terms for the RF and MW pulses</span>
+<span class="n">h1_rf</span> <span class="o">=</span> <span class="n">w1_rf</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">NVa</span><span class="o">.</span><span class="n">RF_h1</span><span class="p">)</span>
+<span class="n">h1_mwa</span> <span class="o">=</span> <span class="n">w1_mwa</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">NVa</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">)</span>
+<span class="n">h1_cnot</span> <span class="o">=</span> <span class="n">w1_cnot</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">NVa</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">)</span>
+<span class="n">h1_mwb</span> <span class="o">=</span> <span class="n">w1_mwb</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">NVb</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">sol_opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mf">1e9</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.-Hadamard-Gate-Optimization">
+<h1>2. Hadamard Gate Optimization<a class="headerlink" href="#2.-Hadamard-Gate-Optimization" title="Link to this heading"></a></h1>
+<p>Before realizing the protocol, the phase <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span> of the nuclear pulse during the Hadamard gate needs to be optimized to reduce phase accumulations between states. This is achieved with:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">NVa</span><span class="p">)</span>
+
+<span class="n">sys2</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span>
+    <span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+<span class="n">sys2</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+    <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+    <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">hadamard_phi</span><span class="p">(</span><span class="n">phi_rf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CNOT and Hadamard gates sequence for teleportation.</span>
+<span class="sd">    The phase of the RF pulse is optimized to maximize the fidelity of the teleportation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    phi_rf : float</span>
+<span class="sd">        Phase of the RF pulse in radians.</span>
+<span class="sd">    kwargs : dict</span>
+<span class="sd">        Dictionary containing the pulse parameters:</span>
+<span class="sd">        - tpi_rf: float</span>
+<span class="sd">            Duration of the RF pi pulse.</span>
+<span class="sd">        - tpi_mwa: float</span>
+<span class="sd">            Duration of the MW pi pulse for the first NV.</span>
+<span class="sd">        - tpi_cnot: float</span>
+<span class="sd">            Duration of the CNOT gate.</span>
+<span class="sd">        - w0_rf: float</span>
+<span class="sd">            Larmor frequency of the RF pulse.</span>
+<span class="sd">        - w0_mwa: float</span>
+<span class="sd">            Larmor frequency of the first NV&#39;s MW pulse.</span>
+<span class="sd">        - w0_cnot: float</span>
+<span class="sd">            Larmor frequency of the CNOT gate.</span>
+<span class="sd">        - h1_rf: Qobj</span>
+<span class="sd">            Hamiltonian term for the RF pulse.</span>
+<span class="sd">        - h1_mwa: Qobj</span>
+<span class="sd">            Hamiltonian term for the first NV&#39;s MW pulse.</span>
+<span class="sd">        - h1_cnot: Qobj</span>
+<span class="sd">            Hamiltonian term for the CNOT gate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq_in</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys2</span><span class="p">)</span>
+
+    <span class="n">seq_in</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tpi_cnot&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1_cnot&#39;</span><span class="p">],</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w0_cnot&#39;</span><span class="p">],</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+
+    <span class="n">seq_in</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tpi_rf&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1_rf&#39;</span><span class="p">],</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w0_rf&#39;</span><span class="p">],</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq_in</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tpi_mwa&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1_mwa&#39;</span><span class="p">],</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w0_mwa&#39;</span><span class="p">],</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq_in</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tpi_rf&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1_rf&#39;</span><span class="p">],</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w0_rf&#39;</span><span class="p">],</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">seq_in</span><span class="o">.</span><span class="n">rho</span>
+
+<span class="n">phi_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="n">seq_phi</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys2</span><span class="p">)</span>
+<span class="n">seq_args</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;tpi_rf&#39;</span><span class="p">:</span> <span class="n">tpi_rf</span><span class="p">,</span>
+    <span class="s1">&#39;tpi_mwa&#39;</span><span class="p">:</span> <span class="n">tpi_mwa</span><span class="p">,</span>
+    <span class="s1">&#39;tpi_cnot&#39;</span><span class="p">:</span> <span class="n">tpi_cnot</span><span class="p">,</span>
+    <span class="s1">&#39;w0_rf&#39;</span><span class="p">:</span> <span class="n">w0_rf</span><span class="p">,</span>
+    <span class="s1">&#39;w0_mwa&#39;</span><span class="p">:</span> <span class="n">w0_mwa</span><span class="p">,</span>
+    <span class="s1">&#39;w0_cnot&#39;</span><span class="p">:</span> <span class="n">w0_cnot</span><span class="p">,</span>
+    <span class="s1">&#39;h1_rf&#39;</span><span class="p">:</span> <span class="n">w1_rf</span> <span class="o">*</span> <span class="n">NVa</span><span class="o">.</span><span class="n">RF_h1</span><span class="p">,</span>
+    <span class="s1">&#39;h1_mwa&#39;</span><span class="p">:</span> <span class="n">w1_mwa</span> <span class="o">*</span> <span class="n">NVa</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+    <span class="s1">&#39;h1_cnot&#39;</span><span class="p">:</span> <span class="n">w1_cnot</span> <span class="o">*</span> <span class="n">NVa</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">seq_phi</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">phi_array</span><span class="p">,</span> <span class="n">hadamard_phi</span><span class="p">,</span> <span class="n">sequence_kwargs</span><span class="o">=</span><span class="n">seq_args</span><span class="p">)</span>
+
+<span class="n">Analysis</span><span class="p">(</span><span class="n">seq_phi</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">phi_rf</span> <span class="o">=</span> <span class="n">phi_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">seq_phi</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">seq_phi</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)]</span>
+<span class="n">phi_rf</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(2.95)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_11_1.png" src="../_images/tutorials_06_NV_teleportation_11_1.png" />
+</div>
+</div>
+<p>By taking the maximum value for observables 0 and 3, as done in the Ref., we obtain <span class="math notranslate nohighlight">\(\varphi^{rf}=2.95\)</span>. Finally, we also have the freedom to choose <span class="math notranslate nohighlight">\(\tau_2\)</span> and the total refocus time <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> such that the final fidelities are optimized. From previous tests, we observe that:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_refocus</span> <span class="o">=</span> <span class="mf">2.26</span>
+</pre></div>
+</div>
+</div>
+<p>leads to high fidelities and gives a solution <span class="math notranslate nohighlight">\(\tau_2&gt;0\)</span>. The user can test this by changing the value.</p>
+</section>
+<section id="3.-Teleportation-Protocol">
+<h1>3. Teleportation Protocol<a class="headerlink" href="#3.-Teleportation-Protocol" title="Link to this heading"></a></h1>
+<p>Given the initial state and the optmized values of <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> and <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, the teleportation protocol can then be simulated. Since there is no standard predefined sequence in QuaCCAToo for this protocol, we can simulate it by instantiating an object from <code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code> with <code class="docutils literal notranslate"><span class="pre">sys</span></code> as an argument:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The first part of the teleportation protocol is a CNOT gate to Alice’s electron spin conditioned to her nuclear spin. This is expressed by a soft selective <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse of the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> electron transition for the <span class="math notranslate nohighlight">\(\ket{m_I=-1}\)</span> nuclear state. The intensity of this pulse needs to be small, in order to ensure a narrow bandwidth excitation. Furthermore, the <span class="math notranslate nohighlight">\(\ket{m_I=0}\)</span> states would ideally remain unchanged during the operation.
+But due to the system’s evolution under the time-independent Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span> during the finite pulse length, these states also accumulate a phase. This phase is minimized however by taking the Rabi frequency of the CNOT pulse as <span class="math notranslate nohighlight">\(\omega_1^{cnot} = a_\parallel^n/\sqrt{3}\)</span>, where <span class="math notranslate nohighlight">\(a_\parallel^n\)</span> is the parallel component of the hyperfine interaction on the NV center.</p>
+<p>A pulse with the parameters as defined above can be added to the sequences with the <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> method using:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CNOT gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_cnot</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_cnot</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_cnot</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> assumes a square pulse and 100 time steps in the time array discretization, which should not be confused with the <code class="docutils literal notranslate"><span class="pre">nsteps</span></code> key for the solver options dictionary that is increased to <code class="docutils literal notranslate"><span class="pre">1e9</span></code>. In the lab frame, the <span class="math notranslate nohighlight">\(\phi\)</span> angle of the rotation axis is expressed in terms of the temporal phase of the excitation field <code class="docutils literal notranslate"><span class="pre">phi_t</span></code>. Within this implementation, the simulation is already executed upon calling <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code>, differently from predefined methods which require
+the <code class="docutils literal notranslate"><span class="pre">run</span></code> command. However, if the user desires to execute a sequence in parallel in regards to some changing variable, it can be defined within a function and called with <code class="docutils literal notranslate"><span class="pre">run</span></code> as done with Hadamard optmization.</p>
+<p>One of the main challenges of the pulse implementation of the protocol is the loss of the relative phase between the qubits due to the dynamics from <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>. Specifically, all three spins precess with different Larmor frequencies <span class="math notranslate nohighlight">\(\omega_0\)</span> during the finite pulse lengths. Which makes it necessary to correct for this phase accumulation in Bob’s qubit while Alice performs the teleportation operation on her qubits. For that, we implement a refocusing scheme similar to a Hahn echo,
+with a free evolution of <span class="math notranslate nohighlight">\(\tau_1\)</span> followed by a <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse and another free evolution of <span class="math notranslate nohighlight">\(\tau_2\)</span>. The free evolution times <span class="math notranslate nohighlight">\(\tau_1\)</span> and <span class="math notranslate nohighlight">\(\tau_2\)</span> are chosen such that the <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> is exactly in the middle of the whole protocol duration prior to the state reconstruction, and thus Bob’s qubit ends the protocol with the same state as he initially had. This way, we have the first free evolution time given by</p>
+<div class="math notranslate nohighlight">
+\[\tau_1 + t_\pi^{cnot} + \frac{t_\pi^B}{2} = \frac{T}{2} ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(T\)</span> is the total duration of the protocol.</p>
+<p>To implement the refocus scheme we calculate the free evolution times from the optmized value of <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> and use the <code class="docutils literal notranslate"><span class="pre">add_free_evolution</span></code> and <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> methods:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Refocus scheme</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">tpi_cnot</span> <span class="o">+</span> <span class="n">tau_refocus</span> <span class="o">+</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">tpi_mwa</span> <span class="o">+</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">tau1</span> <span class="o">=</span> <span class="n">T</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">tpi_cnot</span> <span class="o">-</span> <span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">tau2</span> <span class="o">=</span> <span class="n">tau_refocus</span> <span class="o">-</span> <span class="n">tau1</span> <span class="o">-</span> <span class="n">tpi_mwb</span>
+
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau1</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwb</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwb</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>In the Ref., the phase of Bob’s qubit is protected with an XY4 sequence. However, in this simulation, the implementation would become more complex than the straight experimental realization with multi-channel pulse generation, due to the intricate time placement of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulses on Bob’s qubit. In the end, this difference in the refocusing scheme will require small adjustments to Bob’s state reconstruction pulses, as discussed in the following analysis.</p>
+<p>The next step of the protocol is Hadamard gate to Alice’s nuclear spin, which can be decomposed with two rotations, such as <span class="math notranslate nohighlight">\(\hat{R}_{y}(\pi/2)\hat{R}_{z}(\pi)\)</span>. In this case nonetheless, the first rotation on the <span class="math notranslate nohighlight">\(z\)</span>-axis responsible for correcting the phase can be omitted, hence configuring a pseudo-Hadamard gate. In addition, due to the fact that the transition frequency of the nuclear spin depends on the <span class="math notranslate nohighlight">\(m_S\)</span> state, the gate can be composed by three pulses: a conditional
+rotation of <span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclear spin over some chosen axis <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, an unconditional rotation of <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> on Alice’s electron, and another rotation of <span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclei. This way, the first pulse changes the nuclear state for <span class="math notranslate nohighlight">\(m_S=-1\)</span>, then the electron spin is inverted and the same RF pulses is applied again. Assuming some typical values for the pulse parameters, where the Rabi frequency of
+Alice’s electron for a hard pulse <code class="docutils literal notranslate"><span class="pre">w1_mwa</span></code> is now much larger than for the CNOT gate, the three pulses are simulated using:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hadamard gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwa</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwa</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwa</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>with the pulse phase <code class="docutils literal notranslate"><span class="pre">phi_rf</span></code> as optimized above.</p>
+<p>At this point, the teleportation of the <span class="math notranslate nohighlight">\(\ket{\psi} = \alpha \ket{0} + \beta \ket{1}\)</span> state to Bob’s NV has already taken place, who has a superposition state composed of four different possible combinations with the coefficients <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>. Thus, with Alice measuring her qubits, Bob’s qubit will be projected in one of the four combinations. Physically, the electron spin is measured by the fluorescence observable, while the nuclear spin is measured using the electron
+spin as an auxiliary qubit, which gives rise to an observable as</p>
+<div class="math notranslate nohighlight">
+\[\hat{F}_{I^n} = \hat{1} \otimes \hat{1} \otimes \ket{1}\bra{1} .\]</div>
+<p>Given the two observables, Alice’s measurements are implemented with the <code class="docutils literal notranslate"><span class="pre">measure_qsys</span></code> method:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Alice measurements</span>
+<span class="n">obs0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">c0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs0</span><span class="p">)</span>
+
+<span class="n">obs1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Besides collapsing the system in one of the eigenstates of the observables, the two measurements performed with the <code class="docutils literal notranslate"><span class="pre">measure_qsys</span></code> method yield two classical bits <span class="math notranslate nohighlight">\(c_0\)</span> and <span class="math notranslate nohighlight">\(c_1\)</span>. These two classical bits are then communicated to Bob via a classical channel, who now needs to reconstruct the <span class="math notranslate nohighlight">\(\ket{\psi}\)</span> state on his qubit with some operation <span class="math notranslate nohighlight">\(\hat{U}(c_0, c_1)\)</span>, which also depends on the input state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span> in this application.</p>
+<section id="3.1-Z-Input">
+<h2>3.1 Z Input<a class="headerlink" href="#3.1-Z-Input" title="Link to this heading"></a></h2>
+<p>First, we take the <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> input state. If Alice’s electron qubit is measured in the <span class="math notranslate nohighlight">\(\ket{1}\)</span> state yielding <span class="math notranslate nohighlight">\(c_0, \, c_1 = 1, \, 0\)</span> or <span class="math notranslate nohighlight">\(c_0, \, c_1 = 1, \, 1\)</span>, Bob does not need to perform any operation on his qubit, which is already in the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span>. However, if Alice measures her electron in the state <span class="math notranslate nohighlight">\(\ket{0}\)</span> with <span class="math notranslate nohighlight">\(c_0, \, c_1 = 0, \, 1\)</span> or <span class="math notranslate nohighlight">\(c_0, \, c_1 = 0, \, 0\)</span>, then Bob needs to perform a rotation of <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> so
+that his qubit is then in the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span>. Altogether then, the state reconstruction for an initial state <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> is implemented with:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<p>To compare the real part of the densitry matrix of the teleported state with the ideal state, we use the <code class="docutils literal notranslate"><span class="pre">plot_histogram</span></code> function:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rho_sim</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">*</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">dag</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">rho_theo</span> <span class="o">=</span> <span class="n">psi</span> <span class="o">*</span> <span class="n">psi</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho_sim</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fidelity: 0.9997832200638801
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_31_1.png" src="../_images/tutorials_06_NV_teleportation_31_1.png" />
+</div>
+</div>
+<p>Now the imaginary:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho_sim</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fidelity: 0.9997832200638801
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_33_1.png" src="../_images/tutorials_06_NV_teleportation_33_1.png" />
+</div>
+</div>
+</section>
+<section id="3.2-X-Input">
+<h2>3.2 X Input<a class="headerlink" href="#3.2-X-Input" title="Link to this heading"></a></h2>
+<p>In the <span class="math notranslate nohighlight">\(\ket{+X}\)</span> and <span class="math notranslate nohighlight">\(\ket{+Y}\)</span> inputs, <span class="math notranslate nohighlight">\(\pi/2\)</span> pulses are also required to reconstruct the teleported state. Where in these cases, the phase accumulated by Bob’s qubit alters the final state and needs to be corrected, which is not the case for the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse with a complete population inversion. This can be achieved by adding a free evolution of duration <span class="math notranslate nohighlight">\(\tau_3\)</span> such that the qubit will have completed an integer number of Larmor precessions and thus will have
+returned to the same state. Mathematically, this means that the free evolution duration to cancel the phase accumulation must be</p>
+<div class="math notranslate nohighlight">
+\[\tau_3 = \frac{\lceil \omega_0^B t_\pi^B/2 \rceil}{\omega_0^B} - \frac{t_\pi^B}{2} ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\omega_0^B\)</span> is the Larmor frequency for Bob’s NV and <span class="math notranslate nohighlight">\(t_\pi^B\)</span> the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration, as previously defined. In addition, <span class="math notranslate nohighlight">\(\lceil \cdot \rceil\)</span> denotes the ceiling function, which rounds the value up to the nearest integer. Finally, the <span class="math notranslate nohighlight">\(\pi\)</span> rotations around the <span class="math notranslate nohighlight">\(z\)</span>-axis <span class="math notranslate nohighlight">\(\hat{R}_z(\pi)\)</span> present in some <span class="math notranslate nohighlight">\(\hat{U}(c_0, c_1)\)</span> can also be obtained simply with a free evolution of duration <span class="math notranslate nohighlight">\(1/(2\omega_0^B)\)</span>.</p>
+<p>For <span class="math notranslate nohighlight">\(\ket{+X}\)</span> state we then have:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initial state</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span>
+
+<span class="n">psi</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Psi_</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+
+<span class="c1"># CNOT gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_cnot</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_cnot</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_cnot</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+
+<span class="c1"># Refocus scheme</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau1</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwb</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwb</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau2</span><span class="p">)</span>
+
+<span class="c1"># Hadamard gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwa</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwa</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwa</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+
+<span class="c1"># Alice measurements</span>
+<span class="n">obs0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">c0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs0</span><span class="p">)</span>
+
+<span class="n">obs1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;c0 = </span><span class="si">{</span><span class="n">c0</span><span class="si">}</span><span class="s1">, c1 = </span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">tau3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w0_mwb</span><span class="o">*</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">w0_mwb</span>  <span class="o">-</span> <span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span>
+
+<span class="c1"># Bob recounstruction of teleported state</span>
+<span class="k">if</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># R-y(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="c1"># Ry(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">tau3</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w0_mwb</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># Ry(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">tau3</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w0_mwb</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="c1"># R-y(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+
+<span class="n">rho</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">*</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">dag</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">rho_theo</span> <span class="o">=</span> <span class="n">psi</span> <span class="o">*</span> <span class="n">psi</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span><span class="n">component</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+c0 = 1.0, c1 = 0.0
+Fidelity: 0.9889556512700622
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_36_1.png" src="../_images/tutorials_06_NV_teleportation_36_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fidelity: 0.9889556512700622
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_37_1.png" src="../_images/tutorials_06_NV_teleportation_37_1.png" />
+</div>
+</div>
+</section>
+<section id="3.3-Y-Input">
+<h2>3.3 Y Input<a class="headerlink" href="#3.3-Y-Input" title="Link to this heading"></a></h2>
+<p>Finnaly, for <span class="math notranslate nohighlight">\(\ket{+Y}\)</span> state:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initial state</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span>
+
+<span class="n">psi</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">Psi_</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+
+<span class="c1"># CNOT gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_cnot</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_cnot</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_cnot</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+
+<span class="c1"># Refocus scheme</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau1</span><span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwb</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwb</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau2</span><span class="p">)</span>
+
+<span class="c1"># Hadamard gate</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_mwa</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_mwa</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwa</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+<span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">tpi_rf</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">h1_rf</span><span class="p">,</span>
+    <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0_rf</span><span class="p">,</span>
+            <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span><span class="n">phi_rf</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span>
+    <span class="p">)</span>
+
+<span class="c1"># Alice measurements</span>
+<span class="n">obs0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">c0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs0</span><span class="p">)</span>
+
+<span class="n">obs1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">measure_qsys</span><span class="p">(</span><span class="n">observable</span><span class="o">=</span><span class="n">obs1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;c0 = </span><span class="si">{</span><span class="n">c0</span><span class="si">}</span><span class="s1">, c1 = </span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">tau3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w0_mwb</span><span class="o">*</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">w0_mwb</span>  <span class="o">-</span> <span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span>
+
+<span class="c1"># Bob recounstruction of teleported state</span>
+<span class="k">if</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># Rz(pi)Rx(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">tau3</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w0_mwb</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="c1"># R-x(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># Rz(pi)Rx(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">tau3</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w0_mwb</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">1.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+    <span class="c1"># R-x(pi/2)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">tpi_mwb</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1_mwb</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0_mwb</span><span class="p">,</span> <span class="s1">&#39;phi_t&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">},</span> <span class="n">options</span><span class="o">=</span><span class="n">sol_opt</span><span class="p">)</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">tau3</span><span class="p">)</span>
+
+<span class="n">rho</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">*</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">dag</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">rho_theo</span> <span class="o">=</span> <span class="n">psi</span> <span class="o">*</span> <span class="n">psi</span><span class="o">.</span><span class="n">dag</span><span class="p">()</span>
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span><span class="n">component</span><span class="o">=</span><span class="s1">&#39;real&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+c0 = 0.0, c1 = 1.0
+Fidelity: 0.9713054945602968
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_40_1.png" src="../_images/tutorials_06_NV_teleportation_40_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Fidelity: 0.9713054945602968
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_06_NV_teleportation_41_1.png" src="../_images/tutorials_06_NV_teleportation_41_1.png" />
+</div>
+</div>
+<p>We observe a strong agreement overall between the simulated and predicted teleported states. Nonetheless, small deviations can be seen in the diagonal elements of the <span class="math notranslate nohighlight">\(\ket{+X}\)</span> and <span class="math notranslate nohighlight">\(\ket{+Y}\)</span> states, which can be attribute to the phase accumulations. The corresponding fidelities are larger than the experimental values provided. This can be attributed to the fact that the simulation software does not consider errors in the optical initialization of the entangled state, or the
+readout, neither decoherence of the spins. Nonetheless, this application complements the original work with a rigorous simulation of the MW and RF pulses component of the protocol.</p>
+<p>The non-adoption of a rotating frame introduces a new layer of complexity to the dynamics of the system related to the phase accumulations of each qubit in the laboratory frame. Where these phase accumulations are often overlooked in perturbative models, such as the RWA, which may lead to discrepancies in experimental results. Another interesting result can be observed by comparing the fidelities for each input state. The <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> state along the quantization axis of the NVs presents
+higher fidelities, due to the fact that this state is less prone to the phase accumulations in the perpendicular plane of the quantization.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook6.html" class="btn btn-neutral float-left" title="06 - Teleportation Protocol with NV Pair" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-right" title="QuaCCAToo modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

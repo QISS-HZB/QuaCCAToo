@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Electron Spin Echo Envelope Modulations &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorials/04_NV_sensing_control_by_DD.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="05 - Ambiguous Resonances in DD with NV" href="../notebook5.html" />
+    <link rel="prev" title="04 - Sensing and Control of 13C Spin with NV" href="../notebook4.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook4.html">04 - Sensing and Control of 13C Spin with NV</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Electron Spin Echo Envelope Modulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Detection-and-Control-13C-Nuclear-spin-with-CPMG-Sequence">2. Detection and Control 13C Nuclear spin with CPMG Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../notebooks.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="../notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+      <li class="breadcrumb-item active">1. Electron Spin Echo Envelope Modulations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/04_NV_sensing_control_by_DD.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>The precise detection of weak spins in noisy environments is a central challenge for quantum sensing. At the same time, the coherent control of such magnetic momenta via a central spin is of great interest for quantum simulation and computing. Although they have different goals, both applications can be achieved by dynamical decoupling of the spins from its noisy environment. In the end, the problems is then reduced to precisely modeling the interaction of the central spin (NV’s electron) and
+the external spin (13C nuclei) under multipulse dynamical decoupling sequences. Following the discussion of the previous section, we first simulate the coherent dynamics of the NV-13.C system in a Hahn echo sequence, as experimentally studied in:</p>
+<ul class="simple">
+<li><p>[1] L. Childress, M. V. G. Dutt, J. M. Taylor, A. S. Zibrov, F. Jelezko, J. Wrachtrup, P. R. Hemmer, and M. D. Lukin, Coherent dynamics of coupled electron and nuclear spin qubits in diamond, Science 314, 281 (2006).</p></li>
+</ul>
+<p>Subsequently, we simulate the detection and control of a weakly coupled 13C by a CPMG sequence, as performed in:</p>
+<ul class="simple">
+<li><p>[2] T. H. Taminiau, J. J. T. Wagenaar, T. van der Sar, F. Jelezko, V. V. Dobrovitski, and R. Hanson, Detection and control of individual nuclear spins using a weakly coupled electron spin, Phys. Rev. Lett. 109, 137602 (2012).</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">Hahn</span><span class="p">,</span> <span class="n">CPMG</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span>
+</pre></div>
+</div>
+</div>
+<section id="1.-Electron-Spin-Echo-Envelope-Modulations">
+<h1>1. Electron Spin Echo Envelope Modulations<a class="headerlink" href="#1.-Electron-Spin-Echo-Envelope-Modulations" title="Link to this heading"></a></h1>
+<p>Once more, we begin the simulation instantiating the <code class="docutils literal notranslate"><span class="pre">NV</span></code> class with the experimental parameters:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys1</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
+    <span class="n">B0</span> <span class="o">=</span> <span class="mf">4.2</span><span class="p">,</span>
+    <span class="n">units_B0</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span>
+    <span class="n">units_angles</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="n">units_temp</span> <span class="o">=</span> <span class="s1">&#39;K&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>where we use the <code class="docutils literal notranslate"><span class="pre">theta</span></code> argument to represent the misalignment of the magnetic field <span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span> with the NV axis <span class="math notranslate nohighlight">\(z\)</span>, which by default is 0. In this case then, the magnetic field has a small amplitude of 4.2 mT along the <span class="math notranslate nohighlight">\(\mathbf{z}-\mathbf{x}\)</span> direction. In contrast to Tutorial 3, the nitrogen nuclear spin cannot be neglected, as it slightly shifts the energy levels of the electron spin, thus changing its Larmor frequency and affecting the envelope frequencies of the
+Hahn echo signal. For that, we set the parameter <code class="docutils literal notranslate"><span class="pre">N</span></code> to the 14 nitrogen isotope. If the system was otherwise composed with a 15N, additional signals from the nitrogen precession would be observed. However, the same is not true for 14N, due to the quadrupole interaction that fixes the nuclear spin orientation, suppressing its precession. Lastly, for illustration purposes, we set the temperature to 300 K with the <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">units_temp</span></code> attributes, which calculates the initial state
+<span class="math notranslate nohighlight">\(\hat{\rho}_0\)</span> from the Boltzmann distribution. If no input is given for <code class="docutils literal notranslate"><span class="pre">temp</span></code>, as in the other applications, the initial density matrix of the nuclear spin is assumed to be the identity matrix, where for these values of temperature and magnetic field the thermal polarization is minimum.</p>
+<p>The coupling Hamiltonian has a hyperfine coupling tensor in units of MHz as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A}^c_{hf} =
+\begin{bmatrix}
+    5.0 &amp; -6.3 &amp; -2.9 \\
+    -6.3 &amp; 4.2 &amp; -2.3 \\
+    -2.9 &amp; -2.3 &amp; 8.2
+\end{bmatrix} ,\end{split}\]</div>
+<p>representing a weaker coupling compared to Tutorial 3, but still prominent. The representation of <span class="math notranslate nohighlight">\(\hat{H}_2\)</span> and composition with the NV is achieved with:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.9</span><span class="p">],</span>
+                 <span class="p">[</span><span class="o">-</span><span class="mf">6.3</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3</span><span class="p">],</span>
+                 <span class="p">[</span><span class="o">-</span><span class="mf">2.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">]])</span>
+
+<span class="n">H2</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="o">-</span> <span class="mf">10.705e-3</span><span class="o">*</span><span class="n">sys1</span><span class="o">.</span><span class="n">B0</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">sys1</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">sys1</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span><span class="o">*</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span> <span class="p">)</span>
+
+<span class="n">sys1</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">H2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Lastly, the Rabi frequency <code class="docutils literal notranslate"><span class="pre">w1</span></code> and the the frequency of the MW pulse excitations <code class="docutils literal notranslate"><span class="pre">w0</span></code> are defined as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sys1</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">12</span><span class="p">:])</span><span class="o">/</span><span class="mi">6</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sys1</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span><span class="o">/</span><span class="mi">6</span>
+</pre></div>
+</div>
+</div>
+<p>Here, the frequency of the MW pulse is calculated by subtracting the average of all six nuclear sublevels at <span class="math notranslate nohighlight">\(m_S=+1\)</span> from the ones in <span class="math notranslate nohighlight">\(m_S=0\)</span>. This way, with a short hard MW pulse, the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=+1}\)</span> transition is obtained, unconditional to the nuclear states, as opposed to Tutorial 3. To simulate and fit a Rabi experiment, we use:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">rabi_sim</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">sys1</span><span class="p">,</span>
+    <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">tp</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sys1</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0</span><span class="p">},</span>
+    <span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">square_pulse</span>
+    <span class="p">)</span>
+
+<span class="n">rabi_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">rabi_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">rabi_sim</span><span class="p">)</span>
+<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
+    <span class="n">fit_model</span> <span class="o">=</span> <span class="n">RabiModel</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">()</span>
+<span class="n">rabi_analysis</span><span class="o">.</span><span class="n">fit_params</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>31</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.18549649</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 1.8624e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-8584.47459</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-8564.84357</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99795307</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.43347093</td><td style='text-align:left'> 6.2333e-04</td><td style='text-align:left'>(0.14%)</td><td style='text-align:left'>0.32039296999027467</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 0.03159355</td><td style='text-align:left'> 9.9571e-06</td><td style='text-align:left'>(0.03%)</td><td style='text-align:left'>0.03753753753753754</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>-0.00398910</td><td style='text-align:left'> 0.00281910</td><td style='text-align:left'>(70.67%)</td><td style='text-align:left'>1.1423973285781066</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'> 0.54128392</td><td style='text-align:left'> 4.3834e-04</td><td style='text-align:left'>(0.08%)</td><td style='text-align:left'>0.5622157246159021</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8672</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>+0.1107</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_10_1.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_10_1.png" />
+</div>
+</div>
+<p>This leads to a <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration shorter than <span class="math notranslate nohighlight">\(1/(2\omega_1)\)</span>, resulting from a hyperfine enhancement effect.</p>
+<p>Given the defined system with the experimental parameters, the simplest dynamical decoupling sequence for suppressing the noise from the environment is the Hahn echo technique. The sequence is composed by two free evolutions of duration <span class="math notranslate nohighlight">\(\tau\)</span>, with an intermediate <span class="math notranslate nohighlight">\(\pi\)</span>-pulse to the electron spin. In addition, <span class="math notranslate nohighlight">\(\pi/2\)</span>-pulses are included before and after the sequence to drive the electron spin from and to the quantization axis. In NMR, the last projective pulse is not required
+though, as the measurement is performed perpendicular to the quantization axis. The intermediate <span class="math notranslate nohighlight">\(\pi\)</span>-pulse causes a refocusing of static or slow dephasings, such as those arising from the 14N nuclear spin. This allows the coupled 13C nuclear spin to be probed by the NV.</p>
+<p>For performing a Hahn echo simulation in the software component, we use the <code class="docutils literal notranslate"><span class="pre">Hahn</span></code> class:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_hahn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.04</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2000</span><span class="p">)</span>
+
+<span class="n">hahn_sim</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
+    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">tau_hahn</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="mf">0.0316</span><span class="p">,</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">sys1</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sys1</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+    <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span><span class="n">w0</span><span class="p">},</span>
+    <span class="n">projection_pulse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">time_steps</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="p">)</span>
+
+<span class="n">hahn_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">hahn_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_12_0.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_12_0.png" />
+</div>
+</div>
+<p>with the same arguments as defined previously. In addition, <code class="docutils literal notranslate"><span class="pre">free_duration</span></code> is the array containing the <span class="math notranslate nohighlight">\(\tau\)</span> values to be simulated, <code class="docutils literal notranslate"><span class="pre">MW_h1</span></code> is the attribute of the <code class="docutils literal notranslate"><span class="pre">sys1</span></code> object containing the standard MW control Hamiltonian operator <span class="math notranslate nohighlight">\(\hat{h}_1 = \sqrt{2} \hat{S_x}\)</span>, <code class="docutils literal notranslate"><span class="pre">pi_pulse_duration</span></code> is the duration of the simulated <span class="math notranslate nohighlight">\(\pi\)</span>-pulse, <code class="docutils literal notranslate"><span class="pre">time_steps</span></code> is the number of discrete time steps used in the simulation in each pulse, and <code class="docutils literal notranslate"><span class="pre">projection_pulse</span></code> is a Boolean
+indicating to include a final project <span class="math notranslate nohighlight">\(\pi/2\)</span>-pulse or not, which is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> by default and will be omitted from now on. It is important to note, however, that the actual pulse separation is the <span class="math notranslate nohighlight">\(\tau\)</span> variable with the duration of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse subtracted. In most studies, perfect <span class="math notranslate nohighlight">\(\delta\)</span>-pulses are considered and both quantities coincide. Finally, the simulation is executed with the <code class="docutils literal notranslate"><span class="pre">run</span></code> method, which takes a dictionary containing the options for the
+parallelization routines. In this case, we include the <code class="docutils literal notranslate"><span class="pre">num_cpus</span></code>c key as an illustration, which limits the use of the hardware cores for the calculation, in order to avoid over-threading. If the key in the dictionary parameter is not given, the parallelization will run over all of the hardware cores by default.</p>
+<p>The results of the Hahn echo simulation show a characteristic Electron Spin Echo Envelope Modulation (ESEEM). The fluorescence observable of the electron spin presents two modulation frequencies. The fast one corresponds to the Larmor frequency of the 13C nuclear spin at the <span class="math notranslate nohighlight">\(m_S=+1\)</span> level, while the slow one corresponds to the one at <span class="math notranslate nohighlight">\(m_S=0\)</span>, which is simply given by the gyromagnetic ratio of the nuclear spin <span class="math notranslate nohighlight">\(\gamma^c\)</span> due to the hyperfine coupling being negligible at
+<span class="math notranslate nohighlight">\(m_S=0\)</span>. By measuring these modulation frequencies at different magnetic field <span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span> configurations, the hyperfine interaction matrix can be experimentally reconstructed for arbitrary spins hyperfinely coupled to a central spin.</p>
+</section>
+<section id="2.-Detection-and-Control-13C-Nuclear-spin-with-CPMG-Sequence">
+<h1>2. Detection and Control 13C Nuclear spin with CPMG Sequence<a class="headerlink" href="#2.-Detection-and-Control-13C-Nuclear-spin-with-CPMG-Sequence" title="Link to this heading"></a></h1>
+<p>The Hahn echo sequence provides a simple mechanism for selective addressing and sensing spins from the environment via the NV center, as demonstrated here. Nonetheless, a robust improvement in the noise filtering can be obtained by repeating the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse and free evolutions several times, known as the CPMG sequence. The periodical reversals of the system’s time evolution cancels out oscillating dephasings and environmental noises from the total evolution, expect for frequencies
+corresponding to double of the pulse separation <span class="math notranslate nohighlight">\(f_0=1/(2\tau)\)</span> and odd multiples of it. In such manner, weak oscillating magnetic fields from single nuclear spins can be filtered from much stronger backgrounds, even at room temperature. A great improvement compared to superconducting quantum interference device (SQUID) sensing.</p>
+<p>For simulating a CPMG sequence of an NV weakly coupled to a lattice 13C, we instantiate the <code class="docutils literal notranslate"><span class="pre">sys2</span></code> object with parameters <span class="math notranslate nohighlight">\(B_0=40.1\)</span> mT, <span class="math notranslate nohighlight">\(\theta = 0\)</span> and <span class="math notranslate nohighlight">\(N=14\)</span> as in Ref. [2]. Furthermore the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration is set to 10 ns, the frequency of the MW pulse <code class="docutils literal notranslate"><span class="pre">w0</span></code> is in resonance with the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> transition and the hyperfine coupling tensor is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{A}^c_{hf} =
+\begin{bmatrix}
+    0 &amp; 0 &amp; 0.044 \\
+    0 &amp; 0 &amp; 0 \\
+    0.044 &amp; 0 &amp; 0.032
+\end{bmatrix} ,\end{split}\]</div>
+<p>in units of MHz. Thus, representing a much weaker coupling than before. To define the system and constants we use:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys2</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
+    <span class="n">B0</span> <span class="o">=</span> <span class="mf">40.1</span><span class="p">,</span>
+    <span class="n">units_B0</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="p">)</span>
+
+<span class="n">tpi</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">tpi</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">axz</span> <span class="o">=</span> <span class="mf">0.055</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">54</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span>
+<span class="n">azz</span> <span class="o">=</span> <span class="mf">0.055</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">54</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span>
+<span class="n">w02</span> <span class="o">=</span> <span class="mf">10.705e-3</span><span class="o">*</span><span class="n">sys2</span><span class="o">.</span><span class="n">B0</span>
+
+<span class="n">H2</span> <span class="o">=</span> <span class="p">(</span><span class="n">axz</span><span class="o">*</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)))</span>
+    <span class="o">+</span> <span class="n">azz</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="o">-</span> <span class="n">w02</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="n">sys2</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">H2</span><span class="p">)</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sys2</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sys2</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>To run the CPMG simulation with <code class="docutils literal notranslate"><span class="pre">M</span></code> pulses, we instantiate the <code class="docutils literal notranslate"><span class="pre">CPMG</span></code> class. Given the high computational cost of the simulation, we execute it in a server with multiple cores using the <code class="docutils literal notranslate"><span class="pre">save</span></code> method to save the simulations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sol_opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;atol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;rtol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mf">1e8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">}</span>
+
+<span class="n">tau_cpmg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">16.74</span><span class="p">,</span><span class="mf">16.85</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">96</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+
+    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">CPMG</span><span class="p">(</span>
+        <span class="n">free_duration</span> <span class="o">=</span> <span class="n">tau_cpmg</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="o">=</span> <span class="mf">0.00999483</span><span class="p">,</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">sys2</span><span class="p">,</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sys2</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">},</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span>
+        <span class="n">time_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;rtol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mf">1e8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">cpmg_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">save</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sol_opt</span></code> variable contains a series of parameters for the ODE solver, which can be passed to the object through the <code class="docutils literal notranslate"><span class="pre">options</span></code> argument. In this case, the absolute and relative tolerances are decreased, while the number of steps and order are increased, in order to have a more robust solution for such a long pulse sequence.</p>
+<p>To retrieve the results we use the <code class="docutils literal notranslate"><span class="pre">load</span></code> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+    <span class="n">Analysis</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_20_0.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_20_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_20_1.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_20_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_20_2.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_20_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_20_3.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_20_3.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_04_NV_sensing_control_by_DD_20_4.png" src="../_images/tutorials_04_NV_sensing_control_by_DD_20_4.png" />
+</div>
+</div>
+<p>The fluorescence observable shows the 8th order resonance from the weakly coupled 13C spin, displaying oscillations in its intensity as a function of the number of pulses <span class="math notranslate nohighlight">\(M\)</span>, due to changes in the filtering function of the multipulse sequence. By keeping a fixed pulse separation value <span class="math notranslate nohighlight">\(\tau\)</span> and changing the number of pulses <span class="math notranslate nohighlight">\(M\)</span>, conditional gates can be applied to the nuclear spin exclusively through faster and more precise electron spin pulses. In this way, the NV spin is
+effectively decoupled from arbitrary oscillating environmental noises, allowing a precise control of the weakly coupled 13C spin. The simulation also presents a small numerical noise, resulting from truncation errors in the ODE solver at such long <span class="math notranslate nohighlight">\(\tau\)</span> values. Both numerical simulations of the Hahn echo and CPMG sequences match the experimental results from Refs. [1, 2], going beyond the semi-analytical model employed there, as it can be used for arbitrary coupling regimes, while
+considering realistic pulses.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebook4.html" class="btn btn-neutral float-left" title="04 - Sensing and Control of 13C Spin with NV" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebook5.html" class="btn btn-neutral float-right" title="05 - Ambiguous Resonances in DD with NV" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

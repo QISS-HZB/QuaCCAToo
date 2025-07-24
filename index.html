@@ -9,6 +9,7 @@
   <title>QuaCCAToo: Quantum Color Centers Analysis Toolbox &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
     <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/index.html" />
@@ -17,6 +18,8 @@
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -80,30 +83,63 @@
 <h1>QuaCCAToo: Quantum Color Centers Analysis Toolbox<a class="headerlink" href="#quaccatoo-quantum-color-centers-analysis-toolbox" title="Link to this heading"></a></h1>
 <img alt="_images/QuaCCAToo_logo.svg" src="_images/QuaCCAToo_logo.svg" />
 <p>QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum
-technology applications, without using rotating wave approximations. The software serves as an extension for
-QuTip, inheriting its object-oriented framework and the Qobj class. This way, the software combines
-accessibility from the high level of abstraction and human-readability of Python with the efficiency of
-compiled programming languages provided by Qutip’s parallelization and the matrix algebra from Scipy
-and Numpy.</p>
+technology applications. The systems’ time evolution under pulsed experiments are calculated through quantum
+master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. The
+software is built on top of QuTip, inheriting its object-oriented framework and the <cite>Qobj</cite> class. This way,
+the software provides accessibility from the high level of abstraction and human-readability of Python, but
+at the expense of limited performance compared to compiled programming languages.</p>
 <p>The documentation for QuaCCAToo is available here. Merge requests welcome at <a class="reference external" href="https://github.com/QISS-HZB/QuaCCAToo">https://github.com/QISS-HZB/QuaCCAToo</a> !</p>
 <p>To see usage examples, check the tutorial notebooks linked here. They
 contain:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html">01</a>:
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html">01 - Rabi and Hahn of a Spin Half System</a>:
 simplest two-level system, where we first define the system and plot
 the energy levels. Following that, a Rabi oscillation is simulated for
 two different pulse vectors, with the results being fitted and plotted
 in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a
 modeled collapse operator.</p></li>
-<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html">02</a>:
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html">02 - Ramsey and PODMR with NV</a>:
 simulation of nitrogen vacancy centers in diamond, first calculating
 the energy levels, then performing Rabi and comparing with
 experimental data. Ramsey and PODMR are also simulated.</p></li>
-<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_ambiguous_resonances.html">03</a>:
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_conditional_gates.html">03 - Conditional Gates with NV-13C</a>:
+conditional gates with resonant MW and RF pulses of an NV center strongly coupled to a 13C nuclear spin from
+<a class="reference external" href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.93.130501">Observation of Coherent Oscillation of a Single Nuclear Spin and Realization of a Two-Qubit Conditional Quantum Gate</a>.</p></li>
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/04_NV_sensing_control_by_DD.html">04 - Sensing and Control of 13C Spin with NV</a>:
+dynamical decoupling sequences for sensing and controling coupled 13C nuclear spins from
+<a class="reference external" href="https://www.science.org/doi/10.1126/science.1131871">Coherent dynamics of coupled electron and nuclear spin qubits in diamond</a>
+and
+<a class="reference external" href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.137602">Detection and control of individual nuclear spins using a weakly coupled electron spin</a>.</p></li>
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/05_NV_ambiguous_resonances.html">05 - Ambiguous Resonances in DD with NV</a>:
 simulation of <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606">Ambiguous Resonances in Multipulse Quantum Sensing with
 Nitrogen Vacancy
 Centers</a>.</p></li>
+<li><p><a class="reference external" href="https://qiss-hzb.github.io/QuaCCAToo/tutorials/06_NV_teleportation.html">06 - Teleportation Protocol with NV Pair</a>:
+simulation of NV teleportation protocol in
+<a class="reference external" href="https://www.science.org/doi/10.1126/science.1253512">Unconditional quantum teleportation between distant solid-state quantum bits</a>.</p></li>
 </ul>
+<section id="class-hierarchy">
+<h2>Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Link to this heading"></a></h2>
+<p>QuaCCAToo is an object-oriented package organized with the following classes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">QSys</span></code> defines the quantum system of the problem. It has an obligatory intrinsic internal Hamiltonian
+<span class="math notranslate nohighlight">\(H_0\)</span>, optional initial state, observable and a set of collapse operators. On <code class="docutils literal notranslate"><span class="pre">QSys</span></code>, calculates
+the eigenstates and eigenvalues of the system and has methods for truncating the systems and adding other
+spins. QuaCCAToo provides <code class="docutils literal notranslate"><span class="pre">NV</span></code> (<code class="docutils literal notranslate"><span class="pre">NV_Sys</span></code>) as a predefined system for nitrogen vacancy centers in
+diamonds, more systems will be provided soon.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code> contains the logic for performing the simulation of pulsed experiments upon a <code class="docutils literal notranslate"><span class="pre">QSys</span></code>
+object. It has attributes of a pulse sequence containing a set of pulses and free evolutions, control
+Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span>, experiment variable and simulation results. Many predefined common pulse sequences
+are given in <code class="docutils literal notranslate"><span class="pre">predef_seqs</span></code> and <code class="docutils literal notranslate"><span class="pre">predef_dd_seqs</span></code> modules. Different pulse shapes are predefined in the
+<code class="docutils literal notranslate"><span class="pre">pulse_shapes</span></code> module.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpData</span></code> is a class to load experimental data and perform basic data processing, such as rescaling,
+subtracting columns or performing polynomial baseline corrections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Analysis</span></code> can be used either on simulation or experimental results, with a series of methods like for
+fitting (based on <code class="docutils literal notranslate"><span class="pre">lmfit</span></code>), Fourier transforms and data comparison. The class can also used for plotting
+the results in multiple forms, including density matrix histograms and Bloch spheres. Several fit models
+and functions relevant for analysis of color centers are provided in the <code class="docutils literal notranslate"><span class="pre">fit_functions</span></code> module.</p></li>
+</ul>
+<img alt="_images/class_diagram.svg" src="_images/class_diagram.svg" />
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -113,9 +149,12 @@ Centers</a>.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebook1.html">01 - Rabi and Hahn of a spin half system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook2.html">02 - NV: Ramsey and PODMR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Ambiguous Resonances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a><ul>
@@ -133,6 +172,7 @@ Centers</a>.</p></li>
 </li>
 </ul>
 </div>
+</section>
 </section>
 
 

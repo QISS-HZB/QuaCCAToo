@@ -9,6 +9,7 @@
   <title>1. Defining the Spin 1/2 System &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
@@ -18,14 +19,16 @@
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="02 - NV: Ramsey and PODMR" href="../notebook2.html" />
-    <link rel="prev" title="01 - Rabi and Hahn of a spin half system" href="../notebook1.html" /> 
+    <link rel="next" title="02 - Ramsey and PODMR with NV" href="../notebook2.html" />
+    <link rel="prev" title="01 - Rabi and Hahn of a Spin Half System" href="../notebook1.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +54,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../notebooks.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../notebook1.html">01 - Rabi and Hahn of a spin half system</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../notebook1.html">01 - Rabi and Hahn of a Spin Half System</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">1. Defining the Spin 1/2 System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#2.-Rabi-Oscillation">2. Rabi Oscillation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#3.-Hahn-Echo">3. Hahn Echo</a><ul>
@@ -60,8 +63,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">02 - NV: Ramsey and PODMR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">03 - Ambiguous Resonances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
@@ -82,7 +88,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../notebooks.html">Tutorials</a></li>
-          <li class="breadcrumb-item"><a href="../notebook1.html">01 - Rabi and Hahn of a spin half system</a></li>
+          <li class="breadcrumb-item"><a href="../notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
       <li class="breadcrumb-item active">1. Defining the Spin 1/2 System</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/01_spin_half_Rabi_Hahn.ipynb.txt" rel="nofollow"> View page source</a>
@@ -109,8 +115,8 @@
 <h1>1. Defining the Spin 1/2 System<a class="headerlink" href="#1.-Defining-the-Spin-1/2-System" title="Link to this heading"></a></h1>
 <p>We begin defining a general two-level system with a time independent Hamiltonian given by</p>
 <div class="math notranslate nohighlight">
-\[H_0 = \frac{\omega_0}{2} \sigma_z ,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\omega_0=1\)</span> MHz is the energy difference between the two levels and <span class="math notranslate nohighlight">\(\sigma_z\)</span> the Pauli matrix. Although simple, this Hamiltonian can represent a varied number of systems: from spin-1/2 nuclear spins in NMR, to electronic spins in EPR, to superconducting qubits. Let us assume now that the state is initialized in the state <span class="math notranslate nohighlight">\(|0 \rangle\)</span> and that the system has an observable given by the operator <span class="math notranslate nohighlight">\(\sigma_z\)</span>.</p>
+\[\hat{H}_0 = \frac{\omega_0}{2} \hat{\sigma}_z ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\omega_0=1\)</span> MHz is the energy difference between the two levels and <span class="math notranslate nohighlight">\(\hat{\sigma}_z\)</span> the Pauli matrix. Although simple, this Hamiltonian can represent a varied number of systems: from spin-1/2 nuclear spins in NMR, to electronic spins in EPR, to superconducting qubits. Let us assume now that the state is initialized in the state <span class="math notranslate nohighlight">\(|0 \rangle\)</span> and that the system has an observable given by the operator <span class="math notranslate nohighlight">\(\sigma_z\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -150,8 +156,8 @@
 <p>With the quantum system defined, the first measurement to perform is a Rabi oscillation. This is done by applying a resonant pulse to the system with varying length, such that it will drive the system between the two levels causing a period oscillation of the observable expectation value. Let us consider a square cosine pulse of frequency <span class="math notranslate nohighlight">\(\omega_0\)</span> applied on the x-axis of the laboratory frame. The interaction of the pulse with the system is then described in terms of a control
 Hamiltonian given by</p>
 <div class="math notranslate nohighlight">
-\[H_1 = \omega_1 \sigma_x ,\]</div>
-<p>which is then multiplied by the time-dependent pulse function. <span class="math notranslate nohighlight">\(\omega_1\)</span> is the Rabi frequency, related to the amplitude of the pulse.</p>
+\[\hat{h}_1 = \omega_1 \hat{\sigma}_x ,\]</div>
+<p>which is then multiplied by the time-dependent pulse function giving <span class="math notranslate nohighlight">\(\hat{H}_1(t)\)</span> . <span class="math notranslate nohighlight">\(\omega_1\)</span> is the Rabi frequency, related to the amplitude of the pulse.</p>
 <p>First, let’s consider a rabi frequency 10 times smaller than the resonance frequency <span class="math notranslate nohighlight">\(\omega_1=\omega_0/10\)</span>, such that the rotating wave approximation is valid.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -166,7 +172,7 @@ Hamiltonian given by</p>
     <span class="c1"># we pass the qsys object defined in the previous section</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
     <span class="c1"># the Hamiltonian for the interaction with the pulse</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
     <span class="c1"># the pulse shape function we want to use (this line is redundant since square_pulse is the default pulse shape function if not specified)</span>
     <span class="n">pulse_shape</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
     <span class="c1"># we need to pass the the frequency of the pulse as the resonant frequency of the system</span>
@@ -184,7 +190,7 @@ Hamiltonian given by</p>
 <img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_9_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_9_0.png" />
 </div>
 </div>
-<p>To visualize the pulse sequence we can use the <code class="docutils literal notranslate"><span class="pre">plot_pulses</span> <span class="pre">method</span></code>, where we can see the pulse shape and the pulse duration. With the run method the experiment is simulated and the expectation value of the observable is plotted with plot_results.</p>
+<p>To visualize the pulse sequence we can use the <code class="docutils literal notranslate"><span class="pre">plot_pulses</span></code> method, where we can see the pulse shape and the pulse duration. With the run method the experiment is simulated and the expectation value of the observable is plotted with plot_results.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -235,7 +241,7 @@ Hamiltonian given by</p>
 <img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_13_1.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_13_1.png" />
 </div>
 </div>
-<p>Here, we observe that the fitted value of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration <span class="math notranslate nohighlight">\(t_\pi \cong 5.001\)</span> μs is slightly larger than the expected value of <span class="math notranslate nohighlight">\(1/(2 \omega_1) = 5\)</span> μs. To obtain a more accurate value, we can consider a rotating pulse with two control Hamiltonians <span class="math notranslate nohighlight">\(\sigma_x\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span>, for that we define custom pulse shape for X and Y with a dephasing of <span class="math notranslate nohighlight">\(\pi/2\)</span> as follows.</p>
+<p>Here, we observe that the fitted value of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration <span class="math notranslate nohighlight">\(t_\pi \cong 5.001\)</span> μs is slightly larger than the expected value of <span class="math notranslate nohighlight">\(1/(2 \omega_1) = 5\)</span> μs. To obtain a more accurate value, we can consider a rotating pulse with two control Hamiltonians <span class="math notranslate nohighlight">\(\hat{\sigma}_x\)</span> and <span class="math notranslate nohighlight">\(\hat{\sigma}_y\)</span>, for that we define custom pulse shape for X and Y with a dephasing of <span class="math notranslate nohighlight">\(\pi/2\)</span> as follows.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -250,7 +256,7 @@ Hamiltonian given by</p>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
     <span class="c1"># the Hamiltonian for the interaction with the pulse now is a list with the two control Hamiltonians for X and Y</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
     <span class="c1"># for the pulse_shape we pass a list with the two custom pulse shape functions, as now the custom pulses have no other parameters and pulse_params dictionary is empty</span>
     <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">]</span> <span class="p">,</span>
     <span class="n">pulse_params</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w0&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">}</span>
@@ -293,7 +299,7 @@ spiral.</p>
     <span class="c1"># In this case we define a pulse duration array which goes up to a pi-pulse</span>
     <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
     <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmay</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
     <span class="n">pulse_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_pulseX</span><span class="p">,</span> <span class="n">custom_pulseY</span><span class="p">],</span>
     <span class="n">pulse_params</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w0&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">}</span>
 <span class="p">)</span>
@@ -317,7 +323,7 @@ spiral.</p>
 <h1>3. Hahn Echo<a class="headerlink" href="#3.-Hahn-Echo" title="Link to this heading"></a></h1>
 <p>Another important quantity in quantum systems is the coherence time <span class="math notranslate nohighlight">\(T_2\)</span>, being a measure of how fast a system loses its quantum information, or in other words, how fast it becomes classical. To model the non-unitary process which causes quantum decoherence, we make use of the Lindblad master equation from Qutip. We define as collapse operator</p>
 <div class="math notranslate nohighlight">
-\[C = \gamma \sigma_z ,\]</div>
+\[\hat{C} = \gamma \hat{\sigma}_z ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\gamma=0.1\)</span> MHz is rate of decoherence, inversely proportional to <span class="math notranslate nohighlight">\(T_2\)</span>. The Hahn echo sequence is then used to measure the coherence time, being composed of two free evolutions with a refocusing <span class="math notranslate nohighlight">\(\pi\)</span>-pulse in between. An initial and final <span class="math notranslate nohighlight">\(\pi/2\)</span>-pulses are also included in order to project the spin the quantization axis.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -330,11 +336,11 @@ spiral.</p>
 
 <span class="n">hahn_sim</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
     <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
     <span class="n">pi_pulse_duration</span><span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
     <span class="c1"># include the pi/2 pulse after the second free evolution (this line is redundant since it is the default value)</span>
     <span class="n">projection_pulse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="n">H1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
     <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span>
     <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">}</span>
 <span class="p">)</span>
@@ -367,11 +373,54 @@ spiral.</p>
 <img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_22_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_22_0.png" />
 </div>
 </div>
+<p>Normally, QuaCCAToo simulates the dynamics of the system by solving the time-evolution under the provided control pulse Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_1(t)\)</span>. However, in many applications, the pulses can be simplified with perfect delta pulses, without temporal length. This has the advantage of being less computationally costly than simulating a time-dependent pulse and to achieve this in QuaCCAToo, the user must set the <code class="docutils literal notranslate"><span class="pre">pi_pulse_duration</span></code> parameter to 0 and provide an <code class="docutils literal notranslate"><span class="pre">Rx</span></code> rotational operator
+of the pulses.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hahn_sim_delta</span> <span class="o">=</span> <span class="n">Hahn</span><span class="p">(</span>
+    <span class="n">free_duration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="c1"># here we start from a shorter free evolution time, due to the abscence of the initial pi/2 pulse</span>
+    <span class="n">system</span> <span class="o">=</span> <span class="n">qsys</span><span class="p">,</span>
+    <span class="n">pi_pulse_duration</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Rx</span> <span class="o">=</span> <span class="n">sigmax</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">hahn_sim_delta</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_24_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_24_0.png" />
+</div>
+</div>
+<p>Differently from the previous case, now the pulses appear as vertical line without temporal length. To run the simulation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hahn_sim_delta</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">Analysis</span><span class="p">(</span><span class="n">hahn_sim_delta</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_26_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_26_0.png" />
+</div>
+</div>
+<p>Thus, in this case, the consideration of realistic pulses created by a time-dependent Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_1(t)\)</span> or the assumption of delta pulses, lead to similar results. It’s important to note that the rotation operators are usually defined in the rotating frame, and not the static laboratory frame, which may lead to weird results if the Hamiltonian is not properly defined in the rotating frame.</p>
 <section id="3.1.-Custom-sequence">
 <h2>3.1. Custom sequence<a class="headerlink" href="#3.1.-Custom-sequence" title="Link to this heading"></a></h2>
 <p>Let’s say now that we want to end the Hahn echo sequence with <span class="math notranslate nohighlight">\(3\pi/2\)</span> pulse instead of <span class="math notranslate nohighlight">\(\pi/2\)</span>. This sequence is not predefined in QuaCCAToo, but the user can define it as below. The custom sequence needs to be defined as a python function of a controlled variable, in this case of the free evolution time <span class="math notranslate nohighlight">\(\tau\)</span>, and a dictionary with the sequence arguments.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_Hahn</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -382,18 +431,18 @@ spiral.</p>
     <span class="c1"># we start initializing the sequence</span>
     <span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;qsys&#39;</span><span class="p">])</span>
 
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
     <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">ps</span><span class="p">)</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">],</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">],</span> <span class="n">h1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
     <span class="n">seq</span><span class="o">.</span><span class="n">add_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="n">ps</span><span class="p">)</span>
-    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;H1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
+    <span class="n">seq</span><span class="o">.</span><span class="n">add_pulse</span><span class="p">(</span><span class="n">duration</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;t_pi&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h1&#39;</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pulse_shape&#39;</span><span class="p">],</span> <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]})</span>
 
     <span class="k">return</span> <span class="n">seq</span><span class="o">.</span><span class="n">rho</span>
 
 <span class="c1"># The sequence arguments are passed through a dictionary</span>
 <span class="n">sequence_kwargs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;qsys&#39;</span><span class="p">:</span> <span class="n">qsys</span><span class="p">,</span>
-    <span class="s1">&#39;H1&#39;</span><span class="p">:</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
+    <span class="s1">&#39;h1&#39;</span><span class="p">:</span> <span class="n">w1</span><span class="o">*</span><span class="n">sigmax</span><span class="p">(),</span>
     <span class="s1">&#39;pulse_shape&#39;</span><span class="p">:</span> <span class="n">square_pulse</span><span class="p">,</span>
     <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">,</span>
     <span class="s1">&#39;t_pi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span><span class="n">w1</span><span class="p">,</span>
@@ -411,7 +460,7 @@ spiral.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_25_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_25_0.png" />
+<img alt="../_images/tutorials_01_spin_half_Rabi_Hahn_30_0.png" src="../_images/tutorials_01_spin_half_Rabi_Hahn_30_0.png" />
 </div>
 </div>
 <p>In this case thus, the expectation value start from negatives values then decays to 0 due to the final <span class="math notranslate nohighlight">\(3\pi/2\)</span> pulse.</p>
@@ -422,8 +471,8 @@ spiral.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../notebook1.html" class="btn btn-neutral float-left" title="01 - Rabi and Hahn of a spin half system" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../notebook2.html" class="btn btn-neutral float-right" title="02 - NV: Ramsey and PODMR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../notebook1.html" class="btn btn-neutral float-left" title="01 - Rabi and Hahn of a Spin Half System" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebook2.html" class="btn btn-neutral float-right" title="02 - Ramsey and PODMR with NV" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
