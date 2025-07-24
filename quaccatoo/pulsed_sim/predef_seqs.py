@@ -75,12 +75,7 @@ class Rabi(PulsedSim):
             self.variable = pulse_duration
             self.variable_name = f"Pulse Duration (1/{self.system.units_H0})"
 
-        if isinstance(h1, Qobj):
-            self.pulse_profiles = [[h1, pulse_duration, pulse_shape, self.pulse_params]]
-        else:
-            self.pulse_profiles = [
-                [h1[i], pulse_duration, pulse_shape[i], self.pulse_params] for i in range(len(h1))
-            ]
+        self._append_pulse_to_profile(0, self.total_time)
 
     def run(self):
         """
@@ -129,8 +124,6 @@ class PMR(PulsedSim):
     ----------
     frequencies : numpy.ndarray
         Array of frequencies to run the simulation.
-    pulse_duration : float or int
-        Duration of the pulse.
 
     Methods
     -------
@@ -201,10 +194,12 @@ class PMR(PulsedSim):
         if not isinstance(pulse_duration, (float, int)) or pulse_duration <= 0:
             raise ValueError("pulse_duration must be a positive real number")
         else:
-            self.pulse_duration = pulse_duration
+            self.total_time = pulse_duration
 
         # set the sequence attribute to the PMR_sequence method
         self.sequence = self.PMR_sequence
+        self._append_pulse_to_profile(0, self.total_time)
+
 
     def PMR_sequence(self, f):
         """
@@ -223,7 +218,7 @@ class PMR(PulsedSim):
         """
         self.pulse_params["f_pulse"] = f
 
-        self._pulse(self.Ht, self.pulse_duration, self.options, self.pulse_params)
+        self._pulse(self.Ht, self.total_time, self.options, self.pulse_params)
 
         return self.rho
 
@@ -246,8 +241,6 @@ class PMR(PulsedSim):
             self.pulse_params["f_pulse"] = f_pulse
         else:
             raise ValueError("f_pulse must be a float or an integer")
-
-        self.total_time = self.pulse_duration
 
         super().plot_pulses(figsize, xlabel, ylabel, title)
 
@@ -366,14 +359,14 @@ class Ramsey(PulsedSim):
                 self._delta_pulse(self.Rx_half)
 
         else:
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
-            self._free_evolution(tau - self.pi_pulse_duration / 2, self.options)
+            self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
+            self._free_evolution(tau - self.pi_pulse_duration/2, self.options)
 
             if self.projection_pulse:
-                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+                self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
 
         return self.rho
-
+    
     def _get_pulse_profiles(self, tau=None):
         """
         Generates the pulse profiles for the Ramsey sequence for a given tau.
@@ -392,97 +385,16 @@ class Ramsey(PulsedSim):
 
         self.pulse_profiles = []
 
-        # if projection_pulse is True, include the final pi/2 pulse in the pulse_profiles
+        self._append_pulse_to_profile(0, self.pi_pulse_duration/2)
+        t0 = self.pi_pulse_duration/2
+        
+        self.pulse_profiles.append(['free_evo', [t0, t0+tau], None, None])
+        t0 += tau
+
         if self.projection_pulse:
-            ps = tau - self.pi_pulse_duration
-
-            # if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence
-            if isinstance(self.h1, Qobj):
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, ps + t0], None, None])
-                t0 += ps
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 += self.pi_pulse_duration / 2
-
-            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles
-            elif isinstance(self.h1, list):
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, ps + t0], None, None])
-                t0 += ps
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 += self.pi_pulse_duration / 2
-
-        # if projection_pulse is false, do not include the final pi/2 pulse in the pulse_profiles
-        else:
-            ps = tau - self.pi_pulse_duration / 2
-
-            # if only one control Hamiltonian is given, append the pulse_profiles with the Ramsey sequence
-            if isinstance(self.h1, Qobj):
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, ps + t0], None, None])
-                t0 += ps
-
-            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles
-            elif isinstance(self.h1, list):
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, ps + t0], None, None])
-                t0 += ps
-
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration/2)
+            t0 += self.pi_pulse_duration/2
+        
         self.total_time = t0
 
     def plot_pulses(
@@ -632,15 +544,15 @@ class Hahn(PulsedSim):
             # pulse separation time
             ps = tau - self.pi_pulse_duration
 
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+            self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
             self._free_evolution(ps, self.options)
             self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params)
 
             if self.projection_pulse:
                 self._free_evolution(ps, self.options)
-                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params)
+                self._pulse(self.Ht, self.pi_pulse_duration/2, self.options, self.pulse_params)
             else:
-                self._free_evolution(ps + self.pi_pulse_duration / 2, self.options)
+                self._free_evolution(ps + self.pi_pulse_duration/2, self.options)
 
         return self.rho
 
@@ -661,144 +573,31 @@ class Hahn(PulsedSim):
             raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
 
         self.pulse_profiles = []
+        ps = tau - self.pi_pulse_duration
 
-        # if projection_pulse is True, include the final pi/2 pulse in the pulse_profiles
+        # pi/2 pulse
+        self._append_pulse_to_profile(0, self.pi_pulse_duration/2)
+        t0 = self.pi_pulse_duration/2
+        # free evolution
+        self.pulse_profiles.append(['free_evo', [t0, t0+ps], None, None])
+        t0 += ps
+        # pi pulse
+        self._append_pulse_to_profile(t0, self.pi_pulse_duration)
+        t0 += self.pi_pulse_duration
+
         if self.projection_pulse:
-            # if only one control Hamiltonian is given, append the pulse_profiles with the Hahn echo sequence as in the hahn_sequence method
-            if isinstance(self.h1, Qobj):
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-                t0 += tau - self.pi_pulse_duration
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 += self.pi_pulse_duration
-                self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-                t0 += tau - self.pi_pulse_duration
-                self.pulse_profiles.append(
-                    [
-                        self.h1,
-                        np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape,
-                        self.pulse_params,
-                    ]
-                )
-                t0 += self.pi_pulse_duration / 2
+            # free evolution
+            self.pulse_profiles.append(['free_evo', [t0, t0+ps], None, None])
+            t0 += ps
+            # pi/2 pulse
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration/2)
+            t0 += self.pi_pulse_duration/2
+        else:
+            # free evolution
+            self.pulse_profiles.append(['free_evo', [t0, t0+ps+self.pi_pulse_duration/2], None, None])
+            t0 += ps + self.pi_pulse_duration/2
 
-            # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
-            elif isinstance(self.h1, list):
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 = self.pi_pulse_duration / 2
-                self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-                t0 += tau - self.pi_pulse_duration
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 += self.pi_pulse_duration
-                self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-                t0 += tau - self.pi_pulse_duration
-                self.pulse_profiles.append(
-                    [
-                        [
-                            self.h1[i],
-                            np.linspace(t0, t0 + self.pi_pulse_duration / 2, self.time_steps),
-                            self.pulse_shape[i],
-                            self.pulse_params,
-                        ]
-                        for i in range(len(self.h1))
-                    ]
-                )
-                t0 += self.pi_pulse_duration / 2
-
-        # if projection_pulse is False, do not include the final pi/2 pulse in the pulse_profiles
-        elif isinstance(self.h1, Qobj):
-            self.pulse_profiles.append(
-                [
-                    self.h1,
-                    np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                    self.pulse_shape,
-                    self.pulse_params,
-                ]
-            )
-            t0 = self.pi_pulse_duration / 2
-            self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-            t0 += tau - self.pi_pulse_duration
-            self.pulse_profiles.append(
-                [
-                    self.h1,
-                    np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-                    self.pulse_shape,
-                    self.pulse_params,
-                ]
-            )
-            t0 += self.pi_pulse_duration
-            self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration / 2], None, None])
-            t0 += tau - self.pi_pulse_duration / 2
-
-        # otherwise if a list of control Hamiltonians is given, it sums over all h1 and appends to the pulse_profiles the Hahn echo sequence as in the hahn_sequence method
-        elif isinstance(self.h1, list):
-            self.pulse_profiles.append(
-                [
-                    [
-                        self.h1[i],
-                        np.linspace(0, self.pi_pulse_duration / 2, self.time_steps),
-                        self.pulse_shape[i],
-                        self.pulse_params,
-                    ]
-                    for i in range(len(self.h1))
-                ]
-            )
-            t0 = self.pi_pulse_duration / 2
-            self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration], None, None])
-            t0 += tau - self.pi_pulse_duration
-            self.pulse_profiles.append(
-                [
-                    [
-                        self.h1[i],
-                        np.linspace(t0, t0 + self.pi_pulse_duration, self.time_steps),
-                        self.pulse_shape[i],
-                        self.pulse_params,
-                    ]
-                    for i in range(len(self.h1))
-                ]
-            )
-            t0 += self.pi_pulse_duration
-            self.pulse_profiles.append([None, [t0, t0 + tau - self.pi_pulse_duration / 2], None, None])
-            t0 += tau - self.pi_pulse_duration / 2
-
-        # set the total_time attribute to the total time of the pulse sequence
-        self.total_time = t0
+        self.total_time = t0        
 
     def plot_pulses(
         self, figsize=(6, 6), xlabel="Time", ylabel="Pulse Intensity", title="Pulse Profiles", tau=None
