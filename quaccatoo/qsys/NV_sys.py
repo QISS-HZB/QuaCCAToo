@@ -58,15 +58,15 @@ class NV(QSys):
         Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
     _set_RF
         Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions    
-    ZeroField
+    zero_field
         Get the NV Hamiltonian term accounting for zero field splitting
-    ElectronZeeman
+    electron_zeeman
         Get the NV hamiltonian term accounting for the electron Zeeman effect
-    NuclearZeeman
+    nuclear_zeeman
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect
-    HyperfineN
+    hyperfine_N
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen
-    Quadrupole
+    quadrupole
         Get the quadrupole term
     add_spin
         Adds an extra spin to the NV system
@@ -163,23 +163,23 @@ class NV(QSys):
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-            H0 = self.ZeroField() + self.ElectronZeeman() + self.HyperfineN() + self.NuclearZeeman()
+            H0 = self.zero_field() + self.electron_zeeman() + self.hyperfine_N() + self.nuclear_zeeman()
             rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
             H0 = (
-                self.ZeroField()
-                + self.ElectronZeeman()
-                + self.HyperfineN()
-                + self.NuclearZeeman()
-                + self.Quadrupole()
+                self.zero_field()
+                + self.electron_zeeman()
+                + self.hyperfine_N()
+                + self.nuclear_zeeman()
+                + self.quadrupole()
             )
             rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
-            H0 = self.ZeroField() + self.ElectronZeeman()
+            H0 = self.zero_field() + self.electron_zeeman()
             rho0 = basis(3, 1)
             observable = fock_dm(3, 1)
 
@@ -389,7 +389,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def ZeroField(self):
+    def zero_field(self):
         """Get the NV Hamiltonian term accounting for zero field splitting.
 
         Parameters
@@ -416,7 +416,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def ElectronZeeman(self):
+    def electron_zeeman(self):
         """
         Get the NV hamiltonian term accounting for the electron Zeeman effect.
 
@@ -460,7 +460,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def NuclearZeeman(self):
+    def nuclear_zeeman(self):
         """
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
 
@@ -496,7 +496,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def HyperfineN(self):
+    def hyperfine_N(self):
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -517,13 +517,13 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def Quadrupole(self):
+    def quadrupole(self):
         """
         Get the quadrupole term
 
         Returns
         -------
-        Quadrupole Hamiltonian : Qobj
+        quadrupole Hamiltonian : Qobj
         """
         if self.N == 14:
             return -5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
