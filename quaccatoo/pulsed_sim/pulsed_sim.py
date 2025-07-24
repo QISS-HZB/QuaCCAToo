@@ -177,7 +177,6 @@ class PulsedSim:
                 self.rho,
                 2 * np.pi * np.linspace(self.total_time, self.total_time + duration, self.time_steps),
                 self.system.c_ops,
-                e_ops=[],
                 options=options,
             ).states[-1]
         elif self.rho.isket:
@@ -309,7 +308,6 @@ class PulsedSim:
             self.rho,
             2 * np.pi * np.linspace(self.total_time, self.total_time + duration, self.time_steps),
             self.system.c_ops,
-            e_ops=[],
             options=options,
             args=core_pulse_params,
         ).states[-1]
