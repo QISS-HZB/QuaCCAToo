@@ -1,5 +1,5 @@
 06 - Teleportation Protocol with NV Pair
-=========================
+========================================
 
 .. toctree::
    :maxdepth: 1
