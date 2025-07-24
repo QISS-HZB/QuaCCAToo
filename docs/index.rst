@@ -20,30 +20,29 @@ The documentation for QuaCCAToo is available here. Merge requests welcome at htt
 To see usage examples, check the tutorial notebooks linked here. They
 contain:
 
-- `01 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html>`__:
+- `01 - Rabi and Hahn of a Spin Half System <https://qiss-hzb.github.io/QuaCCAToo/tutorials/01_spin_half_Rabi_Hahn.html>`__:
   simplest two-level system, where we first define the system and plot
   the energy levels. Following that, a Rabi oscillation is simulated for
   two different pulse vectors, with the results being fitted and plotted
   in the Bloch sphere. Lastly, we simulated a Hahn echo decay for a
   modeled collapse operator.
-- `02 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html>`__:
+- `02 - Ramsey and PODMR with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/02_NV_Ramsey_PODMR.html>`__:
   simulation of nitrogen vacancy centers in diamond, first calculating
   the energy levels, then performing Rabi and comparing with
   experimental data. Ramsey and PODMR are also simulated.
-- `03 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_conditional_gates.html>`__:
+- `03 - Conditional Gates with NV-13C <https://qiss-hzb.github.io/QuaCCAToo/tutorials/03_NV_conditional_gates.html>`__:
   conditional gates with resonant MW and RF pulses of an NV center strongly coupled to a 13C nuclear spin from
-  `Observation of Coherent Oscillation of a Single Nuclear Spin and Realization of a Two-Qubit Conditional
-  Quantum Gate <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.93.130501>`__.
-- `04 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/04_NV_sensing_control_by_DD.html>`__:
-  `Coherent dynamics of coupled electron and nuclear spin qubits in diamond
-  <https://www.science.org/doi/10.1126/science.1131871>`__ and
-  `Detection and control of individual nuclear spins using a weakly coupled electron spin
-  <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.137602>`__.
-- `05 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/05_NV_ambiguous_resonances.html>`__:
+  `Observation of Coherent Oscillation of a Single Nuclear Spin and Realization of a Two-Qubit Conditional Quantum Gate <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.93.130501>`__.
+- `04 - Sensing and Control of 13C Spin with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/04_NV_sensing_control_by_DD.html>`__:
+  dynamical decoupling sequences for sensing and controling coupled 13C nuclear spins from
+  `Coherent dynamics of coupled electron and nuclear spin qubits in diamond <https://www.science.org/doi/10.1126/science.1131871>`__
+  and
+  `Detection and control of individual nuclear spins using a weakly coupled electron spin <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.109.137602>`__.
+- `05 - Ambiguous Resonances in DD with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/05_NV_ambiguous_resonances.html>`__:
   simulation of `Ambiguous Resonances in Multipulse Quantum Sensing with
   Nitrogen Vacancy
   Centers <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
-- `06 <https://qiss-hzb.github.io/QuaCCAToo/tutorials/06_NV_teleportation.html>`__:
+- `06 - Teleportation Protocol with NV Pair <https://qiss-hzb.github.io/QuaCCAToo/tutorials/06_NV_teleportation.html>`__:
   simulation of NV teleportation protocol in
   `Unconditional quantum teleportation between distant solid-state quantum bits
   <https://www.science.org/doi/10.1126/science.1253512>`__.
