@@ -580,22 +580,22 @@ class XY8(PulsedSim):
             # repeat 8 times the block
             for itr_M in range(self.M):
                 self._delta_pulse(self.Rx)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Rx)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Rx)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
-                self.add_free_evolution(tau, self.options)
+                self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Rx)
                 if itr_M != self.M - 1:
-                    self.add_free_evolution(tau)
+                    self._free_evolution(tau, self.options)
 
             self._free_evolution(tau/2, self.options)
 
