@@ -22,6 +22,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx_rtd_theme",
     "nbsphinx",
+    "sphinx_copybutton",
 ]
 source_suffix = ".rst"
 templates_path = ["_templates"]
