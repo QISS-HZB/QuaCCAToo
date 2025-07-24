@@ -57,7 +57,7 @@ class NV(QSys):
     _set_MW
         Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
     _set_RF
-        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions    
+        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions
     zero_field
         Get the NV Hamiltonian term accounting for zero field splitting
     electron_zeeman

@@ -491,7 +491,7 @@ class PulsedSim:
         # iterate over all operations in the sequence
         for itr_pulses in range(len(self.pulse_profiles)):
             # if the pulse profile is a free evolution, plot a horizontal line at 0
-            if self.pulse_profiles[itr_pulses][0] == 'free_evo':
+            if self.pulse_profiles[itr_pulses][0] == "free_evo":
                 ax.plot(
                     self.pulse_profiles[itr_pulses][1],
                     [0, 0],
@@ -503,12 +503,12 @@ class PulsedSim:
 
             # if the pulse profile is a delta pulse, plot a vertical line at the time of the pulse
             # check the correct label based on the phase of the pulse
-            elif self.pulse_profiles[itr_pulses][0] == 'delta_pulse':
+            elif self.pulse_profiles[itr_pulses][0] == "delta_pulse":
                 phase = self.pulse_profiles[itr_pulses][3]["phi_t"]
                 if phase == 0:
-                    label = 'R_X'
+                    label = "R_X"
                 elif phase == -np.pi / 2:
-                    label = 'R_Y'
+                    label = "R_Y"
                 else:
                     label = f"R_{phase}"
 
@@ -521,7 +521,7 @@ class PulsedSim:
                 )
 
             # if the pulse is time dependent, plot the pulse profile
-            elif self.pulse_profiles[itr_pulses][0] == 'pulse':
+            elif self.pulse_profiles[itr_pulses][0] == "pulse":
                 ax.plot(
                     self.pulse_profiles[itr_pulses][1],
                     self.pulse_profiles[itr_pulses][2](
@@ -532,11 +532,11 @@ class PulsedSim:
                     alpha=0.7,
                     color="C1",
                 )
-            
+
             # if the pulse has multiple operators, iterate over them
             elif isinstance(self.pulse_profiles[itr_pulses][0], list):
                 for itr_op in range(len(self.pulse_profiles[itr_pulses])):
-                    if self.pulse_profiles[itr_pulses][itr_op][0] == 'pulse':
+                    if self.pulse_profiles[itr_pulses][itr_op][0] == "pulse":
                         ax.plot(
                             self.pulse_profiles[itr_pulses][itr_op][1],
                             self.pulse_profiles[itr_pulses][itr_op][2](
@@ -723,7 +723,7 @@ class PulsedSim:
                 raise ValueError(
                     "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )
-            
+
     def _append_pulse_to_profile(self, t0, duration, pulse_params=None):
         """
         Internal method for appending a pulse to the pulse_profiles list to be called by _get_pulse_profiles.
@@ -732,27 +732,30 @@ class PulsedSim:
         Parameters
         ----------
         t0 : float
-            Start time of the pulse 
+            Start time of the pulse
         duration : float
             Duration of the pulse
         pulse_params : dict, optional
-            Dictionary of parameters for the pulse_shape functions, by default None.        
+            Dictionary of parameters for the pulse_shape functions, by default None.
         """
         if pulse_params is None:
             pulse_params = self.pulse_params
 
-        if hasattr(self, 'Rx'):
-            self.pulse_profiles.append(['delta_pulse', t0, None, pulse_params])
+        if hasattr(self, "Rx"):
+            self.pulse_profiles.append(["delta_pulse", t0, None, pulse_params])
         elif isinstance(self.h1, Qobj):
-            self.pulse_profiles.append(['pulse',
-                                        np.linspace(t0, t0+duration, self.time_steps),
-                                        self.pulse_shape,
-                                        pulse_params])
+            self.pulse_profiles.append(
+                ["pulse", np.linspace(t0, t0 + duration, self.time_steps), self.pulse_shape, pulse_params]
+            )
         else:
-            self.pulse_profiles.append([['pulse',
-                                        np.linspace(t0, t0+duration, self.time_steps),
-                                        self.pulse_shape[i],
-                                        pulse_params]
-                                    for i in range(len(self.h1))
-                                        ]
-                                    )
+            self.pulse_profiles.append(
+                [
+                    [
+                        "pulse",
+                        np.linspace(t0, t0 + duration, self.time_steps),
+                        self.pulse_shape[i],
+                        pulse_params,
+                    ]
+                    for i in range(len(self.h1))
+                ]
+            )
