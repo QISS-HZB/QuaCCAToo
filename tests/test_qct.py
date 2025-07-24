@@ -301,7 +301,6 @@ class TestExpData:
         exp_data.variable *= 1e6
         rabi_analysis_exp.compare_with(exp_data)
         rabi_analysis_exp.pearson
-        print(rabi_analysis_exp.pearson.intercept)
         assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3) and np.isclose(
             rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3
         )
