@@ -31,18 +31,17 @@ Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detaile
 
 ## Class Hierarchy
 
-The package is organized as follows:
-- `QSys` defines the quantum system of the problem. It has an obligatory intrinsic internal Hamiltonian
-  $H_0$, optional initial state, observable and a set of collapse operators. On `QSys`, one can calculate the
-  eigenstates and eigenvalues of the system. QuaCCAToo provides `NV`(`NV_Sys`) as a predefined system for nitrogen
-  vacancy centers in diamonds, more systems will be provided soon.
-- `PulsedSim` contains the logic for performing the simulation of pulsed experiments upon a `QSys` object. It
-  has attributes of a pulse sequence containing a set of pulses and free evolutions, control Hamiltonian
-  $H_1$, experiment variable and simulation results. Many predefined common pulse sequences are given in
-  `PredefSeqs` and `PredefDDSeqs`.
-- `ExpData` is a class to load experimental data and perform basic data processing.
-- `Analysis` can be used either on simulation or experimental results, with a series of methods like FFT,
-  fits, data comparison and plotting.
+QuaCCAToo is an object-oriented package organized with the following classes:
+- `QSys` defines the quantum system of the problem. It has an obligatory intrinsic internal Hamiltonian $H_0$, optional initial state, observable and a set of collapse operators.
+On `QSys`, calculates the eigenstates and eigenvalues of the system and has methods for truncating the systems and adding other spins.
+QuaCCAToo provides `NV` as a predefined system for nitrogen vacancy centers in diamonds, more systems will be provided soon.
+- `PulsedSim` contains the logic for performing the simulation of pulsed experiments upon a `QSys` object.
+It has attributes of a pulse sequence containing a set of pulses and free evolutions, control Hamiltonian $H_1$, experiment variable and simulation results. Many predefined common pulse sequences are given in `predef_seqs` and `predef_dd_seqs` modules.
+Different pulse shapes are predefined in the `pulse_shapes` module.
+- `ExpData` is a class to load experimental data and perform basic data processing, such as rescaling, subtracting columns or performing polynomial baseline corrections.
+- `Analysis` can be used either on simulation or experimental results, with a series of methods like for fitting (based on `lmfit`), Fourier transforms and data comparison.
+The class can also used for plotting the results in multiple forms, including density matrix histograms and Bloch spheres.
+Several fit models and functions relevant for analysis of color centers are provided in the `fit_functions` module.
 
 ![Class diagram](./docs/class_diagram.svg)
 
