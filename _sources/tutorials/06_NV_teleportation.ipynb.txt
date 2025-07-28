@@ -5,6 +5,10 @@
    "id": "3bb64b95",
    "metadata": {},
    "source": [
+    "This tutorials reproduces section III.C from:\n",
+    "\n",
+    "- L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. arXiv:2507.18759 quant-ph. [2507.18759](https://arxiv.org/abs/2507.18759).\n",
+    "\n",
     "While Tutorial 3 focuses on basic operations with the NV component and Tutorial 4 and 5 discuss three applications related to sensing and computing, this tutorial introduces a problem relevant to quantum communication and cryptography.\n",
     "The process of quantum teleportation consists of transferring the state of one qubit to another spatially separated one, through non-local properties of quantum entanglement.\n",
     "This way, making itself a corner stone of quantum networks.\n",

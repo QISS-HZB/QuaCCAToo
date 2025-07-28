@@ -5,6 +5,10 @@
    "id": "f5a06a7d",
    "metadata": {},
    "source": [
+    "This tutorials reproduces section III.B from:\n",
+    "\n",
+    "- L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. arXiv:2507.18759 quant-ph. [2507.18759](https://arxiv.org/abs/2507.18759).\n",
+    "\n",
     "The precise detection of weak spins in noisy environments is a central challenge for quantum sensing.\n",
     "At the same time, the coherent control of such magnetic momenta via a central spin is of great interest for quantum simulation and computing.\n",
     "Although they have different goals, both applications can be achieved by dynamical decoupling of the spins from its noisy environment.\n",

@@ -15,7 +15,9 @@ software is built on top of QuTip, inheriting its object-oriented framework and 
 the software provides accessibility from the high level of abstraction and human-readability of Python, but
 at the expense of limited performance compared to compiled programming languages.
 
-The documentation for QuaCCAToo is available here. Merge requests welcome at https://github.com/QISS-HZB/QuaCCAToo !
+If you used QuaCCAToo in your work, please cite `arXiv:2507.18759 <https://arxiv.org/abs/2507.18759>`__.
+
+The documentation for QuaCCAToo is available here. Merge requests welcome at the `Github repository <https://github.com/QISS-HZB/QuaCCAToo>`__ !
 
 To see usage examples, check the tutorial notebooks linked here. They
 contain:
