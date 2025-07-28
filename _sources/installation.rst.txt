@@ -35,6 +35,11 @@ To check the installation, you can run
 
    pip show quaccatoo
 
+.. note::
+   QuaCCAToo is best optimized to run on GNU/Linux systems. More specifically, the ``parallel_map`` method from
+   Qutip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
+   in simulations and even crashes in some hardware. macOS machines have not been tested by us.
+
 Development installation
 ------------------------
 

@@ -107,6 +107,12 @@ conda<span class="w"> </span>activate<span class="w"> </span>quaccatoo-env
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>show<span class="w"> </span>quaccatoo
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>QuaCCAToo is best optimized to run on GNU/Linux systems. More specifically, the <code class="docutils literal notranslate"><span class="pre">parallel_map</span></code> method from
+Qutip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
+in simulations and even crashes in some hardware. macOS machines have not been tested by us.</p>
+</div>
 </section>
 <section id="development-installation">
 <h2>Development installation<a class="headerlink" href="#development-installation" title="Link to this heading"></a></h2>
