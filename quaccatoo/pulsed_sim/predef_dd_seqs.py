@@ -350,20 +350,22 @@ class XY(PulsedSim):
 
         else:
             ps = tau - self.pi_pulse_duration
-            # initial pi/2 pulse on X
-            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+            # initial pi/2 pulse on Y
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
             # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
-            for itr_M in range(2 * self.M):
-                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M % 2])
-                if itr_M != 2 * self.M - 1:
+            for itr_M in range(self.M):
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
+                self._free_evolution(ps, self.options)
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
+                if itr_M != self.M - 1:
                     self._free_evolution(ps, self.options)
 
             if self.projection_pulse:
                 self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
-                # final pi/2 pulse on X
-                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[0])
+                # final pi/2 pulse on Y
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
             else:
                 self._free_evolution(ps / 2, self.options)
 
