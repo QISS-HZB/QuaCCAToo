@@ -308,7 +308,7 @@ corresponding to double of the pulse separation <span class="math notranslate no
 
 <span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">96</span><span class="p">]</span>
 
-<span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
 
     <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">CPMG</span><span class="p">(</span>
         <span class="n">free_duration</span> <span class="o">=</span> <span class="n">tau_cpmg</span><span class="p">,</span>
@@ -317,13 +317,13 @@ corresponding to double of the pulse separation <span class="math notranslate no
         <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">sys2</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
         <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span>
         <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">w0</span><span class="p">},</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">],</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
         <span class="n">time_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;atol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;rtol&#39;</span><span class="p">:</span><span class="mf">1e-16</span><span class="p">,</span> <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mf">1e8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">}</span>
     <span class="p">)</span>
 
     <span class="n">cpmg_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="n">save</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+    <span class="n">save</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -333,8 +333,8 @@ corresponding to double of the pulse separation <span class="math notranslate no
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">itr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
-    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">itr</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
+    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
     <span class="n">Analysis</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>

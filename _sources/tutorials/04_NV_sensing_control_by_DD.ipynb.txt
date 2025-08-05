@@ -349,7 +349,7 @@
     "\n",
     "M = [16, 24, 32, 56, 96]\n",
     "\n",
-    "for itr in range(len(M)):\n",
+    "for idx in range(len(M)):\n",
     "\n",
     "    cpmg_sim = CPMG(\n",
     "        free_duration = tau_cpmg,\n",
@@ -358,13 +358,13 @@
     "        h1 = w1*sys2.MW_h1, \n",
     "        pulse_shape=square_pulse,\n",
     "        pulse_params = {'f_pulse': w0},\n",
-    "        M = M[itr],\n",
+    "        M = M[idx],\n",
     "        time_steps=1000,\n",
     "        options={'atol':1e-16, 'rtol':1e-16, 'nsteps': 1e8, 'order':30}\n",
     "    )\n",
     "\n",
     "    cpmg_sim.run()\n",
-    "    save(cpmg_sim, f'./sim_data_tutorials/CPMG-{M[itr]}_13C')"
+    "    save(cpmg_sim, f'./sim_data_tutorials/CPMG-{M[idx]}_13C')"
    ]
   },
   {
@@ -436,8 +436,8 @@
     }
    ],
    "source": [
-    "for itr in range(len(M)):\n",
-    "    cpmg_sim = load(f'./sim_data_tutorials/CPMG-{M[itr]}_13C')\n",
+    "for idx in range(len(M)):\n",
+    "    cpmg_sim = load(f'./sim_data_tutorials/CPMG-{M[idx]}_13C')\n",
     "    Analysis(cpmg_sim).plot_results()"
    ]
   },
