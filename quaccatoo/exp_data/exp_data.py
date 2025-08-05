@@ -316,8 +316,8 @@ class ExpData:
         elif isinstance(self.results, list) and all(
             isinstance(result, np.ndarray) for result in self.results
         ):
-            for itr in range(len(self.results)):
-                ax.scatter(self.variable, self.results[itr], label=f"Observable {itr}", alpha=0.7, s=15)
+            for idx in range(len(self.results)):
+                ax.scatter(self.variable, self.results[idx], label=f"Observable {idx}", alpha=0.7, s=15)
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")

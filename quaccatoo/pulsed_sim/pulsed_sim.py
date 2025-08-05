@@ -489,11 +489,11 @@ class PulsedSim:
         fig, ax = plt.subplots(1, 1, figsize=figsize)
 
         # iterate over all operations in the sequence
-        for itr_pulses in range(len(self.pulse_profiles)):
+        for idx_pulses in range(len(self.pulse_profiles)):
             # if the pulse profile is a free evolution, plot a horizontal line at 0
-            if self.pulse_profiles[itr_pulses][0] == "free_evo":
+            if self.pulse_profiles[idx_pulses][0] == "free_evo":
                 ax.plot(
-                    self.pulse_profiles[itr_pulses][1],
+                    self.pulse_profiles[idx_pulses][1],
                     [0, 0],
                     label="Free Evolution",
                     lw=2,
@@ -503,8 +503,8 @@ class PulsedSim:
 
             # if the pulse profile is a delta pulse, plot a vertical line at the time of the pulse
             # check the correct label based on the phase of the pulse
-            elif self.pulse_profiles[itr_pulses][0] == "delta_pulse":
-                phase = self.pulse_profiles[itr_pulses][3]["phi_t"]
+            elif self.pulse_profiles[idx_pulses][0] == "delta_pulse":
+                phase = self.pulse_profiles[idx_pulses][3]["phi_t"]
                 if phase == 0:
                     label = "R_X"
                 elif phase == -np.pi / 2:
@@ -513,7 +513,7 @@ class PulsedSim:
                     label = f"R_{phase}"
 
                 ax.axvline(
-                    self.pulse_profiles[itr_pulses][1],
+                    self.pulse_profiles[idx_pulses][1],
                     label=label,
                     lw=3,
                     alpha=0.7,
@@ -521,11 +521,11 @@ class PulsedSim:
                 )
 
             # if the pulse is time dependent, plot the pulse profile
-            elif self.pulse_profiles[itr_pulses][0] == "pulse":
+            elif self.pulse_profiles[idx_pulses][0] == "pulse":
                 ax.plot(
-                    self.pulse_profiles[itr_pulses][1],
-                    self.pulse_profiles[itr_pulses][2](
-                        2 * np.pi * self.pulse_profiles[itr_pulses][1], **self.pulse_profiles[itr_pulses][3]
+                    self.pulse_profiles[idx_pulses][1],
+                    self.pulse_profiles[idx_pulses][2](
+                        2 * np.pi * self.pulse_profiles[idx_pulses][1], **self.pulse_profiles[idx_pulses][3]
                     ),
                     label="h1",
                     lw=2,
@@ -534,19 +534,19 @@ class PulsedSim:
                 )
 
             # if the pulse has multiple operators, iterate over them
-            elif isinstance(self.pulse_profiles[itr_pulses][0], list):
-                for itr_op in range(len(self.pulse_profiles[itr_pulses])):
-                    if self.pulse_profiles[itr_pulses][itr_op][0] == "pulse":
+            elif isinstance(self.pulse_profiles[idx_pulses][0], list):
+                for idx_op in range(len(self.pulse_profiles[idx_pulses])):
+                    if self.pulse_profiles[idx_pulses][idx_op][0] == "pulse":
                         ax.plot(
-                            self.pulse_profiles[itr_pulses][itr_op][1],
-                            self.pulse_profiles[itr_pulses][itr_op][2](
-                                2 * np.pi * self.pulse_profiles[itr_pulses][itr_op][1],
-                                **self.pulse_profiles[itr_pulses][itr_op][3],
+                            self.pulse_profiles[idx_pulses][idx_op][1],
+                            self.pulse_profiles[idx_pulses][idx_op][2](
+                                2 * np.pi * self.pulse_profiles[idx_pulses][idx_op][1],
+                                **self.pulse_profiles[idx_pulses][idx_op][3],
                             ),
-                            label=f"h1_{itr_op}",
+                            label=f"h1_{idx_op}",
                             lw=2,
                             alpha=0.7,
-                            color=f"C{2 + itr_op}",
+                            color=f"C{2 + idx_op}",
                         )
 
         ax.set_xlim(0, self.total_time)

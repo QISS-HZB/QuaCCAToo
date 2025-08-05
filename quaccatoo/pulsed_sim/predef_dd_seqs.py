@@ -123,9 +123,9 @@ class CPMG(PulsedSim):
             self._free_evolution(tau / 2, self.options)
 
             # repeat M times the pi pulse and free evolution of tau
-            for itr_M in range(self.M):
+            for idx_M in range(self.M):
                 self._delta_pulse(self.Rx)
-                if itr_M != self.M - 1:
+                if idx_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
             self._free_evolution(tau / 2, self.options)
@@ -141,9 +141,9 @@ class CPMG(PulsedSim):
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
             # repeat M times the pi pulse and free evolution of ps
-            for itr_M in range(self.M):
+            for idx_M in range(self.M):
                 self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
-                if itr_M != self.M - 1:
+                if idx_M != self.M - 1:
                     self._free_evolution(ps, self.options)
 
             if self.projection_pulse:
@@ -178,10 +178,10 @@ class CPMG(PulsedSim):
         self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
-        for itr_M in range(self.M):
+        for idx_M in range(self.M):
             self._append_pulse_to_profile(t0, self.pi_pulse_duration, self.pulse_params[0])
             t0 += self.pi_pulse_duration
-            if itr_M != self.M - 1:
+            if idx_M != self.M - 1:
                 self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
                 t0 += ps
 
@@ -336,11 +336,11 @@ class XY(PulsedSim):
             self._free_evolution(tau / 2, self.options)
 
             # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
-            for itr_M in range(self.M):
+            for idx_M in range(self.M):
                 self._delta_pulse(self.Rx)
                 self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
-                if itr_M != self.M - 1:
+                if idx_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
             self._free_evolution(tau, self.options)
@@ -355,11 +355,11 @@ class XY(PulsedSim):
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
             # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
-            for itr_M in range(self.M):
+            for idx_M in range(self.M):
                 self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
                 self._free_evolution(ps, self.options)
                 self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[1])
-                if itr_M != self.M - 1:
+                if idx_M != self.M - 1:
                     self._free_evolution(ps, self.options)
 
             if self.projection_pulse:
@@ -395,10 +395,10 @@ class XY(PulsedSim):
         self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
-        for itr_M in range(2 * self.M):
-            self._append_pulse_to_profile(t0, self.pi_pulse_duration, self.pulse_params[itr_M % 2])
+        for idx_M in range(2 * self.M):
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration, self.pulse_params[idx_M % 2])
             t0 += self.pi_pulse_duration
-            if itr_M != 2 * self.M - 1:
+            if idx_M != 2 * self.M - 1:
                 self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
                 t0 += ps
 
@@ -549,9 +549,9 @@ class XY8(PulsedSim):
         base_pulse = self.pulse_params.copy()
 
         self.pulse_params = []
-        for itr_M in range(M):
-            phi_x = 0 + random_phases[itr_M]
-            phi_y = -np.pi / 2 + random_phases[itr_M]
+        for idx_M in range(M):
+            phi_x = 0 + random_phases[idx_M]
+            phi_y = -np.pi / 2 + random_phases[idx_M]
 
             px = base_pulse.copy()
             py = base_pulse.copy()
@@ -584,7 +584,7 @@ class XY8(PulsedSim):
             self._free_evolution(tau / 2, self.options)
 
             # repeat 8 times the block
-            for itr_M in range(self.M):
+            for idx_M in range(self.M):
                 self._delta_pulse(self.Rx)
                 self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Ry)
@@ -600,7 +600,7 @@ class XY8(PulsedSim):
                 self._delta_pulse(self.Ry)
                 self._free_evolution(tau, self.options)
                 self._delta_pulse(self.Rx)
-                if itr_M != self.M - 1:
+                if idx_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
             self._free_evolution(tau / 2, self.options)
@@ -615,9 +615,9 @@ class XY8(PulsedSim):
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
             # repeat 8*M-1 times the pi pulse and free evolution of ps
-            for itr_M in range(8 * self.M):
-                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[itr_M])
-                if itr_M != 8 * self.M - 1:
+            for idx_M in range(8 * self.M):
+                self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[idx_M])
+                if idx_M != 8 * self.M - 1:
                     self._free_evolution(ps, self.options)
 
             if self.projection_pulse:
@@ -652,10 +652,10 @@ class XY8(PulsedSim):
         self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
-        for itr_M in range(8 * self.M):
-            self._append_pulse_to_profile(t0, self.pi_pulse_duration, self.pulse_params[itr_M])
+        for idx_M in range(8 * self.M):
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration, self.pulse_params[idx_M])
             t0 += self.pi_pulse_duration
-            if itr_M != 8 * self.M - 1:
+            if idx_M != 8 * self.M - 1:
                 self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
                 t0 += ps
 

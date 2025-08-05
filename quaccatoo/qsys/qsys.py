@@ -130,14 +130,14 @@ def plot_energy_B0(B0, H0, figsize=(6, 4), energy_lim=None, xlabel="Magnetic Fie
     H0_0 = H0[0].eigenenergies()[0]
 
     # iterate over all the Hamiltonians and calculate the energy levels
-    for itr_B0 in range(len(B0)):
-        H0_eig = H0[itr_B0].eigenenergies()
+    for idx_B0 in range(len(B0)):
+        H0_eig = H0[idx_B0].eigenenergies()
         energy_levels.append(H0_eig - H0_0)
 
     fig, ax = plt.subplots(1, 1, figsize=figsize)
 
-    for itr_e in range(len(energy_levels[0])):
-        ax.plot(B0, [energy_levels[itr_B0][itr_e] for itr_B0 in range(len(B0))])
+    for idx_e in range(len(energy_levels[0])):
+        ax.plot(B0, [energy_levels[idx_B0][idx_e] for idx_B0 in range(len(B0))])
 
     if isinstance(energy_lim, tuple) and len(energy_lim) == 2:
         ax.set_ylim(energy_lim)
@@ -298,8 +298,8 @@ class QSys:
 
         fig, ax = plt.subplots(1, 1, figsize=figsize)
 
-        for itr in range(self.energy_levels.size):
-            ax.axhline(y=self.energy_levels[itr], lw=2)
+        for idx in range(self.energy_levels.size):
+            ax.axhline(y=self.energy_levels[idx], lw=2)
 
         if self.units_H0 is not None:
             ax.set_ylabel(f"Energy ({self.units_H0})")
