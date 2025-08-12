@@ -16,6 +16,8 @@ class ExpData:
         Array containing the variable data
     results : np.ndarray or list of np.ndarray
         Array or list of arrays containing the results data
+    yerror: None, np.ndarray or list of np.ndarray
+        Array or list of arrays containing the uncertainty of the results
     variable_name : str
         Name of the variable
     result_name : str
@@ -40,6 +42,7 @@ class ExpData:
         file_path,
         variable_column=0,
         results_columns=1,
+        yerr_columns=None,
         variable_name="Time",
         result_name="Expectation Value",
         plot=False,
@@ -59,6 +62,8 @@ class ExpData:
             Column index of the variable
         results_columns : int or list of int
             Column index of the results
+        yerr_columns : None, int or list of int
+            Column index of the result uncertainty values
         variable_name : str
             Name of the variable
         result_name : str
@@ -82,7 +87,15 @@ class ExpData:
         if not isinstance(results_columns, int) and not (
             isinstance(results_columns, list) and all(isinstance(col, int) for col in results_columns)
         ):
-            raise ValueError("results_columns must be an integer or a list of two integers")
+            raise ValueError("results_columns must be an integer or a list of integers")
+        
+        # the error columns needs to be None, an integer or a list of integers
+        if yerr_columns is not None and not isinstance(yerr_columns, int) and not (
+            isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns)
+        ):
+            raise ValueError("yerr_columns must be None, an integer or a list of integers")
+        elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):
+            raise ValueError("yerr_columns must have the same lenght of the results_columns")
 
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
             raise ValueError("variable_name and result_name must be strings")
@@ -100,6 +113,11 @@ class ExpData:
             self.results = exp_data[:, results_columns]
         else:
             self.results = [exp_data[:, column] for column in results_columns]
+
+        if isinstance(yerr_columns, int):
+            self.yerror = exp_data[:, yerr_columns]
+        elif isinstance(yerr_columns, list):
+            self.yerror = [exp_data[:, column] for column in yerr_columns]
 
         self.variable_name = variable_name
         self.result_name = result_name
@@ -311,13 +329,19 @@ class ExpData:
 
         # check if the results is a list of results or a single result
         if isinstance(self.results, np.ndarray):
-            ax.scatter(self.variable, self.results, lw=2, alpha=0.7, label="Observable", s=15)
+            if hasattr(self, 'yerror'):
+                ax.errorbar(self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt='o')
+            else:
+                ax.scatter(self.variable, self.results, alpha=0.7, label="Observable", s=15)
 
         elif isinstance(self.results, list) and all(
             isinstance(result, np.ndarray) for result in self.results
         ):
             for idx in range(len(self.results)):
-                ax.scatter(self.variable, self.results[idx], label=f"Observable {idx}", alpha=0.7, s=15)
+                if hasattr(self, 'yerror'):
+                    ax.errorbar(self.variable, self.results[idx], self.yerror[idx], alpha=0.7, label="Observable", fmt='o')
+                else:
+                    ax.scatter(self.variable, self.results[idx], label=f"Observable {idx}", alpha=0.7, s=15)
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
