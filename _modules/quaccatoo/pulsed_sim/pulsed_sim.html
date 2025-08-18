@@ -349,17 +349,17 @@
         <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">[</span>
-                    <span class="n">h1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">val_h1</span><span class="p">,</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">+</span> <span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-                    <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">pulse_shape</span><span class="p">[</span><span class="n">idx_h1</span><span class="p">],</span>
                     <span class="n">pulse_params</span><span class="p">,</span>
                 <span class="p">]</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">idx_h1</span><span class="p">,</span> <span class="n">val_h1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">h1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">))]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">h1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">))]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
+            <span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">val_h1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">idx_h1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">idx_h1</span><span class="p">,</span> <span class="n">val_h1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">h1</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Ht</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -586,11 +586,11 @@
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
 
         <span class="c1"># iterate over all operations in the sequence</span>
-        <span class="k">for</span> <span class="n">idx_pulses</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">val_pul</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">:</span>
             <span class="c1"># if the pulse profile is a free evolution, plot a horizontal line at 0</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;free_evo&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">val_pul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;free_evo&quot;</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">val_pul</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Free Evolution&quot;</span><span class="p">,</span>
                     <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -600,8 +600,8 @@
 
             <span class="c1"># if the pulse profile is a delta pulse, plot a vertical line at the time of the pulse</span>
             <span class="c1"># check the correct label based on the phase of the pulse</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;delta_pulse&quot;</span><span class="p">:</span>
-                <span class="n">phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">val_pul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;delta_pulse&quot;</span><span class="p">:</span>
+                <span class="n">phase</span> <span class="o">=</span> <span class="n">val_pul</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;R_X&quot;</span>
                 <span class="k">elif</span> <span class="n">phase</span> <span class="o">==</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
@@ -610,7 +610,7 @@
                     <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;R_</span><span class="si">{</span><span class="n">phase</span><span class="si">}</span><span class="s2">&quot;</span>
 
                 <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">val_pul</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                     <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
                     <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
@@ -618,11 +618,11 @@
                 <span class="p">)</span>
 
             <span class="c1"># if the pulse is time dependent, plot the pulse profile</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;pulse&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">val_pul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;pulse&quot;</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">2</span><span class="p">](</span>
-                        <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">val_pul</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">val_pul</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span>
+                        <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">val_pul</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">val_pul</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
                     <span class="p">),</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;h1&quot;</span><span class="p">,</span>
                     <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -631,14 +631,14 @@
                 <span class="p">)</span>
 
             <span class="c1"># if the pulse has multiple operators, iterate over them</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">idx_op</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">])):</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;pulse&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val_pul</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">idx_op</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">val_pul</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">val_pul</span><span class="p">[</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;pulse&quot;</span><span class="p">:</span>
                         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">2</span><span class="p">](</span>
-                                <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="p">[</span><span class="n">idx_pulses</span><span class="p">][</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="n">val_pul</span><span class="p">[</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                            <span class="n">val_pul</span><span class="p">[</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">2</span><span class="p">](</span>
+                                <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">val_pul</span><span class="p">[</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="o">**</span><span class="n">val_pul</span><span class="p">[</span><span class="n">idx_op</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>
                             <span class="p">),</span>
                             <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;h1_</span><span class="si">{</span><span class="n">idx_op</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -811,10 +811,10 @@
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pulse_shape</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">h1</span> <span class="o">=</span> <span class="n">h1</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">h1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">))]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">h1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">))]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">val_h1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">[</span><span class="n">idx_h1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">idx_h1</span><span class="p">,</span> <span class="n">val_h1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">h1</span><span class="p">)]</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Ht</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">H0_H2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H2</span><span class="p">]</span>
 
             <span class="k">else</span><span class="p">:</span>
@@ -851,10 +851,10 @@
                     <span class="p">[</span>
                         <span class="s2">&quot;pulse&quot;</span><span class="p">,</span>
                         <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_steps</span><span class="p">),</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shape</span><span class="p">[</span><span class="n">idx_h1</span><span class="p">],</span>
                         <span class="n">pulse_params</span><span class="p">,</span>
                     <span class="p">]</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">idx_h1</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h1</span><span class="p">)</span>
                 <span class="p">]</span>
             <span class="p">)</span></div>
 
