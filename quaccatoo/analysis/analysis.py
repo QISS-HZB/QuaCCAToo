@@ -312,20 +312,18 @@ class Analysis:
                 )
 
         elif isinstance(self.FFT_values[1], list):
-            # if the FFT_peaks attribute is not empty, then plot them with the FFT
-            if len(self.FFT_peaks) != 0:
-                for idx in range(len(self.FFT_values[1])):
-                    ax.plot(self.FFT_values[0], self.FFT_values[1][idx], label=f"FFT {idx}")
+            for idx_fft, val_fft in enumerate(self.FFT_values[1]):
+                ax.plot(self.FFT_values[0], val_fft, label=f"FFT {idx_fft}")
+
+                # if the FFT_peaks attribute is not empty, then plot them with the FFT
+                if len(self.FFT_peaks) != 0:
                     ax.scatter(
-                        self.FFT_peaks[idx],
-                        self.FFT_values[1][idx][self.FFT_peaks_index[idx][0]],
+                        self.FFT_peaks[idx_fft],
+                        val_fft[self.FFT_peaks_index[idx_fft][0]],
                         color="red",
-                        label=f"Peaks {idx}",
+                        label=f"Peaks {idx_fft}",
                         s=50,
                     )
-            else:
-                for idx in range(len(self.FFT_values[1])):
-                    ax.plot(self.FFT_values[0], self.FFT_values[1][idx], label=f"FFT {idx}")
 
         # set the x-axis limits to the total time of the experiment
         if freq_lim is None:
@@ -463,9 +461,9 @@ class Analysis:
             plt.plot(self.experiment.variable, self.fit_params.best_fit, label="Fit")
 
         elif isinstance(self.experiment.results, list):
-            for idx in range(len(self.experiment.results)):
-                if self.fit_model[idx] is not None:
-                    plt.plot(self.experiment.variable, self.fit_params[idx].best_fit, label=f"Fit {idx}")
+            for idx_res, _ in enumerate(self.experiment.results):
+                if self.fit_model[idx_res] is not None:
+                    plt.plot(self.experiment.variable, self.fit_params[idx_res].best_fit, label=f"Fit {idx_res}")
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
@@ -505,12 +503,12 @@ class Analysis:
 
         elif isinstance(self.experiment.results, list):
             # if it is a list, iterate over the observables and plot each one
-            for idx in range(len(self.experiment.system.observable)):
+            for idx_obs, _ in enumerate(self.experiment.system.observable):
                 # plot all observables in the results
                 ax.plot(
                     self.experiment.variable,
-                    self.experiment.results[idx],
-                    label=f"Observable {idx}",
+                    self.experiment.results[idx_obs],
+                    label=f"Observable {idx_obs}",
                     lw=2,
                     alpha=0.7,
                 )

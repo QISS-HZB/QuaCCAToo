@@ -280,10 +280,10 @@ class ExpData:
             baseline_yaxis = self.results[x_start:x_end]
         elif isinstance(x_start, list) and isinstance(x_end, list) and len(x_start) == len(x_end):
             baseline_xaxis = np.concatenate(
-                [self.variable[x_start[i] : x_end[i]] for i in range(len(x_start))]
+                [self.variable[start : end] for start, end in zip(x_start, x_end)]
             )
             baseline_yaxis = np.concatenate(
-                [self.results[x_start[i] : x_end[i]] for i in range(len(x_start))]
+                [self.results[start : end] for start, end in zip(x_start, x_end)]
             )
         else:
             raise ValueError("x_start and x_end must int or a list of the same length.")
@@ -296,11 +296,11 @@ class ExpData:
             isinstance(result, np.ndarray) for result in self.results
         ):
             poly_fit = [
-                np.polyfit(baseline_xaxis[i], baseline_yaxis[i], poly_order)
-                for i in range(len(baseline_xaxis))
+                np.polyfit(baseline_xaxis[idx_base], val_base, poly_order)
+                for idx_base, val_base in enumerate(baseline_xaxis)
             ]
             self.results = [
-                self.results[i] - np.polyval(poly_fit[i], self.variable) for i in range(len(self.results))
+                val_res - np.polyval(poly_fit[idx_res], self.variable) for idx_res, val_res in enumerate(self.results)
             ]
 
         if not isinstance(plot, bool):
@@ -337,11 +337,11 @@ class ExpData:
         elif isinstance(self.results, list) and all(
             isinstance(result, np.ndarray) for result in self.results
         ):
-            for idx in range(len(self.results)):
+            for idx_res, val_res in enumerate(self.results):
                 if hasattr(self, 'yerror'):
-                    ax.errorbar(self.variable, self.results[idx], self.yerror[idx], alpha=0.7, label="Observable", fmt='o')
+                    ax.errorbar(self.variable, val_res, self.yerror[idx_res], alpha=0.7, label="Observable", fmt='o')
                 else:
-                    ax.scatter(self.variable, self.results[idx], label=f"Observable {idx}", alpha=0.7, s=15)
+                    ax.scatter(self.variable, val_res, label=f"Observable {idx_res}", alpha=0.7, s=15)
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")

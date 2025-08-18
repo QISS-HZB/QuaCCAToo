@@ -231,26 +231,26 @@ class NV(QSys):
         index_2 = None
         index_3 = None
         # iterates over all the eigenstates and find the one closest related to the |0,1/2> and |0,-1/2> states
-        for idx in range(len(self.eigenstates)):
+        for idx_eig, val_eig in enumerate(self.eigenstates):
             if self.N == 15:
-                proj_1 = np.abs(self.eigenstates[idx].overlap(basis(6, 2)))
-                proj_2 = np.abs(self.eigenstates[idx].overlap(basis(6, 3)))
+                proj_1 = np.abs(val_eig.overlap(basis(6, 2)))
+                proj_2 = np.abs(val_eig.overlap(basis(6, 3)))
 
             elif self.N == 14:
-                proj_1 = np.abs(self.eigenstates[idx].overlap(basis(9, 3)))
-                proj_2 = np.abs(self.eigenstates[idx].overlap(basis(9, 4)))
-                proj_3 = np.abs(self.eigenstates[idx].overlap(basis(9, 5)))
+                proj_1 = np.abs(val_eig.overlap(basis(9, 3)))
+                proj_2 = np.abs(val_eig.overlap(basis(9, 4)))
+                proj_3 = np.abs(val_eig.overlap(basis(9, 5)))
                 if proj_3 > max_3:
                     # if the projection is higher than the previous maximum, update the maximum and the index
                     max_3 = proj_3
-                    index_3 = idx
+                    index_3 = idx_eig
 
             if proj_1 > max_1:
                 max_1 = proj_1
-                index_1 = idx
+                index_1 = idx_eig
             if proj_2 > max_2:
                 max_2 = proj_2
-                index_2 = idx
+                index_2 = idx_eig
 
         beta = -cte.h * 1e6 / (cte.Boltzmann * temp)
 
