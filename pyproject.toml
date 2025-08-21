@@ -20,6 +20,7 @@ authors = [
 ]
 
 maintainers = [
+    { name = "Lucas Tsunaki", email = "lucas.tsunaki@helmholtz-berlin.de" },
     { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
 ]
 
@@ -32,19 +33,21 @@ dependencies = [
 ]
 
 classifiers = [
-"Intended Audience :: Education",
-"Intended Audience :: Science/Research",
-"Natural Language :: English",
-"Programming Language :: Python :: 3",
-"Topic :: Scientific/Engineering :: Physics",
-"Topic :: Scientific/Engineering :: Quantum Computing",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Quantum Technologies",
 ]
 
 [project.urls]
-homepage = "https://github.com/QISS-HZB/QuaCCAToo"
-source = "https://github.com/QISS-HZB/QuaCCAToo"
-documentation = "https://qiss-hzb.github.io/QuaCCAToo/"
-issues = "https://github.com/QISS-HZB/QuaCCAToo/issues"
+Homepage = "https://github.com/QISS-HZB/QuaCCAToo"
+Source = "https://github.com/QISS-HZB/QuaCCAToo"
+Documentation = "https://qiss-hzb.github.io/QuaCCAToo/"
+Issues = "https://github.com/QISS-HZB/QuaCCAToo/issues"
+Pypi = "https://pypi.org/project/QuaCCAToo/"
+"Arxiv Reference" = "https://arxiv.org/abs/2507.18759"
 
 [tool.hatch.version]
 path = "quaccatoo/__init__.py"
