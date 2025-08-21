@@ -9,18 +9,19 @@ description = "Quantum Color Centers Analysis Toolbox"
 readme = "README.md"
 
 license = "GPL-3.0-or-later"
-license-files = ["LICENCSE"]
+license-files = ["LICENSE"]
 
 requires-python = ">=3.9"
 
 authors = [
-    { name = "Lucas Tsunaki", email = "lucas.tsunaki@helmholtz-berlin.de" },
+    { name = "Lucas Tsunaki", email = "lucastsunaki@hotmail.com" },
     { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
     { name = "Sergei Trofimov", email = "sergei.trofimov@helmholtz-berlin.de" },
+    { name = "Kseniia Volkova", email = "kseniia.volkova@helmholtz-berlin.de" },
 ]
 
 maintainers = [
-    { name = "Lucas Tsunaki", email = "lucas.tsunaki@helmholtz-berlin.de" },
+    { name = "Lucas Tsunaki", email = "lucas.tsunaki@hotmail.com" },
     { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
 ]
 
