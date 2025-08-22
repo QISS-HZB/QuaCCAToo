@@ -11,9 +11,6 @@ import sys
 sys.path.insert(0, os.path.abspath("../"))
 
 project = "QuaCCAToo"
-copyright = "2025, Lucas Tsunaki, Anmol Singh, Sergei Trofimov"
-author = "Lucas Tsunaki, Anmol Singh, Sergei Trofimov"
-
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -43,6 +40,6 @@ autodoc_inherit_docstrings = False
 
 html_baseurl = "https://qiss-hzb.github.io/quaccatoo"
 html_theme = "sphinx_rtd_theme"
-# html_logo ='./QuaCCAToo_v3.png'
-# html_theme_options = {'full_logo': False}
 html_static_path = ["_static"]
+html_favicon = "_static/favicon.ico"
+html_show_copyright = False

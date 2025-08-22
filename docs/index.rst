@@ -17,7 +17,7 @@ at the expense of limited performance compared to compiled programming languages
 
 If you used QuaCCAToo in your work, please cite `arXiv:2507.18759 <https://arxiv.org/abs/2507.18759>`__.
 
-The documentation for QuaCCAToo is available here. Merge requests welcome at the `Github repository <https://github.com/QISS-HZB/QuaCCAToo>`__ !
+The documentation for QuaCCAToo is available here. Merge requests welcome at the `Github repository <https://github.com/QISS-HZB/QuaCCAToo>`__!
 
 To see usage examples, check the tutorial notebooks linked here. They
 contain:
