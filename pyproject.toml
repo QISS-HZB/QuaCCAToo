@@ -47,8 +47,8 @@ Homepage = "https://github.com/QISS-HZB/QuaCCAToo"
 Source = "https://github.com/QISS-HZB/QuaCCAToo"
 Documentation = "https://qiss-hzb.github.io/QuaCCAToo/"
 Issues = "https://github.com/QISS-HZB/QuaCCAToo/issues"
-Pypi = "https://pypi.org/project/QuaCCAToo/"
-"Arxiv Reference" = "https://arxiv.org/abs/2507.18759"
+PyPI = "https://pypi.org/project/QuaCCAToo/"
+arXiv = "https://arxiv.org/abs/2507.18759"
 
 [tool.hatch.version]
 path = "quaccatoo/__init__.py"
