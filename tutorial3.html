@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>01 - Rabi and Hahn of a Spin Half System &mdash; QuaCCAToo  documentation</title>
+  <title>03 - Conditional Gates with NV-13C &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/notebook1.html" />
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorial3.html" />
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -27,8 +27,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1. Defining the Spin 1/2 System" href="tutorials/01_spin_half_Rabi_Hahn.html" />
-    <link rel="prev" title="Tutorials" href="notebooks.html" /> 
+    <link rel="next" title="1. System Definition" href="tutorials/03_NV_conditional_gates.html" />
+    <link rel="prev" title="1. Energy Levels" href="tutorials/02_NV_Ramsey_PODMR.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,18 +53,18 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="notebooks.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">01 - Rabi and Hahn of a Spin Half System</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html">1. Defining the Spin 1/2 System</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html#2.-Rabi-Oscillation">2. Rabi Oscillation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html#3.-Hahn-Echo">3. Hahn Echo</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">03 - Conditional Gates with NV-13C</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html">1. System Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html#2.-Electron-Spin-Rabi">2. Electron Spin Rabi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html#3.-Nuclear-Spin-Rabi">3. Nuclear Spin Rabi</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="notebook2.html">02 - Ramsey and PODMR with NV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Conditional Gates with NV-13C</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a></li>
@@ -84,10 +84,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="notebooks.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">01 - Rabi and Hahn of a Spin Half System</li>
+          <li class="breadcrumb-item"><a href="tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">03 - Conditional Gates with NV-13C</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/notebook1.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/tutorial3.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -95,13 +95,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="rabi-and-hahn-of-a-spin-half-system">
-<h1>01 - Rabi and Hahn of a Spin Half System<a class="headerlink" href="#rabi-and-hahn-of-a-spin-half-system" title="Link to this heading"></a></h1>
+  <section id="conditional-gates-with-nv-13c">
+<h1>03 - Conditional Gates with NV-13C<a class="headerlink" href="#conditional-gates-with-nv-13c" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html">1. Defining the Spin 1/2 System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html#2.-Rabi-Oscillation">2. Rabi Oscillation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01_spin_half_Rabi_Hahn.html#3.-Hahn-Echo">3. Hahn Echo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html">1. System Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html#2.-Electron-Spin-Rabi">2. Electron Spin Rabi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/03_NV_conditional_gates.html#3.-Nuclear-Spin-Rabi">3. Nuclear Spin Rabi</a></li>
 </ul>
 </div>
 </section>
@@ -110,8 +110,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="notebooks.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tutorials/01_spin_half_Rabi_Hahn.html" class="btn btn-neutral float-right" title="1. Defining the Spin 1/2 System" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/02_NV_Ramsey_PODMR.html" class="btn btn-neutral float-left" title="1. Energy Levels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials/03_NV_conditional_gates.html" class="btn btn-neutral float-right" title="1. System Definition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

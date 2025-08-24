@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>02 - Ramsey and PODMR with NV &mdash; QuaCCAToo  documentation</title>
+  <title>05 - Ambiguous Resonances in DD with NV &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/notebook2.html" />
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorial5.html" />
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -27,8 +27,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1. Energy Levels" href="tutorials/02_NV_Ramsey_PODMR.html" />
-    <link rel="prev" title="1. Defining the Spin 1/2 System" href="tutorials/01_spin_half_Rabi_Hahn.html" /> 
+    <link rel="next" title="1. Field Misalignment and \(^{15}\text{N}\) Coupling" href="tutorials/05_NV_ambiguous_resonances.html" />
+    <link rel="prev" title="1. Electron Spin Echo Envelope Modulations" href="tutorials/04_NV_sensing_control_by_DD.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,19 +53,18 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="notebooks.html">Tutorials</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="notebook1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">02 - Ramsey and PODMR with NV</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html">1. Energy Levels</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#2.-Rabi-Oscillations-of-Electronic-Spin">2. Rabi Oscillations of Electronic Spin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#3.-Ramsey-Experiment">3. Ramsey Experiment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)">4. Pulsed Optically Detected Magnetic Resonance (pODMR)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">05 - Ambiguous Resonances in DD with NV</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html">1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html#2.-13C-Coupling">2. 13C Coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html#3.-RXY8-with-H2">3. RXY8 with H2</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="notebook3.html">03 - Conditional Gates with NV-13C</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook5.html">05 - Ambiguous Resonances in DD with NV</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebook6.html">06 - Teleportation Protocol with NV Pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">QuaCCAToo modules</a></li>
@@ -85,10 +84,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="notebooks.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">02 - Ramsey and PODMR with NV</li>
+          <li class="breadcrumb-item"><a href="tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">05 - Ambiguous Resonances in DD with NV</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/notebook2.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/tutorial5.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,14 +95,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ramsey-and-podmr-with-nv">
-<h1>02 - Ramsey and PODMR with NV<a class="headerlink" href="#ramsey-and-podmr-with-nv" title="Link to this heading"></a></h1>
+  <section id="ambiguous-resonances-in-dd-with-nv">
+<h1>05 - Ambiguous Resonances in DD with NV<a class="headerlink" href="#ambiguous-resonances-in-dd-with-nv" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html">1. Energy Levels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#2.-Rabi-Oscillations-of-Electronic-Spin">2. Rabi Oscillations of Electronic Spin</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#3.-Ramsey-Experiment">3. Ramsey Experiment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02_NV_Ramsey_PODMR.html#4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)">4. Pulsed Optically Detected Magnetic Resonance (pODMR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html">1. Field Misalignment and <span class="math notranslate nohighlight">\(^{15}\text{N}\)</span> Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html#2.-13C-Coupling">2. 13C Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05_NV_ambiguous_resonances.html#3.-RXY8-with-H2">3. RXY8 with H2</a></li>
 </ul>
 </div>
 </section>
@@ -112,8 +110,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tutorials/01_spin_half_Rabi_Hahn.html" class="btn btn-neutral float-left" title="1. Defining the Spin 1/2 System" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tutorials/02_NV_Ramsey_PODMR.html" class="btn btn-neutral float-right" title="1. Energy Levels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/04_NV_sensing_control_by_DD.html" class="btn btn-neutral float-left" title="1. Electron Spin Echo Envelope Modulations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials/05_NV_ambiguous_resonances.html" class="btn btn-neutral float-right" title="1. Field Misalignment and \(^{15}\text{N}\) Coupling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -81,5 +81,5 @@ QuaCCAToo is an object-oriented package organized with the following classes:
    :caption: Contents:
 
    installation
-   notebooks
+   tutorials
    modules
