@@ -84,6 +84,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -173,7 +174,11 @@
 <span class="sd">        Appends the pulse profile to the pulse_profiles list, which is used for plotting purposes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">system</span> <span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+        <span class="n">H2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes a general PulsedSim object with a quantum system, time dependent Hamiltonian and collapse operators.</span>
 
@@ -181,7 +186,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        system : QSys</span>
 <span class="sd">            Quantum system object representing the quantum system</span>
-<span class="sd">        H2 : Qobj</span>
+<span class="sd">        H2 : [Qobj, callable]</span>
 <span class="sd">            Time dependent sensing Hamiltonian of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">QSys</span><span class="p">):</span>
@@ -217,7 +222,11 @@
 
 <div class="viewcode-block" id="PulsedSim.add_free_evolution">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_free_evolution">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_free_evolution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.</span>
 
@@ -243,7 +252,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_free_evolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_free_evolution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">options</span> <span class="p">:</span> <span class="nb">dict</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the total time of the experiment and applies the time-evolution operator to the initial state.</span>
 <span class="sd">        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.</span>
@@ -277,8 +290,14 @@
 <div class="viewcode-block" id="PulsedSim.add_pulse">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_pulse">[docs]</a>
     <span class="k">def</span> <span class="nf">add_pulse</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="o">=</span><span class="n">square_pulse</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">h1</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
+        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">time_steps</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,</span>
 <span class="sd">        control Hamiltonian h1, pulse phase, pulse shape function, pulse parameters and time steps by calling the pulse method.</span>
@@ -371,7 +390,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="n">Ht</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ht</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">core_pulse_params</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pulse</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Ht</span> <span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]],</span>
+        <span class="n">duration</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">options</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">core_pulse_params</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calls the mesolve function from QuTip to perform the pulse operation with the given Hamiltonian, time array and options,</span>
 <span class="sd">        by updating the rho attribute of the class with the result of the operation.</span>
@@ -380,9 +405,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        Ht : list</span>
+<span class="sd">        Ht : list[Qobj, list[Qobj, Callable]]</span>
 <span class="sd">            List of Hamiltonians for the pulse operation in the form [H0, [h1, pulse_shape]]</span>
-<span class="sd">        tarray : np.array</span>
+<span class="sd">        duration : np.array</span>
 <span class="sd">            Time array for the pulse operation</span>
 <span class="sd">        options : dict</span>
 <span class="sd">            Options for the Qutip solver</span>
@@ -403,7 +428,10 @@
 
 <div class="viewcode-block" id="PulsedSim.add_delta_pulse">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.add_delta_pulse">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_delta_pulse</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">R</span> <span class="p">:</span> <span class="n">Qobj</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a delta pulse with zero duration to the sequence of operations of the experiment by calling _delta_pulse method.</span>
 <span class="sd">        For adding a realistic finite length pulse, check add_pulse method.</span>
@@ -420,7 +448,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_delta_pulse</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">R</span> <span class="p">:</span> <span class="n">Qobj</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Applies the delta pulse operation to the initial state by multiplying the rho attribute with the rotation operator R.</span>
 <span class="sd">        This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.</span>
@@ -437,7 +468,11 @@
 
 <div class="viewcode-block" id="PulsedSim.measure_qsys">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.measure_qsys">[docs]</a>
-    <span class="k">def</span> <span class="nf">measure_qsys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">measure_qsys</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observable</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">tol</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.</span>
 <span class="sd">        If no observable is given, the observable of the qsys is used.</span>
@@ -478,7 +513,13 @@
 
 <div class="viewcode-block" id="PulsedSim.run">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequence_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">variable</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sequence</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sequence_kwargs</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">map_kw</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.</span>
 <span class="sd">        The rho attribute is updated.</span>
@@ -535,7 +576,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_results</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span>
+        <span class="bp">self</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the results of the experiment from the calculated rho, based on the observable of the system.</span>
 <span class="sd">        The results are stored in the results attribute of the class.</span>
@@ -561,7 +604,13 @@
 
 <div class="viewcode-block" id="PulsedSim.plot_pulses">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.plot_pulses">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pulse Profiles&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles&quot;</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution.</span>
 
@@ -577,7 +626,7 @@
 <span class="sd">            Title of the plot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive integers&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">xlabel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span>
@@ -661,24 +710,24 @@
 
     <span class="k">def</span> <span class="nf">_check_attr_predef_seqs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">h1</span><span class="p">,</span>
-        <span class="n">Rx</span><span class="p">,</span>
-        <span class="n">Ry</span><span class="p">,</span>
-        <span class="n">pulse_shape</span><span class="p">,</span>
-        <span class="n">pulse_params</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">,</span>
-        <span class="n">time_steps</span><span class="p">,</span>
-        <span class="n">free_duration</span><span class="p">,</span>
-        <span class="n">pi_pulse_duration</span><span class="p">,</span>
-        <span class="n">M</span><span class="p">,</span>
-        <span class="n">projection_pulse</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">h1</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
+        <span class="n">Rx</span> <span class="p">:</span> <span class="n">Qobj</span><span class="p">,</span>
+        <span class="n">Ry</span> <span class="p">:</span> <span class="n">Qobj</span><span class="p">,</span>
+        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">options</span> <span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">time_steps</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">free_duration</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">pi_pulse_duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">M</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">projection_pulse</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h1 : Qobj or list(Qobj)</span>
+<span class="sd">        h1 : Qobj or list[Qobj]</span>
 <span class="sd">            Control Hamiltonian of the system</span>
 <span class="sd">        pulse_shape : callable or list(callable)</span>
 <span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of h1</span>
@@ -690,7 +739,7 @@
 <span class="sd">            Number of time steps for the pulses, if applicable</span>
 <span class="sd">        free_duration : np.array</span>
 <span class="sd">            Free evolution times of the sequence, if applicable</span>
-<span class="sd">        pi_pulse_duration : float</span>
+<span class="sd">        pi_pulse_duration : float or int</span>
 <span class="sd">            Duration of the pi pulse, if applicable</span>
 <span class="sd">        M : int</span>
 <span class="sd">            Order of the sequence, if applicable</span>
@@ -823,16 +872,21 @@
                     <span class="s2">&quot;h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list&quot;</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_append_pulse_to_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">pulse_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_append_pulse_to_profile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t0</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Internal method for appending a pulse to the pulse_profiles list to be called by _get_pulse_profiles.</span>
 <span class="sd">        The method check if the pulse is a delta pulse or a time-dependent pulse and appends it accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        t0 : float</span>
+<span class="sd">        t0 : float or int</span>
 <span class="sd">            Start time of the pulse</span>
-<span class="sd">        duration : float</span>
+<span class="sd">        duration : float or int</span>
 <span class="sd">            Duration of the pulse</span>
 <span class="sd">        pulse_params : dict, optional</span>
 <span class="sd">            Dictionary of parameters for the pulse_shape functions, by default None.</span>

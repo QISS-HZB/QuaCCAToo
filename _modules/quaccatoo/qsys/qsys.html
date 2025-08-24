@@ -85,15 +85,315 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">tensor</span>
 
+<span class="c1">####################################################################################################</span>
+
+<div class="viewcode-block" id="QSys">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys">[docs]</a>
+<span class="k">class</span> <span class="nc">QSys</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The QSys class defines a general quantum system and contains a method for plotting the energy levels of the Hamiltonian.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    H0 : Qobj or numpy.ndarray</span>
+<span class="sd">        Time-independent internal Hamiltonian of the system.</span>
+<span class="sd">    rho0 : Qobj, numpy.ndarray, or int</span>
+<span class="sd">        Initial state of the system.</span>
+<span class="sd">    c_ops : Qobj or list of Qobj</span>
+<span class="sd">        List of collapse operators.</span>
+<span class="sd">    observable : Qobj or list of Qobj</span>
+<span class="sd">        Observable to be measured.</span>
+<span class="sd">    units_H0 : str</span>
+<span class="sd">        Units of the Hamiltonian.</span>
+<span class="sd">    energy_levels : numpy.ndarray</span>
+<span class="sd">        Energy levels of the Hamiltonian.</span>
+<span class="sd">    eigenstates : numpy.ndarray of Qobj</span>
+<span class="sd">        Eigenstates of the Hamiltonian.</span>
+<span class="sd">    dim_add_spin : int</span>
+<span class="sd">        Dimension of the added spin if the add_spin method is used.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    _get_energy_levels</span>
+<span class="sd">        Calculates the eigenenergies of the Hamiltonian and sets the energy_levels and eigenstates attributes.</span>
+<span class="sd">    plot_energy</span>
+<span class="sd">        Plots the energy levels of the Hamiltonian.</span>
+<span class="sd">    add_spin</span>
+<span class="sd">        Adds another spin to the system&#39;s Hamiltonian and updates the system accordingly.</span>
+<span class="sd">    truncate</span>
+<span class="sd">        Truncates the quantum system by removing the states specified by the indexes from the system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">H0</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">rho0</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_ops</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">observable</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">units_H0</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable.</span>
+<span class="sd">        Checking all inputs and calculating the energy levels of the Hamiltonian.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H0 : Qobj | array</span>
+<span class="sd">            Time-independent internal Hamiltonian of the system</span>
+<span class="sd">        rho0 : Qobj | array | int</span>
+<span class="sd">            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</span>
+<span class="sd">        c_ops : Qobj | list(Qobj)</span>
+<span class="sd">            List of collapse operators</span>
+<span class="sd">        observable : Qobj | list(Qobj)</span>
+<span class="sd">            Observable to be measured</span>
+<span class="sd">        units_H0 : str</span>
+<span class="sd">            Units of the Hamiltonian</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the units are in frequency, assign the Hamiltonian as it is</span>
+        <span class="k">if</span> <span class="n">units_H0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="o">=</span> <span class="s2">&quot;MHz&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No units supplied, assuming default value of MHz.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">units_H0</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MHz&quot;</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="s2">&quot;kHz&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="o">=</span> <span class="n">units_H0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid value for units_H0. Expected either units of frequencies or &#39;eV&#39;, got </span><span class="si">{</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">. The Hamiltonian will be considered in MHz.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed H0 is not a hermitian object.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
+
+        <span class="c1"># check if rho0 is correctly defined</span>
+        <span class="k">if</span> <span class="n">rho0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Initial state not provided.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">[</span><span class="n">rho0</span><span class="p">]</span>  <span class="c1"># In this case the initial state is the i-th energy state</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">isket</span>
+            <span class="ow">and</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="ow">or</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">isherm</span>
+            <span class="ow">and</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;rho0 must be a Qobj, None or an index number indicating the system eigenstates&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj</span>
+        <span class="k">if</span> <span class="n">observable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">observable</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">observable</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">observable</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed observable is not hermitian.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">observable</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">isherm</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed observables are not hermitian.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># check if c_ops is a list of Qobj with the same dimensions as H0</span>
+        <span class="k">if</span> <span class="n">c_ops</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c_ops</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">c_ops</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">c_ops</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">c_ops</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All items in c_ops must be Qobj with the same dimensions as H0&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;c_ops must be a list of Qobj or None&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_energy_levels</span><span class="p">(</span>
+        <span class="bp">self</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.</span>
+<span class="sd">        Sets the energy_levels and eigenstates attributes of the class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H_eig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">eigenenergies</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span> <span class="o">=</span> <span class="n">H_eig</span> <span class="o">-</span> <span class="n">H_eig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="QSys.plot_energy">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.plot_energy">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_energy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="n">energy_lim</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the energy levels of the Hamiltonian defined in the system.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        figsize : tuple</span>
+<span class="sd">            Size of the figure</span>
+<span class="sd">        energy_lim : tuple</span>
+<span class="sd">            Limits of the energy levels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">val_ene</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">val_ene</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Energy (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">energy_lim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.05</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_lim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">energy_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">energy_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;freq_lim must be a tuple of two floats&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QSys.add_spin">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.add_spin">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_spin</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">H_spin</span> <span class="p">:</span> <span class="n">Qobj</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds another spin to the system&#39;s Hamiltonian, given a Hamiltonian for the new spin.</span>
+<span class="sd">        Updates the time-independent Hamiltonian, the energy levels, the initial state, the observable and the collapse operators accordingly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H_spin : Qobj</span>
+<span class="sd">            Hamiltonian of the new spin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H_spin</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;H_spin must be a Qobj in the form of a tensor with the original Hamiltonian H0.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">H_spin</span><span class="p">)</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed H_spin is not a hermitian object.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">H_spin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H_spin must be a Qobj with a dimension higher than H0.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="o">+</span> <span class="n">H_spin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="n">basis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QSys.truncate">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.truncate">[docs]</a>
+    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">indexes</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,</span>
+<span class="sd">        the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,</span>
+<span class="sd">        the indexes is set to 0 and the qsys is truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function</span>
+<span class="sd">        to remove the specified indexes from the Hamiltonian and the initial state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        indexes : int or list of int</span>
+<span class="sd">            Index or list of indexes to be removed from the system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">indexes</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">indexes</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sel must be a valid index of the Hamiltonian.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements in sel must be valid indices of the Hamiltonian.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sel must be an integer or a list of integers.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span>
+                <span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span>
+                <span class="p">]</span></div>
+</div>
+
+
+<span class="c1">####################################################################################################</span>
 
 <div class="viewcode-block" id="compose_sys">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.compose_sys">[docs]</a>
-<span class="k">def</span> <span class="nf">compose_sys</span><span class="p">(</span><span class="n">qsys1</span><span class="p">,</span> <span class="n">qsys2</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">compose_sys</span><span class="p">(</span>
+    <span class="n">qsys1</span> <span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+    <span class="n">qsys2</span> <span class="p">:</span> <span class="n">QSys</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QSys</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes two quantum systems and returns the composed system by performing tensor products of the two,</span>
 <span class="sd">    after checking if all parameters are valid.</span>
@@ -181,7 +481,14 @@
 
 <div class="viewcode-block" id="plot_energy_B0">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.plot_energy_B0">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_energy_B0</span><span class="p">(</span><span class="n">B0</span><span class="p">,</span> <span class="n">H0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">energy_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Magnetic Field&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Energy (MHz)&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_energy_B0</span><span class="p">(</span>
+    <span class="n">B0</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">H0</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span> 
+    <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">energy_lim</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">xlabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Magnetic Field&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Energy (MHz)&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots the energy levels of a Hamiltonian as a function of a magnetic field B0.</span>
 
@@ -233,283 +540,6 @@
 
     <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Energy Levels&quot;</span><span class="p">)</span></div>
 
-
-
-<span class="c1">####################################################################################################</span>
-
-
-<div class="viewcode-block" id="QSys">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys">[docs]</a>
-<span class="k">class</span> <span class="nc">QSys</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The QSys class defines a general quantum system and contains a method for plotting the energy levels of the Hamiltonian.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    H0 : Qobj or numpy.ndarray</span>
-<span class="sd">        Time-independent internal Hamiltonian of the system.</span>
-<span class="sd">    rho0 : Qobj, numpy.ndarray, or int</span>
-<span class="sd">        Initial state of the system.</span>
-<span class="sd">    c_ops : Qobj or list of Qobj</span>
-<span class="sd">        List of collapse operators.</span>
-<span class="sd">    observable : Qobj or list of Qobj</span>
-<span class="sd">        Observable to be measured.</span>
-<span class="sd">    units_H0 : str</span>
-<span class="sd">        Units of the Hamiltonian.</span>
-<span class="sd">    energy_levels : numpy.ndarray</span>
-<span class="sd">        Energy levels of the Hamiltonian.</span>
-<span class="sd">    eigenstates : numpy.ndarray of Qobj</span>
-<span class="sd">        Eigenstates of the Hamiltonian.</span>
-<span class="sd">    dim_add_spin : int</span>
-<span class="sd">        Dimension of the added spin if the add_spin method is used.</span>
-
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
-<span class="sd">    _get_energy_levels</span>
-<span class="sd">        Calculates the eigenenergies of the Hamiltonian and sets the energy_levels and eigenstates attributes.</span>
-<span class="sd">    plot_energy</span>
-<span class="sd">        Plots the energy levels of the Hamiltonian.</span>
-<span class="sd">    add_spin</span>
-<span class="sd">        Adds another spin to the system&#39;s Hamiltonian and updates the system accordingly.</span>
-<span class="sd">    truncate</span>
-<span class="sd">        Truncates the quantum system by removing the states specified by the indexes from the system</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H0</span><span class="p">,</span> <span class="n">rho0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units_H0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable.</span>
-<span class="sd">        Checking all inputs and calculating the energy levels of the Hamiltonian.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        H0 : Qobj/array</span>
-<span class="sd">            Time-independent internal Hamiltonian of the system</span>
-<span class="sd">        rho0 : Qobj/array/int</span>
-<span class="sd">            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates</span>
-<span class="sd">        c_ops : list(Qobj)</span>
-<span class="sd">            List of collapse operators</span>
-<span class="sd">        observable : Qobj or list(Qobj)</span>
-<span class="sd">            Observable to be measured</span>
-<span class="sd">        units_H0 : str</span>
-<span class="sd">            Units of the Hamiltonian</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if the units are in frequency, assign the Hamiltonian as it is</span>
-        <span class="k">if</span> <span class="n">units_H0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="o">=</span> <span class="s2">&quot;MHz&quot;</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No units supplied, assuming default value of MHz.&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">units_H0</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MHz&quot;</span><span class="p">,</span> <span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="s2">&quot;kHz&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="o">=</span> <span class="n">units_H0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid value for units_H0. Expected either units of frequencies or &#39;eV&#39;, got </span><span class="si">{</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">. The Hamiltonian will be considered in MHz.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed H0 is not a hermitian object.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
-
-        <span class="c1"># check if rho0 is correctly defined</span>
-        <span class="k">if</span> <span class="n">rho0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Initial state not provided.&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rho0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">[</span><span class="n">rho0</span><span class="p">]</span>  <span class="c1"># In this case the initial state is the i-th energy state</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">isket</span>
-            <span class="ow">and</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="ow">or</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">isherm</span>
-            <span class="ow">and</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;rho0 must be a Qobj, None or an index number indicating the system eigenstates&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj</span>
-        <span class="k">if</span> <span class="n">observable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">observable</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">observable</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">observable</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed observable is not hermitian.&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">H0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">observable</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">isherm</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observable</span><span class="p">):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed observables are not hermitian.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># check if c_ops is a list of Qobj with the same dimensions as H0</span>
-        <span class="k">if</span> <span class="n">c_ops</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c_ops</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">c_ops</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="p">(</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">c_ops</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">c_ops</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All items in c_ops must be Qobj with the same dimensions as H0&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;c_ops must be a list of Qobj or None&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_energy_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.</span>
-<span class="sd">        Sets the energy_levels and eigenstates attributes of the class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">H_eig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">eigenenergies</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span> <span class="o">=</span> <span class="n">H_eig</span> <span class="o">-</span> <span class="n">H_eig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-
-<div class="viewcode-block" id="QSys.plot_energy">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.plot_energy">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">energy_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plots the energy levels of the Hamiltonian defined in the system.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        figsize : tuple</span>
-<span class="sd">            Size of the figure</span>
-<span class="sd">        energy_lim : list</span>
-<span class="sd">            Limits of the energy levels</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;figsize must be a tuple of two positive floats&quot;</span><span class="p">)</span>
-
-        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">val_ene</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">val_ene</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Energy (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
-
-        <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">energy_lim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.05</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_lim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">energy_lim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">energy_lim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;freq_lim must be a tuple of two floats&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="QSys.add_spin">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.add_spin">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_spin</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds another spin to the system&#39;s Hamiltonian, given a Hamiltonian for the new spin.</span>
-<span class="sd">        Updates the time-independent Hamiltonian, the energy levels, the initial state, the observable and the collapse operators accordingly.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        H_spin : Qobj</span>
-<span class="sd">            Hamiltonian of the new spin</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">H_spin</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;H_spin must be a Qobj in the form of a tensor with the original Hamiltonian H0.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">H_spin</span><span class="p">)</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Passed H_spin is not a hermitian object.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">H_spin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H_spin must be a Qobj with a dimension higher than H0.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="o">+</span> <span class="n">H_spin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isherm</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="p">,</span> <span class="n">basis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="QSys.truncate">
-<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.qsys.QSys.truncate">[docs]</a>
-    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,</span>
-<span class="sd">        the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,</span>
-<span class="sd">        the indexes is set to 0 and the qsys is truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function</span>
-<span class="sd">        to remove the specified indexes from the Hamiltonian and the initial state.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        indexes : int or list of int</span>
-<span class="sd">            Index or list of indexes to be removed from the system.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">indexes</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">indexes</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sel must be a valid index of the Hamiltonian.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-                <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span>
-            <span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All elements in sel must be valid indices of the Hamiltonian.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sel must be an integer or a list of integers.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observable</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observable</span>
-                <span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">isket</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho0</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_ops</span>
-                <span class="p">]</span></div>
-</div>
 
 </pre></div>
 

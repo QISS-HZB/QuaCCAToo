@@ -83,7 +83,7 @@
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <div class="viewcode-block" id="ExpData">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData">[docs]</a>
@@ -120,17 +120,17 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">file_path</span><span class="p">,</span>
-        <span class="n">variable_column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">results_columns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">yerr_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">variable_name</span><span class="o">=</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span>
-        <span class="n">result_name</span><span class="o">=</span><span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
-        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-        <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Experimental Data&quot;</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">loadtxt_kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">file_path</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">variable_column</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">results_columns</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">yerr_columns</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">variable_name</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">result_name</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
+        <span class="n">plot</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Experimental Data&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">loadtxt_kwargs</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor of the ExpData class.</span>
 <span class="sd">        It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.</span>
@@ -212,8 +212,13 @@
 <div class="viewcode-block" id="ExpData.subtract_results_columns">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData.subtract_results_columns">[docs]</a>
     <span class="k">def</span> <span class="nf">subtract_results_columns</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pos_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">neg_col</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Subtracted Expt. Data&quot;</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pos_col</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">neg_col</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Subtracted Expt. Data&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the results attribute substracting the results of the negative column from the positive column.</span>
 
@@ -246,8 +251,12 @@
 <div class="viewcode-block" id="ExpData.offset_correction">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData.offset_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">offset_correction</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">background_value</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Expt. Data with Offset Correction&quot;</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">background_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Expt. Data with Offset Correction&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the results attribute substracting the background value from the results.</span>
 
@@ -283,8 +292,12 @@
 <div class="viewcode-block" id="ExpData.rescale_correction">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData.rescale_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">rescale_correction</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rescale_value</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Expt. Data with Rescale Correction&quot;</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rescale_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Expt. Data with Rescale Correction&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the results attribute multiplying the results by the rescale value.</span>
 
@@ -321,13 +334,13 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData.poly_base_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">poly_base_correction</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">x_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">x_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-        <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Expt. Data with Polynomial Baseline Correction&quot;</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">x_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">x_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">poly_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Expt. Data with Polynomial Baseline Correction&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the results attribute performing a polynomial baseline correction.</span>
 <span class="sd">        The baseline is fitted to the data between x_start and x_end, representing the start and end of the xaxis index.</span>
@@ -403,7 +416,11 @@
 
 <div class="viewcode-block" id="ExpData.plot_exp_data">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.exp_data.exp_data.ExpData.plot_exp_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_exp_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">figtitle</span><span class="o">=</span><span class="s2">&quot;Experimental Data&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_exp_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">figtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Experimental Data&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the experimental data.</span>
 

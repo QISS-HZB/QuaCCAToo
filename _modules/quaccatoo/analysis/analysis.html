@@ -87,10 +87,10 @@
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Bloch</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">fidelity</span>
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span><span class="p">,</span> <span class="n">pearsonr</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">..exp_data.exp_data</span> <span class="kn">import</span> <span class="n">ExpData</span>
 <span class="kn">from</span> <span class="nn">..pulsed_sim.pulsed_sim</span> <span class="kn">import</span> <span class="n">PulsedSim</span>
-
 
 <div class="viewcode-block" id="Analysis">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis">[docs]</a>
@@ -138,8 +138,10 @@
 <span class="sd">    plot_bloch :</span>
 <span class="sd">        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">experiment</span> <span class="p">:</span> <span class="n">ExpData</span> <span class="o">|</span> <span class="n">PulsedSim</span>  
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks if the results and variable attributes are not empty and have the same length.</span>
 
@@ -177,7 +179,13 @@
 
 <div class="viewcode-block" id="Analysis.compare_with">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.compare_with">[docs]</a>
-    <span class="k">def</span> <span class="nf">compare_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_comparison</span><span class="p">,</span> <span class="n">results_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">comparison_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linear_fit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">compare_with</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exp_comparison</span> <span class="p">:</span> <span class="n">ExpData</span> <span class="o">|</span> <span class="n">PulsedSim</span> <span class="p">,</span>
+        <span class="n">results_index</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">comparison_index</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">linear_fit</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads a second experiment to compare with the first one.</span>
 <span class="sd">        If linear_fit is True, a linear fit is performed between the two data sets, which is common for optical experiments.</span>
@@ -251,7 +259,13 @@
 
 <div class="viewcode-block" id="Analysis.plot_comparison">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_comparison">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Observable&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Results Comparisons&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_comparison</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Observable&quot;</span><span class="p">,</span>
+        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Results Comparisons&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the results of the experiment and the comparison experiment.</span>
 
@@ -296,7 +310,9 @@
 
 <div class="viewcode-block" id="Analysis.run_FFT">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.run_FFT">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_FFT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run_FFT</span><span class="p">(</span>
+        <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the real fast Fourier transform for the results and variable attributes of the PulsedSimulation object.</span>
 <span class="sd">        The results are centered around the mean value before the FFT is calculated in order to remove the DC component.</span>
@@ -328,7 +344,10 @@
 
 <div class="viewcode-block" id="Analysis.get_peaks_FFT">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.get_peaks_FFT">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_peaks_FFT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">find_peaks_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_peaks_FFT</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">find_peaks_kwargs</span> <span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the peaks of the FFT values calculated by the run_FFT method.</span>
 
@@ -361,8 +380,13 @@
 <div class="viewcode-block" id="Analysis.plot_FFT">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_FFT">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_FFT</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">freq_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;FFT Intensity&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;FFT of the Results&quot;</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">freq_lim</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FFT Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FFT of the Results&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the FFT</span>
 
@@ -438,7 +462,12 @@
 
 <div class="viewcode-block" id="Analysis.run_fit">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.run_fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_model</span><span class="p">,</span> <span class="n">results_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fit_model</span> <span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+        <span class="n">results_index</span> <span class="p">:</span> <span class="nb">int</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">guess</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the fit method from lmfit to fit the results of the experiment with a given model,</span>
 <span class="sd">        guess for the initial parameters.</span>
@@ -541,7 +570,13 @@
 
 <div class="viewcode-block" id="Analysis.plot_fit">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pulsed Result&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Expectation Value&quot;</span><span class="p">,</span>
+        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulsed Result&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the results of the experiment with the fitted function.</span>
 
@@ -573,7 +608,13 @@
 
 <div class="viewcode-block" id="Analysis.plot_results">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_results">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Observable&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Results&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Observable&quot;</span><span class="p">,</span>
+        <span class="n">title</span>  <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Results&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the results of the experiment</span>
 
@@ -631,7 +672,10 @@
 
 <div class="viewcode-block" id="Analysis.plot_bloch">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.Analysis.plot_bloch">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_bloch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="nf">plot_bloch</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two.</span>
 
@@ -664,26 +708,35 @@
 </div>
 
 
+<span class="c1">#####################################</span>
 
 <div class="viewcode-block" id="plot_histogram">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.analysis.analysis.plot_histogram">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_comparison</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Matrix Histogram&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span>
+    <span class="n">rho</span> <span class="p">:</span> <span class="n">Qobj</span><span class="p">,</span>
+    <span class="n">rho_comparison</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">component</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;abs&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;real&quot;</span><span class="p">,</span>
+    <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Matrix Histogram&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot a 3D histogram of the final density matrix of the simulation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    rho : Qobj</span>
+<span class="sd">        A Qobj representing a density matrix to be plotted</span>
+<span class="sd">    rho_comparison : Qobj, optional</span>
+<span class="sd">        A Qobj representing a density matrix to be compared with</span>
 <span class="sd">    component : str</span>
 <span class="sd">        Component of the density matrix to be plotted. Can be &#39;real&#39;, &#39;imag&#39;, or &#39;abs&#39;.</span>
 <span class="sd">    figsize : tuple</span>
 <span class="sd">        Size of the figure to be passed to matplotlib.pyplot</span>
-<span class="sd">    rho_comparison : Qobj, optional</span>
-<span class="sd">        A Qobj representing a density matrix to be compared with the final density matrix of the simulation</span>
 <span class="sd">    title : str</span>
 <span class="sd">        Title of the plot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check all parameters</span>
-    <span class="k">if</span> <span class="n">component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;abs&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;abs&quot;</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;component must be &#39;real&#39;, &#39;imag&#39;, or &#39;abs&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
