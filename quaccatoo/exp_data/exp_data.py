@@ -4,7 +4,7 @@ This module contains the ExpData class as part of the QuaCCAToo package.
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+from typing import Any
 
 class ExpData:
     """
@@ -39,17 +39,17 @@ class ExpData:
 
     def __init__(
         self,
-        file_path,
-        variable_column=0,
-        results_columns=1,
-        yerr_columns=None,
-        variable_name="Time",
-        result_name="Expectation Value",
-        plot=False,
-        figsize=(6, 4),
-        figtitle="Experimental Data",
-        **loadtxt_kwargs,
-    ):
+        file_path : str,
+        variable_column : int = 0,
+        results_columns : int = 1,
+        yerr_columns : int | None = None,
+        variable_name : str = "Time",
+        result_name : str = "Expectation Value",
+        plot : bool = False,
+        figsize : tuple[int, int] = (6, 4),
+        figtitle : str = "Experimental Data",
+        **loadtxt_kwargs : Any,
+    ) -> None:
         """
         Constructor of the ExpData class.
         It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.
@@ -129,8 +129,13 @@ class ExpData:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
     def subtract_results_columns(
-        self, pos_col=0, neg_col=1, plot=False, figsize=(6, 4), figtitle="Subtracted Expt. Data"
-    ):
+        self,
+        pos_col: int = 0,
+        neg_col: int = 1,
+        plot: bool = False,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Subtracted Expt. Data",
+    ) -> None:
         """
         Overwrites the results attribute substracting the results of the negative column from the positive column.
 
@@ -160,8 +165,12 @@ class ExpData:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
     def offset_correction(
-        self, background_value, plot=False, figsize=(6, 4), figtitle="Expt. Data with Offset Correction"
-    ):
+        self,
+        background_value: int | float,
+        plot: bool = False,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Expt. Data with Offset Correction",
+    ) -> None:
         """
         Overwrites the results attribute substracting the background value from the results.
 
@@ -194,8 +203,12 @@ class ExpData:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
     def rescale_correction(
-        self, rescale_value, plot=False, figsize=(6, 4), figtitle="Expt. Data with Rescale Correction"
-    ):
+        self,
+        rescale_value: int | float,
+        plot: bool = False,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Expt. Data with Rescale Correction",
+    ) -> None:
         """
         Overwrites the results attribute multiplying the results by the rescale value.
 
@@ -229,13 +242,13 @@ class ExpData:
 
     def poly_base_correction(
         self,
-        x_start=None,
-        x_end=None,
-        poly_order=2,
-        plot=False,
-        figsize=(6, 4),
-        figtitle="Expt. Data with Polynomial Baseline Correction",
-    ):
+        x_start: int | list[int] | None = None,
+        x_end: int | list[int] | None = None,
+        poly_order: int = 2,
+        plot: bool = False,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Expt. Data with Polynomial Baseline Correction",
+    ) -> None:
         """
         Overwrites the results attribute performing a polynomial baseline correction.
         The baseline is fitted to the data between x_start and x_end, representing the start and end of the xaxis index.
@@ -308,7 +321,11 @@ class ExpData:
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
-    def plot_exp_data(self, figsize=(6, 4), figtitle="Experimental Data"):
+    def plot_exp_data(
+        self,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Experimental Data",
+    ) -> None:
         """
         Plots the experimental data.
 

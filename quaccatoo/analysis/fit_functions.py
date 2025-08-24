@@ -25,7 +25,10 @@ from lmfit.models import (
 ############################################## Rabi - Periodic Oscillation ##############################################
 
 
-def _guess_sin(data, x):
+def _guess_sin(
+    data : np.ndarray | list[float | int],
+    x : np.ndarray | list[float | int],
+) -> tuple[float, float]:
     """
     Internal helper function to provide decent first guesses for sinusoidal functions.
 
@@ -38,9 +41,9 @@ def _guess_sin(data, x):
 
     Returns
     -------
-    amp: float
+    amp: float | int
         Guessed amplitude
-    frequency: float
+    frequency: float | int
         Guessed frequency
     """
     y = data - data.mean()
@@ -53,7 +56,13 @@ def _guess_sin(data, x):
     return amp, frequency
 
 
-def fit_rabi(x, amp=1, Tpi=10, phi=0, offset=0):
+def fit_rabi(
+    x : np.ndarray | list[float | int],
+    amp : float | int= 1,
+    Tpi : float | int = 10,
+    phi : float | int = 0,
+    offset : float | int = 0
+    ) -> np.ndarray:
     """
     Fit a cosine function to Rabi oscillations.
 
@@ -61,13 +70,13 @@ def fit_rabi(x, amp=1, Tpi=10, phi=0, offset=0):
     ----------
     x : array_like
         Time values.
-    amp : float
+    amp : float | int
         Amplitude of the cosine function.
-    Tpi : float
+    Tpi : float | int
         Pi-pulse duration (half the period of the cosine function).
-    phi : float
+    phi : float | int
         Phase of the cosine function.
-    offset : float
+    offset : float | int
         Offset of the cosine function.
     """
     return amp * np.cos(np.pi * x / Tpi + phi) + offset
@@ -80,12 +89,29 @@ class RabiModel(Model):
     Takes the same parameters as the fit_rabi function.
     """
 
-    def __init__(self, independent_vars=["x"], prefix="", nan_policy="raise", **kwargs):
+    def __init__(
+        self,
+        independent_vars=["x"],
+        prefix="",
+        nan_policy="raise", 
+        **kwargs
+        ):
+        """
+        TODO
+        """
         kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
         super().__init__(fit_rabi, **kwargs)
         self._set_paramhints_prefix()
 
-    def guess(self, data, x, **kwargs):
+    def guess(
+        self,
+        data,
+        x,
+        **kwargs
+        ):
+        """
+        TODO
+        """
         offset = data.mean()
         amp, frequency = _guess_sin(data, x)
         data = data - data.mean()
@@ -106,7 +132,10 @@ class RabiModel(Model):
 ################################################ Exponential Decay ####################################################
 
 
-def _guess_exp(data, x):
+def _guess_exp(
+    data : np.ndarray | list[float | int],
+    x : np.ndarray | list[float | int],
+) -> float:
     """
     Internal helper function to provide decent first guesses for exponential functions.
 
@@ -130,7 +159,12 @@ def _guess_exp(data, x):
     return coeff
 
 
-def fit_exp_decay(x, amp=1, Tc=1, offset=0):
+def fit_exp_decay(
+    x : np.ndarray | list[float | int],
+    amp : float | int = 1,
+    Tc : float | int = 1,
+    offset : float | int = 0
+    ) -> np.ndarray:
     """
     Fit a simple exponential decay function.
 
@@ -138,11 +172,11 @@ def fit_exp_decay(x, amp=1, Tc=1, offset=0):
     ----------
     x : array_like
         Time values.
-    amp : float
+    amp : float | int
         Amplitude of the exponential decay.
-    Tc : float
+    Tc : float | int
         Decay time constant.
-    offset : float
+    offset : float | int
         Offset of the exponential decay.
     """
     return amp * np.exp(-x / Tc) + offset
@@ -155,11 +189,28 @@ class ExpDecayModel(Model):
     Takes the same parameters as the fit_exp_decay function.
     """
 
-    def __init__(self, independent_vars=["x"], prefix="", nan_policy="raise", **kwargs):
+    def __init__(
+        self,
+        independent_vars=["x"],
+        prefix="", 
+        nan_policy="raise",
+        **kwargs
+        ):
+        """
+        TODO
+        """
         kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
         super().__init__(fit_exp_decay, **kwargs)
 
-    def guess(self, data, x, **kwargs):
+    def guess(
+        self,
+        data,
+        x,
+        **kwargs
+        ):
+        """
+        TODO
+        """
         coeff = _guess_exp(data, x)
         pars = self.make_params(amp=coeff[0], Tc=coeff[1], offset=data[-1])
         return update_param_vals(pars, self.prefix, **kwargs)
@@ -168,7 +219,14 @@ class ExpDecayModel(Model):
 ######################################################### Rabi with Exp Decay ####################################################
 
 
-def fit_rabi_decay(x, amp=1, Tpi=10, phi=0, offset=0, Tc=1):
+def fit_rabi_decay(
+    x : np.ndarray | list[float | int],
+    amp : float | int = 1,
+    Tpi : float | int = 10,
+    phi : float | int = 0,
+    offset : float | int = 0,
+    Tc : float | int = 1
+    ) -> np.ndarray:
     """
     Fit a cosine function with exponential decay to Rabi oscillations.
 
@@ -176,15 +234,15 @@ def fit_rabi_decay(x, amp=1, Tpi=10, phi=0, offset=0, Tc=1):
     ----------
     x : array_like
         Time values.
-    amp : float
+    amp : float | int
         Amplitude of the cosine function.
-    Tpi : float
+    Tpi : float | int
         Pi-pulse duration (half the period of the cosine function).
-    phi : float
+    phi : float | int
         Phase of the cosine function.
-    offset : float
+    offset : float | int
         Offset of the cosine function.
-    Tc : float
+    Tc : float | int
         Decay time constant.
     """
     return amp * np.cos(np.pi * x / Tpi + phi) * np.exp(-x / Tc) + offset
@@ -197,11 +255,28 @@ class RabiDecayModel(Model):
     Takes the same parameters as the fit_rabi_decay function.
     """
 
-    def __init__(self, independent_vars=["x"], prefix="", nan_policy="raise", **kwargs):
+    def __init__(
+        self,
+        independent_vars=["x"],
+        prefix="",
+        nan_policy="raise",
+        **kwargs
+        ):
+        """
+        TODO
+        """
         kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
         super().__init__(fit_rabi_decay, **kwargs)
 
-    def guess(self, data, x, **kwargs):
+    def guess(
+        self,
+        data,
+        x,
+        **kwargs
+        ):
+        """
+        TODO
+        """
         offset = data.mean()
         amp, frequency = _guess_sin(data, x)
         data = data - data.mean()
@@ -223,7 +298,13 @@ class RabiDecayModel(Model):
         return update_param_vals(pars, self.prefix, **kwargs)
 
 
-def fit_exp_decay_n(x, A=1, C=0, Tc=1, n=1):
+def fit_exp_decay_n(
+    x : np.ndarray | list[float | int],
+    A : float | int = 1,
+    C : float | int = 0,
+    Tc : float | int = 1, 
+    n : float | int = 1
+    ) -> np.ndarray:
     """
     Fit an exponential decay function with power n.
 
@@ -231,13 +312,13 @@ def fit_exp_decay_n(x, A=1, C=0, Tc=1, n=1):
     ----------
     x : array_like
         Time values.
-    A : float
+    A : float | int
         Amplitude of the exponential decay.
-    C : float
+    C : float | int
         Offset of the exponential decay.
-    Tc : float
+    Tc : float | int
         Decay time constant.
-    n : float
+    n : float | int
         Power of the exponential decay.
     """
     return A * np.exp(-((x / Tc) ** n)) + C
@@ -246,7 +327,14 @@ def fit_exp_decay_n(x, A=1, C=0, Tc=1, n=1):
 ####################################################### Hahn Modulation ##############################################################
 
 
-def fit_hahn_mod(x, A, B, C, f1, f2):
+def fit_hahn_mod(
+    x : np.ndarray | list[float | int],
+    A : float | int,
+    B : float | int,
+    C : float | int,
+    f1 : float | int, 
+    f2 : float | int
+    ) -> np.ndarray:
     """
     Fit a Hahn echo with modulation function with 2 frequencies.
 
@@ -254,21 +342,30 @@ def fit_hahn_mod(x, A, B, C, f1, f2):
     ----------
     x : array_like
         Time values.
-    A : float
+    A : float | int
         Amplitude of the echo.
-    B : float
+    B : float | int
         Amplitude of the modulation.
-    C : float
+    C : float | int
         Offset of the echo.
-    f1 : float
+    f1 : float | int
         First modulation frequency.
-    f2 : float
+    f2 : float | int
         Second modulation frequency.
     """
     return (A - B * np.sin(2 * np.pi * f1 * x / 2) ** 2 * np.sin(2 * np.pi * f2 * x / 2) ** 2) + C
 
 
-def fit_hahn_mod_decay(x, A, B, C, f1, f2, Tc, n):
+def fit_hahn_mod_decay(
+    x : np.ndarray | list[float | int],
+    A : float | int,
+    B : float | int,
+    C : float | int,
+    f1 : float | int, 
+    f2 : float | int,
+    Tc : float | int,
+    n : float | int
+    ) -> np.ndarray:
     """
     Fit a Hahn echo with modulation function with 2 frequencies and exponential decay.
 
@@ -276,32 +373,34 @@ def fit_hahn_mod_decay(x, A, B, C, f1, f2, Tc, n):
     ----------
     x : array_like
         Time values.
-    A : float
+    A : float | int
         Amplitude of the echo.
-    B : float
+    B : float | int
         Amplitude of the modulation.
-    C : float
+    C : float | int
         Offset of the echo.
-    f1 : float
+    f1 : float | int
         First modulation frequency.
-    f2 : float
+    f2 : float | int
         Second modulation frequency.
-    Tc : float
+    Tc : float | int
         Decay time constant.
-    n : float
+    n : float | int
         Power of the exponential decay.
     """
-    return (
-        np.exp(-((x / Tc) ** n))
-        * (A - B * np.sin(2 * np.pi * f1 * x / 2) ** 2 * np.sin(2 * np.pi * f2 * x / 2) ** 2)
-        + C
-    )
+    return np.exp(-((x / Tc) ** n)) * (fit_hahn_mod(x, A, B, C, f1, f2) - C) + C
 
 
 ####################################################### Lorentzian and sinc ##############################################################
 
 
-def fit_lorentz(x, A, gamma, f0, C):
+def fit_lorentz(
+    x : np.ndarray | list[float | int],
+    A : float | int,
+    gamma : float | int,
+    f0 : float | int,
+    C : float | int
+    ) -> np.ndarray:
     """
     Fit a Lorentzian peak.
 
@@ -309,19 +408,28 @@ def fit_lorentz(x, A, gamma, f0, C):
     ----------
     x : array_like
         Frequency values.
-    A : float
+    A : float | int
         Amplitude of the peak.
-    gamma : float
+    gamma : float | int
         Width of the peak.
-    f0 : float
+    f0 : float | int
         Central requency of the peak.
-    C : float
+    C : float | int
         Offset of the peak.
     """
     return C - A * (gamma**2) / ((x - f0) ** 2 + gamma**2)
 
 
-def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87e3, f02=2.87e3, C=0):
+def fit_two_lorentz(
+    x : np.ndarray | list[float | int],
+    A1 : float | int = 1, 
+    A2 : float | int = 1,
+    gamma1 : float | int = 0.1,
+    gamma2 : float | int = 0.1,
+    f01 : float | int = 2.87e3,
+    f02 : float | int = 2.87e3,
+    C : float | int = 0
+    ) -> np.ndarray:
     """
     Fit two symmetric Lorentzian peaks.
 
@@ -329,25 +437,32 @@ def fit_two_lorentz(x, A1=1, A2=1, gamma1=0.1, gamma2=0.1, f01=2.87e3, f02=2.87e
     ----------
     x : array_like
         Frequency values.
-    A1 : float
+    A1 : float | int
         Amplitude of the first peak.
-    A2 : float
+    A2 : float | int
         Amplitude of the second peak.
-    gamma1 : float
+    gamma1 : float | int
         Width of the first peak.
-    gamma2 : float
+    gamma2 : float | int
         Width of the second peak.
-    f01 : float
+    f01 : float | int
         Central frequency of the first peak.
-    f02 : float
+    f02 : float | int
         Central frequency of the second peak.
-    C : float
+    C : float | int
         Offset of the peaks.
     """
     return C + fit_lorentz(x, A1, gamma1, f01, 0) + fit_lorentz(x, A2, gamma2, f02, 0)
 
 
-def fit_two_lorentz_sym(x, A=1, gamma=1, f_mean=2.87e3, f_delta=1, C=0):
+def fit_two_lorentz_sym(
+    x : np.ndarray | list[float | int],
+    A : float | int = 1,
+    gamma : float | int = 1,
+    f_mean : float | int = 2.87e3,
+    f_delta : float | int = 1,
+    C : float | int = 0
+    ) -> np.ndarray:
     """
     Fit two symmetric Lorentzian peaks.
 
@@ -355,15 +470,15 @@ def fit_two_lorentz_sym(x, A=1, gamma=1, f_mean=2.87e3, f_delta=1, C=0):
     ----------
     x : array_like
         Frquency values.
-    A : float
+    A : float | int
         Amplitude of the peaks.
-    gamma : float
+    gamma : float | int
         Width of the peaks.
-    f_mean : float
+    f_mean : float | int
         Mean frequency of the peaks.
-    f_delta : float
+    f_delta : float | int
         Frequency difference between the peaks.
-    C : float
+    C : float | int
         Offset of the peaks.
     """
     return (
@@ -373,7 +488,13 @@ def fit_two_lorentz_sym(x, A=1, gamma=1, f_mean=2.87e3, f_delta=1, C=0):
     )
 
 
-def fit_sinc2(x, A, gamma, f0, C):
+def fit_sinc2(
+    x : np.ndarray | list[float | int],
+    A : float | int = 1,
+    gamma : float | int = 1,
+    f0 : float | int = 1,
+    C : float | int = 1
+    ) -> np.ndarray:
     """
     Fit a sinc function.
 
@@ -381,13 +502,13 @@ def fit_sinc2(x, A, gamma, f0, C):
     ----------
     x : array_like
         Frequency values.
-    A : float
+    A : float | int
         Amplitude of the sinc function.
-    gamma : float
+    gamma : float | int
         Width of the sinc function.
-    f0 : float
+    f0 : float | int
         Central frequency of the sinc function.
-    C : float
+    C : float | int
         Offset of the sinc function.
     """
     return (
@@ -399,7 +520,14 @@ def fit_sinc2(x, A, gamma, f0, C):
     )
 
 
-def fit_two_sinc2_sym(x, A, gamma, f_mean, f_delta, C):
+def fit_two_sinc2_sym(
+    x : np.ndarray | list[float | int],
+    A : float | int, 
+    gamma : float | int,
+    f_mean : float | int,
+    f_delta : float | int,
+    C : float | int
+    ) -> np.ndarray:
     """
     Fit two symmetric sinc functions.
 
@@ -407,15 +535,15 @@ def fit_two_sinc2_sym(x, A, gamma, f_mean, f_delta, C):
     ----------
     x : array_like
         Frequency values.
-    A : float
+    A : float | int
         Amplitude of the sinc functions.
-    gamma : float
+    gamma : float | int
         Width of the sinc functions.
-    f_mean : float
+    f_mean : float | int
         Mean frequency of the sinc functions.
-    f_delta : float
+    f_delta : float | int
         Frequency difference between the sinc functions.
-    C : float
+    C : float | int
         Offset of the sinc functions.
     """
     return (
@@ -424,8 +552,24 @@ def fit_two_sinc2_sym(x, A, gamma, f_mean, f_delta, C):
 
 
 def fit_five_sinc2(
-    x, A1, A2, A3, A4, A5, gamma1, gamma2, gamma3, gamma4, gamma5, f01, f02, f03, f04, f05, C
-):
+    x : np.ndarray | list[float | int],
+    A1 : float | int,
+    A2 : float | int,
+    A3 : float | int,
+    A4 : float | int,
+    A5 : float | int,
+    gamma1 : float | int,
+    gamma2 : float | int,
+    gamma3 : float | int,
+    gamma4 : float | int,
+    gamma5 : float | int,
+    f01 : float | int,
+    f02 : float | int,
+    f03 : float | int,
+    f04 : float | int,
+    f05 : float | int,
+    C : float | int
+) -> np.ndarray:
     """
     Fit two symmetric sinc functions.
 
@@ -433,15 +577,15 @@ def fit_five_sinc2(
     ----------
     x : array_like
         Frequency values.
-    A : float
+    A : float | int
         Amplitude of the sinc functions.
-    gamma : float
+    gamma : float | int
         Width of the sinc functions.
-    f_mean : float
+    f_mean : float | int
         Mean frequency of the sinc functions.
-    f_delta : float
+    f_delta : float | int
         Frequency difference between the sinc functions.
-    C : float
+    C : float | int
         Offset of the sinc functions.
     """
     return (

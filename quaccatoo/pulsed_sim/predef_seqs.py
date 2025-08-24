@@ -11,9 +11,11 @@ Classes
 
 import numpy as np
 from qutip import Qobj, mesolve, propagator
+from typing import Callable, Optional
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
+from ..qsys.qsys import QSys
 
 ####################################################################################################
 
@@ -36,8 +38,15 @@ class Rabi(PulsedSim):
     """
 
     def __init__(
-        self, pulse_duration, system, h1, H2=None, pulse_shape=square_pulse, pulse_params=None, options=None
-    ):
+        self,
+        pulse_duration : np.ndarray | list[float | int],
+        system: QSys,
+        h1 : Qobj | list[Qobj],
+        H2 : Optional[tuple[Qobj, Callable]] = None,
+        pulse_shape : Callable = square_pulse,
+        pulse_params : Optional[dict[str, float | int]] = None, 
+        options : Optional[dict] = None
+    ) -> None:
         """
         Constructor for the Rabi pulsed experiment class.
 
@@ -77,7 +86,9 @@ class Rabi(PulsedSim):
 
         self._append_pulse_to_profile(0, self.total_time)
 
-    def run(self):
+    def run(
+        self
+        ) -> None:
         """
         Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.
         If the system has no initial state, the propagator is calcualated.
@@ -140,16 +151,16 @@ class PMR(PulsedSim):
 
     def __init__(
         self,
-        frequencies,
-        system,
-        pulse_duration,
-        h1,
-        H2=None,
-        pulse_shape=square_pulse,
-        pulse_params=None,
-        time_steps=100,
-        options=None,
-    ):
+        frequencies : np.ndarray | list[float | int],
+        system : QSys,
+        pulse_duration : float | int,
+        h1 : Qobj | list[Qobj],
+        H2 : Optional[tuple[Qobj, Callable]] = None,
+        pulse_shape : Callable = square_pulse,
+        pulse_params : Optional[dict[str, float | int]] = None, 
+        time_steps : int = 100,
+        options : Optional[dict] = None
+    ) -> None:
         """
         Constructor for the PMR pulsed experiment class.
 
@@ -200,14 +211,17 @@ class PMR(PulsedSim):
         self.sequence = self.PMR_sequence
         self._append_pulse_to_profile(0, self.total_time)
 
-    def PMR_sequence(self, f):
+    def PMR_sequence(
+        self,
+        f : float | int
+        ) -> Qobj:
         """
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
 
         Parameters
         ----------
-        f : float
+        f : float or int
             Frequency of the pulse.
 
         Returns
@@ -222,7 +236,12 @@ class PMR(PulsedSim):
         return self.rho
 
     def plot_pulses(
-        self, figsize=(6, 4), xlabel="Time", ylabel="Pulse Intensity", title="Pulse Profiles", f_pulse=None
+        self,
+        figsize : tuple[int, int] = (6, 4),
+        xlabel : str = "Time",
+        ylabel : str = "Pulse Intensity",
+        title : str = "Pulse Profiles",
+        f_pulse : Optional[float | int] = None
     ):
         """
         Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
@@ -231,6 +250,10 @@ class PMR(PulsedSim):
         ----------
         f_pulse : float or int
             Frequency of the pulse to be plotted.
+
+        Notes
+        -----
+        The method uses the same parameters as plot_pulses
         """
         # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
         if f_pulse is None:
@@ -273,18 +296,18 @@ class Ramsey(PulsedSim):
 
     def __init__(
         self,
-        free_duration,
-        system,
-        pi_pulse_duration,
-        h1=None,
-        Rx=None,
-        H2=None,
-        projection_pulse=True,
-        pulse_shape=square_pulse,
-        pulse_params=None,
-        options=None,
-        time_steps=100,
-    ):
+        free_duration : np.ndarray | list[float | int],
+        system : QSys,
+        pi_pulse_duration : float | int,
+        h1 : Optional[Qobj | list[Qobj]] = None,
+        Rx : Optional[Qobj] = None,
+        H2 : Optional[tuple[Qobj, Callable]] = None,
+        projection_pulse :  bool = True,
+        pulse_shape : Callable = square_pulse,
+        pulse_params : Optional[dict[str, float | int]] = None, 
+        time_steps : int = 100,
+        options : Optional[dict] = None
+    ) -> None:
         """
         Class constructor for the Ramsey pulsed experiment class.
 
@@ -332,7 +355,10 @@ class Ramsey(PulsedSim):
         )
         self.sequence = self.ramsey_sequence
 
-    def ramsey_sequence(self, tau):
+    def ramsey_sequence(
+            self,
+            tau : float | int
+        ) -> Qobj:
         """
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
@@ -342,7 +368,7 @@ class Ramsey(PulsedSim):
 
         Parameters
         ----------
-        tau : float
+        tau : float or int
             Free evolution time.
 
         Returns
@@ -366,14 +392,17 @@ class Ramsey(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(
+        self,
+        tau : Optional[float | int] = None
+        ) -> None:
         """
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float
+        tau : float | int
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
         # check if tau is correctly defined
@@ -398,27 +427,23 @@ class Ramsey(PulsedSim):
 
     def plot_pulses(
         self,
-        figsize=(6, 4),
-        xlabel="Time",
-        ylabel="Pulse Intensity",
-        title="Pulse Profiles of Ramsey Sequence",
-        tau=None,
-    ):
+        figsize: tuple[int, int] = (6, 4),
+        xlabel : str = "Time",
+        ylabel : str = "Pulse Intensity",
+        title : str = "Pulse Profiles of Ramsey Sequence",
+        tau : Optional[float | int] = None
+        ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
 
         Parameters
         ----------
-        tau : float
+        tau : float | int
             Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-        figsize : tuple
-            Size of the figure to be passed to matplotlib.pyplot.
-        xlabel : str
-            Label of the x-axis.
-        ylabel : str
-            Label of the y-axis.
-        title : str
-            Title of the plot.
+
+        Notes
+        -----
+        The method uses the same parameters as plot_pulses
         """
         # generate the pulse profiles for the Ramsey sequence for a given tau
         self._get_pulse_profiles(tau)
@@ -452,21 +477,20 @@ class Hahn(PulsedSim):
     -----
     The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.
     """
-
     def __init__(
         self,
-        free_duration,
-        system,
-        pi_pulse_duration,
-        h1=None,
-        Rx=None,
-        H2=None,
-        projection_pulse=True,
-        pulse_shape=square_pulse,
-        pulse_params=None,
-        options=None,
-        time_steps=100,
-    ):
+        free_duration : np.ndarray | list[float | int],
+        system : QSys,
+        pi_pulse_duration : float | int,
+        h1 : Optional[Qobj | list[Qobj]] = None,
+        Rx : Optional[Qobj] = None,
+        H2 : Optional[tuple[Qobj, Callable]] = None,
+        projection_pulse :  bool = True,
+        pulse_shape : Callable = square_pulse,
+        pulse_params : Optional[dict[str, float | int]] = None, 
+        time_steps : int = 100,
+        options : Optional[dict] = None
+    ) -> None:
         """
         Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.
 
@@ -512,7 +536,10 @@ class Hahn(PulsedSim):
         )
         self.sequence = self.hahn_sequence
 
-    def hahn_sequence(self, tau):
+    def hahn_sequence(
+        self,
+        tau : float | int
+        ) -> Qobj:
         """
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
@@ -521,7 +548,7 @@ class Hahn(PulsedSim):
 
         Parameters
         ----------
-        tau : float
+        tau : float or int
             Free evolution time.
 
         Returns
@@ -555,14 +582,17 @@ class Hahn(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau=None):
+    def _get_pulse_profiles(
+        self,
+        tau : Optional[float | int] = None
+        ) -> None:
         """
         Generates the pulse profiles for the Hahn echo sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float
+        tau : float | int
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
         # check if tau is correctly defined
@@ -599,23 +629,24 @@ class Hahn(PulsedSim):
         self.total_time = t0
 
     def plot_pulses(
-        self, figsize=(6, 6), xlabel="Time", ylabel="Pulse Intensity", title="Pulse Profiles", tau=None
-    ):
+        self,
+        figsize: tuple[int, int] = (6, 4),
+        xlabel : str = "Time",
+        ylabel : str = "Pulse Intensity",
+        title : str = "Pulse Profiles of Hahn Echo Sequence",
+        tau : Optional[float | int] = None
+        ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
 
         Parameters
         ----------
-        tau : float
+        tau : float | int
             Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-        figsize : tuple
-            Size of the figure to be passed to matplotlib.pyplot.
-        xlabel : str
-            Label of the x-axis.
-        ylabel : str
-            Label of the y-axis.
-        title : str
-            Title of the plot.
+
+        Notes
+        -----
+        The method uses the same parameters as plot_pulses
         """
         # generate the pulse profiles for the Hahn echo sequence for a given tau
         self._get_pulse_profiles(tau)

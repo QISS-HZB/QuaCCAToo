@@ -5,6 +5,7 @@ This module contains NV class, which is a subclass of QSys.
 """
 
 import warnings
+from typing import Callable, Optional, Literal
 
 import numpy as np
 import scipy.constants as cte
@@ -52,7 +53,7 @@ class NV(QSys):
 
     Methods
     -------
-    rho0_lowT
+    _rho0_lowT
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution
     _set_MW
         Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
@@ -80,17 +81,17 @@ class NV(QSys):
 
     def __init__(
         self,
-        B0,
-        N,
-        c_ops=None,
-        units_B0=None,
-        theta=0.0,
-        phi_r=0.0,
-        units_angles="deg",
-        temp=None,
-        units_temp="K",
-        E=0,
-    ):
+        B0 : float | int,
+        N : Literal[15, 14, 0, None],
+        c_ops : Optional[Qobj | list[Qobj]] = None,
+        units_B0 : Literal['T', 'mT', 'G'] = 'mT',
+        theta : float | int = 0.0,
+        phi_r : float | int = 0.0,
+        units_angles : Literal['rad', 'deg'] = "deg",
+        temp : Optional[float | int] = None,
+        units_temp : Literal['C', 'K'] = "K",
+        E : float | int = 0,
+    ) -> None:
         """
         Constructor for the NV class.
         Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
@@ -105,17 +106,17 @@ class NV(QSys):
             List of collapse operators
         units_B0 : str
             Units of the magnetic field (T, mT or G)
-        theta : float
+        theta : float | int
             Angle of the magnetic field with respect to the NV axis
-        phi_r : float
+        phi_r : float | int
             Angle of the magnetic field in the xy plane
         units_angles : str
             Units of the angles (deg or rad)
-        temp : float
+        temp : float | int
             Temperature
         units_temp : str
             Temperature units ('C'/'K')
-        E : float
+        E : float | int
             Perpedicular component of the zero field splitting
         """
         if not isinstance(B0, (int, float)):
@@ -189,12 +190,16 @@ class NV(QSys):
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
         if temp is not None:
-            self.rho0_lowT(temp, units_temp)
+            self._rho0_lowT(temp, units_temp)
 
         self._set_MW()
         self._set_RF()
 
-    def rho0_lowT(self, temp, units_temp="K"):
+    def _rho0_lowT(
+        self,
+        temp : Optional[float | int] = None,
+        units_temp : Literal['C', 'K'] = "K",
+        ) -> None:
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
@@ -292,7 +297,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_MW(self):
+    def _set_MW(
+        self
+        ) -> None:
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.
@@ -332,7 +339,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_RF(self):
+    def _set_RF(
+        self
+        ) -> None:
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.
@@ -389,7 +398,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def zero_field(self):
+    def zero_field(
+        self
+        ) -> Qobj:
         """Get the NV Hamiltonian term accounting for zero field splitting.
 
         Parameters
@@ -416,7 +427,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def electron_zeeman(self):
+    def electron_zeeman(
+        self
+        ) -> Qobj:
         """
         Get the NV hamiltonian term accounting for the electron Zeeman effect.
 
@@ -460,7 +473,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def nuclear_zeeman(self):
+    def nuclear_zeeman(
+        self
+        ) -> Qobj:
         """
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
 
@@ -496,7 +511,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def hyperfine_N(self):
+    def hyperfine_N(
+        self
+        ) -> Qobj:
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -517,7 +534,9 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def quadrupole(self):
+    def quadrupole(
+        self
+        ) -> Qobj:
         """
         Get the quadrupole term
 
@@ -533,8 +552,11 @@ class NV(QSys):
             raise ValueError(
                 f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}."
             )
-
-    def add_spin(self, H_spin):
+        
+    def add_spin(
+        self,
+        H_spin : Qobj
+        ) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes
 
@@ -548,26 +570,32 @@ class NV(QSys):
         self.MW_h1 = tensor(self.MW_h1, qeye(self.dim_add_spin))
         self.RF_h1 = tensor(self.RF_h1, qeye(self.dim_add_spin))
 
-    def truncate(self, mS=None, mI=None):
+    def truncate(
+        self,
+        mS : Literal[1, 0, -1, None] = None,
+        mI : Literal[1, 0, -1, None] = None
+        ) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.
         The indexes to be removed are calculated according to the mS and mI parameters.
 
         Parameters
         ----------
-        indexes : list(int)
-            List of indexes to remove in the system
+        mS : '1', '0', '-1', None
+            Electronic level to be excluded
+        mI : '1', '0', '-1', None
+            Electronic level to be excluded
         """
         if mS is None and mI is None:
             warnings.warn("No mS or mI parameters were given. The system will not be truncated.")
             return
-        if mS != 1 and mS != 0 and mS != -1 and mS is not None:
+        if mS not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
         if mI == 1 / 2 or mI == -1 / 2:
             warnings.warn(
                 "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated."
             )
-        elif mI != 1 and mI != 0 and mI != -1 and mI is not None:
+        elif mI not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
 
         # set the indexes to be removed and the dimensions of the new objects according to the mS and mI parameters

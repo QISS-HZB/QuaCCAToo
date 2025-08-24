@@ -8,10 +8,10 @@ from lmfit import Model
 from qutip import Bloch, Qobj, fidelity
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
+from typing import Any, Literal, Optional
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
-
 
 class Analysis:
     """
@@ -57,8 +57,10 @@ class Analysis:
     plot_bloch :
         Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two
     """
-
-    def __init__(self, experiment):
+    def __init__(
+        self,
+        experiment : ExpData | PulsedSim  
+    ) -> None:
         """
         Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks if the results and variable attributes are not empty and have the same length.
 
@@ -94,7 +96,13 @@ class Analysis:
         self.pearson = None
         self.exp_comparison = None
 
-    def compare_with(self, exp_comparison, results_index=0, comparison_index=0, linear_fit=True):
+    def compare_with(
+        self,
+        exp_comparison : ExpData | PulsedSim ,
+        results_index : int = 0,
+        comparison_index : int = 0,
+        linear_fit : bool = True
+    ) -> float:
         """
         Loads a second experiment to compare with the first one.
         If linear_fit is True, a linear fit is performed between the two data sets, which is common for optical experiments.
@@ -165,7 +173,13 @@ class Analysis:
         self.pearson = r
         return r
 
-    def plot_comparison(self, figsize=(6, 4), xlabel=None, ylabel="Observable", title="Results Comparisons"):
+    def plot_comparison(
+        self,
+        figsize : tuple[int, int] = (6, 4),
+        xlabel : Optional[str] = None,
+        ylabel : str = "Observable",
+        title : str = "Results Comparisons"
+    ) -> None:
         """
         Plots the results of the experiment and the comparison experiment.
 
@@ -207,7 +221,9 @@ class Analysis:
 
     ######################################################## FFT Methods ########################################################
 
-    def run_FFT(self):
+    def run_FFT(
+        self
+    ) -> None:
         """
         Run the real fast Fourier transform for the results and variable attributes of the PulsedSimulation object.
         The results are centered around the mean value before the FFT is calculated in order to remove the DC component.
@@ -236,7 +252,10 @@ class Analysis:
 
         return self.FFT_values
 
-    def get_peaks_FFT(self, **find_peaks_kwargs):
+    def get_peaks_FFT(
+        self,
+        **find_peaks_kwargs : Any
+    ) -> np.ndarray:
         """
         Find the peaks of the FFT values calculated by the run_FFT method.
 
@@ -266,8 +285,13 @@ class Analysis:
         return self.FFT_peaks
 
     def plot_FFT(
-        self, freq_lim=None, figsize=(6, 4), xlabel=None, ylabel="FFT Intensity", title="FFT of the Results"
-    ):
+        self,
+        freq_lim : Optional[tuple[float, float]] = None,
+        figsize : tuple[int, int] = (6, 4),
+        xlabel : Optional[str] = None,
+        ylabel : str = "FFT Intensity",
+        title : str = "FFT of the Results"
+    ) -> None:
         """
         Plots the FFT
 
@@ -340,7 +364,12 @@ class Analysis:
 
     ######################################################## FIT Methods ########################################################
 
-    def run_fit(self, fit_model, results_index=0, guess=None):
+    def run_fit(
+        self,
+        fit_model : Model,
+        results_index : int= 0,
+        guess : Optional[dict] = None
+    ) -> dict:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.
@@ -440,7 +469,13 @@ class Analysis:
                     )
             return self.fit_params[results_index].best_values
 
-    def plot_fit(self, figsize=(6, 4), xlabel=None, ylabel="Expectation Value", title="Pulsed Result"):
+    def plot_fit(
+        self,
+        figsize : tuple[int, int] = (6, 4),
+        xlabel : Optional[str] = None,
+        ylabel : str = "Expectation Value",
+        title : str = "Pulsed Result"
+    ) -> None:
         """
         Plot the results of the experiment with the fitted function.
 
@@ -469,7 +504,13 @@ class Analysis:
 
     ######################################################## Other Plotting Methods ########################################################
 
-    def plot_results(self, figsize=(6, 4), xlabel=None, ylabel="Observable", title="Results"):
+    def plot_results(
+        self,
+        figsize : tuple[int, int] = (6, 4),
+        xlabel : Optional[str] = None,
+        ylabel : str = "Observable",
+        title  : str = "Results"
+    ) -> None:
         """
         Plots the results of the experiment
 
@@ -524,7 +565,10 @@ class Analysis:
         ax.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
         ax.set_title(title)
 
-    def plot_bloch(self, figsize=(6, 4)):
+    def plot_bloch(
+        self,
+        figsize : tuple[int, int] = (6, 4)
+    ) -> None:
         """
         Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two.
 
@@ -555,24 +599,33 @@ class Analysis:
         bloch.frame_alpha = 0
         bloch.render()
 
+#####################################
 
-def plot_histogram(rho, rho_comparison=None, component="real", figsize=(5, 5), title="Matrix Histogram"):
+def plot_histogram(
+    rho : Qobj,
+    rho_comparison : Optional[Qobj] = None,
+    component : Literal["real", "imag", "abs"]  = "real",
+    figsize : tuple[int, int] = (5, 5),
+    title : str = "Matrix Histogram"
+    ) -> None:
     """
     Plot a 3D histogram of the final density matrix of the simulation.
 
     Parameters
     ----------
+    rho : Qobj
+        A Qobj representing a density matrix to be plotted
+    rho_comparison : Qobj, optional
+        A Qobj representing a density matrix to be compared with
     component : str
         Component of the density matrix to be plotted. Can be 'real', 'imag', or 'abs'.
     figsize : tuple
         Size of the figure to be passed to matplotlib.pyplot
-    rho_comparison : Qobj, optional
-        A Qobj representing a density matrix to be compared with the final density matrix of the simulation
     title : str
         Title of the plot
     """
     # Check all parameters
-    if component not in ["real", "imag", "abs"]:
+    if component not in {"real", "imag", "abs"}:
         raise ValueError("component must be 'real', 'imag', or 'abs'")
 
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
