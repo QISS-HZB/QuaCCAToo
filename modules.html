@@ -153,20 +153,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.analysis.fit_functions">fit_functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi"><code class="docutils literal notranslate"><span class="pre">fit_rabi()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel"><code class="docutils literal notranslate"><span class="pre">RabiModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel.guess"><code class="docutils literal notranslate"><span class="pre">RabiModel.guess()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel"><code class="docutils literal notranslate"><span class="pre">RabiModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel.guess"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel.guess()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay"><code class="docutils literal notranslate"><span class="pre">fit_rabi_decay()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel"><code class="docutils literal notranslate"><span class="pre">RabiDecayModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel.guess"><code class="docutils literal notranslate"><span class="pre">RabiDecayModel.guess()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel"><code class="docutils literal notranslate"><span class="pre">RabiDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay_n"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay_n()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod_decay"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod_decay()</span></code></a></li>
@@ -2147,20 +2138,20 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <p>Refer to the documentation of analysis.run_fit for usage details.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_rabi">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi" title="Link to this definition"></a></dt>
 <dd><p>Fit a cosine function to Rabi oscillations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>amp</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the cosine function.</p>
+<dt><strong>amp</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the cosine function.</p>
 </dd>
-<dt><strong>Tpi</strong><span class="classifier">float | int</span></dt><dd><p>Pi-pulse duration (half the period of the cosine function).</p>
+<dt><strong>Tpi</strong><span class="classifier">float</span></dt><dd><p>Pi-pulse duration (half the period of the cosine function).</p>
 </dd>
-<dt><strong>phi</strong><span class="classifier">float | int</span></dt><dd><p>Phase of the cosine function.</p>
+<dt><strong>phi</strong><span class="classifier">float</span></dt><dd><p>Phase of the cosine function.</p>
 </dd>
-<dt><strong>offset</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the cosine function.</p>
+<dt><strong>offset</strong><span class="classifier">float</span></dt><dd><p>Offset of the cosine function.</p>
 </dd>
 </dl>
 </dd>
@@ -2169,7 +2160,7 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.RabiModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">RabiModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">RabiModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiModel" title="Link to this definition"></a></dt>
 <dd><p>Modified from lmfit’s SineModel to include an offset as well</p>
 <p>Takes the same parameters as the fit_rabi function.</p>
 <dl class="field-list simple">
@@ -2207,8 +2198,8 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
 <td><p>Fit the model to the data using the supplied Parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel.guess" title="quaccatoo.analysis.fit_functions.RabiModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code>(data, x, **kwargs)</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
 <td><p>Load JSON representation of Model from a file-like object.</p></td>
@@ -2233,90 +2224,22 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
-<td><p>DOES NOT WORK.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
-<td><p>Dump serialization of Model to a file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
-<td><p>Dump serialization of Model as a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
-<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
-<td><p>Evaluate the model with the supplied parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
-<td><p>Fit the model to the data using the supplied Parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel.guess" title="quaccatoo.analysis.fit_functions.RabiModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
-<td><p>Load JSON representation of Model from a file-like object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
-<td><p>Load Model from a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
-<td><p>Convert parameter values and keywords to function arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
-<td><p>Create a Parameters object for a Model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
-<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
-<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
-<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.RabiModel.guess">
-<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiModel.guess" title="Link to this definition"></a></dt>
-<dd><p>TODO</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_exp_decay">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_exp_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_exp_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_exp_decay" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_exp_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_exp_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_exp_decay" title="Link to this definition"></a></dt>
 <dd><p>Fit a simple exponential decay function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>amp</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the exponential decay.</p>
+<dt><strong>amp</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the exponential decay.</p>
 </dd>
-<dt><strong>Tc</strong><span class="classifier">float | int</span></dt><dd><p>Decay time constant.</p>
+<dt><strong>Tc</strong><span class="classifier">float</span></dt><dd><p>Decay time constant.</p>
 </dd>
-<dt><strong>offset</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the exponential decay.</p>
+<dt><strong>offset</strong><span class="classifier">float</span></dt><dd><p>Offset of the exponential decay.</p>
 </dd>
 </dl>
 </dd>
@@ -2325,7 +2248,7 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ExpDecayModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">ExpDecayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#ExpDecayModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ExpDecayModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">ExpDecayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#ExpDecayModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ExpDecayModel" title="Link to this definition"></a></dt>
 <dd><p>Modified from lmfit’s ExponentialModel to include an offset as well</p>
 <p>Takes the same parameters as the fit_exp_decay function.</p>
 <dl class="field-list simple">
@@ -2363,8 +2286,8 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
 <td><p>Fit the model to the data using the supplied Parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel.guess" title="quaccatoo.analysis.fit_functions.ExpDecayModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code>(data, x, **kwargs)</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
 <td><p>Load JSON representation of Model from a file-like object.</p></td>
@@ -2389,94 +2312,26 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
-<td><p>DOES NOT WORK.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
-<td><p>Dump serialization of Model to a file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
-<td><p>Dump serialization of Model as a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
-<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
-<td><p>Evaluate the model with the supplied parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
-<td><p>Fit the model to the data using the supplied Parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel.guess" title="quaccatoo.analysis.fit_functions.ExpDecayModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
-<td><p>Load JSON representation of Model from a file-like object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
-<td><p>Load Model from a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
-<td><p>Convert parameter values and keywords to function arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
-<td><p>Create a Parameters object for a Model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
-<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
-<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
-<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ExpDecayModel.guess">
-<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#ExpDecayModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ExpDecayModel.guess" title="Link to this definition"></a></dt>
-<dd><p>TODO</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_rabi_decay">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay" title="Link to this definition"></a></dt>
 <dd><p>Fit a cosine function with exponential decay to Rabi oscillations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>amp</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the cosine function.</p>
+<dt><strong>amp</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the cosine function.</p>
 </dd>
-<dt><strong>Tpi</strong><span class="classifier">float | int</span></dt><dd><p>Pi-pulse duration (half the period of the cosine function).</p>
+<dt><strong>Tpi</strong><span class="classifier">float</span></dt><dd><p>Pi-pulse duration (half the period of the cosine function).</p>
 </dd>
-<dt><strong>phi</strong><span class="classifier">float | int</span></dt><dd><p>Phase of the cosine function.</p>
+<dt><strong>phi</strong><span class="classifier">float</span></dt><dd><p>Phase of the cosine function.</p>
 </dd>
-<dt><strong>offset</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the cosine function.</p>
+<dt><strong>offset</strong><span class="classifier">float</span></dt><dd><p>Offset of the cosine function.</p>
 </dd>
-<dt><strong>Tc</strong><span class="classifier">float | int</span></dt><dd><p>Decay time constant.</p>
+<dt><strong>Tc</strong><span class="classifier">float</span></dt><dd><p>Decay time constant.</p>
 </dd>
 </dl>
 </dd>
@@ -2485,7 +2340,7 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py class">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.RabiDecayModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">RabiDecayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiDecayModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiDecayModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">RabiDecayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiDecayModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiDecayModel" title="Link to this definition"></a></dt>
 <dd><p>Analogous to RabiModel, modulated with an exponential decay.</p>
 <p>Takes the same parameters as the fit_rabi_decay function.</p>
 <dl class="field-list simple">
@@ -2523,8 +2378,8 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
 <td><p>Fit the model to the data using the supplied Parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel.guess" title="quaccatoo.analysis.fit_functions.RabiDecayModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code>(data, x, **kwargs)</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
 <td><p>Load JSON representation of Model from a file-like object.</p></td>
@@ -2549,92 +2404,24 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
-<td><p>DOES NOT WORK.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
-<td><p>Dump serialization of Model to a file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
-<td><p>Dump serialization of Model as a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
-<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
-<td><p>Evaluate the model with the supplied parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
-<td><p>Fit the model to the data using the supplied Parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel.guess" title="quaccatoo.analysis.fit_functions.RabiDecayModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
-<td><p>TODO</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
-<td><p>Load JSON representation of Model from a file-like object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
-<td><p>Load Model from a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
-<td><p>Convert parameter values and keywords to function arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
-<td><p>Create a Parameters object for a Model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
-<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
-<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
-<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.RabiDecayModel.guess">
-<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiDecayModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiDecayModel.guess" title="Link to this definition"></a></dt>
-<dd><p>TODO</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_exp_decay_n">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_exp_decay_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_exp_decay_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_exp_decay_n" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_exp_decay_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_exp_decay_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_exp_decay_n" title="Link to this definition"></a></dt>
 <dd><p>Fit an exponential decay function with power n.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the exponential decay.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the exponential decay.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the exponential decay.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the exponential decay.</p>
 </dd>
-<dt><strong>Tc</strong><span class="classifier">float | int</span></dt><dd><p>Decay time constant.</p>
+<dt><strong>Tc</strong><span class="classifier">float</span></dt><dd><p>Decay time constant.</p>
 </dd>
-<dt><strong>n</strong><span class="classifier">float | int</span></dt><dd><p>Power of the exponential decay.</p>
+<dt><strong>n</strong><span class="classifier">float</span></dt><dd><p>Power of the exponential decay.</p>
 </dd>
 </dl>
 </dd>
@@ -2643,22 +2430,22 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_hahn_mod">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_hahn_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_hahn_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_hahn_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_hahn_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod" title="Link to this definition"></a></dt>
 <dd><p>Fit a Hahn echo with modulation function with 2 frequencies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the echo.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the echo.</p>
 </dd>
-<dt><strong>B</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the modulation.</p>
+<dt><strong>B</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the modulation.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the echo.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the echo.</p>
 </dd>
-<dt><strong>f1</strong><span class="classifier">float | int</span></dt><dd><p>First modulation frequency.</p>
+<dt><strong>f1</strong><span class="classifier">float</span></dt><dd><p>First modulation frequency.</p>
 </dd>
-<dt><strong>f2</strong><span class="classifier">float | int</span></dt><dd><p>Second modulation frequency.</p>
+<dt><strong>f2</strong><span class="classifier">float</span></dt><dd><p>Second modulation frequency.</p>
 </dd>
 </dl>
 </dd>
@@ -2667,26 +2454,26 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_hahn_mod_decay">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_hahn_mod_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_hahn_mod_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod_decay" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_hahn_mod_decay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_hahn_mod_decay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod_decay" title="Link to this definition"></a></dt>
 <dd><p>Fit a Hahn echo with modulation function with 2 frequencies and exponential decay.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Time values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the echo.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the echo.</p>
 </dd>
-<dt><strong>B</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the modulation.</p>
+<dt><strong>B</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the modulation.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the echo.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the echo.</p>
 </dd>
-<dt><strong>f1</strong><span class="classifier">float | int</span></dt><dd><p>First modulation frequency.</p>
+<dt><strong>f1</strong><span class="classifier">float</span></dt><dd><p>First modulation frequency.</p>
 </dd>
-<dt><strong>f2</strong><span class="classifier">float | int</span></dt><dd><p>Second modulation frequency.</p>
+<dt><strong>f2</strong><span class="classifier">float</span></dt><dd><p>Second modulation frequency.</p>
 </dd>
-<dt><strong>Tc</strong><span class="classifier">float | int</span></dt><dd><p>Decay time constant.</p>
+<dt><strong>Tc</strong><span class="classifier">float</span></dt><dd><p>Decay time constant.</p>
 </dd>
-<dt><strong>n</strong><span class="classifier">float | int</span></dt><dd><p>Power of the exponential decay.</p>
+<dt><strong>n</strong><span class="classifier">float</span></dt><dd><p>Power of the exponential decay.</p>
 </dd>
 </dl>
 </dd>
@@ -2695,20 +2482,20 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_lorentz">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_lorentz" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_lorentz" title="Link to this definition"></a></dt>
 <dd><p>Fit a Lorentzian peak.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the peak.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the peak.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float | int</span></dt><dd><p>Width of the peak.</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the peak.</p>
 </dd>
-<dt><strong>f0</strong><span class="classifier">float | int</span></dt><dd><p>Central requency of the peak.</p>
+<dt><strong>f0</strong><span class="classifier">float</span></dt><dd><p>Central requency of the peak.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the peak.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peak.</p>
 </dd>
 </dl>
 </dd>
@@ -2717,26 +2504,26 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_two_lorentz">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_lorentz" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_lorentz" title="Link to this definition"></a></dt>
 <dd><p>Fit two symmetric Lorentzian peaks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
-<dt><strong>A1</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the first peak.</p>
+<dt><strong>A1</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the first peak.</p>
 </dd>
-<dt><strong>A2</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the second peak.</p>
+<dt><strong>A2</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the second peak.</p>
 </dd>
-<dt><strong>gamma1</strong><span class="classifier">float | int</span></dt><dd><p>Width of the first peak.</p>
+<dt><strong>gamma1</strong><span class="classifier">float</span></dt><dd><p>Width of the first peak.</p>
 </dd>
-<dt><strong>gamma2</strong><span class="classifier">float | int</span></dt><dd><p>Width of the second peak.</p>
+<dt><strong>gamma2</strong><span class="classifier">float</span></dt><dd><p>Width of the second peak.</p>
 </dd>
-<dt><strong>f01</strong><span class="classifier">float | int</span></dt><dd><p>Central frequency of the first peak.</p>
+<dt><strong>f01</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the first peak.</p>
 </dd>
-<dt><strong>f02</strong><span class="classifier">float | int</span></dt><dd><p>Central frequency of the second peak.</p>
+<dt><strong>f02</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the second peak.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the peaks.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peaks.</p>
 </dd>
 </dl>
 </dd>
@@ -2745,22 +2532,22 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_two_lorentz_sym">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_lorentz_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_lorentz_sym" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_lorentz_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2870.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_lorentz_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_lorentz_sym" title="Link to this definition"></a></dt>
 <dd><p>Fit two symmetric Lorentzian peaks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frquency values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the peaks.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the peaks.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float | int</span></dt><dd><p>Width of the peaks.</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the peaks.</p>
 </dd>
-<dt><strong>f_mean</strong><span class="classifier">float | int</span></dt><dd><p>Mean frequency of the peaks.</p>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the peaks.</p>
 </dd>
-<dt><strong>f_delta</strong><span class="classifier">float | int</span></dt><dd><p>Frequency difference between the peaks.</p>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the peaks.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the peaks.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the peaks.</p>
 </dd>
 </dl>
 </dd>
@@ -2769,20 +2556,20 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_sinc2">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_sinc2" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_sinc2" title="Link to this definition"></a></dt>
 <dd><p>Fit a sinc function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the sinc function.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc function.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float | int</span></dt><dd><p>Width of the sinc function.</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc function.</p>
 </dd>
-<dt><strong>f0</strong><span class="classifier">float | int</span></dt><dd><p>Central frequency of the sinc function.</p>
+<dt><strong>f0</strong><span class="classifier">float</span></dt><dd><p>Central frequency of the sinc function.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the sinc function.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc function.</p>
 </dd>
 </dl>
 </dd>
@@ -2791,22 +2578,22 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_two_sinc2_sym">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_sinc2_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_sinc2_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_sinc2_sym" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_two_sinc2_sym</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_two_sinc2_sym"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_two_sinc2_sym" title="Link to this definition"></a></dt>
 <dd><p>Fit two symmetric sinc functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the sinc functions.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc functions.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float | int</span></dt><dd><p>Width of the sinc functions.</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc functions.</p>
 </dd>
-<dt><strong>f_mean</strong><span class="classifier">float | int</span></dt><dd><p>Mean frequency of the sinc functions.</p>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the sinc functions.</p>
 </dd>
-<dt><strong>f_delta</strong><span class="classifier">float | int</span></dt><dd><p>Frequency difference between the sinc functions.</p>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the sinc functions.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the sinc functions.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc functions.</p>
 </dd>
 </dl>
 </dd>
@@ -2815,22 +2602,22 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_five_sinc2">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_five_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f03</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f04</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f05</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_five_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_five_sinc2" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_five_sinc2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f01</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f02</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f03</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f04</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f05</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_five_sinc2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_five_sinc2" title="Link to this definition"></a></dt>
 <dd><p>Fit two symmetric sinc functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Frequency values.</p>
 </dd>
-<dt><strong>A</strong><span class="classifier">float | int</span></dt><dd><p>Amplitude of the sinc functions.</p>
+<dt><strong>A</strong><span class="classifier">float</span></dt><dd><p>Amplitude of the sinc functions.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float | int</span></dt><dd><p>Width of the sinc functions.</p>
+<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>Width of the sinc functions.</p>
 </dd>
-<dt><strong>f_mean</strong><span class="classifier">float | int</span></dt><dd><p>Mean frequency of the sinc functions.</p>
+<dt><strong>f_mean</strong><span class="classifier">float</span></dt><dd><p>Mean frequency of the sinc functions.</p>
 </dd>
-<dt><strong>f_delta</strong><span class="classifier">float | int</span></dt><dd><p>Frequency difference between the sinc functions.</p>
+<dt><strong>f_delta</strong><span class="classifier">float</span></dt><dd><p>Frequency difference between the sinc functions.</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float | int</span></dt><dd><p>Offset of the sinc functions.</p>
+<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>Offset of the sinc functions.</p>
 </dd>
 </dl>
 </dd>
