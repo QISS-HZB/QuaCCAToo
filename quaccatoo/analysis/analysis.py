@@ -652,7 +652,7 @@ def plot_histogram(
     ax.view_init(azim=-50, elev=30)
 
     # Dimensions and positions for the bars
-    xpos, ypos = np.meshgrid(np.arange(N), np.arange(N))
+    xpos, ypos = np.meshgrid(range(N), range(N))
     xpos, ypos = xpos.flatten(), ypos.flatten()
     zpos = np.zeros_like(xpos)
     dx = dy = 0.5 * np.ones_like(zpos)
@@ -693,6 +693,11 @@ def plot_histogram(
             alpha=0,
             zorder=1,
         )
+
+    # Plots plane at z=0 for better visualization
+    x_plane, y_plane = np.meshgrid(np.arange(-.1, N-.3, 0.1), np.arange(-.1, N-.3, 0.1))
+    z_plane = np.zeros_like(x_plane)
+    ax.plot_surface(x_plane, y_plane, z_plane, color='gray', alpha=0.2, zorder=-1)
 
     # Aesthetics, labels, and title
     ax.grid(False)
