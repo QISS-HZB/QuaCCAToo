@@ -41,5 +41,5 @@ autodoc_inherit_docstrings = False
 html_baseurl = "https://qiss-hzb.github.io/quaccatoo"
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-html_favicon = "_static/favicon.ico"
+html_favicon = "icon.svg"
 html_show_copyright = False
