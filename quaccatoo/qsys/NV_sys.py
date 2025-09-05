@@ -165,7 +165,7 @@ class NV(QSys):
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
             H0 = self.zero_field() + self.electron_zeeman() + self.hyperfine_N() + self.nuclear_zeeman()
-            rho0 = tensor(fock_dm(3, 1), qeye(2)).unit()
+            rho0 = tensor(fock_dm(3, 1), qeye(2)/2)
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
@@ -176,7 +176,7 @@ class NV(QSys):
                 + self.nuclear_zeeman()
                 + self.quadrupole()
             )
-            rho0 = tensor(fock_dm(3, 1), qeye(3)).unit()
+            rho0 = tensor(fock_dm(3, 1), qeye(3)/2)
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
