@@ -222,7 +222,8 @@ class QSys:
         self._get_energy_levels()
 
         if self.rho0.isherm:
-            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin)).unit()
+            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin))
+            self.rho0 /= self.rho0.tr()
         elif self.rho0.isket:
             self.rho0 = tensor(self.rho0, basis(self.dim_add_spin, 0)).unit()
 
@@ -284,7 +285,8 @@ class QSys:
             else:
                 self.rho0 = Qobj(
                     np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)
-                ).unit()
+                )
+                self.rho0 /= self.rho0.tr()
 
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
@@ -328,12 +330,17 @@ def compose_sys(
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
-    if qsys1.rho0.isherm and qsys2.rho0.isherm or qsys1.rho0.isket and qsys2.rho0.isket:
+    if qsys1.rho0.isket and qsys2.rho0.isket:
         rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
+    elif qsys1.rho0.isherm and qsys2.rho0.isherm:
+        rho0 = tensor(qsys1.rho0, qsys2.rho0)
+        rho0 /= rho0.tr()
     elif qsys1.rho0.isherm and qsys2.rho0.isket:
-        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag()).unit()
+        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag())
+        rho0 /= rho0.tr()
     elif qsys1.rho0.isket and qsys2.rho0.isherm:
-        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0).unit()
+        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0)
+        rho0 /= rho0.tr()
     else:
         rho0 = None
 

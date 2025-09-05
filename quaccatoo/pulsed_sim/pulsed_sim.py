@@ -401,7 +401,10 @@ class PulsedSim:
         if tol is not None and (not isinstance(tol, (int, float)) or tol < 0):
             raise ValueError("tol must be a positive real number or None")
 
-        self.rho = self.rho.unit()
+        if self.rho.isket:
+            self.rho = self.rho.unit()
+        else:
+            self.rho /= self.rho.tr()
 
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
             if not observable.isherm:
