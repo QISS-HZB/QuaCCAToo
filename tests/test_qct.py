@@ -304,7 +304,7 @@ class TestExpData:
             units_B0="mT",
             B0=38.4,
         )
-        exp_data = ExpData(file_path="./tests/data//Ex02_NV_rabi.dat")
+        exp_data = ExpData(file_path="./tests/data/Ex02_NV_rabi.dat")
         w1_exp = 16.72
 
         rabi_sim_exp = Rabi(
@@ -328,3 +328,15 @@ class TestExpData:
         sig = f.results[1] - f.results[0]
         f.subtract_results_columns(pos_col=1, neg_col=0)
         assert np.allclose(sig, f.results)
+
+    def test_rescale(self):
+        exp_data = ExpData(file_path="./tests/data/Ex02_NV_rabi.dat")
+        data_scaled = 2 * exp_data.results
+        exp_data.rescale_correction(2)
+        assert np.allclose(data_scaled, exp_data.results)
+
+    def test_offset(self):
+        exp_data = ExpData(file_path="./tests/data/Ex02_NV_rabi.dat")
+        data_corr = exp_data.results - 2
+        exp_data.offset_correction(2)
+        assert np.allclose(data_corr, exp_data.results)
