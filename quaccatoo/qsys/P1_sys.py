@@ -1,0 +1,387 @@
+"""
+This module contains P1 class for simulating P1 centers in diamond,
+being a subclass of QSys.
+"""
+
+import warnings
+from typing import Optional, Literal
+
+import numpy as np
+import scipy.constants as cte
+from qutip import Qobj, jmat, qeye, tensor
+
+from .qsys import QSys
+
+gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
+gamma_N14 = 3.077e-3
+gamma_N15 = -4.316e-3
+
+class P1(QSys):
+    """
+    TODO add brief desription
+
+    Attributes
+    ----------
+    B0 : float
+        Magnetic field intensity.
+    rot_index : int
+        Rotation index, integer between 0 and 3.
+    R : list
+        List of rotation matrices to go from the PAS (principal axis system) frame to the lab frame.
+    N : int
+        Nitrogen isotope, or 0 for no nuclear spin.
+    h1 : Qobj
+        Standard microwave Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+    eigenstates : np.ndarray
+        Array containing the eigenstates of the Hamiltonian.
+    dim_add_spin : int
+        Dimension of the added spin, if any.   
+
+    Methods
+    -------
+    _Rx
+        Generates rotation matrix around x axis.
+    _Ry
+        Generates rotation matrix around y axis.
+    _Rz
+        Generates rotation matrix around z axis.
+    _rot_pas_to_lab
+        Defines the rotation matrices to go from the PAS (principal axis system) frame to the lab frame.
+    electron_zeeman
+        Calculates the electron Zeeman Hamiltonian term.
+    hyperfine
+        Calculates the hyperfine Hamiltonian term.
+    quadrupole
+        Calculates the quadrupole Hamiltonian term.
+    nuclear_zeeman
+        Calculates the nuclear Zeeman Hamiltonian term.
+    _set_h1
+        Sets the standard microwave Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+    add_spin
+        Adds an extra spin to the system and updates the microwave Hamiltonian accordingly.
+
+    Notes
+    -----
+    The P1 class inherits the methods and attributes from the QSys class.
+    """
+    def __init__(
+        self,
+        B0 : float | int,
+        rot_index : Literal[0, 1, 2, 3],
+        N : Literal[15, 14, 0, None] = None,
+        rho0 : Optional[Qobj | np.ndarray | int] = None,
+        c_ops : Optional[Qobj | list[Qobj]] = None,
+        units_B0 : Literal['T', 'mT', 'G'] = 'mT',
+        observable : Optional[Qobj | list[Qobj]] =None
+        ) -> None:
+        """
+        Constructor for the P1 class.
+        Takes the nitrogen isotope, the rotation index, the magnetic field intensity as inputs and calculates the Hamiltonian with all relevant attributes.
+
+        Parameters
+        ----------
+        B0 : float
+            Magnetic field intensity.
+        rot_index : int TODO better explain this parameter throughout its usage
+            Rotation index, integer between 0 and 3.
+        N : 15 | 14 | 0 | None
+            Nitrogen isotope, or 0 for no nuclear spin
+        rho0 : Qobj | array | int
+            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
+        c_ops : Qobj | list(Qobj)
+            List of collapse operators
+        observable : Qobj | list(Qobj)
+            Observable to be measured                    
+        """
+        if not isinstance(B0, (int, float)):
+            raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
+        else:
+            self.B0 = B0
+
+        if units_B0 is None:
+            warnings.warn("No units for the magnetic field were given. The magnetic field will be considered in mT.")
+        elif units_B0 == "T":
+            B0 = B0 * 1e3
+        elif units_B0 == "mT":
+            pass
+        elif units_B0 == "G":
+            B0 = B0 * 1e-3
+        else:
+            raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
+        
+        if rot_index in range(4):
+            self.rot_index = rot_index
+        else:
+            raise ValueError(f"Invalid value for rotation index r. Expected an integer between 0 and 3, got {rot_index}.")
+        
+        self._rot_pas_to_lab()
+        self.N = N
+
+        if N == 14:    
+            H0 = self.electron_zeeman()+ self.hyperfine() + self.quadrupole() + self.nuclear_zeeman() 
+        elif N == 15:
+            H0 = self.electron_zeeman()+ self.hyperfine() + self.nuclear_zeeman()
+        elif N == 0 or N is None:
+            H0 = self.electron_zeeman()
+        else:
+            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {N}.")
+        
+        self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
+        
+        if observable is None:
+            observable = None
+
+        elif isinstance(observable, (list, np.ndarray)) and all(obs in range(len(self.eigenstates)+1) for obs in observable):
+            observable = [self.eigenstates[obs] for obs in observable]
+
+        elif observable in range(len(self.eigenstates)+1):
+            observable = self.eigenstates[observable]
+            if rho0 is None:
+                rho0 = observable
+
+        elif isinstance(observable, Qobj) and observable.shape == H0.shape:
+            observable = observable
+
+        elif isinstance(observable, (list, np.ndarray)) and all(isinstance(obs, Qobj) and obs.shape == H0.shape for obs in observable):
+            observable = observable
+        
+        else:
+            raise ValueError("Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0.")
+
+        super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
+
+        self._set_h1()
+        
+    def _Rx(
+        alpha : float | int 
+        ) -> np.ndarray:
+        """
+        Internal rotation generator around the x axis.
+
+        Parameters
+        ----------
+        alpha : float
+            Rotation angle in radians.
+
+        Returns
+        -------
+        Rotation matrix : numpy.ndarray
+        """
+        return np.array([[1, 0, 0],
+                         [0, np.cos(alpha), -np.sin(alpha)],
+                         [0, np.sin(alpha), np.cos(alpha)]])
+
+    def _Ry(
+        alpha : float | int 
+        ) -> np.ndarray:
+        """
+        Internal rotation generator around the y axis.
+
+        Parameters
+        ----------
+        alpha : float
+            Rotation angle in radians.
+
+        Returns
+        -------
+        Rotation matrix : numpy.ndarray
+        """
+        return np.array([[np.cos(alpha), 0, np.sin(alpha)],
+                         [0, 1, 0],
+                         [-np.sin(alpha), 0, np.cos(alpha)]])
+
+    def _Rz(
+        alpha : float | int 
+        ) -> np.ndarray:
+        """
+        Internal rotation generation around the z axis.
+
+        Parameters
+        ----------
+        alpha : float
+            Rotation angle in radians.
+
+        Returns
+        -------
+        Rotation matrix : numpy.ndarray
+        """
+        return np.array([[np.cos(alpha), -np.sin(alpha), 0],
+                         [np.sin(alpha), np.cos(alpha), 0],
+                         [0, 0, 1]])
+    
+    def _rot_pas_to_lab(
+        self
+        ) -> None:
+        """
+        Defines the rotation matrices to go from the PAS (principal axis system)
+        frame to the lab frame.
+        Start by defining the basis vectors of the PAS frame in the lab frame.
+        Then generates the R list containing the rotation matrices.
+        """
+        basis = []
+        basis.append(
+            [1/np.sqrt(6)*np.array([[1, 1, -2]]).T,
+             1/np.sqrt(2)*np.array([[1, -1, 0]]).T,
+             1/np.sqrt(3)*np.array([[-1, -1, -1]]).T]
+            )
+        basis.append(
+            [1/np.sqrt(6)*np.array([[2, 1, 1]]).T,
+             1/np.sqrt(2)*np.array([[0, 1, -1]]).T,
+             1/np.sqrt(3)*np.array([[-1, 1, 1]]).T]
+             )
+        basis.append(
+            [1/np.sqrt(6)*np.array([[1, 2, 1]]).T,
+             1/np.sqrt(2)*np.array([[-1, 0, 1]]).T,
+             1/np.sqrt(3)*np.array([[1, -1, 1]]).T]
+             )
+        basis.append(
+            [1/np.sqrt(6)*np.array([[1, 1, 2]]).T,
+             1/np.sqrt(2)*np.array([[1, -1, 0]]).T,
+             1/np.sqrt(3)*np.array([[1, 1, -1]]).T]
+             )
+
+        R_1 = np.c_[basis[0][0], basis[0][1], basis[0][2]]
+        R_2 = np.c_[basis[1][0], basis[1][1], basis[1][2]]
+        R_3 = np.c_[basis[2][0], basis[2][1], basis[2][2]]
+        R_4 = np.c_[basis[3][0], basis[3][1], basis[3][2]]
+
+        R_11 = R_1.T @ R_1
+        R_12 = R_1.T @ R_2
+        R_13 = R_1.T @ R_3
+        R_14 = R_1.T @ R_4
+
+        self.R = [R_11, R_12, R_13, R_14]
+
+    def electron_zeeman(
+        self
+        ) -> Qobj:
+        """
+        Electron Zeeman Hamiltonian term,
+        rotated according to the rotation index r.
+
+        Returns
+        -------
+        Zeeman Hamiltonian : Qobj
+        """
+        H_ez = gamma_e*self.B0*(
+            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1/2, 'x') +
+            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1/2, 'y') +
+            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1/2, 'z')
+        )
+
+        if self.N == 14:
+            return tensor(H_ez, qeye(3))
+        
+        elif self.N == 15:
+            return tensor(H_ez, qeye(2))
+
+        elif self.N == 0 or self.N is None:
+            return H_ez
+        
+        else:
+            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
+
+    def hyperfine(
+        self
+        ) -> Qobj:
+        """
+        Get the hyperfine term
+
+        Returns
+        -------
+        Hyperfine Hamiltonian : Qobj
+        """
+        if self.N == 14:
+            return (114*tensor(jmat(1/2,'z'), jmat(1,'z'))
+                    + 82*(tensor(jmat(1/2,'x'), jmat(1,'x'))
+                          + tensor(jmat(1/2,'y'), jmat(1,'y'))))
+        elif self.N == 15:
+            # TODO: find the correct values for the hyperfine coupling constants for N15
+            return (114*tensor(jmat(1/2,'z'), jmat(1/2,'z'))
+                    + 82*(tensor(jmat(1/2,'x'), jmat(1/2,'x'))
+                          + tensor(jmat(1/2,'y'), jmat(1/2,'y'))))
+        else:
+            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
+    
+    def quadrupole(
+        self
+        ) -> Qobj:
+        """
+        Get the quadrupole term
+
+        Returns
+        -------
+        Quadrupole Hamiltonian : Qobj
+        """
+        if self.N == 14:
+            return - 5.01*tensor(qeye(2), jmat(1,'z')**2)
+        elif self.N == 15:
+            return 0
+        else:
+            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
+    
+    def nuclear_zeeman(
+        self
+        ) -> Qobj:
+        """
+        Nuclear Zeeman Hamiltonian term
+
+        Returns
+        -------
+        Zeeman Hamiltonian : Qobj
+        """
+        if self.N == 14:
+            return -gamma_N14*self.B0*tensor(
+                qeye(2),
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1, 'x') +
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1, 'y') +
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1, 'z')
+                )
+        
+        elif self.N == 15:
+            return -gamma_N15*self.B0*tensor(
+                qeye(2),
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1/2, 'x') +
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1/2, 'y') +
+                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1/2, 'z')
+                )
+        
+    def _set_h1(
+        self
+        ) -> None:
+        """
+        Sets the standard control Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+        """
+        h1_e = 2*(
+            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[0][0]*jmat(1/2, 'x') +
+            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[1][0]*jmat(1/2, 'y') +
+            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[2][0]*jmat(1/2, 'z')
+            )
+
+        if self.N == 15:
+            self.h1 = tensor(h1_e, qeye(2))
+
+        elif self.N == 14:
+             self.h1 = tensor(h1_e, qeye(3))
+
+        elif self.N == 0 or self.N is None:
+            self.h1 = h1_e
+
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+        
+    def add_spin(
+        self,
+        H_spin : Qobj
+        ) -> None:
+        """
+        Overwrites the parent class method by calling it and updating the h1 attribute
+
+        Parameters
+        ----------
+        H_spin : Qobj
+            Hamiltonian of the extra spin
+        """
+        super().add_spin(H_spin)
+
+        self.h1 = tensor(self.h1, qeye(self.dim_add_spin))

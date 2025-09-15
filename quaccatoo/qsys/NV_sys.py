@@ -5,7 +5,7 @@ This module contains NV class, which is a subclass of QSys.
 """
 
 import warnings
-from typing import Callable, Optional, Literal
+from typing import Optional, Literal
 
 import numpy as np
 import scipy.constants as cte
@@ -17,10 +17,9 @@ gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
 gamma_N14 = 3.077e-3
 gamma_N15 = -4.316e-3
 
-
 class NV(QSys):
     """
-    NN class contains attributes and methods to simulate the nitrogen vacancy center in diamond.
+    NV class contains attributes and methods to simulate the nitrogen vacancy center in diamond.
 
     Attributes
     ----------
@@ -94,13 +93,15 @@ class NV(QSys):
     ) -> None:
         """
         Constructor for the NV class.
-        Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.
+        Takes the nitrogen isotope, the magnetic field intensity and angles with the
+        quantization axis as inputs and calculates the Hamiltonian with all
+        relevant attributes.
 
         Parameters
         ----------
         B0 : float
             Magnetic field
-        N : 15/14/0/None
+        N : 15 | 14 | 0 | None
             Nitrogen isotope, or 0 for no nuclear spin
         c_ops : list(Qobj)
             List of collapse operators
@@ -414,16 +415,16 @@ class NV(QSys):
         -------
         Zero Field Hamiltonian : Qobj
         """
+        H_zf = 2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
+
         if self.N == 14:
-            return tensor(
-                2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(3)
-            )
+            return tensor(H_zf, qeye(3))
+        
         elif self.N == 15:
-            return tensor(
-                2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2), qeye(2)
-            )
-        elif self.N == 0:
-            return 2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
+            return tensor(H_zf, qeye(2))
+        
+        elif self.N == 0 or self.N is None:
+            return H_zf
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -437,39 +438,20 @@ class NV(QSys):
         -------
         Electron Zeeman Hamiltonian : Qobj
         """
+        H_ez = gamma_e*self.B0*(
+                np.cos(self.theta) * jmat(1, "z")
+                + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
+                + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
+                )
 
         if self.N == 14:
-            return tensor(
-                gamma_e
-                * self.B0
-                * (
-                    np.cos(self.theta) * jmat(1, "z")
-                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
-                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
-                ),
-                qeye(3),
-            )
+            return tensor(H_ez, qeye(3))
+        
         elif self.N == 15:
-            return tensor(
-                gamma_e
-                * self.B0
-                * (
-                    np.cos(self.theta) * jmat(1, "z")
-                    + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
-                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
-                ),
-                qeye(2),
-            )
+            return tensor(H_ez, qeye(2))
+        
         elif self.N == 0 or self.N is None:
-            return (
-                gamma_e
-                * self.B0
-                * (
-                    np.cos(self.theta) * jmat(1, "z")
-                    + np.sin(self.theta) * np.cos(self.theta) * jmat(1, "x")
-                    + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
-                )
-            )
+            return H_ez
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
@@ -547,7 +529,7 @@ class NV(QSys):
         if self.N == 14:
             return -5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
         elif self.N == 15 or self.N == 0:
-            return None
+            return 0
         else:
             raise ValueError(
                 f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}."
