@@ -3,7 +3,21 @@ import pytest
 from lmfit import Model
 from qutip import basis, fock_dm, jmat, qeye, sigmax, sigmay, sigmaz, tensor
 
-from quaccatoo import CPMG, NV, PMR, XY, XY8, Analysis, ExpData, Hahn, QSys, Rabi, compose_sys, square_pulse
+from quaccatoo import (
+    CPMG,
+    NV,
+    PMR,
+    XY,
+    XY8,
+    Analysis,
+    ExpData,
+    Hahn,
+    QSys,
+    Rabi,
+    compose_sys,
+    square_pulse,
+    PulsedSim,
+)
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
     GaussianModel,
@@ -340,3 +354,94 @@ class TestExpData:
         data_corr = exp_data.results - 2
         exp_data.offset_correction(2)
         assert np.allclose(data_corr, exp_data.results)
+
+
+########################################################################
+# Standalone tests
+########################################################################
+
+# multiprocessing used by parallel_map doesn't seem to work without the following mess
+# https://stackoverflow.com/questions/72766345/attributeerror-cant-pickle-local-object-in-multiprocessing
+NV_pulse = NV(B0=25, units_B0="mT", N=14)
+NV_pulse.truncate(mS=1, mI=1)
+
+
+def hadamard_phi(phi_rf, **kwargs):
+    sol_opt = {"nsteps": 1e6}
+    seq_in = PulsedSim(NV_pulse)
+
+    seq_in.add_pulse(
+        kwargs["tpi_cnot"],
+        kwargs["h1_cnot"],
+        pulse_params={"f_pulse": kwargs["w0_cnot"], "phi_t": np.pi / 2},
+        options=sol_opt,
+    )
+
+    seq_in.add_pulse(
+        kwargs["tpi_rf"] / 2,
+        kwargs["h1_rf"],
+        pulse_params={"f_pulse": kwargs["w0_rf"], "phi_t": phi_rf},
+        options=sol_opt,
+    )
+    seq_in.add_pulse(
+        kwargs["tpi_mwa"],
+        kwargs["h1_mwa"],
+        pulse_params={"f_pulse": kwargs["w0_mwa"], "phi_t": np.pi / 2},
+        options=sol_opt,
+    )
+    seq_in.add_pulse(
+        kwargs["tpi_rf"] / 2,
+        kwargs["h1_rf"],
+        pulse_params={"f_pulse": kwargs["w0_rf"], "phi_t": phi_rf},
+        options=sol_opt,
+    )
+
+    return seq_in.rho
+
+
+def test_add_pulse():
+    # Rabi frequencies of the spins in MHz
+    w1_rf = 0.2
+    w1_mwa = 16
+    w1_cnot = 2.14 / 3**0.5
+
+    # pi pulse times
+    tpi_rf = 1 / (2 * w1_rf)
+    tpi_mwa = 1 / (2 * w1_mwa)
+    tpi_cnot = 1 / (2 * w1_cnot)
+
+    # Larmor frequencies of the spins
+    w0_rf = NV_pulse.RF_freqs[2]
+    w0_mwa = NV_pulse.MW_freqs[0]
+    w0_cnot = NV_pulse.energy_levels[2]
+
+    # Hamiltonian terms for the RF and MW pulses
+
+    NV_pulse.rho0 = tensor(basis(2, 0) - basis(2, 1), basis(2, 0) - basis(2, 1)).unit()
+
+    NV_pulse.observable = [
+        tensor(fock_dm(2, 0), fock_dm(2, 0)),
+        tensor(fock_dm(2, 0), fock_dm(2, 1)),
+        tensor(fock_dm(2, 1), fock_dm(2, 0)),
+        tensor(fock_dm(2, 1), fock_dm(2, 1)),
+    ]
+
+    phi_array = np.arange(0, 2 * np.pi, 0.1)
+
+    seq_phi = PulsedSim(NV_pulse)
+    seq_args = {
+        "tpi_rf": tpi_rf,
+        "tpi_mwa": tpi_mwa,
+        "tpi_cnot": tpi_cnot,
+        "w0_rf": w0_rf,
+        "w0_mwa": w0_mwa,
+        "w0_cnot": w0_cnot,
+        "h1_rf": w1_rf * NV_pulse.RF_h1,
+        "h1_mwa": w1_mwa * NV_pulse.MW_h1,
+        "h1_cnot": w1_cnot * NV_pulse.MW_h1,
+    }
+
+    seq_phi.run(phi_array, hadamard_phi, sequence_kwargs=seq_args)
+
+    phi_rf = phi_array[np.argmax(seq_phi.results[0] ** 2 + seq_phi.results[3] ** 2)]
+    assert np.isclose(phi_rf, 2.9)
