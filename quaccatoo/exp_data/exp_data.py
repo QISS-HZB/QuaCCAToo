@@ -41,7 +41,7 @@ class ExpData:
         self,
         file_path : str,
         variable_column : int = 0,
-        results_columns : int = 1,
+        results_columns : int | list[int] = 1,
         yerr_columns : int | None = None,
         variable_name : str = "Time",
         result_name : str = "Expectation Value",
