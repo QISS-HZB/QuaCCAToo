@@ -43,7 +43,7 @@ class Rabi(PulsedSim):
         system: QSys,
         h1 : Qobj | list[Qobj],
         H2 : Optional[tuple[Qobj, Callable]] = None,
-        pulse_shape : Callable = square_pulse,
+        pulse_shape : Callable | list[Callable]= square_pulse,
         pulse_params : Optional[dict[str, float | int]] = None, 
         options : Optional[dict] = None
     ) -> None:
