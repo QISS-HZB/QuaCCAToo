@@ -157,7 +157,8 @@ class Analysis:
                 )
                 self.exp_comparison.results = r[0] * exp_comparison.results[comparison_index] + r[1]
 
-            self.pearson = r[2]
+            self.pearson = r
+            return r.rvalue
 
         else:
             if isinstance(exp_comparison.results, np.ndarray):
@@ -168,10 +169,9 @@ class Analysis:
                 )
 
             self.exp_comparison.results = exp_comparison.results
-            self.pearson = r[0]
+            self.pearson = r
+            return r.statistic
 
-        self.pearson = r
-        return r
 
     def plot_comparison(
         self,
