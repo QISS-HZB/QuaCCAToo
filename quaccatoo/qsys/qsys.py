@@ -54,7 +54,7 @@ class QSys:
         H0 : Qobj | np.ndarray,
         rho0 : Optional[Qobj | np.ndarray | int] = None,
         c_ops : Optional[Qobj | list[Qobj]] = None,
-        observable : Optional[Qobj | list[Qobj]] =None,
+        observable : Qobj | list[Qobj] | None = None,
         units_H0 : Optional[str] = None
         ) -> None:
         """
@@ -119,10 +119,10 @@ class QSys:
         elif (
             isinstance(observable, list)
             and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable)
-            and all(obs.shape == H0.shape for obs in observable)
+            and all(obs.shape == H0.shape for obs in observable)    # ty: ignore[unresolved-attribute], list comprehension, handled manually
         ):
             self.observable = observable
-            if not all(obs.isherm for obs in observable):
+            if not all(obs.isherm for obs in observable):   # ty: ignore[unresolved-attribute], list comprehension, handled manually
                 warnings.warn("Passed observables are not hermitian.")
         else:
             raise ValueError(
@@ -258,8 +258,8 @@ class QSys:
             if indexes < 0 or indexes >= self.H0.shape[0]:
                 raise ValueError("sel must be a valid index of the Hamiltonian.")
         if isinstance(indexes, (list, np.array)):
-            if not all(isinstance(i, int) for i in indexes) and not all(
-                0 <= i < self.H0.shape[0] for i in indexes
+            if not all(isinstance(i, int) for i in indexes) and not all( #ty: ignore[not-iterable], handled manually
+                0 <= i < self.H0.shape[0] for i in indexes #ty: ignore[not-iterable], handled manually
             ):
                 raise ValueError("All elements in sel must be valid indices of the Hamiltonian.")
         else:
@@ -336,10 +336,10 @@ def compose_sys(
         rho0 = tensor(qsys1.rho0, qsys2.rho0)
         rho0 /= rho0.tr()
     elif qsys1.rho0.isherm and qsys2.rho0.isket:
-        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag())
+        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag())    #ty: ignore[unsupported-operator], handled manually
         rho0 /= rho0.tr()
     elif qsys1.rho0.isket and qsys2.rho0.isherm:
-        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0)
+        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0)   #ty: ignore[unsupported-operator], handled manually
         rho0 /= rho0.tr()
     else:
         rho0 = None
@@ -348,8 +348,8 @@ def compose_sys(
         if isinstance(qsys1.observable, Qobj) and isinstance(qsys2.observable, Qobj):
             observable = tensor(qsys1.observable, qsys2.observable)
         elif isinstance(qsys1.observable, list) and isinstance(qsys2.observable, list):
-            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [
-                tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable
+            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [   # ty: ignore[no-matching-overload], list comprehension, handled manually
+                tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable# ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         else:
             raise ValueError("Both observables must be Qobj or None")
@@ -375,15 +375,15 @@ def compose_sys(
                 tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops),
             ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, list):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
-                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [    # ty: ignore[no-matching-overload], list comprehension, handled manually
+                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops    # ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         elif isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, list):
             c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))] + [
-                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops    # ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, Qobj):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [    # ty: ignore[no-matching-overload], list comprehension, handled manually
                 tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
             ]
     else:
@@ -393,7 +393,7 @@ def compose_sys(
 
 
 def plot_energy_B0(
-    B0 : np.ndarray | list[float, int],
+    B0 : np.ndarray | list[float| int],
     H0 : Qobj | list[Qobj], 
     figsize : tuple[int, int] = (6, 4),
     energy_lim : Optional[tuple[int | float, int | float]] = None,

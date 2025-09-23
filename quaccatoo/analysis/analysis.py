@@ -59,7 +59,7 @@ class Analysis:
     """
     def __init__(
         self,
-        experiment : ExpData | PulsedSim  
+        experiment : ExpData | PulsedSim
     ) -> None:
         """
         Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks if the results and variable attributes are not empty and have the same length.
@@ -369,7 +369,7 @@ class Analysis:
         fit_model : Model,
         results_index : int= 0,
         guess : Optional[dict] = None
-    ) -> dict:
+    ) -> Optional[dict]:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.
@@ -592,7 +592,7 @@ class Analysis:
 
         fig, axs = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
 
-        colors = plt.cm.viridis(np.linspace(0, 1, len(self.experiment.rho)))
+        colors = plt.cm.viridis(np.linspace(0, 1, len(self.experiment.rho)))    # ty: ignore[unresolved-attribute], upstream stuff
 
         bloch = Bloch(fig)
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
@@ -602,8 +602,8 @@ class Analysis:
 #####################################
 
 def plot_histogram(
-    rho : Qobj,
-    rho_comparison : Optional[Qobj] = None,
+    rho : Qobj|np.ndarray,
+    rho_comparison : Optional[Qobj]|np.ndarray = None,
     component : Literal["real", "imag", "abs"]  = "real",
     figsize : tuple[int, int] = (5, 5),
     title : str = "Matrix Histogram"
@@ -709,4 +709,4 @@ def plot_histogram(
     ax.set_yticks(np.arange(N) + 0.5)
     ax.set_xticklabels([f"$|{i}\\rangle$" for i in range(N)])
     ax.set_yticklabels([f"$|{i}\\rangle$" for i in range(N)])
-    ax.set_zticks([-1, -0.5, 0, 0.5, 1.0])
+    ax.set_zticks([-1, -0.5, 0, 0.5, 1.0])    #ty: ignore[call-non-callable], upstream stuff

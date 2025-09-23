@@ -132,7 +132,7 @@ class PulsedSim:
 
         # initialize the rest of the attributes
         self.total_time = 0
-        self.variable = None
+        self.variable: np.ndarray = None
         self.variable_name = None
         self.pulse_profiles = []
         self.results = []
@@ -207,7 +207,7 @@ class PulsedSim:
         self,
         duration : float | int,
         h1 : Qobj | list[Qobj],
-        pulse_shape : Callable = square_pulse,
+        pulse_shape : Callable | list[Callable]= square_pulse,
         pulse_params : Optional[dict[str, float | int]] = None, 
         time_steps : int = 100,
         options : Optional[dict] = None
@@ -279,7 +279,7 @@ class PulsedSim:
         elif (
             isinstance(h1, list)
             and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in h1)
-            and len(h1) == len(pulse_shape)
+            and len(h1) == len(pulse_shape)   # ty: ignore[invalid-argument-type], handled manually
         ):
             self.pulse_profiles = [
                 [
@@ -305,7 +305,7 @@ class PulsedSim:
 
     def _pulse(
         self,
-        Ht : list[Qobj, list[Qobj, Callable]],
+        Ht : list[Qobj| list[Qobj| Callable]],
         duration : np.ndarray | list[float | int],
         options : dict,
         core_pulse_params : dict[str, float | int],
@@ -617,7 +617,7 @@ class PulsedSim:
         h1 : Qobj | list[Qobj],
         Rx : Qobj,
         Ry : Qobj,
-        pulse_shape : Callable,
+        pulse_shape : Callable | list[Callable],
         pulse_params : dict[str, float | int],
         options : dict,
         time_steps : int,
@@ -762,7 +762,7 @@ class PulsedSim:
             elif (
                 isinstance(h1, list)
                 and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in h1)
-                and len(h1) == len(pulse_shape)
+                and len(h1) == len(pulse_shape)    # ty: ignore[invalid-argument-type], handled manually
             ):
                 self.h1 = h1
                 self.Ht = [self.system.H0] + [[val_h1, pulse_shape[idx_h1]] for idx_h1, val_h1 in enumerate(h1)]

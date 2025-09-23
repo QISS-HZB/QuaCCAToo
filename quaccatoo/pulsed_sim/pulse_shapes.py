@@ -8,8 +8,8 @@ import numpy as np
 
 
 def square_pulse(
-    t : np.ndarray | list[float],
-    **pulse_params : dict[str, float]
+    t : np.ndarray,
+    **pulse_params : dict[str,float]
     ) -> np.ndarray:
     """
     Square pulse envelope modulation
@@ -32,7 +32,7 @@ def square_pulse(
 
 
 def gaussian_pulse(
-    t : np.ndarray | list[float],
+    t : np.ndarray,
     **pulse_params : dict[str, float]
     ) -> np.ndarray:
     """
@@ -56,13 +56,13 @@ def gaussian_pulse(
     float
         Value of the Gaussian pulse at time t
     """
-    return np.exp(-((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2)) * np.cos(
+    return np.exp(-((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2.)) * np.cos(    # satisfy the python typing demon (2.)
         pulse_params["f_pulse"] * t + pulse_params["phi_t"]
     )
 
 
 def lorentzian_pulse(
-    t : np.ndarray | list[float],
+    t : np.ndarray,
     **pulse_params : dict[str, float]
     ) -> np.ndarray:
     """

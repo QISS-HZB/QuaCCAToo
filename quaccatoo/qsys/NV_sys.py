@@ -468,7 +468,7 @@ class NV(QSys):
 
     def nuclear_zeeman(
         self
-        ) -> Qobj:
+        ) -> Qobj | int:
         """
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
 
@@ -506,7 +506,7 @@ class NV(QSys):
 
     def hyperfine_N(
         self
-        ) -> Qobj:
+        ) -> Qobj | int:
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -529,7 +529,7 @@ class NV(QSys):
 
     def quadrupole(
         self
-        ) -> Qobj:
+        ) -> Qobj | int:
         """
         Get the quadrupole term
 

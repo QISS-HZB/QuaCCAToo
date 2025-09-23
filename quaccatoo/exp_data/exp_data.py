@@ -94,7 +94,7 @@ class ExpData:
             isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns)
         ):
             raise ValueError("yerr_columns must be None, an integer or a list of integers")
-        elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):
+        elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):    # ty: ignore[invalid-argument-type], already checked above
             raise ValueError("yerr_columns must have the same lenght of the results_columns")
 
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
@@ -107,7 +107,7 @@ class ExpData:
         exp_data = np.loadtxt(file_path, **loadtxt_kwargs)
 
         # sets the results and variable attributes of the ExpData object
-        self.variable = exp_data[:, variable_column]
+        self.variable: np.ndarray = exp_data[:, variable_column]
 
         if isinstance(results_columns, int):
             self.results = exp_data[:, results_columns]
