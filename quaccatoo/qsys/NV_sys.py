@@ -37,8 +37,6 @@ class NV(QSys):
         Units of the angles (deg or rad)
     temp : float or None
         Temperature
-    units_temp : str
-        Temperature units 'C' or 'K'
     energy_levels : list
         List of energy levels of the Hamiltonian
     MW_freqs : numpy.ndarray
@@ -52,7 +50,7 @@ class NV(QSys):
 
     Methods
     -------
-    _rho0_lowT
+    _rho0_T
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution
     _set_MW
         Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
@@ -159,6 +157,27 @@ class NV(QSys):
         else:
             self.E = E
 
+        if temp is None:
+            self.temp = temp
+        elif isinstance(temp, (int, float)) and temp > 0:
+            self.temp = temp
+            if temp < 2.5 or temp > 700:
+                warnings.warn(
+                    "The operational temperature range for the Hamiltonian model is between 2.5 K to 700 K. Results might be inaccurate."
+                )
+        else:
+            raise ValueError("T must be a positive real number.")
+
+        # by default quaccatoo uses temperatures in Kelvin
+        if units_temp == "K":
+            pass
+        elif units_temp == "C":
+            self.temp += 273.15
+        elif units_temp == "F":
+            raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
+        else:
+            raise ValueError(f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}.")
+
         self.theta = theta
         self.phi_r = phi_r
         self.N = N
@@ -190,45 +209,24 @@ class NV(QSys):
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
-        if temp is not None:
-            self._rho0_lowT(temp, units_temp)
+        if self.temp is not None:
+            self._rho0_T()
 
         self._set_MW()
         self._set_RF()
 
-    def _rho0_lowT(
-        self,
-        temp : Optional[float | int] = None,
-        units_temp : Literal['C', 'K'] = "K",
+    def _rho0_T(
+        self
         ) -> None:
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
-
-        Parameters
-        ----------
-        T : float
-            Temperature
-        units_temp : str
-            Units of the temperature (K or C)
 
         Returns
         -------
         rho0 : Qobj
             Initial state of the system
         """
-        if units_temp == "K":
-            pass
-        elif units_temp == "C":
-            temp += 273.15
-        elif units_temp == "F":
-            raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
-        else:
-            raise ValueError(f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}.")
-
-        if not isinstance(temp, (int, float)) and temp > 0:
-            raise ValueError("T must be a positive real number.")
-
         # a loop to find the |0,1/2> and |0,-1/2> states
         max_1 = 0
         max_2 = 0
@@ -258,7 +256,7 @@ class NV(QSys):
                 max_2 = proj_2
                 index_2 = idx_eig
 
-        beta = -cte.h * 1e6 / (cte.Boltzmann * temp)
+        beta = -cte.h * 1e6 / (cte.Boltzmann * self.temp)
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
@@ -402,20 +400,33 @@ class NV(QSys):
     def zero_field(
         self
         ) -> Qobj:
-        """Get the NV Hamiltonian term accounting for zero field splitting.
-
-        Parameters
-        ----------
-        D : float
-            Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)
-        E : float
-            Non axial compononet, by default 0. Usually much (1000x) smaller than `D`
+        """Get the NV Hamiltonian term accounting for the zero field splitting.
+        If the temperature attribute is set to a value below 295 K, the D parameter is calculated using a
+        5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903 (2011).
+        Otherwise, if the temperature is above 295 K, a 3rd order polynomial function from
+        D. M. Toyli et al. Phys. Rev. X 2, 031001 (2012) is used.
 
         Returns
         -------
         Zero Field Hamiltonian : Qobj
         """
-        H_zf = 2.87e3 * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
+        if self.temp is not None:
+            if self.temp <= 295:
+                D = (2.87771
+                    - 4.625e-6 * self.temp
+                    + 1.067e-7 * self.temp**2 
+                    - 9.325e-10 * self.temp**3 
+                    + 1.739e-12 * self.temp**4
+                    - 1.838e-15 * self.temp**5) * 1e3
+            else:
+                D =(2.8697
+                + 9.7e-5 * self.temp
+                - 3.7e-7 * self.temp**2
+                + 1.7e-10 * self.temp**3) * 1e3
+        else:
+            D = 2.87e3
+
+        H_zf = D * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
 
         if self.N == 14:
             return tensor(H_zf, qeye(3))
