@@ -305,7 +305,7 @@ class P1(QSys):
     
     def quadrupole(
         self
-        ) -> Qobj:
+        ) -> Qobj|int:
         """
         Get the quadrupole term
 
@@ -322,7 +322,7 @@ class P1(QSys):
     
     def nuclear_zeeman(
         self
-        ) -> Qobj:
+        ) -> Qobj | None:
         """
         Nuclear Zeeman Hamiltonian term
 

@@ -112,7 +112,7 @@ class QSys:
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj
         if observable is None:
             self.observable = None
-        elif isinstance(observable, (Qobj, np.ndarray)) and observable.shape == H0.shape:
+        elif isinstance(observable, Qobj) and observable.shape == H0.shape:
             self.observable = observable
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")

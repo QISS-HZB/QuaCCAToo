@@ -701,8 +701,8 @@ def plot_histogram(
 
     # Aesthetics, labels, and title
     ax.grid(False)
-    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
-    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))    #ty: ignore[possibly-unbound-attribute], upstream
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))    #ty: ignore[possibly-unbound-attribute], upstream
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     fig.suptitle(title, fontsize=12, x=0.2, y=0.85)
     ax.set_xticks(np.arange(N) + 0.5)
