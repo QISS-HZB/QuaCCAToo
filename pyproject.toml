@@ -96,3 +96,6 @@ ignore-overlong-task-comments = true
 
 [tool.coverage.report]
 skip_empty = true
+
+[tool.ty.src]
+exclude = ["tests/", "docs/"]
