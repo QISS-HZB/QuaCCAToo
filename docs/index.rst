@@ -52,6 +52,8 @@ contain:
   simulation of P1 sensing with NVs diamond from
   `Local nanoscale probing of electron spins using NV centers in diamond
   <https://arxiv.org/abs/2507.13295>`__.
+- `08 - Multi-Qubit Gates by Dynamical Decoupling with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/08_NV_DD_gates.html>`__:
+  simulation of Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond.
 
 Class Hierarchy
 ---------------
