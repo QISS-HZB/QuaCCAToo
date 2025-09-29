@@ -5,7 +5,7 @@ QuaCCAToo is a Python library for simulating and analyzing spin dynamics of colo
 The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. 
 The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
 
-For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/notebooks.html) section.
+For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/tutorials.html) section.
 
 If you used QuaCCAToo in your work, please cite [arXiv:2507.18759](https://arxiv.org/abs/2507.18759).
 
@@ -68,5 +68,5 @@ Any contribution or bug report are welcome.
 ## Note for Windows/macOS Users
 
 QuaCCAToo is best optimized to run on GNU/Linux systems. More specifically, the `parallel_map` method from
-Qutip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
+QuTip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
 in simulations and even crashes in some hardware. macOS machines have not been tested by us.
