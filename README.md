@@ -28,6 +28,7 @@ Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detaile
 
 - L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. [arXiv:2507.18759 quant-ph](https://arxiv.org/abs/2507.18759).
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
+- L. Tsunaki, M. Dotan, K. Volkova, B. Naydenov. (2025). Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond. [arXiv:2509.22107 quant-ph](https://arxiv.org/abs/2509.22107).
 - S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. [arXiv:2507.13295 quant-ph](https://arxiv.org/abs/2507.13295).
 
 If you used QuaCCAToo in your work, please let us know so we can add it to the list!
