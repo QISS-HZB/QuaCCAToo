@@ -18,7 +18,8 @@ gamma_N15 = -4.316e-3
 
 class P1(QSys):
     """
-    TODO add brief desription
+    P1 class contains attributes and methods to simulate the neutral substitutional nitrogen center in diamond.
+    Due to Jahn-Teller effect this defect has a C_{3v} point symmetry, which means there are four isolated orientation families of P1 centers in diamond. In simulations the lab reference frame is chosen in such a way that it is a principal axis system (PAS) for one of the four families (rotation index 0). Hamiltonians of other orientation families are obtained by the transition from PAS to the corresponding orientation using rotation matrices. 
 
     Attributes
     ----------
@@ -30,6 +31,22 @@ class P1(QSys):
         List of rotation matrices to go from the PAS (principal axis system) frame to the lab frame.
     N : int
         Nitrogen isotope, or 0 for no nuclear spin.
+    units_B0 : str
+        Units of the magnetic field (T, mT or G)
+    theta : float | int
+        Angle of the static magnetic field vector with respect to the z axis
+    phi_r : float | int
+        Azimutal angle of the static magnetic field vector within the xy plane
+    theta_1 : float | int
+        Angle of the MW magnetic field vector with respect to the z axis
+    phi_r_1 : float | int
+        Azimutal angle of the MW magnetic field vector within the xy plane
+    units_angles : str
+        Units of the angles (deg or rad)
+    B0_vector : np.ndarray
+        Unit vector of the static magnetic field in the lab frame
+    B1_vector : np.ndarray
+        Unit vector of the MW magnetic field in the lab frame 
     h1 : Qobj
         Standard microwave Hamiltonian for the P1 center corresponding to the electronic spin transitions.
     eigenstates : np.ndarray
@@ -39,12 +56,6 @@ class P1(QSys):
 
     Methods
     -------
-    _Rx
-        Generates rotation matrix around x axis.
-    _Ry
-        Generates rotation matrix around y axis.
-    _Rz
-        Generates rotation matrix around z axis.
     _rot_pas_to_lab
         Defines the rotation matrices to go from the PAS (principal axis system) frame to the lab frame.
     electron_zeeman
@@ -72,6 +83,11 @@ class P1(QSys):
         rho0 : Optional[Qobj | np.ndarray | int] = None,
         c_ops : Optional[Qobj | list[Qobj]] = None,
         units_B0 : Literal['T', 'mT', 'G'] = 'mT',
+        theta : float | int = 0.0,
+        phi_r : float | int = 0.0,
+        theta_1 : float | int = 90.0,
+        phi_r_1 : float | int = 0.0,
+        units_angles : Literal['rad', 'deg'] = "deg",
         observable : Optional[Qobj | list[Qobj]] =None
         ) -> None:
         """
@@ -82,7 +98,7 @@ class P1(QSys):
         ----------
         B0 : float
             Magnetic field intensity.
-        rot_index : int TODO better explain this parameter throughout its usage
+        rot_index : int
             Rotation index, integer between 0 and 3.
         N : 15 | 14 | 0 | None
             Nitrogen isotope, or 0 for no nuclear spin
@@ -90,6 +106,22 @@ class P1(QSys):
             Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
         c_ops : Qobj | list(Qobj)
             List of collapse operators
+        units_B0 : str
+            Units of the magnetic field (T, mT or G)
+        theta : float | int
+            Angle of the static magnetic field vector with respect to the z axis
+        phi_r : float | int
+            Azimutal angle of the static magnetic field vector within the xy plane
+        theta_1 : float | int
+            Angle of the MW magnetic field vector with respect to the z axis
+        phi_r_1 : float | int
+            Azimutal angle of the MW magnetic field vector within the xy plane
+        units_angles : str
+            Units of the angles (deg or rad)
+        B0_vector : np.ndarray
+            Unit vector of the static magnetic field in the lab frame
+        B1_vector : np.ndarray
+            Unit vector of the MW magnetic field in the lab frame 
         observable : Qobj | list(Qobj)
             Observable to be measured                    
         """
@@ -109,11 +141,34 @@ class P1(QSys):
         else:
             raise ValueError(f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}.")
         
+        if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)) or not isinstance(theta_1, (int, float)) or not isinstance(phi_r_1, (int, float)):
+            raise TypeError(
+                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}, theta_1: {type(theta)}, phi_r_1: {type(phi_r)}."
+            )
+        elif units_angles == "deg":
+            theta = np.deg2rad(theta)
+            phi_r = np.deg2rad(phi_r)
+            theta_1 = np.deg2rad(theta_1)
+            phi_r_1 = np.deg2rad(phi_r_1)
+        elif units_angles == "rad":
+            pass
+        else:
+            raise ValueError(
+                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}."
+            )
+
+        self.B0_vector = np.array([[np.sin(theta)*np.cos(phi_r), np.sin(theta)*np.sin(phi_r), np.cos(theta)]])
+        self.B1_vector = np.array([[np.sin(theta_1)*np.cos(phi_r_1), np.sin(theta_1)*np.sin(phi_r_1), np.cos(theta_1)]])
+
         if rot_index in range(4):
             self.rot_index = rot_index
         else:
             raise ValueError(f"Invalid value for rotation index r. Expected an integer between 0 and 3, got {rot_index}.")
         
+        self.theta = theta
+        self.phi_r = phi_r
+        self.theta_1 = theta_1
+        self.phi_r_1 = phi_r_1
         self._rot_pas_to_lab()
         self.N = N
 
@@ -151,63 +206,6 @@ class P1(QSys):
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
         self._set_h1()
-        
-    def _Rx(
-        alpha : float | int 
-        ) -> np.ndarray:
-        """
-        Internal rotation generator around the x axis.
-
-        Parameters
-        ----------
-        alpha : float
-            Rotation angle in radians.
-
-        Returns
-        -------
-        Rotation matrix : numpy.ndarray
-        """
-        return np.array([[1, 0, 0],
-                         [0, np.cos(alpha), -np.sin(alpha)],
-                         [0, np.sin(alpha), np.cos(alpha)]])
-
-    def _Ry(
-        alpha : float | int 
-        ) -> np.ndarray:
-        """
-        Internal rotation generator around the y axis.
-
-        Parameters
-        ----------
-        alpha : float
-            Rotation angle in radians.
-
-        Returns
-        -------
-        Rotation matrix : numpy.ndarray
-        """
-        return np.array([[np.cos(alpha), 0, np.sin(alpha)],
-                         [0, 1, 0],
-                         [-np.sin(alpha), 0, np.cos(alpha)]])
-
-    def _Rz(
-        alpha : float | int 
-        ) -> np.ndarray:
-        """
-        Internal rotation generation around the z axis.
-
-        Parameters
-        ----------
-        alpha : float
-            Rotation angle in radians.
-
-        Returns
-        -------
-        Rotation matrix : numpy.ndarray
-        """
-        return np.array([[np.cos(alpha), -np.sin(alpha), 0],
-                         [np.sin(alpha), np.cos(alpha), 0],
-                         [0, 0, 1]])
     
     def _rot_pas_to_lab(
         self
@@ -264,9 +262,9 @@ class P1(QSys):
         Zeeman Hamiltonian : Qobj
         """
         H_ez = gamma_e*self.B0*(
-            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1/2, 'x') +
-            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1/2, 'y') +
-            (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1/2, 'z')
+            (self.R[self.rot_index] @ self.B0_vector.T)[0][0]*jmat(1/2, 'x') +
+            (self.R[self.rot_index] @ self.B0_vector.T)[1][0]*jmat(1/2, 'y') +
+            (self.R[self.rot_index] @ self.B0_vector.T)[2][0]*jmat(1/2, 'z')
         )
 
         if self.N == 14:
@@ -292,13 +290,12 @@ class P1(QSys):
         Hyperfine Hamiltonian : Qobj
         """
         if self.N == 14:
-            return (114*tensor(jmat(1/2,'z'), jmat(1,'z'))
-                    + 82*(tensor(jmat(1/2,'x'), jmat(1,'x'))
+            return (114.03*tensor(jmat(1/2,'z'), jmat(1,'z'))
+                    + 81.32*(tensor(jmat(1/2,'x'), jmat(1,'x'))
                           + tensor(jmat(1/2,'y'), jmat(1,'y'))))
         elif self.N == 15:
-            # TODO: find the correct values for the hyperfine coupling constants for N15
-            return (114*tensor(jmat(1/2,'z'), jmat(1/2,'z'))
-                    + 82*(tensor(jmat(1/2,'x'), jmat(1/2,'x'))
+            return (-159.73*tensor(jmat(1/2,'z'), jmat(1/2,'z'))
+                    + -113.84*(tensor(jmat(1/2,'x'), jmat(1/2,'x'))
                           + tensor(jmat(1/2,'y'), jmat(1/2,'y'))))
         else:
             raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}.")
@@ -314,7 +311,7 @@ class P1(QSys):
         Quadrupole Hamiltonian : Qobj
         """
         if self.N == 14:
-            return - 5.01*tensor(qeye(2), jmat(1,'z')**2)
+            return -3.97*tensor(qeye(2), jmat(1,'z')**2)
         elif self.N == 15:
             return 0
         else:
@@ -333,17 +330,17 @@ class P1(QSys):
         if self.N == 14:
             return -gamma_N14*self.B0*tensor(
                 qeye(2),
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1, 'x') +
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1, 'y') +
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1, 'z')
+                (self.R[self.rot_index] @ self.B0_vector.T)[0][0]*jmat(1, 'x') +
+                (self.R[self.rot_index] @ self.B0_vector.T)[1][0]*jmat(1, 'y') +
+                (self.R[self.rot_index] @ self.B0_vector.T)[2][0]*jmat(1, 'z')
                 )
         
         elif self.N == 15:
             return -gamma_N15*self.B0*tensor(
                 qeye(2),
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[0][0]*jmat(1/2, 'x') +
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[1][0]*jmat(1/2, 'y') +
-                (self.R[self.rot_index] @ np.array([[0, 0, 1]]).T)[2][0]*jmat(1/2, 'z')
+                (self.R[self.rot_index] @ self.B0_vector.T)[0][0]*jmat(1/2, 'x') +
+                (self.R[self.rot_index] @ self.B0_vector.T)[1][0]*jmat(1/2, 'y') +
+                (self.R[self.rot_index] @ self.B0_vector.T)[2][0]*jmat(1/2, 'z')
                 )
         
     def _set_h1(
@@ -353,9 +350,9 @@ class P1(QSys):
         Sets the standard control Hamiltonian for the P1 center corresponding to the electronic spin transitions.
         """
         h1_e = 2*(
-            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[0][0]*jmat(1/2, 'x') +
-            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[1][0]*jmat(1/2, 'y') +
-            (self.R[self.rot_index] @ np.array([[1, 0, 0]]).T)[2][0]*jmat(1/2, 'z')
+            (self.R[self.rot_index] @ self.B1_vector.T)[0][0]*jmat(1/2, 'x') +
+            (self.R[self.rot_index] @ self.B1_vector.T)[1][0]*jmat(1/2, 'y') +
+            (self.R[self.rot_index] @ self.B1_vector.T)[2][0]*jmat(1/2, 'z')
             )
 
         if self.N == 15:
