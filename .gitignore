@@ -8,3 +8,4 @@ hidden_files/
 dist/
 /.coverage*
 tests/.coverage*
+docs/_build/
