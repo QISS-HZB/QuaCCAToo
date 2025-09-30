@@ -16,6 +16,8 @@ from quaccatoo import (
     Rabi,
     compose_sys,
     square_pulse,
+    P1,
+    PMR,
     PulsedSim,
 )
 from quaccatoo.analysis.fit_functions import (
@@ -23,6 +25,7 @@ from quaccatoo.analysis.fit_functions import (
     GaussianModel,
     RabiModel,
     fit_two_lorentz_sym,
+    fit_sinc2,
 )
 
 """
@@ -356,6 +359,33 @@ class TestExpData:
         assert np.allclose(data_corr, exp_data.results)
 
 
+class TestP1:
+    def test_P1(self):
+        B0 = (3911 - 1827) / 2 / 28.025
+        w2 = 3
+        freqs = np.linspace(900, 1200, 500)
+        theta = 0
+        phi = 0
+
+        qsys = P1(
+            B0=B0, rot_index=1, observable=1, N=14, theta=theta, phi_r=phi, theta_1=90 + theta, phi_r_1=phi
+        )
+
+        sim = PMR(
+            frequencies=freqs,
+            pulse_duration=1 / 2 / w2,
+            system=qsys,
+            h1=w2 * qsys.h1,
+        )
+
+        sim.run()
+        analysis = Analysis(sim)
+        analysis.run_fit(fit_model=Model(fit_sinc2), guess={"A": 0.33, "gamma": 5, "f0": 1050, "C": 1})
+        assert np.isclose(analysis.fit_params.best_values["gamma"], 3.003, atol=1e-3) and np.isclose(
+            analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3
+        )
+
+
 ########################################################################
 # Standalone tests
 ########################################################################
@@ -397,6 +427,7 @@ def hadamard_phi(phi_rf, **kwargs):
     )
 
     return seq_in.rho
+
 
 def test_add_pulse():
     # Rabi frequencies of the spins in MHz
@@ -445,44 +476,59 @@ def test_add_pulse():
     phi_rf = phi_array[np.argmax(seq_phi.results[0] ** 2 + seq_phi.results[3] ** 2)]
     assert np.isclose(phi_rf, 2.9)
 
+
 def custom_Hahn(tau, **kwargs):
+    ps = tau - kwargs["t_pi"]
 
-    ps = tau - kwargs['t_pi']
+    seq = PulsedSim(kwargs["qsys"])
 
-    seq = PulsedSim(kwargs['qsys'])
-
-    seq.add_pulse(duration=kwargs['t_pi']/2, h1=kwargs['h1'], pulse_shape=kwargs['pulse_shape'], pulse_params = {'f_pulse': kwargs['delta']})
+    seq.add_pulse(
+        duration=kwargs["t_pi"] / 2,
+        h1=kwargs["h1"],
+        pulse_shape=kwargs["pulse_shape"],
+        pulse_params={"f_pulse": kwargs["delta"]},
+    )
     seq.add_free_evolution(duration=ps)
-    seq.add_pulse(duration=kwargs['t_pi'], h1=kwargs['h1'], pulse_shape=kwargs['pulse_shape'], pulse_params = {'f_pulse': kwargs['delta']})
+    seq.add_pulse(
+        duration=kwargs["t_pi"],
+        h1=kwargs["h1"],
+        pulse_shape=kwargs["pulse_shape"],
+        pulse_params={"f_pulse": kwargs["delta"]},
+    )
     seq.add_free_evolution(duration=ps)
-    seq.add_pulse(duration=3*kwargs['t_pi']/2, h1=kwargs['h1'], pulse_shape=kwargs['pulse_shape'], pulse_params = {'f_pulse': kwargs['delta']})
+    seq.add_pulse(
+        duration=3 * kwargs["t_pi"] / 2,
+        h1=kwargs["h1"],
+        pulse_shape=kwargs["pulse_shape"],
+        pulse_params={"f_pulse": kwargs["delta"]},
+    )
 
     return seq.rho
 
+
 def test_add_free_evolution():
     w0 = 1
-    w1 = w0/10
+    w1 = w0 / 10
 
     qsys = QSys(
-        H0 = w0/2 * sigmaz(),
-        rho0 = basis(2, 0),
-        observable = sigmaz(),
-        units_H0 = 'MHz'
+        H0=w0 / 2 * sigmaz(),
+        rho0=basis(2, 0),
+        observable=sigmaz(),
+        units_H0="MHz",
     )
     sequence_kwargs = {
-    'qsys': qsys,
-    'h1': w1*sigmax(),
-    'pulse_shape': square_pulse,
-    'delta': w0,
-    't_pi': 1/2/w1,
-    'w1': w1
+        "qsys": qsys,
+        "h1": w1 * sigmax(),
+        "pulse_shape": square_pulse,
+        "delta": w0,
+        "t_pi": 1 / 2 / w1,
+        "w1": w1,
     }
 
     custom_seq = PulsedSim(qsys)
     custom_seq.run(variable=np.linspace(5, 25, 30), sequence=custom_Hahn, sequence_kwargs=sequence_kwargs)
     analysis = Analysis(custom_seq)
     analysis.run_fit(fit_model=RabiModel())
-    assert np.isclose(analysis.fit_params.best_values['amp'], 0.000623, rtol=1e-3) and np.isclose(
-        analysis.fit_params.best_values['Tpi'], 0.714, atol=1e-3
+    assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3) and np.isclose(
+        analysis.fit_params.best_values["Tpi"], 0.714, atol=1e-3
     )
-
