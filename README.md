@@ -54,13 +54,14 @@ Several fit models and functions relevant for analysis of color centers are prov
 Any contribution or bug report are welcome.
 
 - To contribute, fork the main branch and make a pull request.
-- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest` and
-  `ruff`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
+- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest`, `ruff`,
+  and `ty`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
   [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for details.
 - Properly _document everything_ in details following the `numpy` [docstring
   format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
 - Test your branch by running `pytest` and the tutorial notebooks. Feel free to add more tests.
-- Please pay attention to linter warnings (`ruff check`) and format your code with `ruff format`.
+- Please pay attention to linter warnings (`ruff check`) and format your code with `ruff format`. Also
+  recommended is to run `ty check` for type hints.
 - Module level refactors require corresponding changes in the `sphinx` setup, too.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center
   instead of centre.
