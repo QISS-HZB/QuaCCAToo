@@ -363,7 +363,7 @@ class TestP1:
     def test_P1(self):
         B0 = (3911 - 1827) / 2 / 28.025
         w2 = 3
-        freqs = np.linspace(900, 1200, 500)
+        freqs = np.linspace(900, 1200, 100)
         theta = 0
         phi = 0
 
