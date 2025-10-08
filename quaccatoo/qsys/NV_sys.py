@@ -161,9 +161,9 @@ class NV(QSys):
             self.temp = temp
         elif isinstance(temp, (int, float)) and temp > 0:
             self.temp = temp
-            if temp < 2.5 or temp > 700:
+            if temp < 5.6 or temp > 700:
                 warnings.warn(
-                    "The operational temperature range for the Hamiltonian model is between 2.5 K to 700 K. Results might be inaccurate."
+                    "The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate."
                 )
         else:
             raise ValueError("T must be a positive real number.")
