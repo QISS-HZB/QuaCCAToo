@@ -38,19 +38,19 @@ class CPMG(PulsedSim):
 
     def __init__(
         self,
-        free_duration : np.ndarray | list[float | int],
-        system : QSys,
-        M : int,
-        pi_pulse_duration : float | int,
-        h1 : Optional[Qobj | list[Qobj]] = None,
-        Rx : Optional[Qobj] = None,
-        Ry : Optional[Qobj] = None,
-        H2 : Optional[tuple[Qobj, Callable]] = None,
-        projection_pulse :  bool = True,
-        pulse_shape : Callable = square_pulse,
-        pulse_params : Optional[dict[str, float | int]] = None, 
-        time_steps : int = 100,
-        options : Optional[dict] = None
+        free_duration: np.ndarray | list[float | int],
+        system: QSys,
+        M: int,
+        pi_pulse_duration: float | int,
+        h1: Optional[Qobj | list[Qobj]] = None,
+        Rx: Optional[Qobj] = None,
+        Ry: Optional[Qobj] = None,
+        H2: Optional[tuple[Qobj, Callable]] = None,
+        projection_pulse: bool = True,
+        pulse_shape: Callable = square_pulse,
+        pulse_params: Optional[dict[str, float | int]] = None,
+        time_steps: int = 100,
+        options: Optional[dict] = None,
     ) -> None:
         """
         Class constructor for the Carr-Purcell-Meiboom-Gill sequence
@@ -101,10 +101,7 @@ class CPMG(PulsedSim):
         base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
-    def CPMG_sequence(
-        self,
-        tau : float | int
-        ) -> Qobj:
+    def CPMG_sequence(self, tau: float | int) -> Qobj:
         """
         Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
@@ -160,10 +157,7 @@ class CPMG(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(
-        self,
-        tau : Optional[float | int] = None
-        ) -> None:
+    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
         """
         Generates the pulse profiles for the CPMG sequence for a given tau.
 
@@ -209,11 +203,11 @@ class CPMG(PulsedSim):
     def plot_pulses(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel : str = "Time",
-        ylabel : str = "Pulse Intensity",
-        title : str = "Pulse Profiles of XY8 Sequence",
-        tau : Optional[float | int] = None
-        ) -> None:
+        xlabel: str = "Time",
+        ylabel: str = "Pulse Intensity",
+        title: str = "Pulse Profiles of XY8 Sequence",
+        tau: Optional[float | int] = None,
+    ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
         first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.
@@ -259,19 +253,19 @@ class XY(PulsedSim):
 
     def __init__(
         self,
-        free_duration : np.ndarray | list[float | int],
-        system : QSys,
-        M : int,
-        pi_pulse_duration : float | int,
-        h1 : Optional[Qobj | list[Qobj]] = None,
-        Rx : Optional[Qobj] = None,
-        Ry : Optional[Qobj] = None,
-        H2 : Optional[tuple[Qobj, Callable]] = None,
-        projection_pulse :  bool = True,
-        pulse_shape : Callable = square_pulse,
-        pulse_params : Optional[dict[str, float | int]] = None, 
-        time_steps : int = 100,
-        options : Optional[dict] = None
+        free_duration: np.ndarray | list[float | int],
+        system: QSys,
+        M: int,
+        pi_pulse_duration: float | int,
+        h1: Optional[Qobj | list[Qobj]] = None,
+        Rx: Optional[Qobj] = None,
+        Ry: Optional[Qobj] = None,
+        H2: Optional[tuple[Qobj, Callable]] = None,
+        projection_pulse: bool = True,
+        pulse_shape: Callable = square_pulse,
+        pulse_params: Optional[dict[str, float | int]] = None,
+        time_steps: int = 100,
+        options: Optional[dict] = None,
     ) -> None:
         """
         Class constructor for the XY sequence
@@ -322,10 +316,7 @@ class XY(PulsedSim):
         base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
-    def XY_sequence(
-        self,
-        tau : float | int
-        ) -> Qobj:
+    def XY_sequence(self, tau: float | int) -> Qobj:
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
@@ -383,10 +374,7 @@ class XY(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(
-        self,
-        tau : Optional[float | int] = None
-        ) -> None:
+    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
         """
         Generates the pulse profiles for the XY-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -433,11 +421,11 @@ class XY(PulsedSim):
     def plot_pulses(
         self,
         figsize: tuple[int, int] = (6, 6),
-        xlabel : str = "Time",
-        ylabel : str = "Pulse Intensity",
-        title : str = "Pulse Profiles of XY8 Sequence",
-        tau : Optional[float | int] = None
-        ) -> None:
+        xlabel: str = "Time",
+        ylabel: str = "Pulse Intensity",
+        title: str = "Pulse Profiles of XY8 Sequence",
+        tau: Optional[float | int] = None,
+    ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
         first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.
@@ -485,20 +473,20 @@ class XY8(PulsedSim):
 
     def __init__(
         self,
-        free_duration : np.ndarray | list[float | int],
-        system : QSys,
-        M : int,
-        pi_pulse_duration : float | int,
-        h1 : Optional[Qobj | list[Qobj]] = None,
-        Rx : Optional[Qobj] = None,
-        Ry : Optional[Qobj] = None,
-        H2 : Optional[tuple[Qobj, Callable]] = None,
-        projection_pulse :  bool = True,
-        pulse_shape : Callable = square_pulse,
-        pulse_params : Optional[dict[str, float | int]] = None, 
-        time_steps : int = 100,
-        options : Optional[dict] = None,
-        RXY8 : bool = False
+        free_duration: np.ndarray | list[float | int],
+        system: QSys,
+        M: int,
+        pi_pulse_duration: float | int,
+        h1: Optional[Qobj | list[Qobj]] = None,
+        Rx: Optional[Qobj] = None,
+        Ry: Optional[Qobj] = None,
+        H2: Optional[tuple[Qobj, Callable]] = None,
+        projection_pulse: bool = True,
+        pulse_shape: Callable = square_pulse,
+        pulse_params: Optional[dict[str, float | int]] = None,
+        time_steps: int = 100,
+        options: Optional[dict] = None,
+        RXY8: bool = False,
     ) -> None:
         """
         Class constructor for the XY8 sequence
@@ -576,10 +564,7 @@ class XY8(PulsedSim):
 
             self.pulse_params.extend([px, py, px, py, py, px, py, px])
 
-    def XY8_sequence(
-        self,
-        tau : float | int
-        ) -> Qobj:
+    def XY8_sequence(self, tau: float | int) -> Qobj:
         """
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If random_phase is set to True, a random phase is added in each XY8 block.
@@ -647,10 +632,7 @@ class XY8(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(
-        self,
-        tau : Optional[float | int] = None
-        ) -> None:
+    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
         """
         Generates the pulse profiles for the XY8-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -697,11 +679,11 @@ class XY8(PulsedSim):
     def plot_pulses(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel : str = "Time",
-        ylabel : str = "Pulse Intensity",
-        title : str = "Pulse Profiles of XY8 Sequence",
-        tau : Optional[float | int] = None
-        ) -> None:
+        xlabel: str = "Time",
+        ylabel: str = "Pulse Intensity",
+        title: str = "Pulse Profiles of XY8 Sequence",
+        tau: Optional[float | int] = None,
+    ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first
         generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.
@@ -710,7 +692,7 @@ class XY8(PulsedSim):
         ----------
         tau : float | int
             Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
-        
+
         Notes
         -----
         The method uses the same parameters as plot_pulses

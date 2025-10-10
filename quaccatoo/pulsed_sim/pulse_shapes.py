@@ -7,10 +7,7 @@ This module contains pulse shape functions to be used in the PulsedSim classes a
 import numpy as np
 
 
-def square_pulse(
-    t : np.ndarray,
-    **pulse_params : dict[str,float]
-    ) -> np.ndarray:
+def square_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarray:
     """
     Square pulse envelope modulation
 
@@ -31,10 +28,7 @@ def square_pulse(
     return np.cos(pulse_params["f_pulse"] * t + pulse_params["phi_t"])
 
 
-def gaussian_pulse(
-    t : np.ndarray,
-    **pulse_params : dict[str, float]
-    ) -> np.ndarray:
+def gaussian_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarray:
     """
     Gaussian pulse envelope modulation
 
@@ -56,15 +50,14 @@ def gaussian_pulse(
     float
         Value of the Gaussian pulse at time t
     """
-    return np.exp(-((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2.)) * np.cos(    # satisfy the python typing demon (2.)
+    return np.exp(
+        -((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2.0)
+    ) * np.cos(  # satisfy the python typing demon (2.)
         pulse_params["f_pulse"] * t + pulse_params["phi_t"]
     )
 
 
-def lorentzian_pulse(
-    t : np.ndarray,
-    **pulse_params : dict[str, float]
-    ) -> np.ndarray:
+def lorentzian_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarray:
     """
     Lorentzian pulse envelope modulation
 

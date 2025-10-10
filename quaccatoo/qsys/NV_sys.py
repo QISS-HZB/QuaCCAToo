@@ -17,6 +17,7 @@ gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
 gamma_N14 = 3.077e-3
 gamma_N15 = -4.316e-3
 
+
 class NV(QSys):
     """
     NV class contains attributes and methods to simulate the nitrogen vacancy center in diamond.
@@ -78,16 +79,16 @@ class NV(QSys):
 
     def __init__(
         self,
-        B0 : float | int,
-        N : Literal[15, 14, 0, None],
-        c_ops : Optional[Qobj | list[Qobj]] = None,
-        units_B0 : Literal['T', 'mT', 'G'] = 'mT',
-        theta : float | int = 0.0,
-        phi_r : float | int = 0.0,
-        units_angles : Literal['rad', 'deg'] = "deg",
-        temp : Optional[float | int] = None,
-        units_temp : Literal['C', 'K'] = "K",
-        E : float | int = 0,
+        B0: float | int,
+        N: Literal[15, 14, 0, None],
+        c_ops: Optional[Qobj | list[Qobj]] = None,
+        units_B0: Literal["T", "mT", "G"] = "mT",
+        theta: float | int = 0.0,
+        phi_r: float | int = 0.0,
+        units_angles: Literal["rad", "deg"] = "deg",
+        temp: Optional[float | int] = None,
+        units_temp: Literal["C", "K"] = "K",
+        E: float | int = 0,
     ) -> None:
         """
         Constructor for the NV class.
@@ -185,7 +186,7 @@ class NV(QSys):
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
             H0 = self.zero_field() + self.electron_zeeman() + self.hyperfine_N() + self.nuclear_zeeman()
-            rho0 = tensor(fock_dm(3, 1), qeye(2)/2)
+            rho0 = tensor(fock_dm(3, 1), qeye(2) / 2)
             observable = tensor(fock_dm(3, 1), qeye(2))
 
         elif N == 14:
@@ -196,7 +197,7 @@ class NV(QSys):
                 + self.nuclear_zeeman()
                 + self.quadrupole()
             )
-            rho0 = tensor(fock_dm(3, 1), qeye(3)/2)
+            rho0 = tensor(fock_dm(3, 1), qeye(3) / 2)
             observable = tensor(fock_dm(3, 1), qeye(3))
 
         elif N == 0 or N is None:
@@ -215,9 +216,7 @@ class NV(QSys):
         self._set_MW()
         self._set_RF()
 
-    def _rho0_T(
-        self
-        ) -> None:
+    def _rho0_T(self) -> None:
         """
         Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
         At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
@@ -296,9 +295,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_MW(
-        self
-        ) -> None:
+    def _set_MW(self) -> None:
         """
         Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
         Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.
@@ -338,9 +335,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def _set_RF(
-        self
-        ) -> None:
+    def _set_RF(self) -> None:
         """
         Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
         Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.
@@ -397,9 +392,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def zero_field(
-        self
-        ) -> Qobj:
+    def zero_field(self) -> Qobj:
         """Get the NV Hamiltonian term accounting for the zero field splitting.
         If the temperature attribute is set to a value below 295 K, the D parameter is calculated using a
         5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903 (2011).
@@ -412,17 +405,16 @@ class NV(QSys):
         """
         if self.temp is not None:
             if self.temp <= 295:
-                D = (2.87771
+                D = (
+                    2.87771
                     - 4.625e-6 * self.temp
-                    + 1.067e-7 * self.temp**2 
-                    - 9.325e-10 * self.temp**3 
+                    + 1.067e-7 * self.temp**2
+                    - 9.325e-10 * self.temp**3
                     + 1.739e-12 * self.temp**4
-                    - 1.838e-15 * self.temp**5) * 1e3
+                    - 1.838e-15 * self.temp**5
+                ) * 1e3
             else:
-                D =(2.8697
-                + 9.7e-5 * self.temp
-                - 3.7e-7 * self.temp**2
-                + 1.7e-10 * self.temp**3) * 1e3
+                D = (2.8697 + 9.7e-5 * self.temp - 3.7e-7 * self.temp**2 + 1.7e-10 * self.temp**3) * 1e3
         else:
             D = 2.87e3
 
@@ -430,18 +422,16 @@ class NV(QSys):
 
         if self.N == 14:
             return tensor(H_zf, qeye(3))
-        
+
         elif self.N == 15:
             return tensor(H_zf, qeye(2))
-        
+
         elif self.N == 0 or self.N is None:
             return H_zf
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def electron_zeeman(
-        self
-        ) -> Qobj:
+    def electron_zeeman(self) -> Qobj:
         """
         Get the NV hamiltonian term accounting for the electron Zeeman effect.
 
@@ -449,26 +439,28 @@ class NV(QSys):
         -------
         Electron Zeeman Hamiltonian : Qobj
         """
-        H_ez = gamma_e*self.B0*(
+        H_ez = (
+            gamma_e
+            * self.B0
+            * (
                 np.cos(self.theta) * jmat(1, "z")
                 + np.sin(self.theta) * np.cos(self.phi_r) * jmat(1, "x")
                 + np.sin(self.theta) * np.sin(self.phi_r) * jmat(1, "y")
-                )
+            )
+        )
 
         if self.N == 14:
             return tensor(H_ez, qeye(3))
-        
+
         elif self.N == 15:
             return tensor(H_ez, qeye(2))
-        
+
         elif self.N == 0 or self.N is None:
             return H_ez
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def nuclear_zeeman(
-        self
-        ) -> Qobj | int:
+    def nuclear_zeeman(self) -> Qobj | int:
         """
         Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.
 
@@ -504,9 +496,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def hyperfine_N(
-        self
-        ) -> Qobj | int:
+    def hyperfine_N(self) -> Qobj | int:
         """
         Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.
 
@@ -527,9 +517,7 @@ class NV(QSys):
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
-    def quadrupole(
-        self
-        ) -> Qobj | int:
+    def quadrupole(self) -> Qobj | int:
         """
         Get the quadrupole term
 
@@ -545,11 +533,8 @@ class NV(QSys):
             raise ValueError(
                 f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}."
             )
-        
-    def add_spin(
-        self,
-        H_spin : Qobj
-        ) -> None:
+
+    def add_spin(self, H_spin: Qobj) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes
 
@@ -563,11 +548,7 @@ class NV(QSys):
         self.MW_h1 = tensor(self.MW_h1, qeye(self.dim_add_spin))
         self.RF_h1 = tensor(self.RF_h1, qeye(self.dim_add_spin))
 
-    def truncate(
-        self,
-        mS : Literal[1, 0, -1, None] = None,
-        mI : Literal[1, 0, -1, None] = None
-        ) -> None:
+    def truncate(self, mS: Literal[1, 0, -1, None] = None, mI: Literal[1, 0, -1, None] = None) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.
         The indexes to be removed are calculated according to the mS and mI parameters.

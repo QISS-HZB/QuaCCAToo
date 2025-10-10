@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Any
 
+
 class ExpData:
     """
     Class to load experimental data and perform basic data processing.
@@ -39,16 +40,16 @@ class ExpData:
 
     def __init__(
         self,
-        file_path : str,
-        variable_column : int = 0,
-        results_columns : int | list[int] = 1,
-        yerr_columns : int | None = None,
-        variable_name : str = "Time",
-        result_name : str = "Expectation Value",
-        plot : bool = False,
-        figsize : tuple[int, int] = (6, 4),
-        figtitle : str = "Experimental Data",
-        **loadtxt_kwargs : Any,
+        file_path: str,
+        variable_column: int = 0,
+        results_columns: int | list[int] = 1,
+        yerr_columns: int | None = None,
+        variable_name: str = "Time",
+        result_name: str = "Expectation Value",
+        plot: bool = False,
+        figsize: tuple[int, int] = (6, 4),
+        figtitle: str = "Experimental Data",
+        **loadtxt_kwargs: Any,
     ) -> None:
         """
         Constructor of the ExpData class.
@@ -88,13 +89,15 @@ class ExpData:
             isinstance(results_columns, list) and all(isinstance(col, int) for col in results_columns)
         ):
             raise ValueError("results_columns must be an integer or a list of integers")
-        
+
         # the error columns needs to be None, an integer or a list of integers
-        if yerr_columns is not None and not isinstance(yerr_columns, int) and not (
-            isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns)
+        if (
+            yerr_columns is not None
+            and not isinstance(yerr_columns, int)
+            and not (isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns))
         ):
             raise ValueError("yerr_columns must be None, an integer or a list of integers")
-        elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):    # ty: ignore[invalid-argument-type], already checked above
+        elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):  # ty: ignore[invalid-argument-type], already checked above
             raise ValueError("yerr_columns must have the same lenght of the results_columns")
 
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
@@ -292,12 +295,8 @@ class ExpData:
             baseline_xaxis = self.variable[x_start:x_end]
             baseline_yaxis = self.results[x_start:x_end]
         elif isinstance(x_start, list) and isinstance(x_end, list) and len(x_start) == len(x_end):
-            baseline_xaxis = np.concatenate(
-                [self.variable[start : end] for start, end in zip(x_start, x_end)]
-            )
-            baseline_yaxis = np.concatenate(
-                [self.results[start : end] for start, end in zip(x_start, x_end)]
-            )
+            baseline_xaxis = np.concatenate([self.variable[start:end] for start, end in zip(x_start, x_end)])
+            baseline_yaxis = np.concatenate([self.results[start:end] for start, end in zip(x_start, x_end)])
         else:
             raise ValueError("x_start and x_end must int or a list of the same length.")
 
@@ -313,7 +312,8 @@ class ExpData:
                 for idx_base, val_base in enumerate(baseline_xaxis)
             ]
             self.results = [
-                val_res - np.polyval(poly_fit[idx_res], self.variable) for idx_res, val_res in enumerate(self.results)
+                val_res - np.polyval(poly_fit[idx_res], self.variable)
+                for idx_res, val_res in enumerate(self.results)
             ]
 
         if not isinstance(plot, bool):
@@ -346,8 +346,8 @@ class ExpData:
 
         # check if the results is a list of results or a single result
         if isinstance(self.results, np.ndarray):
-            if hasattr(self, 'yerror'):
-                ax.errorbar(self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt='o')
+            if hasattr(self, "yerror"):
+                ax.errorbar(self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt="o")
             else:
                 ax.scatter(self.variable, self.results, alpha=0.7, label="Observable", s=15)
 
@@ -355,8 +355,10 @@ class ExpData:
             isinstance(result, np.ndarray) for result in self.results
         ):
             for idx_res, val_res in enumerate(self.results):
-                if hasattr(self, 'yerror'):
-                    ax.errorbar(self.variable, val_res, self.yerror[idx_res], alpha=0.7, label="Observable", fmt='o')
+                if hasattr(self, "yerror"):
+                    ax.errorbar(
+                        self.variable, val_res, self.yerror[idx_res], alpha=0.7, label="Observable", fmt="o"
+                    )
                 else:
                     ax.scatter(self.variable, val_res, label=f"Observable {idx_res}", alpha=0.7, s=15)
 
