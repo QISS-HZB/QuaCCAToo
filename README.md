@@ -5,7 +5,7 @@ QuaCCAToo is a Python library for simulating and analyzing spin dynamics of colo
 The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. 
 The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
 
-For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/notebooks.html) section.
+For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/tutorials.html) section.
 
 If you used QuaCCAToo in your work, please cite [arXiv:2507.18759](https://arxiv.org/abs/2507.18759).
 
@@ -26,9 +26,12 @@ Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detaile
 
 ## Featured In
 
-- L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. arXiv:2507.18759 quant-ph. [2507.18759](https://arxiv.org/abs/2507.18759).
+- L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. [arXiv:2507.18759 quant-ph](https://arxiv.org/abs/2507.18759).
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: [10.1103/PhysRevA.111.022606](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606).
-- S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. arXiv:2507.13295 quant-ph. [2507.13295](https://arxiv.org/abs/2507.13295).
+- L. Tsunaki, M. Dotan, K. Volkova, B. Naydenov. (2025). Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond. [arXiv:2509.22107 quant-ph](https://arxiv.org/abs/2509.22107).
+- S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. [arXiv:2507.13295 quant-ph](https://arxiv.org/abs/2507.13295).
+
+If you used QuaCCAToo in your work, please let us know so we can add it to the list!
 
 ## Class Hierarchy
 
@@ -51,13 +54,14 @@ Several fit models and functions relevant for analysis of color centers are prov
 Any contribution or bug report are welcome.
 
 - To contribute, fork the main branch and make a pull request.
-- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest` and
-  `ruff`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
+- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest`, `ruff`,
+  and `ty`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
   [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for details.
 - Properly _document everything_ in details following the `numpy` [docstring
   format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
 - Test your branch by running `pytest` and the tutorial notebooks. Feel free to add more tests.
-- Please pay attention to linter warnings (`ruff check`) and format your code with `ruff format`.
+- Please pay attention to linter warnings (`ruff check`) and format your code with `ruff format`. Also
+  recommended is to run `ty check` for type hints.
 - Module level refactors require corresponding changes in the `sphinx` setup, too.
 - Use US-English, not British-English. Eg: analyze instead of analyse, color instead of colour, center
   instead of centre.
@@ -65,5 +69,5 @@ Any contribution or bug report are welcome.
 ## Note for Windows/macOS Users
 
 QuaCCAToo is best optimized to run on GNU/Linux systems. More specifically, the `parallel_map` method from
-Qutip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
+QuTip, which QuaCCAToo heavily relies on, does not work properly on Windows. This leads to severe slow downs
 in simulations and even crashes in some hardware. macOS machines have not been tested by us.

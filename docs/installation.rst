@@ -14,6 +14,16 @@ You can create a ``conda`` virtual environment as follows:
    conda create --name quaccatoo-env python
    conda activate quaccatoo-env
 
+In some cases, switching to an alternate ``BLAS`` implementation can provide
+speedups (in particular, ``MKL``, ``BLIS``, or ``netlib`` implementations).
+Refer `here <https://conda-forge.org/docs/maintainer/knowledge_base/#blas>`__
+for more details and instructions.
+
+.. code:: sh
+
+   conda install "libblas=*=*_blis"
+   conda install numpy scipy
+
 **OR**
 
 You can use a native Python venv (you'll need ``pip`` as well)

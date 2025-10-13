@@ -13,6 +13,7 @@ from typing import Any, Literal, Optional
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
 
+
 class Analysis:
     """
     The Analysis class contains several methods for data Analysis, such as FFT, fitting and plotting.
@@ -57,10 +58,8 @@ class Analysis:
     plot_bloch :
         Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two
     """
-    def __init__(
-        self,
-        experiment : ExpData | PulsedSim  
-    ) -> None:
+
+    def __init__(self, experiment: ExpData | PulsedSim) -> None:
         """
         Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks if the results and variable attributes are not empty and have the same length.
 
@@ -98,10 +97,10 @@ class Analysis:
 
     def compare_with(
         self,
-        exp_comparison : ExpData | PulsedSim ,
-        results_index : int = 0,
-        comparison_index : int = 0,
-        linear_fit : bool = True
+        exp_comparison: ExpData | PulsedSim,
+        results_index: int = 0,
+        comparison_index: int = 0,
+        linear_fit: bool = True,
     ) -> float:
         """
         Loads a second experiment to compare with the first one.
@@ -157,7 +156,8 @@ class Analysis:
                 )
                 self.exp_comparison.results = r[0] * exp_comparison.results[comparison_index] + r[1]
 
-            self.pearson = r[2]
+            self.pearson = r
+            return r.rvalue
 
         else:
             if isinstance(exp_comparison.results, np.ndarray):
@@ -168,17 +168,15 @@ class Analysis:
                 )
 
             self.exp_comparison.results = exp_comparison.results
-            self.pearson = r[0]
-
-        self.pearson = r
-        return r
+            self.pearson = r
+            return r.statistic
 
     def plot_comparison(
         self,
-        figsize : tuple[int, int] = (6, 4),
-        xlabel : Optional[str] = None,
-        ylabel : str = "Observable",
-        title : str = "Results Comparisons"
+        figsize: tuple[int, int] = (6, 4),
+        xlabel: Optional[str] = None,
+        ylabel: str = "Observable",
+        title: str = "Results Comparisons",
     ) -> None:
         """
         Plots the results of the experiment and the comparison experiment.
@@ -199,16 +197,16 @@ class Analysis:
         if self.pearson is None:
             raise ValueError("You must run the compare_with method before plotting the comparison")
 
-        if hasattr(self.exp_comparison, 'yerror'):
+        if hasattr(self.exp_comparison, "yerror"):
             plt.errorbar(
                 self.exp_comparison.variable,
                 self.exp_comparison.results,
                 self.exp_comparison.yerror,
                 label="Compared Experiment",
                 alpha=0.7,
-                fmt='o'
+                fmt="o",
             )
-        
+
         else:
             plt.scatter(
                 self.exp_comparison.variable,
@@ -221,9 +219,7 @@ class Analysis:
 
     ######################################################## FFT Methods ########################################################
 
-    def run_FFT(
-        self
-    ) -> None:
+    def run_FFT(self) -> None:
         """
         Run the real fast Fourier transform for the results and variable attributes of the PulsedSimulation object.
         The results are centered around the mean value before the FFT is calculated in order to remove the DC component.
@@ -252,10 +248,7 @@ class Analysis:
 
         return self.FFT_values
 
-    def get_peaks_FFT(
-        self,
-        **find_peaks_kwargs : Any
-    ) -> np.ndarray:
+    def get_peaks_FFT(self, **find_peaks_kwargs: Any) -> np.ndarray:
         """
         Find the peaks of the FFT values calculated by the run_FFT method.
 
@@ -286,11 +279,11 @@ class Analysis:
 
     def plot_FFT(
         self,
-        freq_lim : Optional[tuple[float, float]] = None,
-        figsize : tuple[int, int] = (6, 4),
-        xlabel : Optional[str] = None,
-        ylabel : str = "FFT Intensity",
-        title : str = "FFT of the Results"
+        freq_lim: Optional[tuple[float, float]] = None,
+        figsize: tuple[int, int] = (6, 4),
+        xlabel: Optional[str] = None,
+        ylabel: str = "FFT Intensity",
+        title: str = "FFT of the Results",
     ) -> None:
         """
         Plots the FFT
@@ -365,11 +358,8 @@ class Analysis:
     ######################################################## FIT Methods ########################################################
 
     def run_fit(
-        self,
-        fit_model : Model,
-        results_index : int= 0,
-        guess : Optional[dict] = None
-    ) -> dict:
+        self, fit_model: Model, results_index: int = 0, guess: Optional[dict] = None
+    ) -> Optional[dict]:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.
@@ -471,10 +461,10 @@ class Analysis:
 
     def plot_fit(
         self,
-        figsize : tuple[int, int] = (6, 4),
-        xlabel : Optional[str] = None,
-        ylabel : str = "Expectation Value",
-        title : str = "Pulsed Result"
+        figsize: tuple[int, int] = (6, 4),
+        xlabel: Optional[str] = None,
+        ylabel: str = "Expectation Value",
+        title: str = "Pulsed Result",
     ) -> None:
         """
         Plot the results of the experiment with the fitted function.
@@ -498,7 +488,9 @@ class Analysis:
         elif isinstance(self.experiment.results, list):
             for idx_res, _ in enumerate(self.experiment.results):
                 if self.fit_model[idx_res] is not None:
-                    plt.plot(self.experiment.variable, self.fit_params[idx_res].best_fit, label=f"Fit {idx_res}")
+                    plt.plot(
+                        self.experiment.variable, self.fit_params[idx_res].best_fit, label=f"Fit {idx_res}"
+                    )
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
@@ -506,10 +498,10 @@ class Analysis:
 
     def plot_results(
         self,
-        figsize : tuple[int, int] = (6, 4),
-        xlabel : Optional[str] = None,
-        ylabel : str = "Observable",
-        title  : str = "Results"
+        figsize: tuple[int, int] = (6, 4),
+        xlabel: Optional[str] = None,
+        ylabel: str = "Observable",
+        title: str = "Results",
     ) -> None:
         """
         Plots the results of the experiment
@@ -565,10 +557,7 @@ class Analysis:
         ax.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
         ax.set_title(title)
 
-    def plot_bloch(
-        self,
-        figsize : tuple[int, int] = (6, 4)
-    ) -> None:
+    def plot_bloch(self, figsize: tuple[int, int] = (6, 4)) -> None:
         """
         Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two.
 
@@ -592,22 +581,24 @@ class Analysis:
 
         fig, axs = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
 
-        colors = plt.cm.viridis(np.linspace(0, 1, len(self.experiment.rho)))
+        colors = plt.cm.viridis(np.linspace(0, 1, len(self.experiment.rho)))  # ty: ignore[unresolved-attribute], upstream stuff
 
         bloch = Bloch(fig)
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
         bloch.frame_alpha = 0
         bloch.render()
 
+
 #####################################
 
+
 def plot_histogram(
-    rho : Qobj,
-    rho_comparison : Optional[Qobj] = None,
-    component : Literal["real", "imag", "abs"]  = "real",
-    figsize : tuple[int, int] = (5, 5),
-    title : str = "Matrix Histogram"
-    ) -> None:
+    rho: Qobj | np.ndarray,
+    rho_comparison: Optional[Qobj] | np.ndarray = None,
+    component: Literal["real", "imag", "abs"] = "real",
+    figsize: tuple[int, int] = (5, 5),
+    title: str = "Matrix Histogram",
+) -> None:
     """
     Plot a 3D histogram of the final density matrix of the simulation.
 
@@ -652,7 +643,7 @@ def plot_histogram(
     ax.view_init(azim=-50, elev=30)
 
     # Dimensions and positions for the bars
-    xpos, ypos = np.meshgrid(np.arange(N), np.arange(N))
+    xpos, ypos = np.meshgrid(range(N), range(N))
     xpos, ypos = xpos.flatten(), ypos.flatten()
     zpos = np.zeros_like(xpos)
     dx = dy = 0.5 * np.ones_like(zpos)
@@ -694,14 +685,19 @@ def plot_histogram(
             zorder=1,
         )
 
+    # Plots plane at z=0 for better visualization
+    x_plane, y_plane = np.meshgrid(np.arange(-0.1, N - 0.3, 0.1), np.arange(-0.1, N - 0.3, 0.1))
+    z_plane = np.zeros_like(x_plane)
+    ax.plot_surface(x_plane, y_plane, z_plane, color="gray", alpha=0.2, zorder=-1)
+
     # Aesthetics, labels, and title
     ax.grid(False)
-    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
-    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))  # ty: ignore[possibly-unbound-attribute], upstream
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))  # ty: ignore[possibly-unbound-attribute], upstream
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     fig.suptitle(title, fontsize=12, x=0.2, y=0.85)
     ax.set_xticks(np.arange(N) + 0.5)
     ax.set_yticks(np.arange(N) + 0.5)
     ax.set_xticklabels([f"$|{i}\\rangle$" for i in range(N)])
     ax.set_yticklabels([f"$|{i}\\rangle$" for i in range(N)])
-    ax.set_zticks([-1, -0.5, 0, 0.5, 1.0])
+    ax.set_zticks([-1, -0.5, 0, 0.5, 1.0])  # ty: ignore[call-non-callable], upstream stuff

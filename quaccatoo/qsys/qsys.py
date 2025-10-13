@@ -14,6 +14,7 @@ from qutip import Qobj, basis, qeye, tensor
 
 ####################################################################################################
 
+
 class QSys:
     """
     The QSys class defines a general quantum system and contains a method for plotting the energy levels of the Hamiltonian.
@@ -51,12 +52,12 @@ class QSys:
 
     def __init__(
         self,
-        H0 : Qobj | np.ndarray,
-        rho0 : Optional[Qobj | np.ndarray | int] = None,
-        c_ops : Optional[Qobj | list[Qobj]] = None,
-        observable : Optional[Qobj | list[Qobj]] =None,
-        units_H0 : Optional[str] = None
-        ) -> None:
+        H0: Qobj | np.ndarray,
+        rho0: Optional[Qobj | np.ndarray | int] = None,
+        c_ops: Optional[Qobj | list[Qobj]] = None,
+        observable: Qobj | list[Qobj] | None = None,
+        units_H0: Optional[str] = None,
+    ) -> None:
         """
         Construct the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable.
         Checking all inputs and calculating the energy levels of the Hamiltonian.
@@ -112,17 +113,17 @@ class QSys:
         # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj
         if observable is None:
             self.observable = None
-        elif isinstance(observable, (Qobj, np.ndarray)) and observable.shape == H0.shape:
+        elif isinstance(observable, Qobj) and observable.shape == H0.shape:
             self.observable = observable
             if not observable.isherm:
                 warnings.warn("Passed observable is not hermitian.")
         elif (
             isinstance(observable, list)
             and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable)
-            and all(obs.shape == H0.shape for obs in observable)
+            and all(obs.shape == H0.shape for obs in observable)  # ty: ignore[unresolved-attribute], list comprehension, handled manually
         ):
             self.observable = observable
-            if not all(obs.isherm for obs in observable):
+            if not all(obs.isherm for obs in observable):  # ty: ignore[unresolved-attribute], list comprehension, handled manually
                 warnings.warn("Passed observables are not hermitian.")
         else:
             raise ValueError(
@@ -140,9 +141,7 @@ class QSys:
         else:
             raise ValueError("c_ops must be a list of Qobj or None")
 
-    def _get_energy_levels(
-        self
-        ) -> None:
+    def _get_energy_levels(self) -> None:
         """
         Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.
         Sets the energy_levels and eigenstates attributes of the class.
@@ -153,10 +152,8 @@ class QSys:
         self.eigenstates = self.H0.eigenstates()[1]
 
     def plot_energy(
-        self,
-        figsize : tuple[int, int] = (2, 6),
-        energy_lim : Optional[tuple[int | float, int | float]] = None
-        ) -> None:
+        self, figsize: tuple[int, int] = (2, 6), energy_lim: Optional[tuple[int | float, int | float]] = None
+    ) -> None:
         """
         Plots the energy levels of the Hamiltonian defined in the system.
 
@@ -192,10 +189,7 @@ class QSys:
         else:
             raise ValueError("freq_lim must be a tuple of two floats")
 
-    def add_spin(
-        self,
-        H_spin : Qobj
-        ) -> None:
+    def add_spin(self, H_spin: Qobj) -> None:
         """
         Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.
         Updates the time-independent Hamiltonian, the energy levels, the initial state, the observable and the collapse operators accordingly.
@@ -222,7 +216,8 @@ class QSys:
         self._get_energy_levels()
 
         if self.rho0.isherm:
-            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin)).unit()
+            self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin))
+            self.rho0 /= self.rho0.tr()
         elif self.rho0.isket:
             self.rho0 = tensor(self.rho0, basis(self.dim_add_spin, 0)).unit()
 
@@ -238,10 +233,7 @@ class QSys:
             elif isinstance(self.c_ops, list) and all(isinstance(op, Qobj) for op in self.c_ops):
                 self.c_ops = [tensor(op, qeye(self.dim_add_spin)) for op in self.c_ops]
 
-    def truncate(
-        self,
-        indexes : int | list[int]
-        ) -> None:
+    def truncate(self, indexes: int | list[int]) -> None:
         """
         Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,
         the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,
@@ -257,8 +249,9 @@ class QSys:
             if indexes < 0 or indexes >= self.H0.shape[0]:
                 raise ValueError("sel must be a valid index of the Hamiltonian.")
         if isinstance(indexes, (list, np.array)):
-            if not all(isinstance(i, int) for i in indexes) and not all(
-                0 <= i < self.H0.shape[0] for i in indexes
+            if not all(isinstance(i, int) for i in indexes) and not all(  # ty: ignore[not-iterable], handled manually
+                0 <= i < self.H0.shape[0]
+                for i in indexes  # ty: ignore[not-iterable], handled manually
             ):
                 raise ValueError("All elements in sel must be valid indices of the Hamiltonian.")
         else:
@@ -282,9 +275,8 @@ class QSys:
             if self.rho0.isket:
                 self.rho0 = Qobj(np.delete(self.rho0.full(), indexes, axis=0)).unit()
             else:
-                self.rho0 = Qobj(
-                    np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)
-                ).unit()
+                self.rho0 = Qobj(np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1))
+                self.rho0 /= self.rho0.tr()
 
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
@@ -295,12 +287,11 @@ class QSys:
                     for op in self.c_ops
                 ]
 
+
 ####################################################################################################
 
-def compose_sys(
-    qsys1 : QSys,
-    qsys2 : QSys
-    ) -> QSys:
+
+def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
     """
     Takes two quantum systems and returns the composed system by performing tensor products of the two,
     after checking if all parameters are valid.
@@ -328,12 +319,17 @@ def compose_sys(
     else:
         raise ValueError("Both Hamiltonians must be Qobj.")
 
-    if qsys1.rho0.isherm and qsys2.rho0.isherm or qsys1.rho0.isket and qsys2.rho0.isket:
+    if qsys1.rho0.isket and qsys2.rho0.isket:
         rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
+    elif qsys1.rho0.isherm and qsys2.rho0.isherm:
+        rho0 = tensor(qsys1.rho0, qsys2.rho0)
+        rho0 /= rho0.tr()
     elif qsys1.rho0.isherm and qsys2.rho0.isket:
-        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag()).unit()
+        rho0 = tensor(qsys1.rho0, qsys2.rho0 * qsys2.rho0.dag())  # ty: ignore[unsupported-operator], handled manually
+        rho0 /= rho0.tr()
     elif qsys1.rho0.isket and qsys2.rho0.isherm:
-        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0).unit()
+        rho0 = tensor(qsys1.rho0 * qsys1.rho0.dag(), qsys2.rho0)  # ty: ignore[unsupported-operator], handled manually
+        rho0 /= rho0.tr()
     else:
         rho0 = None
 
@@ -341,8 +337,9 @@ def compose_sys(
         if isinstance(qsys1.observable, Qobj) and isinstance(qsys2.observable, Qobj):
             observable = tensor(qsys1.observable, qsys2.observable)
         elif isinstance(qsys1.observable, list) and isinstance(qsys2.observable, list):
-            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [
-                tensor(qeye(qsys1.H0.shape[0]), obs2) for obs2 in qsys2.observable
+            observable = [tensor(obs1, qeye(qsys2.H0.shape[0])) for obs1 in qsys1.observable] + [  # ty: ignore[no-matching-overload], list comprehension, handled manually
+                tensor(qeye(qsys1.H0.shape[0]), obs2)
+                for obs2 in qsys2.observable  # ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         else:
             raise ValueError("Both observables must be Qobj or None")
@@ -368,15 +365,17 @@ def compose_sys(
                 tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops),
             ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, list):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
-                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [  # ty: ignore[no-matching-overload], list comprehension, handled manually
+                tensor(qeye(qsys1.H0.shape[0]), op2)
+                for op2 in qsys2.c_ops  # ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         elif isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, list):
             c_ops = [tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))] + [
-                tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops
+                tensor(qeye(qsys1.H0.shape[0]), op2)
+                for op2 in qsys2.c_ops  # ty: ignore[no-matching-overload], list comprehension, handled manually
             ]
         elif isinstance(qsys1.c_ops, list) and isinstance(qsys2.c_ops, Qobj):
-            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [
+            c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [  # ty: ignore[no-matching-overload], list comprehension, handled manually
                 tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
             ]
     else:
@@ -386,13 +385,13 @@ def compose_sys(
 
 
 def plot_energy_B0(
-    B0 : np.ndarray | list[float, int],
-    H0 : Qobj | list[Qobj], 
-    figsize : tuple[int, int] = (6, 4),
-    energy_lim : Optional[tuple[int | float, int | float]] = None,
-    xlabel : str = "Magnetic Field",
-    ylabel : str = "Energy (MHz)"
-    ) -> None:
+    B0: np.ndarray | list[float | int],
+    H0: Qobj | list[Qobj],
+    figsize: tuple[int, int] = (6, 4),
+    energy_lim: Optional[tuple[int | float, int | float]] = None,
+    xlabel: str = "Magnetic Field",
+    ylabel: str = "Energy (MHz)",
+) -> None:
     """
     Plots the energy levels of a Hamiltonian as a function of a magnetic field B0.
 
@@ -443,4 +442,3 @@ def plot_energy_B0(
         ax.set_ylabel(ylabel)
 
     fig.suptitle("Energy Levels")
-
