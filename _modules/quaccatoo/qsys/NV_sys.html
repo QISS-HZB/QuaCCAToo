@@ -84,7 +84,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">cte</span>
@@ -101,7 +101,7 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV">[docs]</a>
 <span class="k">class</span> <span class="nc">NV</span><span class="p">(</span><span class="n">QSys</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NN class contains attributes and methods to simulate the nitrogen vacancy center in diamond.</span>
+<span class="sd">    NV class contains attributes and methods to simulate the nitrogen vacancy center in diamond.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -119,8 +119,6 @@
 <span class="sd">        Units of the angles (deg or rad)</span>
 <span class="sd">    temp : float or None</span>
 <span class="sd">        Temperature</span>
-<span class="sd">    units_temp : str</span>
-<span class="sd">        Temperature units &#39;C&#39; or &#39;K&#39;</span>
 <span class="sd">    energy_levels : list</span>
 <span class="sd">        List of energy levels of the Hamiltonian</span>
 <span class="sd">    MW_freqs : numpy.ndarray</span>
@@ -134,7 +132,7 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    _rho0_lowT</span>
+<span class="sd">    _rho0_T</span>
 <span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann distribution</span>
 <span class="sd">    _set_MW</span>
 <span class="sd">        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions</span>
@@ -162,26 +160,28 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">B0</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">N</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-        <span class="n">c_ops</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">units_B0</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span>
-        <span class="n">theta</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">phi_r</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">units_angles</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
-        <span class="n">temp</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">units_temp</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
-        <span class="n">E</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">B0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="n">c_ops</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">units_B0</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span>
+        <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">phi_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">units_angles</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+        <span class="n">temp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">units_temp</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for the NV class.</span>
-<span class="sd">        Takes the nitrogen isotope, the magnetic field intensity and angles with the quantization axis as inputs and calculates the energy levels of the Hamiltonian.</span>
+<span class="sd">        Takes the nitrogen isotope, the magnetic field intensity and angles with the</span>
+<span class="sd">        quantization axis as inputs and calculates the Hamiltonian with all</span>
+<span class="sd">        relevant attributes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        B0 : float</span>
 <span class="sd">            Magnetic field</span>
-<span class="sd">        N : 15/14/0/None</span>
+<span class="sd">        N : 15 | 14 | 0 | None</span>
 <span class="sd">            Nitrogen isotope, or 0 for no nuclear spin</span>
 <span class="sd">        c_ops : list(Qobj)</span>
 <span class="sd">            List of collapse operators</span>
@@ -239,6 +239,27 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
 
+        <span class="k">if</span> <span class="n">temp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span>
+            <span class="k">if</span> <span class="n">temp</span> <span class="o">&lt;</span> <span class="mf">5.6</span> <span class="ow">or</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="mi">700</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;T must be a positive real number.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># by default quaccatoo uses temperatures in Kelvin</span>
+        <span class="k">if</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;K&quot;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">+=</span> <span class="mf">273.15</span>
+        <span class="k">elif</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;F&#39; is not a valid unit for temperature, learn the metric system.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for units_temp. Expected either &#39;K&#39; or &#39;C&#39;, got </span><span class="si">{</span><span class="n">units_temp</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span> <span class="o">=</span> <span class="n">phi_r</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span>
@@ -246,7 +267,7 @@
         <span class="c1"># calculates the Hamiltonian for the given field and nitrogen isotope</span>
         <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
             <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_field</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperfine_N</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclear_zeeman</span><span class="p">()</span>
-            <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+            <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
@@ -257,7 +278,7 @@
                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclear_zeeman</span><span class="p">()</span>
                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrupole</span><span class="p">()</span>
             <span class="p">)</span>
-            <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">()</span>
+            <span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -270,45 +291,22 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">c_ops</span><span class="p">,</span> <span class="n">observable</span><span class="p">,</span> <span class="n">units_H0</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_lowT</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">units_temp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_T</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_MW</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_RF</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_rho0_lowT</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">temp</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">units_temp</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_rho0_T</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann distribution.</span>
 <span class="sd">        At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        T : float</span>
-<span class="sd">            Temperature</span>
-<span class="sd">        units_temp : str</span>
-<span class="sd">            Units of the temperature (K or C)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        rho0 : Qobj</span>
 <span class="sd">            Initial state of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;K&quot;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
-            <span class="n">temp</span> <span class="o">+=</span> <span class="mf">273.15</span>
-        <span class="k">elif</span> <span class="n">units_temp</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;F&#39; is not a valid unit for temperature, learn the metric system.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for units_temp. Expected either &#39;K&#39; or &#39;C&#39;, got </span><span class="si">{</span><span class="n">units_temp</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;T must be a positive real number.&quot;</span><span class="p">)</span>
-
         <span class="c1"># a loop to find the |0,1/2&gt; and |0,-1/2&gt; states</span>
         <span class="n">max_1</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">max_2</span> <span class="o">=</span> <span class="mi">0</span>
@@ -338,7 +336,7 @@
                 <span class="n">max_2</span> <span class="o">=</span> <span class="n">proj_2</span>
                 <span class="n">index_2</span> <span class="o">=</span> <span class="n">idx_eig</span>
 
-        <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="n">cte</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="p">(</span><span class="n">cte</span><span class="o">.</span><span class="n">Boltzmann</span> <span class="o">*</span> <span class="n">temp</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="o">-</span><span class="n">cte</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="p">(</span><span class="n">cte</span><span class="o">.</span><span class="n">Boltzmann</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
             <span class="c1"># calculate the partition function based on the Hamiltonian eigenvalues</span>
@@ -378,9 +376,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_MW</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_set_MW</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</span>
 <span class="sd">        Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.</span>
@@ -420,9 +416,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_RF</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_set_RF</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</span>
 <span class="sd">        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.</span>
@@ -481,41 +475,49 @@
 
 <div class="viewcode-block" id="NV.zero_field">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.zero_field">[docs]</a>
-    <span class="k">def</span> <span class="nf">zero_field</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the NV Hamiltonian term accounting for zero field splitting.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        D : float</span>
-<span class="sd">            Axial component of magnetic dipole-dipole interaction, by default 2.87e3 MHz (NV)</span>
-<span class="sd">        E : float</span>
-<span class="sd">            Non axial compononet, by default 0. Usually much (1000x) smaller than `D`</span>
+    <span class="k">def</span> <span class="nf">zero_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the NV Hamiltonian term accounting for the zero field splitting.</span>
+<span class="sd">        If the temperature attribute is set to a value below 295 K, the D parameter is calculated using a</span>
+<span class="sd">        5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903 (2011).</span>
+<span class="sd">        Otherwise, if the temperature is above 295 K, a 3rd order polynomial function from</span>
+<span class="sd">        D. M. Toyli et al. Phys. Rev. X 2, 031001 (2012) is used.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Zero Field Hamiltonian : Qobj</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">&lt;=</span> <span class="mi">295</span><span class="p">:</span>
+                <span class="n">D</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mf">2.87771</span>
+                    <span class="o">-</span> <span class="mf">4.625e-6</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span>
+                    <span class="o">+</span> <span class="mf">1.067e-7</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="o">-</span> <span class="mf">9.325e-10</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">3</span>
+                    <span class="o">+</span> <span class="mf">1.739e-12</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">4</span>
+                    <span class="o">-</span> <span class="mf">1.838e-15</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">5</span>
+                <span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.8697</span> <span class="o">+</span> <span class="mf">9.7e-5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">-</span> <span class="mf">3.7e-7</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.7e-10</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="mf">2.87e3</span>
+
+        <span class="n">H_zf</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span>
-                <span class="mf">2.87e3</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_zf</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span>
-                <span class="mf">2.87e3</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">2.87e3</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_zf</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">H_zf</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NV.electron_zeeman">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.electron_zeeman">[docs]</a>
-    <span class="k">def</span> <span class="nf">electron_zeeman</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">electron_zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the electron Zeeman effect.</span>
 
@@ -523,48 +525,31 @@
 <span class="sd">        -------</span>
 <span class="sd">        Electron Zeeman Hamiltonian : Qobj</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H_ez</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">gamma_e</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span>
-                <span class="n">gamma_e</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
-                <span class="o">*</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
-                <span class="p">),</span>
-                <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_ez</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span>
-                <span class="n">gamma_e</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
-                <span class="o">*</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
-                <span class="p">),</span>
-                <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_ez</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="n">gamma_e</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
-                <span class="o">*</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">H_ez</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NV.nuclear_zeeman">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.nuclear_zeeman">[docs]</a>
-    <span class="k">def</span> <span class="nf">nuclear_zeeman</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">nuclear_zeeman</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the nuclear (Nitrogen) Zeeman effect.</span>
 
@@ -603,9 +588,7 @@
 
 <div class="viewcode-block" id="NV.hyperfine_N">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.hyperfine_N">[docs]</a>
-    <span class="k">def</span> <span class="nf">hyperfine_N</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">hyperfine_N</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the NV hamiltonian term accounting for the hyperfine coupling with Nitrogen.</span>
 
@@ -629,9 +612,7 @@
 
 <div class="viewcode-block" id="NV.quadrupole">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.quadrupole">[docs]</a>
-    <span class="k">def</span> <span class="nf">quadrupole</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">quadrupole</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the quadrupole term</span>
 
@@ -642,19 +623,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="mf">5.01</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Invalid value for nitrogen isotope N. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span></div>
 
-        
+
 <div class="viewcode-block" id="NV.add_spin">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.add_spin">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_spin</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">H_spin</span> <span class="p">:</span> <span class="n">Qobj</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_spin</span><span class="p">:</span> <span class="n">Qobj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes</span>
 
@@ -671,11 +649,7 @@
 
 <div class="viewcode-block" id="NV.truncate">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.truncate">[docs]</a>
-    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">mS</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mI</span> <span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mS</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mI</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.</span>
 <span class="sd">        The indexes to be removed are calculated according to the mS and mI parameters.</span>

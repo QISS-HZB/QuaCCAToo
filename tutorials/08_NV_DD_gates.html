@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Definition of the NV System &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.svg"/>
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/tutorials/08_NV_DD_gates.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="QuaCCAToo modules" href="../modules.html" />
+    <link rel="prev" title="08 - Multi-Qubit Gates by Dynamical Decoupling with NV" href="../tutorial8.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tutorial1.html">01 - Rabi and Hahn of a Spin Half System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial2.html">02 - Ramsey and PODMR with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial3.html">03 - Conditional Gates with NV-13C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial5.html">05 - Ambiguous Resonances in DD with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Definition of the NV System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Electron-Spin">2. Electron Spin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Nuclear-Spin">3. Nuclear Spin</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a></li>
+      <li class="breadcrumb-item active">1. Definition of the NV System</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/08_NV_DD_gates.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>In this tutorial, a dynamical decoupling sequence is applied to the electron spin of <span class="math notranslate nohighlight">\(^{15}\)</span>NV and used to obtain gates to the nuclear spin. We begin defining the NV system, following that we simulate the XY<span class="math notranslate nohighlight">\(N\)</span> spectra of the electron observable and compare them with simulations. Finally, we also simulate the behaviour of the nuclear spin. This notebook closely follows the work from:</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="12">
+<li><p>Tsunaki, M. Dotan, K. Volkova, &amp; B. Naydenov. (2025). Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond. arXiv:2509.22107 quant-ph.</p></li>
+</ol>
+</li>
+</ul>
+<p>As this is a quite complex problem, physics discussions will be kept to a minimum here in favor of a focus to the simulation. For a detailed explanation of the problem, please refer to the original paper.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">fock_dm</span>
+
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">XY</span><span class="p">,</span> <span class="n">ExpData</span>
+</pre></div>
+</div>
+</div>
+<section id="1.-Definition-of-the-NV-System">
+<h1>1. Definition of the NV System<a class="headerlink" href="#1.-Definition-of-the-NV-System" title="Link to this heading"></a></h1>
+<p>We begin defining the NV system and the experimental conditions for the XY<span class="math notranslate nohighlight">\(N\)</span> pulse sequences.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">system</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
+    <span class="n">B0</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="n">units_angles</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span>
+    <span class="n">units_B0</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span>
+    <span class="n">N</span><span class="o">=</span><span class="mi">15</span>
+<span class="p">)</span>
+
+<span class="c1"># experimental value of pi-pulse duration</span>
+<span class="n">t_pi</span> <span class="o">=</span> <span class="mf">0.025694</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">t_pi</span><span class="o">/</span><span class="mi">2</span>
+
+<span class="c1"># number of pulses</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># free evolution times</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.260</span><span class="p">,</span> <span class="mf">.260</span> <span class="o">+</span> <span class="mi">50</span><span class="o">*</span><span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.-Electron-Spin">
+<h1>2. Electron Spin<a class="headerlink" href="#2.-Electron-Spin" title="Link to this heading"></a></h1>
+<p>Now the simulations can be run in a loop over the N values and saved into a results array.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XYN_S_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">XY</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+
+    <span class="c1"># defines the simulation object with the parameters</span>
+    <span class="n">XYN_S_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">XY</span><span class="p">(</span>
+        <span class="n">free_duration</span> <span class="o">=</span> <span class="n">tau</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="n">t_pi</span><span class="p">,</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">system</span><span class="p">,</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">system</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">system</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># runs the simulation and stores the results</span>
+    <span class="n">XYN_S_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>To compare these simulations with the experimental data, we load them with the ExpData class, convert the units of the pulse separation to us and subtract the columns 1 and 2 with the <code class="docutils literal notranslate"><span class="pre">subtract_results_columns</span></code> method to obtain the fluorescence as simulated. The experimental data was obtained and saved within Qudi software’s format.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XYN_exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ExpData</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ExpData</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./exp_data_tutorials/08/XY</span><span class="si">{</span><span class="n">N</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">.dat&#39;</span><span class="p">,</span> <span class="n">results_columns</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">variable_name</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\tau$ ($\mu$s)&#39;</span><span class="p">)</span>
+
+    <span class="c1"># converts the time units to us</span>
+    <span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">variable</span> <span class="o">*=</span> <span class="mf">1e6</span>
+
+    <span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">subtract_results_columns</span><span class="p">(</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_0.png" src="../_images/tutorials_08_NV_DD_gates_9_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_1.png" src="../_images/tutorials_08_NV_DD_gates_9_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_2.png" src="../_images/tutorials_08_NV_DD_gates_9_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_3.png" src="../_images/tutorials_08_NV_DD_gates_9_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_4.png" src="../_images/tutorials_08_NV_DD_gates_9_4.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_5.png" src="../_images/tutorials_08_NV_DD_gates_9_5.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_6.png" src="../_images/tutorials_08_NV_DD_gates_9_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_7.png" src="../_images/tutorials_08_NV_DD_gates_9_7.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_8.png" src="../_images/tutorials_08_NV_DD_gates_9_8.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_9.png" src="../_images/tutorials_08_NV_DD_gates_9_9.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_10.png" src="../_images/tutorials_08_NV_DD_gates_9_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_11.png" src="../_images/tutorials_08_NV_DD_gates_9_11.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_12.png" src="../_images/tutorials_08_NV_DD_gates_9_12.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_9_13.png" src="../_images/tutorials_08_NV_DD_gates_9_13.png" />
+</div>
+</div>
+<p>Notice that for large <span class="math notranslate nohighlight">\(N\)</span> pulse errors start to affect the spectra. To correct that, a polynomial baseline corrections needs to be performed with the <code class="docutils literal notranslate"><span class="pre">poly_base_correction</span></code> method. In succesion, a rescale and offset corrections are applied to the experimental data through the methods <code class="docutils literal notranslate"><span class="pre">rescale_correction</span></code> and <code class="docutils literal notranslate"><span class="pre">offset_correction</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XYN_exp</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">poly_base_correction</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span> <span class="n">x_end</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">XYN_exp</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">.</span><span class="n">poly_base_correction</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">47</span><span class="p">],</span> <span class="n">x_end</span><span class="o">=</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">XYN_exp</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">poly_base_correction</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">46</span><span class="p">],</span> <span class="n">x_end</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">XYN_exp</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">poly_base_correction</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span> <span class="n">x_end</span><span class="o">=</span><span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">46</span><span class="p">],</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">linear_fit</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">XYN_S_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">rescale_correction</span><span class="p">(</span><span class="n">linear_fit</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
+    <span class="n">XYN_exp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">offset_correction</span><span class="p">(</span><span class="o">-</span><span class="n">linear_fit</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, we plot the comparison between the simulation and experimental data, from which we observe a strong correlation between both.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="o">/</span><span class="mi">2</span><span class="p">)):</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">XYN_exp</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">XYN_exp</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.7</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">XYN_S_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Simulation&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">XYN_S_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">26</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">26</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tau</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">.99</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$N = </span><span class="si">{</span><span class="n">N</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">.99</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$N = </span><span class="si">{</span><span class="n">N</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$ \langle \tilde</span><span class="si">{S}</span><span class="s1">_z \rangle $&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$ \tau $ ($\mu$s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$ \tau $ ($\mu$s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_13_0.png" src="../_images/tutorials_08_NV_DD_gates_13_0.png" />
+</div>
+</div>
+</section>
+<section id="3.-Nuclear-Spin">
+<h1>3. Nuclear Spin<a class="headerlink" href="#3.-Nuclear-Spin" title="Link to this heading"></a></h1>
+<p>The simulation of nuclear spin follows a similar structure as the electron spin, except that now the observable and initial state need to be redefined.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">system</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+<span class="n">system</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">fock_dm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="n">XYN_I_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">XY</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+
+    <span class="c1"># defines the simulation object with the parameters</span>
+    <span class="n">XYN_I_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">XY</span><span class="p">(</span>
+        <span class="n">free_duration</span> <span class="o">=</span> <span class="n">tau</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span> <span class="o">=</span> <span class="n">t_pi</span><span class="p">,</span>
+        <span class="n">system</span> <span class="o">=</span> <span class="n">system</span><span class="p">,</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">w1</span><span class="o">*</span><span class="n">system</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span>
+        <span class="n">pulse_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;f_pulse&#39;</span><span class="p">:</span> <span class="n">system</span><span class="o">.</span><span class="n">MW_freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># runs the simulation and stores the results</span>
+    <span class="n">XYN_I_sim</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Lastly, we compare the nuclear spin simulations with the electron spin. Where the nuclear spin has a time evolution opposite to the electron, which can be use to form the multi-qubit gates as discussed in the paper.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">size</span><span class="o">/</span><span class="mi">2</span><span class="p">)):</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">XYN_S_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Simulation S&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">XYN_S_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">XYN_I_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Simulation I&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">XYN_I_sim</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">26</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">26</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tau</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">.99</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$N = </span><span class="si">{</span><span class="n">N</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">.99</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$N = </span><span class="si">{</span><span class="n">N</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$ \langle M_z \rangle $&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$ \tau $ ($\mu$s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$ \tau $ ($\mu$s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_08_NV_DD_gates_18_0.png" src="../_images/tutorials_08_NV_DD_gates_18_0.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorial8.html" class="btn btn-neutral float-left" title="08 - Multi-Qubit Gates by Dynamical Decoupling with NV" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-right" title="QuaCCAToo modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

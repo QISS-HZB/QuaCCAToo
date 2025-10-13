@@ -71,6 +71,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorial4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial5.html">05 - Ambiguous Resonances in DD with NV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
@@ -110,11 +112,11 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">jmat</span>
 
 <span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">plot_energy_B0</span><span class="p">,</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">Ramsey</span><span class="p">,</span> <span class="n">PMR</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">fit_two_lorentz_sym</span><span class="p">,</span> <span class="n">fit_two_sinc2_sym</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">ExpData</span>
-<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">import</span> <span class="nn">copy</span>
 </pre></div>
 </div>
 </div>
@@ -127,9 +129,9 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_1</span> <span class="o">=</span> <span class="n">NV</span><span class="p">(</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
     <span class="n">B0</span> <span class="o">=</span> <span class="mf">38.4</span><span class="p">,</span>
-    <span class="n">units_B0</span><span class="o">=</span><span class="s1">&#39;mT&#39;</span>
+    <span class="n">units_B0</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span>
 <span class="p">)</span>
 
 <span class="n">qsys_1</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
@@ -184,6 +186,29 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </div>
 </div>
 <p>As expected, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> grows linearly with the field, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> decreases linearly and <span class="math notranslate nohighlight">\(m_s=0\)</span> level is not affected by the field. After 100 mT, the level anticrossing occurs.</p>
+<p>The energy levels also depend on the temperature, due to slight changes in the Zero-Field term. If the user want to specify a specific temperature, this can be done through the <code class="docutils literal notranslate"><span class="pre">temp</span></code> parameter with temperature units given by <code class="docutils literal notranslate"><span class="pre">units_temp</span></code>, which is by default set to Kelvin.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">NV</span><span class="p">(</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="n">B0</span> <span class="o">=</span> <span class="mf">38.4</span><span class="p">,</span>
+    <span class="n">units_B0</span> <span class="o">=</span> <span class="s1">&#39;mT&#39;</span><span class="p">,</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">units_temp</span> <span class="o">=</span> <span class="s1">&#39;K&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">plot_energy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_10_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_10_0.png" />
+</div>
+</div>
+<p>Notice that the differece at <span class="math notranslate nohighlight">\(T=3\)</span> K is really small as compared to room temperature. The operational temperature range for this Hamiltonian is between 2.5 K to 700 K.</p>
 </section>
 <section id="2.-Rabi-Oscillations-of-Electronic-Spin">
 <h1>2. Rabi Oscillations of Electronic Spin<a class="headerlink" href="#2.-Rabi-Oscillations-of-Electronic-Spin" title="Link to this heading"></a></h1>
@@ -221,7 +246,7 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_12_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_12_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_14_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_14_0.png" />
 </div>
 </div>
 <p>If we want to compare with the simulation with experimental data, we can use the <code class="docutils literal notranslate"><span class="pre">ExpData</span></code> class to load it from .dat or .txt file and the <code class="docutils literal notranslate"><span class="pre">compare_with</span></code> method. In this case, the experimental data was measured for the same NV parameters as defined previously.</p>
@@ -256,7 +281,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_14_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_14_1.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_16_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_16_1.png" />
 </div>
 </div>
 <p>We observe a strong correlation of the simulation and experimental data with an rvalue of 0.987. The standard observable for the NV is the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> given by the fluorescence. To see the populations of the other two states <span class="math notranslate nohighlight">\(m_s=\pm 1\)</span>, we need to redefine the system observables and run again the Rabi experiment.</p>
@@ -276,7 +301,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_16_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_16_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_18_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_18_0.png" />
 </div>
 </div>
 <p>Note that population of the <span class="math notranslate nohighlight">\(m_s=+1\)</span> remains 0, as we are using the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> resonant frequency, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> population oscillates with the same frequency as the <span class="math notranslate nohighlight">\(m_s=0\)</span> population, but with opposite sign. If we used the other resonant frequency, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> population would oscillate but <span class="math notranslate nohighlight">\(m_s=-1\)</span> would remain 0.</p>
@@ -302,7 +327,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_18_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_18_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_20_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_20_0.png" />
 </div>
 </div>
 <p>Finally, by running a fit of the observable we can extract the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration.</p>
@@ -332,7 +357,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_20_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_20_1.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_22_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_22_1.png" />
 </div>
 </div>
 <p>As expected the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration is very close to <span class="math notranslate nohighlight">\(1/(2\omega_1)\)</span>.</p>
@@ -373,7 +398,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_25_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_25_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_27_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_27_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -389,7 +414,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_26_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_26_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_28_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_28_0.png" />
 </div>
 </div>
 <p>We could fit the results again with a period oscillation, but to illustrate a different method we will use the FFT from quaccatoo. First, the FFT is run with <code class="docutils literal notranslate"><span class="pre">run_FFT</span></code> method, then the peaks are found with <code class="docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code>.</p>
@@ -409,7 +434,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_28_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_28_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_30_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_30_0.png" />
 </div>
 </div>
 <p>The frequencies are too spaced in the FFT due to the short range of <span class="math notranslate nohighlight">\(\tau\)</span>, but we can see the main peak corresponds to approximately half of the hyperfine splitting of the nuclear spin <span class="math notranslate nohighlight">\(a_{||}/2=1.515\)</span> MHz, as expected.</p>
@@ -447,7 +472,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_32_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_32_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_34_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_34_0.png" />
 </div>
 </div>
 <p>In this case then, the delta pulses appear as vertical lines.</p>
@@ -464,7 +489,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_34_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_34_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_36_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_36_0.png" />
 </div>
 </div>
 <p>The expectation value of the observable presents fast modulations, contrary to the previous case. This is because that by adopting delta pulses we are also assuming the rotating frame. Thus, the Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span> needs to be modified accordingly. For that, we make a new quantum system, without the electronic terms and the perpendicular terms of the Hyperfine interaction.</p>
@@ -494,7 +519,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_36_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_36_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_38_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_38_0.png" />
 </div>
 </div>
 <p>Where we not obtain the results from the laboratory frame.</p>
@@ -524,7 +549,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_40_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_40_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_42_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_42_0.png" />
 </div>
 </div>
 <p>Two resonances can be observed, corresponding to the two electronic spin transitions and with a splitting given by the Zeeman interaction with the external magnetic field. To see the nuclear spin splitting, we need to reduce the Rabi frequency to have a better spectral resolution.</p>
@@ -550,7 +575,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_42_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_42_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_44_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_44_0.png" />
 </div>
 </div>
 <p>The two resonances now correspond to the two nuclear spin transitions. To get the splitting, we can fit them with Lorentzian Functions.</p>
@@ -582,7 +607,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_44_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_44_1.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_46_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_46_1.png" />
 </div>
 </div>
 <p>From the fit we can extract the parallel component of the hyperfine splitting <span class="math notranslate nohighlight">\(a_{||}^n=3.03\)</span> MHz. However, the commonly used Lorentzian function does not completely describes all features of the resonace. A better fit is provided with a sinc function.</p>
@@ -613,7 +638,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_46_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_46_1.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_48_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_48_1.png" />
 </div>
 </div>
 </section>

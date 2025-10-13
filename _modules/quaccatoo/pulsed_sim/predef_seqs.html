@@ -120,13 +120,13 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">pulse_duration</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">pulse_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">h1</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
-        <span class="n">H2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
+        <span class="n">H2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for the Rabi pulsed experiment class.</span>
@@ -169,9 +169,7 @@
 
 <div class="viewcode-block" id="Rabi.run">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Rabi.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.</span>
 <span class="sd">        If the system has no initial state, the propagator is calcualated.</span>
@@ -238,15 +236,15 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">frequencies</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
-        <span class="n">system</span> <span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pulse_duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">h1</span> <span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
-        <span class="n">H2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-        <span class="n">time_steps</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+        <span class="n">pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
+        <span class="n">H2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for the PMR pulsed experiment class.</span>
@@ -300,10 +298,7 @@
 
 <div class="viewcode-block" id="PMR.PMR_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.PMR.PMR_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">PMR_sequence</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">f</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">PMR_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 <span class="sd">        To be called by the parallel_map in run method.</span>
@@ -329,11 +324,11 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.PMR.plot_pulses">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">figsize</span> <span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-        <span class="n">xlabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
-        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
-        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles&quot;</span><span class="p">,</span>
-        <span class="n">f_pulse</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles&quot;</span><span class="p">,</span>
+        <span class="n">f_pulse</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</span>
@@ -392,17 +387,17 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">free_duration</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
-        <span class="n">system</span> <span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pi_pulse_duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">h1</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">Rx</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">H2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">projection_pulse</span> <span class="p">:</span>  <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-        <span class="n">time_steps</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">h1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">Rx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">H2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">projection_pulse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class constructor for the Ramsey pulsed experiment class.</span>
@@ -453,10 +448,7 @@
 
 <div class="viewcode-block" id="Ramsey.ramsey_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">ramsey_sequence</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">tau</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ramsey_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
 <span class="sd">        The sequence consists of an initial pi/2 pulse and a single free evolution.</span>
@@ -491,10 +483,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tau</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the pulse profiles for the Ramsey sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
@@ -529,11 +518,11 @@
     <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-        <span class="n">xlabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
-        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
-        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Ramsey Sequence&quot;</span><span class="p">,</span>
-        <span class="n">tau</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Ramsey Sequence&quot;</span><span class="p">,</span>
+        <span class="n">tau</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</span>
 
@@ -582,19 +571,20 @@
 <span class="sd">    -----</span>
 <span class="sd">    The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">free_duration</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
-        <span class="n">system</span> <span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pi_pulse_duration</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">h1</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">Rx</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">H2</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">projection_pulse</span> <span class="p">:</span>  <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">pulse_shape</span> <span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-        <span class="n">time_steps</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">options</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">h1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">Rx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">H2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">projection_pulse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.</span>
@@ -643,10 +633,7 @@
 
 <div class="viewcode-block" id="Hahn.hahn_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">hahn_sequence</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tau</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">hahn_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
 <span class="sd">        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.</span>
@@ -690,10 +677,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tau</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the pulse profiles for the Hahn echo sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
@@ -741,11 +725,11 @@
     <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-        <span class="n">xlabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
-        <span class="n">ylabel</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
-        <span class="n">title</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Hahn Echo Sequence&quot;</span><span class="p">,</span>
-        <span class="n">tau</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Hahn Echo Sequence&quot;</span><span class="p">,</span>
+        <span class="n">tau</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</span>
 

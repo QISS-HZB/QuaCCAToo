@@ -94,6 +94,14 @@ Python remains untouched.</p>
 conda<span class="w"> </span>activate<span class="w"> </span>quaccatoo-env
 </pre></div>
 </div>
+<p>In some cases, switching to an alternate <code class="docutils literal notranslate"><span class="pre">BLAS</span></code> implementation can provide
+speedups (in particular, <code class="docutils literal notranslate"><span class="pre">MKL</span></code>, <code class="docutils literal notranslate"><span class="pre">BLIS</span></code>, or <code class="docutils literal notranslate"><span class="pre">netlib</span></code> implementations).
+Refer <a class="reference external" href="https://conda-forge.org/docs/maintainer/knowledge_base/#blas">here</a>
+for more details and instructions.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;libblas=*=*_blis&quot;</span>
+conda<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy
+</pre></div>
+</div>
 <p><strong>OR</strong></p>
 <p>You can use a native Python venv (you’ll need <code class="docutils literal notranslate"><span class="pre">pip</span></code> as well)</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>quaccatoo-env

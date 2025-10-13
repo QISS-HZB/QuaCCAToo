@@ -28,7 +28,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="QuaCCAToo modules" href="../modules.html" />
+    <link rel="next" title="07 - Double Electron-Electron Resonace with P1 Center" href="../tutorial7.html" />
     <link rel="prev" title="06 - Teleportation Protocol with NV Pair" href="../tutorial6.html" /> 
 </head>
 
@@ -71,6 +71,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
@@ -119,19 +121,20 @@ version of an unconditional teleportation between two NV centers, as originally 
 </ul>
 <p>Specifically, we focus on simulating a simplified version of the MW and RF pulses implementation, rather than the photonic component of the experiment, which is on itself the greatest technical challenge of the experiment and the main source of errors.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">compose_sys</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">plot_histogram</span>
-<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">ptrace</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">ptrace</span>
+
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">compose_sys</span><span class="p">,</span> <span class="n">PulsedSim</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">plot_histogram</span>
 </pre></div>
 </div>
 </div>
 <section id="1.-System-Definition">
 <h1>1. System Definition<a class="headerlink" href="#1.-System-Definition" title="Link to this heading"></a></h1>
-<p>This simple form of teleportation consists of two network parties: ‘Alice’ and ‘Bob’. Alice has a 14NV center with two qubits, the nitrogen nuclear spin and the electron spin. Bob has another distant NV, where the nuclear spin can be neglected. This system can be defined in QuaCCAToo using:</p>
+<p>This simple form of teleportation consists of two network parties: ‘Alice’ and ‘Bob’. Alice has a <span class="math notranslate nohighlight">\(^{14}\)</span> NV center with two qubits, the nitrogen nuclear spin and the electron spin. Bob has another distant NV, where the nuclear spin can be neglected. This system can be defined in QuaCCAToo using:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -146,12 +149,12 @@ version of an unconditional teleportation between two NV centers, as originally 
 </pre></div>
 </div>
 </div>
-<p>where we assume some typical values for <span class="math notranslate nohighlight">\(B_0\)</span>. To avoid performance issues of simulating a large Hilbert space with dimension <span class="math notranslate nohighlight">\(d=3^2=27\)</span> from the three spins-1 subsystems, the <code class="docutils literal notranslate"><span class="pre">truncate</span></code> method is used to exclude the <span class="math notranslate nohighlight">\(\ket{m_S=+1}\)</span> and <span class="math notranslate nohighlight">\(\ket{m_I=+1}\)</span> levels. Which, as seen in the previous tutorials, does not compromise the modeling of the system, as long as the transition frequencies are well separated compared to the spectral width of the excitation. This way, the
-system is defined within the subspaces <span class="math notranslate nohighlight">\(m_{S,I}=0,-1\)</span>, with a total dimension of <span class="math notranslate nohighlight">\(d=2^3=8\)</span> instead. Lastly, the <code class="docutils literal notranslate"><span class="pre">compose_sys</span></code> function is used to compose the two NV centers from Alice and Bob, which internally calculates the new attributes of the <code class="docutils literal notranslate"><span class="pre">sys</span></code> object.</p>
+<p>where we assume some typical values for <span class="math notranslate nohighlight">\(B_0\)</span>. To avoid performance issues of simulating a large Hilbert space with dimension <span class="math notranslate nohighlight">\(d=3^3=27\)</span> from the three spin-1 subsystems, the <code class="docutils literal notranslate"><span class="pre">truncate</span></code> method is used to exclude the <span class="math notranslate nohighlight">\(\ket{m_S=+1}\)</span> and <span class="math notranslate nohighlight">\(\ket{m_I=+1}\)</span> levels. This, as seen in the previous examples, does not compromise the modeling of the system, as long as the transition frequencies are well separated compared to the spectral width of the excitation. This way, the system
+is defined within the subspaces <span class="math notranslate nohighlight">\(m_{S,I}=0,-1\)</span>, with a total dimension of <span class="math notranslate nohighlight">\(d=2^3=8\)</span> instead. Lastly, the <code class="docutils literal notranslate"><span class="pre">compose_sys</span></code> function is used to compose the two NV centers from Alice and Bob, which internally calculates the new attributes of the <code class="docutils literal notranslate"><span class="pre">sys</span></code> object.</p>
 <p>Initially, the two NVs’ electron spins are in a maximally entangled Bell state <span class="math notranslate nohighlight">\(\ket{\Psi^-} = (\ket{01} - \ket{10})/\sqrt{2}\)</span>, where <span class="math notranslate nohighlight">\(\ket{0} \equiv \ket{m_S=0}\)</span> and <span class="math notranslate nohighlight">\(\ket{1} \equiv \ket{m_S=-1}\)</span>. While this is presented as a postulate for the simulation applications, the experimental generation of the Bell state poses a great technological challenge, given the poor spectral stability of NVs and high relative background counts. This is achieved through a photon emission mixing
 by a beam splitter and mutual photon detection, which thus heralds an entanglement event for the two NVs’ electron spins. The optical properties of the NVs optical emission can be nonetheless improved by micro-engineering of the diamond surface.</p>
-<p>Apart from the initial state of the electron, the state <span class="math notranslate nohighlight">\(\ket{\psi} = \alpha \ket{0} + \beta \ket{1}\)</span> to be teleported between Alice and Bob is initially stored in Alice’s 14N spin. Experimentally, it can initialized into the state <span class="math notranslate nohighlight">\(\ket{1} \equiv \ket{m_I = -1}\)</span> by a projective measurement of the electron spin. Which is then rotated to the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span> with the appropriate resonance pulses, as discussed in Tutorial 3. In the software component, the initial state of the
-three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket{\psi}\)</span> is hence represented by:</p>
+<p>Apart from the initial state of the electron spin, the state <span class="math notranslate nohighlight">\(\ket{\psi} = \alpha \ket{0} + \beta \ket{1}\)</span> to be teleported between Alice and Bob is initially stored in Alice’s <span class="math notranslate nohighlight">\(^{14}\)</span> N spin. Experimentally, it can be initialized into the state <span class="math notranslate nohighlight">\(\ket{1} \equiv \ket{m_I = -1}\)</span> by a projective measurement of the electron spin. The nuclear spin can then be brought to the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span> with the appropriate resonance pulses, as discussed in Tutorial 3. In the
+simulations, the initial state of the three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket{\psi}\)</span> is hence represented by:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -170,7 +173,7 @@ three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket
 <p>for given values of <span class="math notranslate nohighlight">\(\alpha, \beta \in \mathbb{C}\)</span>. By taking <span class="math notranslate nohighlight">\(\alpha=\beta=1/\sqrt{2}\)</span> we have the initial state <span class="math notranslate nohighlight">\(\ket{+X}\)</span>, with <span class="math notranslate nohighlight">\(\alpha=1/\sqrt{2}\)</span> and <span class="math notranslate nohighlight">\(\beta=i/\sqrt{2}\)</span> we have <span class="math notranslate nohighlight">\(\ket{+Y}\)</span>, and finally with <span class="math notranslate nohighlight">\(\alpha=1\)</span> and <span class="math notranslate nohighlight">\(\beta=0\)</span> we have <span class="math notranslate nohighlight">\(\ket{+Z}\)</span>. Here, we first consider the <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> state.</p>
 <p>To define the remaining experimental constants of the experiment we use:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rabi frequencies of the spins in MHz</span>
@@ -206,7 +209,7 @@ three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket
 <h1>2. Hadamard Gate Optimization<a class="headerlink" href="#2.-Hadamard-Gate-Optimization" title="Link to this heading"></a></h1>
 <p>Before realizing the protocol, the phase <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span> of the nuclear pulse during the Hadamard gate needs to be optimized to reduce phase accumulations between states. This is achieved with:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">NVa</span><span class="p">)</span>
@@ -286,7 +289,8 @@ three spins <span class="math notranslate nohighlight">\(\ket{\Psi^-}\otimes\ket
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -302,7 +306,7 @@ np.float64(2.95)
 </div>
 <p>By taking the maximum value for observables 0 and 3, as done in the Ref., we obtain <span class="math notranslate nohighlight">\(\varphi^{rf}=2.95\)</span>. Finally, we also have the freedom to choose <span class="math notranslate nohighlight">\(\tau_2\)</span> and the total refocus time <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> such that the final fidelities are optimized. From previous tests, we observe that:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tau_refocus</span> <span class="o">=</span> <span class="mf">2.26</span>
@@ -313,20 +317,20 @@ np.float64(2.95)
 </section>
 <section id="3.-Teleportation-Protocol">
 <h1>3. Teleportation Protocol<a class="headerlink" href="#3.-Teleportation-Protocol" title="Link to this heading"></a></h1>
-<p>Given the initial state and the optmized values of <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> and <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, the teleportation protocol can then be simulated. Since there is no standard predefined sequence in QuaCCAToo for this protocol, we can simulate it by instantiating an object from <code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code> with <code class="docutils literal notranslate"><span class="pre">sys</span></code> as an argument:</p>
+<p>Given the initial state and the optimized values of <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> and <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, the teleportation protocol can then be simulated. Since there is no standard predefined sequence in QuaCCAToo for this protocol, we can simulate it by instantiating an object from <code class="docutils literal notranslate"><span class="pre">PulsedSim</span></code> with <code class="docutils literal notranslate"><span class="pre">sys</span></code> as an argument:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seq</span> <span class="o">=</span> <span class="n">PulsedSim</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>The first part of the teleportation protocol is a CNOT gate to Alice’s electron spin conditioned to her nuclear spin. This is expressed by a soft selective <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse of the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> electron transition for the <span class="math notranslate nohighlight">\(\ket{m_I=-1}\)</span> nuclear state. The intensity of this pulse needs to be small, in order to ensure a narrow bandwidth excitation. Furthermore, the <span class="math notranslate nohighlight">\(\ket{m_I=0}\)</span> states would ideally remain unchanged during the operation.
-But due to the system’s evolution under the time-independent Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span> during the finite pulse length, these states also accumulate a phase. This phase is minimized however by taking the Rabi frequency of the CNOT pulse as <span class="math notranslate nohighlight">\(\omega_1^{cnot} = a_\parallel^n/\sqrt{3}\)</span>, where <span class="math notranslate nohighlight">\(a_\parallel^n\)</span> is the parallel component of the hyperfine interaction on the NV center.</p>
+<p>The first part of the teleportation protocol is a CNOT gate on Alice’s electron spin conditioned to her nuclear spin. This is expressed by a soft selective <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse of the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> electron transition for the <span class="math notranslate nohighlight">\(\ket{m_I=-1}\)</span> nuclear state. The intensity of this pulse needs to be low, in order to ensure a narrow bandwidth excitation. Furthermore, the <span class="math notranslate nohighlight">\(\ket{m_I=0}\)</span> states would ideally remain unchanged during the operation, but
+due to the system’s evolution under the time-independent Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span> during the finite pulse length, these states also accumulate a phase. This phase is minimized by taking the Rabi frequency of the CNOT pulse as <span class="math notranslate nohighlight">\(\omega_1^{cnot} = a_\parallel^n/\sqrt{3}\)</span>, where <span class="math notranslate nohighlight">\(a_\parallel^n\)</span> is the parallel component of the hyperfine interaction of the NV center.</p>
 <p>A pulse with the parameters as defined above can be added to the sequences with the <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> method using:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CNOT gate</span>
@@ -340,16 +344,16 @@ But due to the system’s evolution under the time-independent Hamiltonian <span
 </pre></div>
 </div>
 </div>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> assumes a square pulse and 100 time steps in the time array discretization, which should not be confused with the <code class="docutils literal notranslate"><span class="pre">nsteps</span></code> key for the solver options dictionary that is increased to <code class="docutils literal notranslate"><span class="pre">1e9</span></code>. In the lab frame, the <span class="math notranslate nohighlight">\(\phi\)</span> angle of the rotation axis is expressed in terms of the temporal phase of the excitation field <code class="docutils literal notranslate"><span class="pre">phi_t</span></code>. Within this implementation, the simulation is already executed upon calling <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code>, differently from predefined methods which require
-the <code class="docutils literal notranslate"><span class="pre">run</span></code> command. However, if the user desires to execute a sequence in parallel in regards to some changing variable, it can be defined within a function and called with <code class="docutils literal notranslate"><span class="pre">run</span></code> as done with Hadamard optmization.</p>
-<p>One of the main challenges of the pulse implementation of the protocol is the loss of the relative phase between the qubits due to the dynamics from <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>. Specifically, all three spins precess with different Larmor frequencies <span class="math notranslate nohighlight">\(\omega_0\)</span> during the finite pulse lengths. Which makes it necessary to correct for this phase accumulation in Bob’s qubit while Alice performs the teleportation operation on her qubits. For that, we implement a refocusing scheme similar to a Hahn echo,
-with a free evolution of <span class="math notranslate nohighlight">\(\tau_1\)</span> followed by a <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse and another free evolution of <span class="math notranslate nohighlight">\(\tau_2\)</span>. The free evolution times <span class="math notranslate nohighlight">\(\tau_1\)</span> and <span class="math notranslate nohighlight">\(\tau_2\)</span> are chosen such that the <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> is exactly in the middle of the whole protocol duration prior to the state reconstruction, and thus Bob’s qubit ends the protocol with the same state as he initially had. This way, we have the first free evolution time given by</p>
+<p>One of the main challenges of the pulse implementation of the protocol is the loss of the relative phase between the qubits due to the dynamics from <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>. Specifically, all three spins precess with different Larmor frequency <span class="math notranslate nohighlight">\(\omega_0\)</span> during the finite pulse lengths, making it necessary to correct for the phase accumulation in Bob’s qubit while Alice performs the teleportation operation on her qubits. For that, we implement a refocusing scheme similar to a Hahn echo, with a
+free evolution of <span class="math notranslate nohighlight">\(\tau_1\)</span> followed by a <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> pulse and another free evolution of <span class="math notranslate nohighlight">\(\tau_2\)</span>. The free evolution times <span class="math notranslate nohighlight">\(\tau_1\)</span> and <span class="math notranslate nohighlight">\(\tau_2\)</span> are chosen such that the <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> is exactly in the middle of the whole protocol duration prior to the state reconstruction, and thus Bob’s qubit ends the protocol with the same state as he initially had. This way, we have the first free evolution time given by</p>
 <div class="math notranslate nohighlight">
-\[\tau_1 + t_\pi^{cnot} + \frac{t_\pi^B}{2} = \frac{T}{2} ,\]</div>
+\[\begin{equation*}
+    \tau_1 + t_\pi^{cnot} + \frac{t_\pi^B}{2} = \frac{T}{2} ,
+\end{equation*}\]</div>
 <p>where <span class="math notranslate nohighlight">\(T\)</span> is the total duration of the protocol.</p>
 <p>To implement the refocus scheme we calculate the free evolution times from the optmized value of <code class="docutils literal notranslate"><span class="pre">tau_refocus</span></code> and use the <code class="docutils literal notranslate"><span class="pre">add_free_evolution</span></code> and <code class="docutils literal notranslate"><span class="pre">add_pulse</span></code> methods:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Refocus scheme</span>
@@ -370,11 +374,11 @@ with a free evolution of <span class="math notranslate nohighlight">\(\tau_1\)</
 </div>
 </div>
 <p>In the Ref., the phase of Bob’s qubit is protected with an XY4 sequence. However, in this simulation, the implementation would become more complex than the straight experimental realization with multi-channel pulse generation, due to the intricate time placement of the <span class="math notranslate nohighlight">\(\pi\)</span>-pulses on Bob’s qubit. In the end, this difference in the refocusing scheme will require small adjustments to Bob’s state reconstruction pulses, as discussed in the following analysis.</p>
-<p>The next step of the protocol is Hadamard gate to Alice’s nuclear spin, which can be decomposed with two rotations, such as <span class="math notranslate nohighlight">\(\hat{R}_{y}(\pi/2)\hat{R}_{z}(\pi)\)</span>. In this case nonetheless, the first rotation on the <span class="math notranslate nohighlight">\(z\)</span>-axis responsible for correcting the phase can be omitted, hence configuring a pseudo-Hadamard gate. In addition, due to the fact that the transition frequency of the nuclear spin depends on the <span class="math notranslate nohighlight">\(m_S\)</span> state, the gate can be composed by three pulses: a conditional
-rotation of <span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclear spin over some chosen axis <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, an unconditional rotation of <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> on Alice’s electron, and another rotation of <span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclei. This way, the first pulse changes the nuclear state for <span class="math notranslate nohighlight">\(m_S=-1\)</span>, then the electron spin is inverted and the same RF pulses is applied again. Assuming some typical values for the pulse parameters, where the Rabi frequency of
-Alice’s electron for a hard pulse <code class="docutils literal notranslate"><span class="pre">w1_mwa</span></code> is now much larger than for the CNOT gate, the three pulses are simulated using:</p>
+<p>The next step of the protocol is a Hadamard gate on Alice’s nuclear spin, which can be decomposed with two rotations, such as <span class="math notranslate nohighlight">\(\hat{R}_{y}(\pi/2)\hat{R}_{z}(\pi)\)</span>. In this case, the first rotation on the <span class="math notranslate nohighlight">\(z\)</span>-axis responsible for correcting the phase can be omitted, hence configuring a pseudo-Hadamard gate. In addition, due to the fact that the transition frequency of the nuclear spin depends on the <span class="math notranslate nohighlight">\(m_S\)</span> state, the gate can be composed by three pulses: a conditional rotation of
+<span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclear spin over some chosen axis <span class="math notranslate nohighlight">\(\varphi^{rf}\)</span>, an unconditional rotation of <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> on Alice’s spin, and another rotation of <span class="math notranslate nohighlight">\(\hat{R}_{\varphi^{rf}}(\pi/2)\)</span> on the nuclear spin. This way, the first pulse changes the nuclear state for <span class="math notranslate nohighlight">\(m_S=-1\)</span>, then the electron spin is inverted and the same RF pulses is applied again. Assuming some typical values for the pulse parameters, where the Rabi frequency of Alice’s
+electron spin for a hard pulse <code class="docutils literal notranslate"><span class="pre">w1_mwa</span></code> is now much larger than for the CNOT gate, the three pulses are simulated with:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hadamard gate</span>
@@ -409,7 +413,7 @@ spin as an auxiliary qubit, which gives rise to an observable as</p>
 \[\hat{F}_{I^n} = \hat{1} \otimes \hat{1} \otimes \ket{1}\bra{1} .\]</div>
 <p>Given the two observables, Alice’s measurements are implemented with the <code class="docutils literal notranslate"><span class="pre">measure_qsys</span></code> method:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Alice measurements</span>
@@ -427,7 +431,7 @@ spin as an auxiliary qubit, which gives rise to an observable as</p>
 <p>First, we take the <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> input state. If Alice’s electron qubit is measured in the <span class="math notranslate nohighlight">\(\ket{1}\)</span> state yielding <span class="math notranslate nohighlight">\(c_0, \, c_1 = 1, \, 0\)</span> or <span class="math notranslate nohighlight">\(c_0, \, c_1 = 1, \, 1\)</span>, Bob does not need to perform any operation on his qubit, which is already in the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span>. However, if Alice measures her electron in the state <span class="math notranslate nohighlight">\(\ket{0}\)</span> with <span class="math notranslate nohighlight">\(c_0, \, c_1 = 0, \, 1\)</span> or <span class="math notranslate nohighlight">\(c_0, \, c_1 = 0, \, 0\)</span>, then Bob needs to perform a rotation of <span class="math notranslate nohighlight">\(\hat{R}_y(\pi)\)</span> so
 that his qubit is then in the state <span class="math notranslate nohighlight">\(\ket{\psi}\)</span>. Altogether then, the state reconstruction for an initial state <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> is implemented with:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">c0</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c1</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
@@ -443,7 +447,7 @@ that his qubit is then in the state <span class="math notranslate nohighlight">\
 </div>
 <p>To compare the real part of the densitry matrix of the teleported state with the ideal state, we use the <code class="docutils literal notranslate"><span class="pre">plot_histogram</span></code> function:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rho_sim</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">*</span><span class="n">seq</span><span class="o">.</span><span class="n">rho</span><span class="o">.</span><span class="n">dag</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
@@ -457,7 +461,7 @@ that his qubit is then in the state <span class="math notranslate nohighlight">\
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Fidelity: 0.9997832200638801
+Fidelity: 0.9997807695555817
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -469,7 +473,7 @@ Fidelity: 0.9997832200638801
 </div>
 <p>Now the imaginary:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho_sim</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
@@ -481,7 +485,7 @@ Fidelity: 0.9997832200638801
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Fidelity: 0.9997832200638801
+Fidelity: 0.9997807695555817
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -501,7 +505,7 @@ returned to the same state. Mathematically, this means that the free evolution d
 <p>where <span class="math notranslate nohighlight">\(\omega_0^B\)</span> is the Larmor frequency for Bob’s NV and <span class="math notranslate nohighlight">\(t_\pi^B\)</span> the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration, as previously defined. In addition, <span class="math notranslate nohighlight">\(\lceil \cdot \rceil\)</span> denotes the ceiling function, which rounds the value up to the nearest integer. Finally, the <span class="math notranslate nohighlight">\(\pi\)</span> rotations around the <span class="math notranslate nohighlight">\(z\)</span>-axis <span class="math notranslate nohighlight">\(\hat{R}_z(\pi)\)</span> present in some <span class="math notranslate nohighlight">\(\hat{U}(c_0, c_1)\)</span> can also be obtained simply with a free evolution of duration <span class="math notranslate nohighlight">\(1/(2\omega_0^B)\)</span>.</p>
 <p>For <span class="math notranslate nohighlight">\(\ket{+X}\)</span> state we then have:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initial state</span>
@@ -598,8 +602,8 @@ returned to the same state. Mathematically, this means that the free evolution d
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-c0 = 1.0, c1 = 0.0
-Fidelity: 0.9889556512700622
+c0 = 1.0, c1 = 1.0
+Fidelity: 0.9878218029383948
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -610,7 +614,7 @@ Fidelity: 0.9889556512700622
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
@@ -622,7 +626,7 @@ Fidelity: 0.9889556512700622
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Fidelity: 0.9889556512700622
+Fidelity: 0.9878218029383948
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -637,7 +641,7 @@ Fidelity: 0.9889556512700622
 <h2>3.3 Y Input<a class="headerlink" href="#3.3-Y-Input" title="Link to this heading"></a></h2>
 <p>Finnaly, for <span class="math notranslate nohighlight">\(\ket{+Y}\)</span> state:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initial state</span>
@@ -734,8 +738,8 @@ Fidelity: 0.9889556512700622
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-c0 = 0.0, c1 = 1.0
-Fidelity: 0.9713054945602968
+c0 = 1.0, c1 = 1.0
+Fidelity: 0.9945153759738186
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -746,7 +750,7 @@ Fidelity: 0.9713054945602968
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho_theo</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="s1">&#39;imag&#39;</span><span class="p">)</span>
@@ -758,7 +762,7 @@ Fidelity: 0.9713054945602968
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Fidelity: 0.9713054945602968
+Fidelity: 0.9945153759738186
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -770,8 +774,8 @@ Fidelity: 0.9713054945602968
 </div>
 <p>We observe a strong agreement overall between the simulated and predicted teleported states. Nonetheless, small deviations can be seen in the diagonal elements of the <span class="math notranslate nohighlight">\(\ket{+X}\)</span> and <span class="math notranslate nohighlight">\(\ket{+Y}\)</span> states, which can be attribute to the phase accumulations. The corresponding fidelities are larger than the experimental values provided. This can be attributed to the fact that the simulation software does not consider errors in the optical initialization of the entangled state, or the
 readout, neither decoherence of the spins. Nonetheless, this application complements the original work with a rigorous simulation of the MW and RF pulses component of the protocol.</p>
-<p>The non-adoption of a rotating frame introduces a new layer of complexity to the dynamics of the system related to the phase accumulations of each qubit in the laboratory frame. Where these phase accumulations are often overlooked in perturbative models, such as the RWA, which may lead to discrepancies in experimental results. Another interesting result can be observed by comparing the fidelities for each input state. The <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> state along the quantization axis of the NVs presents
-higher fidelities, due to the fact that this state is less prone to the phase accumulations in the perpendicular plane of the quantization.</p>
+<p>By avoiding the adoption of a rotating frame, a new layer of complexity to the dynamics of the system is introduced, related to the phase accumulations of each qubit in the laboratory frame. These phase accumulations are often overlooked in perturbative models, such as the RWA, which may lead to discrepancies in experimental results. Another interesting result can be observed by comparing the fidelities for each input state. The <span class="math notranslate nohighlight">\(\ket{+Z}\)</span> state along the quantization axis of the NVs
+presents higher fidelities, due to the fact that this state is less prone to the phase accumulations in the perpendicular plane of the quantization.</p>
 </section>
 </section>
 
@@ -780,7 +784,7 @@ higher fidelities, due to the fact that this state is less prone to the phase ac
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tutorial6.html" class="btn btn-neutral float-left" title="06 - Teleportation Protocol with NV Pair" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../modules.html" class="btn btn-neutral float-right" title="QuaCCAToo modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../tutorial7.html" class="btn btn-neutral float-right" title="07 - Double Electron-Electron Resonace with P1 Center" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

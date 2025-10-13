@@ -66,6 +66,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorial4.html">04 - Sensing and Control of 13C Spin with NV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial5.html">05 - Ambiguous Resonances in DD with NV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
@@ -117,14 +119,15 @@ observed in:</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">basis</span>
+
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span>
 </pre></div>
 </div>
 </div>
 <section id="1.-System-Definition">
 <h1>1. System Definition<a class="headerlink" href="#1.-System-Definition" title="Link to this heading"></a></h1>
-<p>First, the NV system is represented by an instance of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> class for a given external magnetic field <span class="math notranslate nohighlight">\(\mathbf{B}_0\)</span>. This can be obtained simply through the following code:</p>
+<p>First, the NV system is represented by an instance of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> class for a given external magnetic field <span class="math notranslate nohighlight">\(\bold{B}_0\)</span>. This can be obtained simply through the following code snippet:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -133,17 +136,19 @@ observed in:</p>
 </pre></div>
 </div>
 </div>
-<p>where the parameter <code class="docutils literal notranslate"><span class="pre">N</span></code> representing the nitrogen isotope is set to 0. This way, we neglect the nitrogen nuclear spin, which is not used in this application. The external magnetic field is assumed to be aligned with the NV axis and to have a magnitude of <span class="math notranslate nohighlight">\(B_0 = 200\)</span> mT. The <code class="docutils literal notranslate"><span class="pre">NV</span></code> class internally calculates the system’s observable <span class="math notranslate nohighlight">\(\hat{F}_S\)</span> and Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>, in units of MHz by default. This way, the time units are in microseconds.</p>
-<p>So far, only the electron spin of the NV is defined. To add the 13C spin to the system, the <span class="math notranslate nohighlight">\(\hat{H}_2\)</span> Hamiltonian needs to be defined. In this case, the internal Hamiltonian of the 13C spin is simply given by a Zeeman interaction along the <span class="math notranslate nohighlight">\(z\)</span>-axis, while the hyperfine coupling between the two spins can be expressed in terms of a single component of <span class="math notranslate nohighlight">\(a_{zz}^c=-130\)</span> MHz, even though other spatial components might exist. Hence,</p>
+<p>where the parameter <code class="docutils literal notranslate"><span class="pre">N</span></code> representing the nitrogen isotope is set to 0. This way, we neglect the nitrogen nuclear spin, which is not used in this application. The external magnetic field is assumed to be aligned with the NV axis and to have a magnitude of <span class="math notranslate nohighlight">\(B_0 = 200\)</span> mT. The <code class="docutils literal notranslate"><span class="pre">NV</span></code> class internally calculates the system’s observable <span class="math notranslate nohighlight">\(\hat{F}_S\)</span> and Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span>, in units of MHz by default. This way, the time units are in μs.</p>
+<p>So far, only the electron spin of the NV is defined. To add the <span class="math notranslate nohighlight">\(^{13}\)</span>C spin to the system, the <span class="math notranslate nohighlight">\(\hat{H}_2\)</span> Hamiltonian needs to be defined. In this case, the internal Hamiltonian of the <span class="math notranslate nohighlight">\(^{13}\)</span>C spin is simply given by a Zeeman interaction along the <span class="math notranslate nohighlight">\(z\)</span>-axis, while the hyperfine coupling between the two spins can be expressed in terms of a single component of <span class="math notranslate nohighlight">\(a_{zz}^c=130\)</span> MHz, even though other spatial components might exist. Hence,</p>
 <div class="math notranslate nohighlight">
-\[\hat{H}_2 = a_{zz}^c \hat{S}_z \hat{I}^c_z - \gamma^c B_0 \hat{I}^c_z\]</div>
-<p>with gyromagnetic ratio <span class="math notranslate nohighlight">\(\gamma^c= 10.7084\)</span> MHz/T. To model this interaction and to add the carbon spin to the NV, the <code class="docutils literal notranslate"><span class="pre">add_spin</span></code> method can be used as follows:</p>
+\[\begin{equation*}
+    \hat{H}_2 = a_{zz}^c \hat{S}_z \hat{I}^c_z - \gamma^c B_0 \hat{I}^c_z
+\end{equation*}\]</div>
+<p>with gyromagnetic ratio <span class="math notranslate nohighlight">\(\gamma^c= 10.7084\times 10^{-3}\)</span> MHz/mT. To model this interaction and to add the carbon spin to the NV, the <code class="docutils literal notranslate"><span class="pre">add_spin</span></code> method can be used as follows:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">GAMMA_C</span> <span class="o">=</span> <span class="mf">10.7084e-3</span>
-<span class="n">azz</span> <span class="o">=</span> <span class="o">-</span><span class="mi">130</span>
+<span class="n">azz</span> <span class="o">=</span> <span class="mi">130</span>
 
 <span class="n">H2</span> <span class="o">=</span> <span class="n">azz</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span> <span class="o">-</span> <span class="n">GAMMA_C</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">B0</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
 
@@ -171,9 +176,9 @@ costly, given that there are fewer ODEs to be solved in the ket state as compare
 <img alt="../_images/tutorials_03_NV_conditional_gates_8_0.png" src="../_images/tutorials_03_NV_conditional_gates_8_0.png" />
 </div>
 </div>
-<p>At such magnetic field above GSLAC <span class="math notranslate nohighlight">\(B_0 &gt; B_{\textrm{GSLAC}}\)</span>, the <span class="math notranslate nohighlight">\(m_S=0\)</span> state has a higher energy than <span class="math notranslate nohighlight">\(m_S=-1\)</span>. Furthermore, the nuclear states at <span class="math notranslate nohighlight">\(m_S=0\)</span> are only split by its Zeeman interaction, while the sublevels at <span class="math notranslate nohighlight">\(m_S=-1\)</span> have a contribution from the hyperfine coupling as well. In this application, it is important that the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> transitions have very distinct frequencies at <span class="math notranslate nohighlight">\(m_{I^c}=+1/2\)</span> and
+<p>At such magnetic field above GSLAC <span class="math notranslate nohighlight">\(B_0 &gt; B_{\textrm{GSLAC}}\)</span>, the <span class="math notranslate nohighlight">\(m_S=0\)</span> state has a higher energy than <span class="math notranslate nohighlight">\(m_S=-1\)</span>. Furthermore, the nuclear spin states at <span class="math notranslate nohighlight">\(m_S=0\)</span> are only split by its Zeeman interaction, while the sublevels at <span class="math notranslate nohighlight">\(m_S=-1\)</span> have a contribution from the hyperfine coupling as well. In this application, it is important that the <span class="math notranslate nohighlight">\(\ket{m_S=0} \leftrightarrow \ket{m_S=-1}\)</span> transitions have very distinct frequencies for <span class="math notranslate nohighlight">\(m_{I^c}=+1/2\)</span> and
 <span class="math notranslate nohighlight">\(m_{I^c}=-1/2\)</span> nuclear states, in order to avoid unwanted excitations. This is ensured by the high intensity magnetic field <span class="math notranslate nohighlight">\(B_0\)</span> and hyperfine coupling <span class="math notranslate nohighlight">\(a^c_{zz}\)</span>, which leads to these energy differences being much larger than the bandwidth of the pulses.</p>
-<p>The interaction with an external excitation field needs to be represented through the operator <span class="math notranslate nohighlight">\(\hat{h}_1\)</span>. Assuming <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> along the <span class="math notranslate nohighlight">\(x\)</span>-axis and Rabi frequencies of <span class="math notranslate nohighlight">\(\omega_{1,S} = 20\)</span> MHz and <span class="math notranslate nohighlight">\(\omega_{1,I} = 0.8\)</span> MHz for the electron and nuclear spins, respectively, we have:</p>
+<p>The interaction with an external excitation field needs to be represented through the operator <span class="math notranslate nohighlight">\(\hat{h}_1\)</span>. Assuming the Rabi frequencies of <span class="math notranslate nohighlight">\(\omega_{1,S} = 20\)</span> MHz and <span class="math notranslate nohighlight">\(\omega_{1,I} = 0.8\)</span> MHz for the electron and nuclear spins, respectively, we have</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -183,12 +188,12 @@ costly, given that there are fewer ODEs to be solved in the ket state as compare
 
 <span class="n">h1</span> <span class="o">=</span> <span class="n">w1_S</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">**</span><span class="mf">.5</span><span class="p">,</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">w1_I</span><span class="o">*</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">w0_mw</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">w0_mw</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="n">w0_rf</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<p>where we also define the frequencies of the pulses <code class="docutils literal notranslate"><span class="pre">w0_mw</span></code> and <code class="docutils literal notranslate"><span class="pre">w0_rf</span></code> in resonance with the transitions. By default, in QuaCCAToo, the lowest energy state in system is 0, <code class="docutils literal notranslate"><span class="pre">sys.energy_levels[0]=0</span></code>.</p>
+<p>where we also define the frequencies of the pulses <code class="docutils literal notranslate"><span class="pre">w0_mw</span></code> and <code class="docutils literal notranslate"><span class="pre">w0_rf</span></code> in resonance with the transitions. By default, in QuaCCAToo, the lowest energy state in the system is 0, that is <code class="docutils literal notranslate"><span class="pre">sys.energy_levels[0]=0</span></code>.</p>
 </section>
 <section id="2.-Electron-Spin-Rabi">
 <h1>2. Electron Spin Rabi<a class="headerlink" href="#2.-Electron-Spin-Rabi" title="Link to this heading"></a></h1>
@@ -211,7 +216,7 @@ costly, given that there are fewer ODEs to be solved in the ket state as compare
 </pre></div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> method is used to execute the simulation, by setting and solving the coupled ODEs, where the results of the simulations are stored in the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">rabi_S_sim</span></code> object. Here, the frequency of the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> is passed to the object through the <code class="docutils literal notranslate"><span class="pre">f_pulse</span></code> key of the <code class="docutils literal notranslate"><span class="pre">pulse_params</span></code> dictionary variable.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> method is used to execute the simulation, by setting and solving the coupled ODEs, where the results of the simulations are stored in the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">rabi_S_sim</span></code> object. Here, the frequency of the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span> is passed to the object through the <code class="docutils literal notranslate"><span class="pre">f_pulse</span></code> key of the <code class="docutils literal notranslate"><span class="pre">pulse_params</span></code> dictionary.</p>
 <p>The resulting expectation value of the fluorescence observable as a function of the pulse length can be plotted with the <code class="docutils literal notranslate"><span class="pre">plot_results</span></code> method from the <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> class. The electron spin performs full Rabi oscillations between the <span class="math notranslate nohighlight">\(m_S=0\)</span> and <span class="math notranslate nohighlight">\(m_S=-1\)</span> levels, conditioned to the 13C spin being at the <span class="math notranslate nohighlight">\(m_{I^c}=-1/2\)</span> state. The <span class="math notranslate nohighlight">\(m_S=+1\)</span> levels and the nuclear states are not affected by this pulse, as expected.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -236,7 +241,7 @@ costly, given that there are fewer ODEs to be solved in the ket state as compare
 \[\hat{F}_{I^c} = \hat{1} \otimes \ket{+1/2}\bra{+1/2} .\]</div>
 <p>Experimentally, this is indirectly measured through the electron by electron-nuclear double magnetic resonance (ENDOR). To model the decoherence of the spin, we assume <span class="math notranslate nohighlight">\(\hat{C}=\hat{I}^c_z\)</span> as the collapse operator, with rate <span class="math notranslate nohighlight">\(\Gamma_2 = 0.5\)</span> MHz. Altogether, the time-evolution of the nuclear spin within these considerations is simulated by:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">basis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
@@ -267,8 +272,8 @@ costly, given that there are fewer ODEs to be solved in the ket state as compare
 </div>
 </div>
 <p>where the <code class="docutils literal notranslate"><span class="pre">c_ops</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> instance, which was previously empty, is now set to the operator. The <code class="docutils literal notranslate"><span class="pre">pulse_shape</span></code> parameter is set to square pulses by default, which will be omitted from now on.</p>
-<p>Differently from the electron spin, the oscillation is damped by decoherence of the nuclear spin and has a much smaller Rabi frequency due to the smaller gyromagnetic ratio and thus, weaker coupling to the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span>. The software component accurately reproduces the results presented in the reference, apart from the fact that the simulations present a much larger contrast. This can be attributed to an imperfect initialization of the spins in the experiments, which
-are not accounted in the simulations. Together with unconditional excitations, these two rotations form the computational basis for arbitrary quantum gates with the NV-<span class="math notranslate nohighlight">\(^{13}\)</span>C pair, which will be further explored in the subsequent tutorials.</p>
+<p>Differing from the electron spin, the oscillation is damped by decoherence of the nuclear spin and has a much smaller Rabi frequency due to the smaller gyromagnetic ratio and thus, weaker coupling to the excitation field <span class="math notranslate nohighlight">\(\mathbf{B}_1(t)\)</span>. The software component accurately reproduces the results presented in the reference, apart from the fact that the simulations present a much larger contrast. This can be attributed to an imperfect initialization of the spins, the fundamentally limited NV
+readout mechanism and other experimental parameters related to the photon detection which are not accounted for in the simulation, but can be post-processed with the <code class="docutils literal notranslate"><span class="pre">ExpData</span></code> class. Together with unconditional excitations, these two rotations form the computational basis for arbitrary quantum gates with the NV-<span class="math notranslate nohighlight">\(^{13}\)</span> C pair, which will be further explored in the subsequent tutorials.</p>
 </section>
 
 
