@@ -1,5 +1,5 @@
-08 - Multi-Qubit Gates by Dynamical Decoupling with NV
-======================================================
+08 - Quantum Gates via Dynamical Decoupling with NV
+===================================================
 
 .. toctree::
    :maxdepth: 1

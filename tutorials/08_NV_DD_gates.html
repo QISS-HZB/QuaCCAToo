@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1. Definition of the NV System &mdash; QuaCCAToo  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
@@ -18,18 +18,18 @@
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="QuaCCAToo modules" href="../modules.html" />
-    <link rel="prev" title="08 - Multi-Qubit Gates by Dynamical Decoupling with NV" href="../tutorial8.html" /> 
+    <link rel="prev" title="08 - Quantum Gates via Dynamical Decoupling with NV" href="../tutorial8.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -62,7 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorial5.html">05 - Ambiguous Resonances in DD with NV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorial8.html">08 - Quantum Gates via Dynamical Decoupling with NV</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">1. Definition of the NV System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#2.-Electron-Spin">2. Electron Spin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#3.-Nuclear-Spin">3. Nuclear Spin</a></li>
@@ -88,7 +88,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
-          <li class="breadcrumb-item"><a href="../tutorial8.html">08 - Multi-Qubit Gates by Dynamical Decoupling with NV</a></li>
+          <li class="breadcrumb-item"><a href="../tutorial8.html">08 - Quantum Gates via Dynamical Decoupling with NV</a></li>
       <li class="breadcrumb-item active">1. Definition of the NV System</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/08_NV_DD_gates.ipynb.txt" rel="nofollow"> View page source</a>
@@ -102,7 +102,7 @@
   <p>In this tutorial, a dynamical decoupling sequence is applied to the electron spin of <span class="math notranslate nohighlight">\(^{15}\)</span>NV and used to obtain gates to the nuclear spin. We begin defining the NV system, following that we simulate the XY<span class="math notranslate nohighlight">\(N\)</span> spectra of the electron observable and compare them with simulations. Finally, we also simulate the behaviour of the nuclear spin. This notebook closely follows the work from:</p>
 <ul class="simple">
 <li><ol class="upperalpha simple" start="12">
-<li><p>Tsunaki, M. Dotan, K. Volkova, &amp; B. Naydenov. (2025). Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond. arXiv:2509.22107 quant-ph.</p></li>
+<li><p>Tsunaki, M. Dotan, K. Volkova, &amp; B. Naydenov. (2025). Quantum Gates via Dynamical Decoupling of Central Qubit on IBMQ and 15NV Center in Diamond. arXiv:2509.22107 quant-ph.</p></li>
 </ol>
 </li>
 </ul>
@@ -419,7 +419,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorial8.html" class="btn btn-neutral float-left" title="08 - Multi-Qubit Gates by Dynamical Decoupling with NV" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorial8.html" class="btn btn-neutral float-left" title="08 - Quantum Gates via Dynamical Decoupling with NV" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../modules.html" class="btn btn-neutral float-right" title="QuaCCAToo modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
