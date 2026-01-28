@@ -15,7 +15,7 @@ software is built on top of QuTip, inheriting its object-oriented framework and 
 the software provides accessibility from the high level of abstraction and human-readability of Python, but
 at the expense of limited performance compared to compiled programming languages.
 
-If you used QuaCCAToo in your work, please cite `arXiv:2507.18759 <https://arxiv.org/abs/2507.18759>`__.
+If you used QuaCCAToo in your work, please cite `Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond <https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691>`__.
 
 The documentation for QuaCCAToo is available here. Merge requests welcome at the `Github repository <https://github.com/QISS-HZB/QuaCCAToo>`__!
 
@@ -52,8 +52,8 @@ contain:
   simulation of P1 sensing with NVs diamond from
   `Local nanoscale probing of electron spins using NV centers in diamond
   <https://arxiv.org/abs/2507.13295>`__.
-- `08 - Multi-Qubit Gates by Dynamical Decoupling with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/08_NV_DD_gates.html>`__:
-  simulation of `Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond <https://arxiv.org/abs/2509.22107>`__.
+- `08 - Quantum Gates via Dynamical Decoupling with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/08_NV_DD_gates.html>`__:
+  simulation of Quantum Gates via `Dynamical Decoupling of Central Qubit 15NV Center in Diamond <https://arxiv.org/abs/2509.22107>`__.
 
 Class Hierarchy
 ---------------
@@ -95,7 +95,7 @@ Featured In
 
 - L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. `arXiv:2507.18759 quant-ph <https://arxiv.org/abs/2507.18759>`__.
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: `10.1103/PhysRevA.111.022606 <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
-- L. Tsunaki, M. Dotan, K. Volkova, B. Naydenov. (2025). Multi-Qubit Gates by Dynamical Decoupling Implemented with IBMQ and 15NV Center in Diamond. `arXiv:2509.22107 quant-ph <https://arxiv.org/abs/2509.22107>`__.
+- L. Tsunaki, M. Dotan, K. Volkova, & B. Naydenov. (2025). Quantum Gates via Dynamical Decoupling of Central Qubit on IBMQ and 15NV Center in Diamond. doi: `arXiv:2509.22107 quant-ph <https://arxiv.org/abs/2509.22107>`__.
 - S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. `arXiv:2507.13295 quant-ph <https://arxiv.org/abs/2507.13295>`__.
 
 If you used QuaCCAToo in your work, please let us know so we can add it to the list!
