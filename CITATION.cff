@@ -1,4 +1,4 @@
-cff-version: 1.2.0
+cff-version: 1.2.1
 
 title: Quantum Color Centers Analysis Toolbox (QuaCCAToo)
 
@@ -11,13 +11,12 @@ type: software
 authors:
   - given-names: Lucas
     family-names: Tsunaki
-    email: lucas.tsunaki@helmholtz-berlin.de
+    email: tsunakilucas@gmail.com
     orcid: 'https://orcid.org/0009-0003-3534-6300'
     affiliation: 0
 
   - given-names: Anmol
     family-names: Singh
-    email: anmol.singh@helmholtz-berlin.de
     orcid: 'https://orcid.org/0009-0000-1578-626X'
     affiliation: 0
 
@@ -44,9 +43,9 @@ affiliations:
     department: Department Spins in Energy Conversion and Quantum Information Science (ASPIN)
     address: Hahn-Meitner-Platz, Berlin 14109, Germany
 
-  - name: Fachbereich Physik, Freie Universität Berlin
+  - name: Freie Universität Berlin
     identifier: https://ror.org/046ak2485
-    department: Berlin Joint EPR Laboratory
+    department: Department of Physics
     address: Arnimallee 14, Berlin, 14195, Berlin, Germany
 
 repository-code: 'https://github.com/QISS-HZB/QuaCCAToo'

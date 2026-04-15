@@ -14,14 +14,14 @@ license-files = ["LICENSE"]
 requires-python = ">=3.9"
 
 authors = [
-    { name = "Lucas Tsunaki", email = "lucastsunaki@hotmail.com" },
-    { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
+    { name = "Lucas Tsunaki", email = "tsunakilucas@gmail.com" },
+    { name = "Anmol Singh"},
     { name = "Sergei Trofimov", email = "sergei.trofimov@helmholtz-berlin.de" },
     { name = "Kseniia Volkova", email = "kseniia.volkova@helmholtz-berlin.de" },
 ]
 
 maintainers = [
-    { name = "Lucas Tsunaki", email = "lucas.tsunaki@hotmail.com" },
+    { name = "Lucas Tsunaki", email = "tsunakilucas@gmail.com" },
     { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
 ]
 
