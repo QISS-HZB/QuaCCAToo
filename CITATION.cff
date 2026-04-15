@@ -1,4 +1,4 @@
-cff-version: 1.2.1
+cff-version: 1.2.0
 
 title: Quantum Color Centers Analysis Toolbox (QuaCCAToo)
 
@@ -13,42 +13,30 @@ authors:
     family-names: Tsunaki
     email: tsunakilucas@gmail.com
     orcid: 'https://orcid.org/0009-0003-3534-6300'
-    affiliation: 0
+    affiliation: 'Helmholtz-Zentrum Berlin für Materialien und Energie GmbH'
 
   - given-names: Anmol
     family-names: Singh
     orcid: 'https://orcid.org/0009-0000-1578-626X'
-    affiliation: 0
+    affiliation: 'Helmholtz-Zentrum Berlin für Materialien und Energie GmbH'
 
   - given-names: Sergei
     family-names: Trofimov
     email: sergei.trofimov@helmholtz-berlin.de
     orcid: 'https://orcid.org/0000-0002-2850-5292'
-    affiliation: 0
+    affiliation: 'Helmholtz-Zentrum Berlin für Materialien und Energie GmbH'
 
   - given-names: Kseniia
     family-names: Volkova
     email: kseniia.volkova@helmholtz-berlin.de
-    affiliation: 0
+    affiliation: 'Helmholtz-Zentrum Berlin für Materialien und Energie GmbH'
 
   - given-names: Boris
     family-names: Naydenov
     email: boris.naydenov@helmholtz-berlin.de
     orcid: 'https://orcid.org/0000-0002-5215-3880'
-    affiliation: [0,1]
-
-affiliations:
-  - name: Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
-    identifier: https://ror.org/02aj13c28
-    department: Department Spins in Energy Conversion and Quantum Information Science (ASPIN)
-    address: Hahn-Meitner-Platz, Berlin 14109, Germany
-
-  - name: Freie Universität Berlin
-    identifier: https://ror.org/046ak2485
-    department: Department of Physics
-    address: Arnimallee 14, Berlin, 14195, Berlin, Germany
+    affiliation: 'Helmholtz-Zentrum Berlin für Materialien und Energie GmbH'
 
 repository-code: 'https://github.com/QISS-HZB/QuaCCAToo'
-repository-name: QuaCCAToo
 
 license: GPL-3.0
