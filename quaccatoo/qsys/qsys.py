@@ -304,44 +304,47 @@ class QSys:
                     for op in self.c_ops
                 ]
 
-    def _check_B0(self) -> None:
+    def _check_B0(self, B0: float | int, units_B0: str) -> None:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
         """
-        
-        if not isinstance(self.B0, (int, float)):
-            raise TypeError(f"B0 must be a real number, got: {type(self.B0)}.")
+        self.B0 = B0
+        self.units_B0 = units_B0
 
-        if self.units_B0 is None:
+        if not isinstance(B0, (int, float)):
+            raise TypeError(f"B0 must be a real number, got: {type(B0)}.")
+
+        if units_B0 is None:
             warnings.warn(
                 "No units for the magnetic field were given. The magnetic field will be considered in mT."
             )
-        elif self.units_B0 == "T":
+        elif units_B0 == "T":
             self.B0 *= 1e3
-        elif self.units_B0 == "mT":
+        elif units_B0 == "mT":
             pass
-        elif self.units_B0 == "G":
+        elif units_B0 == "G":
             self.B0 *= 1e-1
         else:
             raise ValueError(
-                f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {self.units_B0}."
+                f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
             )
-        
-    def _check_angles(self) -> None:
+
+    def _check_angles(self, theta: float | int, phi_r: float | int, units_angles: str) -> None:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
         """
-
-        if not isinstance(self.theta, (int, float)) or not isinstance(self.phi_r, (int, float)):
+        if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
             raise TypeError(
-                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(self.theta)}, phi_r: {type(self.phi_r)}."
+                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}."
             )
-        
-        if self.units_angles == "deg":
-            self.theta = np.deg2rad(self.theta)
-            self.phi_r = np.deg2rad(self.phi_r)
-        elif self.units_angles == "rad":
-            pass
+
+        self.units_angles = units_angles
+        if units_angles == "deg":
+            self.theta = np.deg2rad(theta)
+            self.phi_r = np.deg2rad(phi_r)
+        elif units_angles == "rad":
+            self.theta = theta
+            self.phi_r = phi_r
         else:
             raise ValueError(
                 f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {self.units_angles}."

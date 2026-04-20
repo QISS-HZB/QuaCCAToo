@@ -4,7 +4,6 @@ being a subclass of QSys.
 """
 
 from typing import Literal
-import warnings
 
 import numpy as np
 import scipy.constants as cte
@@ -131,23 +130,14 @@ class P1(QSys):
         observable : Qobj | list(Qobj)
             Observable to be measured
         """
-        self.B0 = B0
-        self.units_B0 = units_B0
-        self._check_B0()
+        self._check_B0(B0, units_B0)
+        self._check_angles(theta, phi_r, units_angles)
 
-        self.theta = theta
-        self.phi_r = phi_r
-        self.units_angles = units_angles
-        self._check_angles()
-
-        if (
-            not isinstance(theta_1, (int, float))
-            or not isinstance(phi_r_1, (int, float))
-        ):
+        if not isinstance(theta_1, (int, float)) or not isinstance(phi_r_1, (int, float)):
             raise TypeError(
                 f"Invalid type for theta_1 or phi_r_1. Expected a float or int, got theta_1: {type(theta)}, phi_r_1: {type(phi_r)}."
             )
-        
+
         if units_angles == "deg":
             theta_1 = np.deg2rad(theta_1)
             phi_r_1 = np.deg2rad(phi_r_1)

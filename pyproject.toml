@@ -114,5 +114,6 @@ disable = [
     "R1720", "R1705", # if-else statements
     "C0103", "C0301", # long line, case variables
     "W0511", # todo comments
-    "W0221", "W0223" # overriding of parameters in parent class
+    "W0221", "W0223", # overriding of parameters in parent class
+    "W0201" # lazy init
     ]
