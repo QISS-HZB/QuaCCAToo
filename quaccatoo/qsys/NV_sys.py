@@ -549,7 +549,12 @@ class NV(QSys):
         self.MW_h1 = tensor(self.MW_h1, qeye(self.dim_add_spin))
         self.RF_h1 = tensor(self.RF_h1, qeye(self.dim_add_spin))
 
-    def truncate(self, mS: Literal[1, 0, -1, None] = None, mI: Literal[1, 0, -1, None] = None) -> None:
+    def truncate(
+        self,
+        indexes: int | list[int] | None = None,
+        mS: Literal[1, 0, -1, None] = None,
+        mI: Literal[1, 0, -1, None] = None
+    ) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.
         The indexes to be removed are calculated according to the mS and mI parameters.
