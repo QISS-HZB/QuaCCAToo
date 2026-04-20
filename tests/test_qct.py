@@ -17,7 +17,6 @@ from quaccatoo import (
     compose_sys,
     square_pulse,
     P1,
-    PMR,
     PulsedSim,
 )
 from quaccatoo.analysis.fit_functions import (

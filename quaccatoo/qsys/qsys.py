@@ -12,6 +12,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, basis, qeye, tensor
 
+__all__ = [
+    'QSys',
+    'compose_sys',
+    'plot_energy_B0'
+]
+
 ####################################################################################################
 
 
@@ -291,7 +297,10 @@ class QSys:
 ####################################################################################################
 
 
-def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
+def compose_sys(
+    qsys1: QSys,
+    qsys2: QSys
+) -> QSys:
     """
     Takes two quantum systems and returns the composed system by performing tensor products of the two,
     after checking if all parameters are valid.
