@@ -363,7 +363,7 @@ class Analysis:
 
     def run_fit(
         self, fit_model: Model, results_index: int = 0, guess: Optional[dict] = None
-    ) -> Optional[dict]:
+    ) -> dict:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.
