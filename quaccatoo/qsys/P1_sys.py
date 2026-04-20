@@ -233,6 +233,7 @@ class P1(QSys):
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
+        self.h1 = None
         self._set_h1()
 
     def _rot_pas_to_lab(self) -> None:

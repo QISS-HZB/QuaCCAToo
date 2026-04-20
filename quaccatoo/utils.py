@@ -18,16 +18,16 @@ __all__ = ["save", "load"]
 ####################################################################################################
 
 
-def save(object, file_name):
+def save(obj, file_name):
     """
-    Look for all the attributes of the object, save Qobj attributes to separate files,
+    Look for all the attributes of the obj, save Qobj attributes to separate files,
     and save the rest of the attributes to a pickle file. Finally, create a zip file
     containing all the files.
 
     Parameters
     ----------
-    object : quaccatoo object
-        The object to be saved.
+    obj : quaccatoo obj
+        The obj to be saved.
     file_name : str
         Path to the file where the attributes will be saved.
     """
@@ -39,20 +39,18 @@ def save(object, file_name):
     os.makedirs(tmp_dir, exist_ok=True)
 
     try:
-        # Get a list of all the attributes defined in the object
+        # Get a list of all the attributes defined in the obj
         attributes = [
             attr
-            for attr in dir(object)
+            for attr in dir(obj)
             if not attr.startswith("__")
-            and not (
-                inspect.isfunction(getattr(object, attr)) or inspect.ismethod(getattr(object, attr))
-            )
+            and not (inspect.isfunction(getattr(obj, attr)) or inspect.ismethod(getattr(obj, attr)))
         ]
         py_attr = []
 
         # Separate attributes into Python and Qobj types
         for attr in attributes:
-            value = getattr(object, attr)
+            value = getattr(obj, attr)
             if isinstance(value, Qobj) or (
                 isinstance(value, (list, np.ndarray))
                 and all(isinstance(item, Qobj) for item in value)
@@ -64,8 +62,8 @@ def save(object, file_name):
 
         # Create a dictionary to store the python attributes names and values
         py_data = {
-            "__type__": object.__class__.__name__,
-            **{attr: getattr(object, attr) for attr in py_attr},
+            "__type__": obj.__class__.__name__,
+            **{attr: getattr(obj, attr) for attr in py_attr},
         }
 
         # Save the python data to a file in the temporary directory
@@ -87,8 +85,8 @@ def save(object, file_name):
 
 def load(file_name):
     """
-    Loads the attributes of an object from a zip file,
-    creates an instance of the object, and sets the attributes.
+    Loads the attributes of an obj from a zip file,
+    creates an instance of the obj, and sets the attributes.
 
     Parameters
     ----------
@@ -97,8 +95,8 @@ def load(file_name):
 
     Returns
     -------
-    object
-        The loaded object.
+    obj
+        The loaded obj.
     """
     if not isinstance(file_name, str):
         raise ValueError("file_name must be a string")
@@ -115,7 +113,7 @@ def load(file_name):
         with open(os.path.join(tmp_dir, "py_data.pkl"), "rb") as f_pkl:
             py_data = dill.load(f_pkl)
 
-        # Get the object name from the py_data
+        # Get the obj name from the py_data
         cls = getattr(quaccatoo, py_data["__type__"])
 
         # Create an empty instance
