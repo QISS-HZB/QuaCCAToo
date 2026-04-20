@@ -123,14 +123,8 @@ class NV(QSys):
         E : float | int
             Perpedicular component of the zero field splitting
         """
-        self.B0 = B0
-        self.units_B0 = units_B0
-        self._check_B0()
-
-        self.theta = theta
-        self.phi_r = phi_r
-        self.units_angles = units_angles
-        self._check_angles()
+        self._check_B0(B0, units_B0)
+        self._check_angles(theta, phi_r, units_angles)
 
         if not isinstance(E, (int, float)):
             raise TypeError(f"E must be a real number, got {E}: {type(E)}.")
@@ -561,7 +555,7 @@ class NV(QSys):
             return
         if mS not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
-        if mI in (-1/2, 1/2):
+        if mI in (-1 / 2, 1 / 2):
             warnings.warn(
                 "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated."
             )

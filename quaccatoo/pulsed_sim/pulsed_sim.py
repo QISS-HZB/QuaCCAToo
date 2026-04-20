@@ -138,18 +138,6 @@ class PulsedSim:
         self.results = []
         self.sequence = None
         self.time_steps = None
-        self.pulse_shape = None
-        self.pulse_params = None
-        self.options = None
-        self.pi_pulse_duration = None
-        self.M = None
-        self.projection_pulse = None
-        self.Rx = None
-        self.Rx_half = None
-        self.Ry = None
-        self.Ry_half = None
-        self.h1 = None
-        self.Ht = None
 
     def add_free_evolution(self, duration: float | int, options: dict | None = None) -> None:
         """

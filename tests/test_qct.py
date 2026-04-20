@@ -312,7 +312,7 @@ class TestPODMR:
         w1 = 0.3
 
         podmr_exp = PMR(
-            frequencies=np.arange(1745, 1753, 0.5),
+            frequencies=np.arange(1745, 1753, 0.1),
             pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,

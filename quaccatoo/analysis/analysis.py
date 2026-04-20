@@ -98,10 +98,6 @@ class Analysis:
         self.fit_model = [None] * len(self.experiment.results)
         self.fit_params = [None] * len(self.experiment.results)
         self.fit_cov = [None] * len(self.experiment.results)
-        self.pearson = None
-        self.exp_comparison = None
-        self.FFT_peaks = None
-        self.FFT_peaks_index = None
 
     def compare_with(
         self,
