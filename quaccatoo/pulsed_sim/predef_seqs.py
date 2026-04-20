@@ -96,6 +96,7 @@ class Rabi(PulsedSim):
             self.variable = pulse_duration
             self.variable_name = f"Pulse Duration (1/{self.system.units_H0})"
 
+        self.U = None
         self._append_pulse_to_profile(0, self.total_time)
 
     def run(self) -> None:

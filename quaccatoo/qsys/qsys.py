@@ -77,6 +77,7 @@ class QSys:
             Units of the Hamiltonian
         """
         self.H0 = Qobj(H0)
+        self.dim_add_spin = None
 
         # if the units are in frequency, assign the Hamiltonian as it is
         if units_H0 is None:
@@ -178,7 +179,7 @@ class QSys:
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        _, ax = plt.subplots(1, 1, figsize=figsize)
 
         for val_ene in self.energy_levels:
             ax.axhline(y=val_ene, lw=2)
@@ -261,7 +262,7 @@ class QSys:
         if isinstance(indexes, int):
             if indexes < 0 or indexes >= self.H0.shape[0]:
                 raise ValueError("sel must be a valid index of the Hamiltonian.")
-        if isinstance(indexes, (list, np.array)):
+        if isinstance(indexes, (list, np.ndarray)):
             if not all(isinstance(i, int) for i in indexes) and not all(  # ty: ignore[not-iterable], handled manually
                 0 <= i < self.H0.shape[0]
                 for i in indexes  # ty: ignore[not-iterable], handled manually
@@ -365,16 +366,23 @@ def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
 
     if qsys1.c_ops is None and qsys2.c_ops is None:
         c_ops = None
+
     elif qsys1.c_ops is not None and qsys2.c_ops is None:
         if isinstance(qsys1.c_ops, Qobj):
             c_ops = tensor(qsys1.c_ops, qeye(qsys2.H0.shape[0]))
         elif isinstance(qsys1.c_ops, list):
             c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops]
+        else:
+            raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
+
     elif qsys1.c_ops is None and qsys2.c_ops is not None:
         if isinstance(qsys2.c_ops, Qobj):
             c_ops = tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
         elif isinstance(qsys2.c_ops, list):
             c_ops = [tensor(qeye(qsys1.H0.shape[0]), op2) for op2 in qsys2.c_ops]
+        else:
+            raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
+
     elif qsys1.c_ops is not None and qsys2.c_ops is not None:
         if isinstance(qsys1.c_ops, Qobj) and isinstance(qsys2.c_ops, Qobj):
             c_ops = [
@@ -395,6 +403,8 @@ def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
             c_ops = [tensor(op1, qeye(qsys2.H0.shape[0])) for op1 in qsys1.c_ops] + [  # ty: ignore[no-matching-overload], list comprehension, handled manually
                 tensor(qeye(qsys1.H0.shape[0]), qsys2.c_ops)
             ]
+        else:
+            raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
     else:
         raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
 

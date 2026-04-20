@@ -318,8 +318,8 @@ class ExpData:
             isinstance(result, np.ndarray) for result in self.results
         ):
             poly_fit = [
-                np.polyfit(baseline_xaxis[idx_base], val_base, poly_order)
-                for idx_base, val_base in enumerate(baseline_xaxis)
+                np.polyfit(baseline_xaxis[idx_res], val_res, poly_order)
+                for idx_res, val_res in enumerate(self.results)
             ]
             self.results = [
                 val_res - np.polyval(poly_fit[idx_res], self.variable)
@@ -352,7 +352,7 @@ class ExpData:
         if not isinstance(figtitle, str):
             raise ValueError("figtitle must be a string")
 
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        _, ax = plt.subplots(1, 1, figsize=figsize)
 
         # check if the results is a list of results or a single result
         if isinstance(self.results, np.ndarray):

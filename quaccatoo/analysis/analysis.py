@@ -100,6 +100,8 @@ class Analysis:
         self.fit_cov = [None] * len(self.experiment.results)
         self.pearson = None
         self.exp_comparison = None
+        self.FFT_peaks = None
+        self.FFT_peaks_index = None
 
     def compare_with(
         self,
@@ -473,6 +475,11 @@ class Analysis:
                     )
             return self.fit_params[results_index].best_values
 
+        else:
+            raise ValueError(
+                f"Experiments results are not valid. Expected list or np.ndarray, got: {type(self.experiment.results)}"
+            )
+
     def plot_fit(
         self,
         figsize: tuple[int, int] = (6, 4),
@@ -703,7 +710,7 @@ def plot_histogram(
             zpos,
             dx,
             dy,
-            dz_comp,
+            dz_comp,  # pylint: disable=used-before-assignment
             edgecolor="k",
             linewidth=0.5,
             alpha=0,

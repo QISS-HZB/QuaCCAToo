@@ -101,5 +101,18 @@ skip_empty = true
 [tool.ty.src]
 exclude = ["tests/", "docs/"]
 
+[tool.pylint.design]
+max-args = 30
+max-positional-arguments = 30
+max-locals = 30
+max-branches = 40
+max-statements = 80
+max-attributes = 30
+
 [tool.pylint."messages control"]
-disable = ["R1720", "R1705", "C0103", "C0301"]
+disable = [
+    "R1720", "R1705", # if-else statements
+    "C0103", "C0301", # long line, case variables
+    "W0511", # todo comments
+    "W0221", "W0223" # overriding of parameters in parent class
+    ]

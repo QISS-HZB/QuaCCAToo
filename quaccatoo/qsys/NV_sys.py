@@ -226,6 +226,8 @@ class NV(QSys):
         if self.temp is not None:
             self._rho0_T()
 
+        self.MW_h1 = None
+        self.RF_h1 = None
         self._set_MW()
         self._set_RF()
 
@@ -544,7 +546,7 @@ class NV(QSys):
         """
         if self.N == 14:
             return -5.01 * tensor(qeye(3), jmat(1, "z") ** 2)
-        elif self.N == 15 or self.N == 0:
+        elif self.N in (0, 15):
             return 0
         else:
             raise ValueError(
@@ -587,7 +589,7 @@ class NV(QSys):
             return
         if mS not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
-        if mI == 1 / 2 or mI == -1 / 2:
+        if mI in (-1/2, 1/2):
             warnings.warn(
                 "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated."
             )
