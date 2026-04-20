@@ -363,10 +363,6 @@ class NV(QSys):
         elif self.N == 14:
             self.RF_h1 = tensor(qeye(3), jmat(1, "x")) * 2**0.5
 
-            Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
-            Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
-            Ry_0 = Qobj([[1, 0, 0], [0, 0, -1j], [0, 1j, 0]])
-            Ry_1 = Qobj([[0, -1j, 0], [1j, 0, 0], [0, 0, 1]])
             self.RF_Rx = [tensor(qeye(3), Rx_0), tensor(qeye(3), Rx_1)]
             self.RF_Ry = [tensor(qeye(3), Ry_0), tensor(qeye(3), Ry_1)]
 
