@@ -13,12 +13,12 @@ from typing import Any, Literal
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
 
-__all__ = ['Analysis']
+__all__ = ["Analysis"]
 
 ####################################################################################################
 
-class Analysis:
 
+class Analysis:
     """
     The Analysis class contains several methods for data Analysis, such as FFT, fitting and plotting.
 
@@ -361,9 +361,7 @@ class Analysis:
 
     ######################################################## FIT Methods ########################################################
 
-    def run_fit(
-        self, fit_model: Model, results_index: int = 0, guess: dict | None = None
-    ) -> dict:
+    def run_fit(self, fit_model: Model, results_index: int = 0, guess: dict | None = None) -> dict:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
         guess for the initial parameters.

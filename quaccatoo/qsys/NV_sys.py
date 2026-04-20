@@ -17,11 +17,10 @@ gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
 gamma_N14 = 3.077e-3
 gamma_N15 = -4.316e-3
 
-__all__ = [
-    'NV'
-]
+__all__ = ["NV"]
 
 ####################################################################################################
+
 
 class NV(QSys):
     """
@@ -553,7 +552,7 @@ class NV(QSys):
         self,
         indexes: int | list[int] | None = None,
         mS: Literal[1, 0, -1, None] = None,
-        mI: Literal[1, 0, -1, None] = None
+        mI: Literal[1, 0, -1, None] = None,
     ) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.

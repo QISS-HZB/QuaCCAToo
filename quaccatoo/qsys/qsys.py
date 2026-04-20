@@ -11,11 +11,7 @@ import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, qeye, tensor
 
-__all__ = [
-    'QSys',
-    'compose_sys',
-    'plot_energy_B0'
-]
+__all__ = ["QSys", "compose_sys", "plot_energy_B0"]
 
 ####################################################################################################
 
@@ -87,11 +83,11 @@ class QSys:
             self.units_H0 = "MHz"
             warnings.warn("No units supplied, assuming default value of MHz.")
         elif units_H0 in ["MHz", "GHz", "kHz"]:
-            self.units_H0 = units_H0    
+            self.units_H0 = units_H0
         elif units_H0 == "eV":
             self.units_H0 = units_H0
             self.H0 *= cte.eV / cte.h / 1e6
-            warnings.warn('Converting Hamiltonian units to MHz')
+            warnings.warn("Converting Hamiltonian units to MHz")
         else:
             raise ValueError(
                 f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz."
@@ -300,10 +296,7 @@ class QSys:
 ####################################################################################################
 
 
-def compose_sys(
-    qsys1: QSys,
-    qsys2: QSys
-) -> QSys:
+def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
     """
     Takes two quantum systems and returns the composed system by performing tensor products of the two,
     after checking if all parameters are valid.

@@ -11,13 +11,10 @@ from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
 from ..qsys.qsys import QSys
 
-__all__ = [
-    'CPMG',
-    'XY',
-    'XY8'
-]
+__all__ = ["CPMG", "XY", "XY8"]
 
 ####################################################################################################
+
 
 class CPMG(PulsedSim):
     """

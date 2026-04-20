@@ -13,12 +13,10 @@ from qutip import Qobj, fileio
 
 import quaccatoo
 
-__all__ = [
-    'save',
-    'load'
-]
+__all__ = ["save", "load"]
 
 ####################################################################################################
+
 
 def save(object, file_name):
     """
