@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from lmfit import Model
-from qutip import basis, fock_dm, jmat, qeye, sigmax, sigmay, sigmaz, tensor
+from qutip import basis, fock_dm, jmat, qeye, tensor
 
 from quaccatoo import (
     CPMG,
@@ -45,7 +45,7 @@ with the `--runslow` CLI flag passed to `pytest`.
 @pytest.fixture
 def qsys():
     delta = 1
-    return QSys(H0=delta / 2 * sigmaz(), rho0=fock_dm(2, 0), observable=sigmaz(), units_H0="MHz")
+    return QSys(H0=delta *jmat(1/2, 'z'), rho0=fock_dm(2, 0), observable=jmat(1/2, 'z')*2, units_H0="MHz")
 
 
 # Test if the eigenstates of the qsys fixture are correct
@@ -111,9 +111,9 @@ def rabi_exp(qsys):
         return np.cos(delta * t - np.pi / 2)
 
     rabi_exp = Rabi(
-        pulse_duration=np.linspace(0, 40, 1000),
+        pulse_duration=np.linspace(0, 40, 100),
         system=qsys,
-        h1=[w1 * sigmax() / 2, w1 * sigmay() / 2],
+        h1=[w1 *jmat(1/2, 'x'), w1 *jmat(1/2, 'y')],
         pulse_shape=[custom_pulseX, custom_pulseY],
     )
     rabi_exp.run()
@@ -144,13 +144,13 @@ class TestHahn:
         delta = 1
         gamma = 0.1
 
-        qsys.c_ops = gamma * sigmaz()
+        qsys.c_ops = gamma *jmat(1/2, 'z')*2
         hahn_exp = Hahn(
             free_duration=np.linspace(5, 25, 30),
             pi_pulse_duration=1 / 2 / w1,
             projection_pulse=True,
             system=qsys,
-            h1=w1 * sigmax(),
+            h1=w1 * jmat(1/2, 'x')*2,
             pulse_shape=square_pulse,
             pulse_params={"f_pulse": delta},
         )
@@ -166,9 +166,9 @@ class TestHahn:
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_hahn_delta(self, qsys):
         gamma = 0.1
-        qsys.c_ops = gamma * sigmaz()
+        qsys.c_ops = gamma *jmat(1/2, 'z')*2
         hahn_sim_delta = Hahn(
-            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=sigmax()
+            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=jmat(1/2, 'x')*2
         )
         hahn_sim_delta.run()
         hahn_analysis = Analysis(hahn_sim_delta)
@@ -196,7 +196,7 @@ class TestXY:
         w1 = 20
         XY_15N = XY(
             M=2,
-            free_duration=np.linspace(0.25, 0.36, 100),
+            free_duration=np.linspace(0.25, 0.36, 30),
             pi_pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,
@@ -230,7 +230,7 @@ class TestXY8:
         w1 = 20
         XY8_15N = XY8(
             M=2,
-            free_duration=np.linspace(0.25, 0.36, 100),
+            free_duration=np.linspace(0.25, 0.36, 30),
             pi_pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,
@@ -264,7 +264,7 @@ class TestCPMG:
         )
         w1 = 40
         cpmg = CPMG(
-            free_duration=np.linspace(0.2, 0.5, 100),
+            free_duration=np.linspace(0.2, 0.5, 30),
             system=qsys,
             M=2,
             pi_pulse_duration=1 / 2 / w1,
@@ -295,7 +295,7 @@ class TestPODMR:
         w1 = 0.3
 
         podmr_exp = PMR(
-            frequencies=np.arange(1745, 1753, 0.05),
+            frequencies=np.arange(1745, 1753, 0.1),
             pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,
@@ -509,14 +509,14 @@ def test_add_free_evolution():
     w1 = w0 / 10
 
     qsys = QSys(
-        H0=w0 / 2 * sigmaz(),
+        H0=w0*jmat(1/2, 'z'),
         rho0=basis(2, 0),
-        observable=sigmaz(),
+        observable=jmat(1/2, 'z')*2,
         units_H0="MHz",
     )
     sequence_kwargs = {
         "qsys": qsys,
-        "h1": w1 * sigmax(),
+        "h1": w1*jmat(1/2, 'x')*2,
         "pulse_shape": square_pulse,
         "delta": w0,
         "t_pi": 1 / 2 / w1,
