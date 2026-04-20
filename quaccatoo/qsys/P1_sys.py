@@ -205,31 +205,19 @@ class P1(QSys):
 
         self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
 
-        if observable is None:
-            observable = None
-
-        elif isinstance(observable, (list, np.ndarray)) and all(
-            obs in range(len(self.eigenstates) + 1) for obs in observable
-        ):
-            observable = [self.eigenstates[obs] for obs in observable]
-
-        elif observable in range(len(self.eigenstates) + 1):
+        # check if the obervable is an integen or a list of integers
+        # if yes then takes the eigenstates' observables corresponding to the integer
+        if isinstance(observable, int) and observable in range(len(self.eigenstates)):
             observable = self.eigenstates[observable]
+
+            # for one single observable, the initial state is assigned to it
             if rho0 is None:
                 rho0 = observable
 
-        elif isinstance(observable, Qobj) and observable.shape == H0.shape:
-            observable = observable
-
         elif isinstance(observable, (list, np.ndarray)) and all(
-            isinstance(obs, Qobj) and obs.shape == H0.shape for obs in observable
+            isinstance(obs, int) and obs in range(len(self.eigenstates)) for obs in observable
         ):
-            observable = observable
-
-        else:
-            raise ValueError(
-                "Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0 and rho0."
-            )
+            observable = [self.eigenstates[obs] for obs in observable]
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
