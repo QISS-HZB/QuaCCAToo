@@ -108,9 +108,6 @@ class ExpData:
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
             raise ValueError("variable_name and result_name must be strings")
 
-        if not isinstance(loadtxt_kwargs, dict):
-            raise ValueError("loadtxt_kwargs must be a dictionary for the np.loadtxt function")
-
         # loads experimental data from a file with the specified arguments
         exp_data = np.loadtxt(file_path, **loadtxt_kwargs)
 
