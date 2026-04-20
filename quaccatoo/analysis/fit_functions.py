@@ -24,6 +24,12 @@ from lmfit.models import (
 )
 
 __all__ = [
+    'ConstantModel',
+    'ExponentialModel',
+    'GaussianModel',
+    'LinearModel',
+    'LorentzianModel',
+    'SineModel',
     'fit_rabi',
     'RabiModel',
     'fit_exp_decay',
