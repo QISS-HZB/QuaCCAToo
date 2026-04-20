@@ -131,38 +131,24 @@ class P1(QSys):
         observable : Qobj | list(Qobj)
             Observable to be measured
         """
-        if not isinstance(B0, (int, float)):
-            raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
-        else:
-            self.B0 = B0
+        self.B0 = B0
+        self.units_B0 = units_B0
+        self._check_B0()
 
-        if units_B0 is None:
-            warnings.warn(
-                "No units for the magnetic field were given. The magnetic field will be considered in mT."
-            )
-        elif units_B0 == "T":
-            self.B0 *= 1e3
-        elif units_B0 == "mT":
-            pass
-        elif units_B0 == "G":
-            self.B0 *= 1e-1
-        else:
-            raise ValueError(
-                f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
-            )
+        self.theta = theta
+        self.phi_r = phi_r
+        self.units_angles = units_angles
+        self._check_angles()
 
         if (
-            not isinstance(theta, (int, float))
-            or not isinstance(phi_r, (int, float))
-            or not isinstance(theta_1, (int, float))
+            not isinstance(theta_1, (int, float))
             or not isinstance(phi_r_1, (int, float))
         ):
             raise TypeError(
-                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}, theta_1: {type(theta)}, phi_r_1: {type(phi_r)}."
+                f"Invalid type for theta_1 or phi_r_1. Expected a float or int, got theta_1: {type(theta)}, phi_r_1: {type(phi_r)}."
             )
-        elif units_angles == "deg":
-            theta = np.deg2rad(theta)
-            phi_r = np.deg2rad(phi_r)
+        
+        if units_angles == "deg":
             theta_1 = np.deg2rad(theta_1)
             phi_r_1 = np.deg2rad(phi_r_1)
         elif units_angles == "rad":
@@ -192,8 +178,6 @@ class P1(QSys):
                 f"Invalid value for rotation index r. Expected an integer between 0 and 3, got {rot_index}."
             )
 
-        self.theta = theta
-        self.phi_r = phi_r
         self.theta_1 = theta_1
         self.phi_r_1 = phi_r_1
         self._rot_pas_to_lab()
@@ -233,7 +217,6 @@ class P1(QSys):
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
-        self.h1 = None
         self._set_h1()
 
     def _rot_pas_to_lab(self) -> None:
