@@ -386,6 +386,8 @@ class P1(QSys):
                     + (self.R[self.rot_index] @ self.B0_vector.T)[2][0] * jmat(1 / 2, "z"),
                 )
             )
+        else:
+            return None
 
     def _set_h1(self) -> None:
         """
