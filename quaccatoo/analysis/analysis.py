@@ -13,8 +13,12 @@ from typing import Any, Literal, Optional
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
 
+__all__ = ['Analysis']
+
+####################################################################################################
 
 class Analysis:
+
     """
     The Analysis class contains several methods for data Analysis, such as FFT, fitting and plotting.
 
