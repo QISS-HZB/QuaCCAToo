@@ -542,6 +542,7 @@ class XY8(PulsedSim):
 
         if self.pi_pulse_duration == 0 and RXY8:
             warnings.warn("RXY8 with delta pulses is not implemented, as it has not experimental relevance.")
+            random_phases = None
         elif RXY8:
             random_phases = np.random.rand(M) * 2 * np.pi
         elif not RXY8:

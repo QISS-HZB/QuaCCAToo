@@ -617,10 +617,6 @@ def plot_histogram(
     title : str
         Title of the plot
     """
-    # Check all parameters
-    if component not in {"real", "imag", "abs"}:
-        raise ValueError("component must be 'real', 'imag', or 'abs'")
-
     if not (isinstance(figsize, tuple) or len(figsize) == 2):
         raise ValueError("figsize must be a tuple of two positive floats")
 
@@ -668,6 +664,9 @@ def plot_histogram(
         color = "C2"
         if rho_comparison is not None:
             dz_comp = np.abs(rho_comparison).flatten()
+        # Check all parameters
+    else:
+        raise ValueError("component must be 'real', 'imag', or 'abs'")
 
     # Plot the bars
     ax.bar3d(xpos, ypos, zpos, dx, dy, dz_sim, color=color, linewidth=0, alpha=0.3, zorder=0)

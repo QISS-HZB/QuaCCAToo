@@ -258,6 +258,8 @@ class NV(QSys):
             if proj_2 > max_2:
                 max_2 = proj_2
                 index_2 = idx_eig
+            else:
+                raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
         beta = -cte.h * 1e6 / (cte.Boltzmann * self.temp)
 
