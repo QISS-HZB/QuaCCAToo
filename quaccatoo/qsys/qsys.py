@@ -8,9 +8,8 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.constants as cte
 from qutip import Qobj, basis, qeye, tensor
-
-from scipy.constants import eV, h
 
 __all__ = [
     'QSys',
@@ -91,7 +90,7 @@ class QSys:
             self.units_H0 = units_H0    
         elif units_H0 == "eV":
             self.units_H0 = units_H0
-            self.H0 *= eV / h / 1e6
+            self.H0 *= cte.eV / cte.h / 1e6
             warnings.warn('Converting Hamiltonian units to MHz')
         else:
             raise ValueError(
