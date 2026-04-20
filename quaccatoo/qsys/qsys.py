@@ -102,7 +102,9 @@ class QSys:
         if rho0 is None:
             warnings.warn("Initial state not provided.")
         elif isinstance(rho0, int) and rho0 in range(len(self.eigenstates)):
-            self.rho0 = self.eigenstates[rho0]  # In this case the initial state is the i-th energy state
+            self.rho0 = self.eigenstates[
+                rho0
+            ]  # In this case the initial state is the i-th energy state
         elif (
             Qobj(rho0).isket
             and Qobj(rho0).shape[0] == H0.shape[0]
@@ -139,7 +141,9 @@ class QSys:
         if c_ops is None or isinstance(c_ops, Qobj) and c_ops.shape == self.H0.shape:
             self.c_ops = c_ops
         elif isinstance(c_ops, list):
-            if all(isinstance(op, (Qobj, np.ndarray)) and op.shape == self.H0.shape for op in c_ops):
+            if all(
+                isinstance(op, (Qobj, np.ndarray)) and op.shape == self.H0.shape for op in c_ops
+            ):
                 self.c_ops = c_ops
             else:
                 raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
@@ -157,7 +161,9 @@ class QSys:
         self.eigenstates = self.H0.eigenstates()[1]
 
     def plot_energy(
-        self, figsize: tuple[int, int] = (2, 6), energy_lim: tuple[int | float, int | float] | None = None
+        self,
+        figsize: tuple[int, int] = (2, 6),
+        energy_lim: tuple[int | float, int | float] | None = None,
     ) -> None:
         """
         Plots the energy levels of the Hamiltonian defined in the system.
@@ -229,7 +235,9 @@ class QSys:
         if self.observable is not None:
             if isinstance(self.observable, Qobj):
                 self.observable = tensor(self.observable, qeye(self.dim_add_spin))
-            elif isinstance(self.observable, list) and all(isinstance(obs, Qobj) for obs in self.observable):
+            elif isinstance(self.observable, list) and all(
+                isinstance(obs, Qobj) for obs in self.observable
+            ):
                 self.observable = [tensor(obs, qeye(self.dim_add_spin)) for obs in self.observable]
 
         if self.c_ops is not None:
@@ -280,12 +288,16 @@ class QSys:
             if self.rho0.isket:
                 self.rho0 = Qobj(np.delete(self.rho0.full(), indexes, axis=0)).unit()
             else:
-                self.rho0 = Qobj(np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1))
+                self.rho0 = Qobj(
+                    np.delete(np.delete(self.rho0.full(), indexes, axis=0), indexes, axis=1)
+                )
                 self.rho0 /= self.rho0.tr()
 
         if self.c_ops is not None:
             if isinstance(self.c_ops, Qobj):
-                self.c_ops = Qobj(np.delete(np.delete(self.c_ops.full(), indexes, axis=0), indexes, axis=1))
+                self.c_ops = Qobj(
+                    np.delete(np.delete(self.c_ops.full(), indexes, axis=0), indexes, axis=1)
+                )
             elif isinstance(self.c_ops, list):
                 self.c_ops = [
                     Qobj(np.delete(np.delete(op.full(), indexes, axis=0), indexes, axis=1))

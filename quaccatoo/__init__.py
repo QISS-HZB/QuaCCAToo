@@ -1,3 +1,5 @@
+"""QuaCCAToo Package"""
+
 # ruff: noqa: F403
 from .analysis import *
 from .exp_data import *

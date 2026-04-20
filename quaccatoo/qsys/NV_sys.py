@@ -4,8 +4,8 @@
 This module contains NV class, which is a subclass of QSys.
 """
 
-import warnings
 from typing import Literal
+import warnings
 
 import numpy as np
 import scipy.constants as cte
@@ -181,7 +181,9 @@ class NV(QSys):
         elif units_temp == "F":
             raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
         else:
-            raise ValueError(f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}.")
+            raise ValueError(
+                f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}."
+            )
 
         self.theta = theta
         self.phi_r = phi_r
@@ -189,7 +191,12 @@ class NV(QSys):
 
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
-            H0 = self.zero_field() + self.electron_zeeman() + self.hyperfine_N() + self.nuclear_zeeman()
+            H0 = (
+                self.zero_field()
+                + self.electron_zeeman()
+                + self.hyperfine_N()
+                + self.nuclear_zeeman()
+            )
             rho0 = tensor(fock_dm(3, 1), qeye(2) / 2)
             observable = tensor(fock_dm(3, 1), qeye(2))
 
@@ -210,7 +217,9 @@ class NV(QSys):
             observable = fock_dm(3, 1)
 
         else:
-            raise ValueError(f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}.")
+            raise ValueError(
+                f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}."
+            )
 
         super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
 
@@ -251,6 +260,10 @@ class NV(QSys):
                     # if the projection is higher than the previous maximum, update the maximum and the index
                     max_3 = proj_3
                     index_3 = idx_eig
+            else:
+                raise ValueError(
+                    f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}."
+                )
 
             if proj_1 > max_1:
                 max_1 = proj_1
@@ -258,14 +271,14 @@ class NV(QSys):
             if proj_2 > max_2:
                 max_2 = proj_2
                 index_2 = idx_eig
-            else:
-                raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
         beta = -cte.h * 1e6 / (cte.Boltzmann * self.temp)
 
         if self.N == 15:
             # calculate the partition function based on the Hamiltonian eigenvalues
-            Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(beta * self.energy_levels[index_2])
+            Z = np.exp(beta * self.energy_levels[index_1]) + np.exp(
+                beta * self.energy_levels[index_2]
+            )
 
             self.rho0 = tensor(
                 fock_dm(3, 1),
@@ -416,7 +429,9 @@ class NV(QSys):
                     - 1.838e-15 * self.temp**5
                 ) * 1e3
             else:
-                D = (2.8697 + 9.7e-5 * self.temp - 3.7e-7 * self.temp**2 + 1.7e-10 * self.temp**3) * 1e3
+                D = (
+                    2.8697 + 9.7e-5 * self.temp - 3.7e-7 * self.temp**2 + 1.7e-10 * self.temp**3
+                ) * 1e3
         else:
             D = 2.87e3
 

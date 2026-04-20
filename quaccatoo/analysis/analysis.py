@@ -2,13 +2,13 @@
 This module contains the Analysis class and the plot_histogram method.
 """
 
+from typing import Any, Literal
 import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Model
 from qutip import Bloch, Qobj, fidelity
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
-from typing import Any, Literal
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
@@ -88,7 +88,9 @@ class Analysis:
         if len(experiment.results) != len(experiment.variable) and any(
             len(experiment.variable) != len(res) for res in experiment.results
         ):
-            raise ValueError("Results and Variable attributes of experiment must have the same length")
+            raise ValueError(
+                "Results and Variable attributes of experiment must have the same length"
+            )
 
         self.FFT_values = []
         self.FFT_peaks = []
@@ -136,7 +138,9 @@ class Analysis:
             results_index > len(self.experiment.results) - 1
             or comparison_index > len(exp_comparison.results) - 1
         ):
-            raise ValueError("results_index and comparison_index must be less than the number of results")
+            raise ValueError(
+                "results_index and comparison_index must be less than the number of results"
+            )
 
         if not isinstance(linear_fit, bool):
             raise ValueError(
@@ -274,7 +278,9 @@ class Analysis:
             self.FFT_peaks = self.FFT_values[0][self.FFT_peaks_index[0]]
 
         elif isinstance(self.experiment.results, list):
-            self.FFT_peaks_index = [find_peaks(FFT, **find_peaks_kwargs) for FFT in self.FFT_values[1]]
+            self.FFT_peaks_index = [
+                find_peaks(FFT, **find_peaks_kwargs) for FFT in self.FFT_values[1]
+            ]
             self.FFT_peaks = [self.FFT_values[0][index[0]] for index in self.FFT_peaks_index]
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
@@ -318,7 +324,7 @@ class Analysis:
             raise ValueError("xlabel must be a string")
 
         # initialize the figure and axis for the plot
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        _, ax = plt.subplots(1, 1, figsize=figsize)
 
         # if the FFT_values[1] is an array plot it, otherwise if it is a list iterate over the elements and plot each one
         if isinstance(self.FFT_values[1], np.ndarray):
@@ -415,7 +421,9 @@ class Analysis:
         if isinstance(self.experiment.results, np.ndarray):
             self.fit_model = fit_model
             if guess:
-                self.fit_params = fit_model.fit(self.experiment.results, x=self.experiment.variable, **guess)
+                self.fit_params = fit_model.fit(
+                    self.experiment.results, x=self.experiment.variable, **guess
+                )
             else:
                 try:
                     params = fit_model.guess(self.experiment.results, x=self.experiment.variable)
@@ -452,12 +460,16 @@ class Analysis:
                         self.experiment.results[results_index], x=self.experiment.variable
                     )
                     self.fit_params[results_index] = fit_model.fit(
-                        self.experiment.results[results_index], x=self.experiment.variable, params=params
+                        self.experiment.results[results_index],
+                        x=self.experiment.variable,
+                        params=params,
                     )
                 except NotImplementedError:
                     params = fit_model.make_params()
                     self.fit_params[results_index] = fit_model.fit(
-                        self.experiment.results[results_index], x=self.experiment.variable, params=params
+                        self.experiment.results[results_index],
+                        x=self.experiment.variable,
+                        params=params,
                     )
             return self.fit_params[results_index].best_values
 
@@ -491,7 +503,9 @@ class Analysis:
             for idx_res, _ in enumerate(self.experiment.results):
                 if self.fit_model[idx_res] is not None:
                     plt.plot(
-                        self.experiment.variable, self.fit_params[idx_res].best_fit, label=f"Fit {idx_res}"
+                        self.experiment.variable,
+                        self.fit_params[idx_res].best_fit,
+                        label=f"Fit {idx_res}",
                     )
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
@@ -530,11 +544,17 @@ class Analysis:
         elif not isinstance(xlabel, str):
             raise ValueError("xlabel must be a string")
 
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        _, ax = plt.subplots(1, 1, figsize=figsize)
 
         # check if the observable is a Qobj or a list of Qobj
         if isinstance(self.experiment.results, np.ndarray):
-            ax.plot(self.experiment.variable, self.experiment.results, lw=2, alpha=0.7, label="Observable")
+            ax.plot(
+                self.experiment.variable,
+                self.experiment.results,
+                lw=2,
+                alpha=0.7,
+                label="Observable",
+            )
 
         elif isinstance(self.experiment.results, list):
             # if it is a list, iterate over the observables and plot each one
@@ -573,7 +593,9 @@ class Analysis:
 
         if len(self.experiment.rho) == 1:
             raise ValueError("Density matrices were not calculated, please run experiment first.")
-        elif isinstance(self.experiment.rho, list) and all(rho.shape[0] == 2 for rho in self.experiment.rho):
+        elif isinstance(self.experiment.rho, list) and all(
+            rho.shape[0] == 2 for rho in self.experiment.rho
+        ):
             pass
         else:
             raise ValueError("QSys must have dimension of two to be able to plot a Bloch sphere")
@@ -581,9 +603,9 @@ class Analysis:
         if not (isinstance(figsize, tuple) or len(figsize) == 2):
             raise ValueError("figsize must be a tuple of two positive floats")
 
-        fig, axs = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
+        fig, _ = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
 
-        colors = plt.colormaps['viridis'](np.linspace(0, 1, len(self.experiment.rho)))  # ty: ignore[unresolved-attribute], upstream stuff
+        colors = plt.colormaps["viridis"](np.linspace(0, 1, len(self.experiment.rho)))
 
         bloch = Bloch(fig)
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
@@ -628,7 +650,9 @@ def plot_histogram(
 
     if rho_comparison is None:
         pass
-    elif isinstance(rho_comparison, Qobj) and rho_comparison.shape[0] == rho_comparison.shape[1] == N:
+    elif (
+        isinstance(rho_comparison, Qobj) and rho_comparison.shape[0] == rho_comparison.shape[1] == N
+    ):
         rho_comparison = rho_comparison.full()
     else:
         raise ValueError(

@@ -10,9 +10,9 @@ Refer to the documentation of analysis.run_fit for usage details.
 """
 
 # ruff: noqa: F401
+from typing import Any
 import numpy as np
 from lmfit import Model
-from typing import Any
 from lmfit.models import (
     ConstantModel,
     ExponentialModel,
@@ -120,7 +120,9 @@ class RabiModel(Model):
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
-        kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
+        kwargs.update(
+            {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
+        )
         super().__init__(fit_rabi, **kwargs)
         self._set_paramhints_prefix()
 
@@ -138,7 +140,8 @@ class RabiModel(Model):
         shift_guesses = np.linspace(0, 2 * np.pi, 11, endpoint=False)
         errors = [
             np.linalg.norm(
-                self.eval(x=x, amp=amp, Tpi=np.pi / frequency, phi=shift_guess, offset=offset) - data
+                self.eval(x=x, amp=amp, Tpi=np.pi / frequency, phi=shift_guess, offset=offset)
+                - data
             )
             for shift_guess in shift_guesses
         ]
@@ -214,7 +217,9 @@ class ExpDecayModel(Model):
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
-        kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
+        kwargs.update(
+            {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
+        )
         super().__init__(fit_exp_decay, **kwargs)
 
     def guess(
@@ -274,7 +279,9 @@ class RabiDecayModel(Model):
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
-        kwargs.update({"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars})
+        kwargs.update(
+            {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
+        )
         super().__init__(fit_rabi_decay, **kwargs)
 
     def guess(
@@ -292,7 +299,9 @@ class RabiDecayModel(Model):
         shift_guesses = np.linspace(0, 2 * np.pi, 11, endpoint=False)
         errors = [
             np.linalg.norm(
-                self.eval(x=x, amp=amp, Tpi=np.pi / frequency, phi=shift_guess, offset=offset, Tc=coeff[1])
+                self.eval(
+                    x=x, amp=amp, Tpi=np.pi / frequency, phi=shift_guess, offset=offset, Tc=coeff[1]
+                )
                 - data
             )
             for shift_guess in shift_guesses
@@ -553,7 +562,9 @@ def fit_two_sinc2_sym(
         Offset of the sinc functions.
     """
     return (
-        C + fit_sinc2(x, A, gamma, f_mean - f_delta / 2, 0) + fit_sinc2(x, A, gamma, f_mean + f_delta / 2, 0)
+        C
+        + fit_sinc2(x, A, gamma, f_mean - f_delta / 2, 0)
+        + fit_sinc2(x, A, gamma, f_mean + f_delta / 2, 0)
     )
 
 

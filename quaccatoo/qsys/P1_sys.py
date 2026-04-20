@@ -3,8 +3,8 @@ This module contains P1 class for simulating P1 centers in diamond,
 being a subclass of QSys.
 """
 
-import warnings
 from typing import Literal
+import warnings
 
 import numpy as np
 import scipy.constants as cte
@@ -176,7 +176,13 @@ class P1(QSys):
             [[np.sin(theta) * np.cos(phi_r), np.sin(theta) * np.sin(phi_r), np.cos(theta)]]
         )
         self.B1_vector = np.array(
-            [[np.sin(theta_1) * np.cos(phi_r_1), np.sin(theta_1) * np.sin(phi_r_1), np.cos(theta_1)]]
+            [
+                [
+                    np.sin(theta_1) * np.cos(phi_r_1),
+                    np.sin(theta_1) * np.sin(phi_r_1),
+                    np.cos(theta_1),
+                ]
+            ]
         )
 
         if rot_index in range(4):
@@ -194,13 +200,20 @@ class P1(QSys):
         self.N = N
 
         if N == 14:
-            H0 = self.electron_zeeman() + self.hyperfine() + self.quadrupole() + self.nuclear_zeeman()
+            H0 = (
+                self.electron_zeeman()
+                + self.hyperfine()
+                + self.quadrupole()
+                + self.nuclear_zeeman()
+            )
         elif N == 15:
             H0 = self.electron_zeeman() + self.hyperfine() + self.nuclear_zeeman()
         elif N == 0 or N is None:
             H0 = self.electron_zeeman()
         else:
-            raise ValueError(f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {N}.")
+            raise ValueError(
+                f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {N}."
+            )
 
         self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
 
@@ -318,7 +331,8 @@ class P1(QSys):
             )
         elif self.N == 15:
             return -159.73 * tensor(jmat(1 / 2, "z"), jmat(1 / 2, "z")) + -113.84 * (
-                tensor(jmat(1 / 2, "x"), jmat(1 / 2, "x")) + tensor(jmat(1 / 2, "y"), jmat(1 / 2, "y"))
+                tensor(jmat(1 / 2, "x"), jmat(1 / 2, "x"))
+                + tensor(jmat(1 / 2, "y"), jmat(1 / 2, "y"))
             )
         else:
             raise ValueError(

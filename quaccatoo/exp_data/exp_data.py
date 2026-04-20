@@ -2,9 +2,9 @@
 This module contains the ExpData class as part of the QuaCCAToo package.
 """
 
+from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import Any
 
 __all__ = ["ExpData"]
 
@@ -90,7 +90,8 @@ class ExpData:
 
         # the results columns needs to be an integer or a list of integers
         if not isinstance(results_columns, int) and not (
-            isinstance(results_columns, list) and all(isinstance(col, int) for col in results_columns)
+            isinstance(results_columns, list)
+            and all(isinstance(col, int) for col in results_columns)
         ):
             raise ValueError("results_columns must be an integer or a list of integers")
 
@@ -98,7 +99,9 @@ class ExpData:
         if (
             yerr_columns is not None
             and not isinstance(yerr_columns, int)
-            and not (isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns))
+            and not (
+                isinstance(yerr_columns, list) and all(isinstance(col, int) for col in yerr_columns)
+            )
         ):
             raise ValueError("yerr_columns must be None, an integer or a list of integers")
         elif isinstance(yerr_columns, list) and len(yerr_columns) != len(results_columns):  # ty: ignore[invalid-argument-type], already checked above
@@ -159,7 +162,9 @@ class ExpData:
         if not isinstance(self.results[pos_col], np.ndarray) or not isinstance(
             self.results[neg_col], np.ndarray
         ):
-            raise ValueError(f"pos_col={pos_col} and neg_col={neg_col} where not found in the results.")
+            raise ValueError(
+                f"pos_col={pos_col} and neg_col={neg_col} where not found in the results."
+            )
 
         self.results = self.results[pos_col] - self.results[neg_col]
 
@@ -296,8 +301,12 @@ class ExpData:
             baseline_xaxis = self.variable[x_start:x_end]
             baseline_yaxis = self.results[x_start:x_end]
         elif isinstance(x_start, list) and isinstance(x_end, list) and len(x_start) == len(x_end):
-            baseline_xaxis = np.concatenate([self.variable[start:end] for start, end in zip(x_start, x_end)])
-            baseline_yaxis = np.concatenate([self.results[start:end] for start, end in zip(x_start, x_end)])
+            baseline_xaxis = np.concatenate(
+                [self.variable[start:end] for start, end in zip(x_start, x_end)]
+            )
+            baseline_yaxis = np.concatenate(
+                [self.results[start:end] for start, end in zip(x_start, x_end)]
+            )
         else:
             raise ValueError("x_start and x_end must int or a list of the same length.")
 
@@ -348,7 +357,9 @@ class ExpData:
         # check if the results is a list of results or a single result
         if isinstance(self.results, np.ndarray):
             if hasattr(self, "yerror"):
-                ax.errorbar(self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt="o")
+                ax.errorbar(
+                    self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt="o"
+                )
             else:
                 ax.scatter(self.variable, self.results, alpha=0.7, label="Observable", s=15)
 
@@ -358,10 +369,17 @@ class ExpData:
             for idx_res, val_res in enumerate(self.results):
                 if hasattr(self, "yerror"):
                     ax.errorbar(
-                        self.variable, val_res, self.yerror[idx_res], alpha=0.7, label="Observable", fmt="o"
+                        self.variable,
+                        val_res,
+                        self.yerror[idx_res],
+                        alpha=0.7,
+                        label="Observable",
+                        fmt="o",
                     )
                 else:
-                    ax.scatter(self.variable, val_res, label=f"Observable {idx_res}", alpha=0.7, s=15)
+                    ax.scatter(
+                        self.variable, val_res, label=f"Observable {idx_res}", alpha=0.7, s=15
+                    )
 
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
