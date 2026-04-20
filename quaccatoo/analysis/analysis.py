@@ -583,7 +583,7 @@ class Analysis:
 
         fig, axs = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
 
-        colors = plt.cm.viridis(np.linspace(0, 1, len(self.experiment.rho)))  # ty: ignore[unresolved-attribute], upstream stuff
+        colors = plt.colormaps['viridis'](np.linspace(0, 1, len(self.experiment.rho)))  # ty: ignore[unresolved-attribute], upstream stuff
 
         bloch = Bloch(fig)
         bloch.add_states(self.experiment.rho, kind="point", colors=colors)
