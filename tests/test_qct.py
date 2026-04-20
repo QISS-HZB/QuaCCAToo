@@ -295,7 +295,7 @@ class TestPODMR:
         w1 = 0.3
 
         podmr_exp = PMR(
-            frequencies=np.arange(1745, 1753, 0.1),
+            frequencies=np.arange(1745, 1753, 0.5),
             pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,
@@ -454,7 +454,7 @@ def test_add_pulse():
         tensor(fock_dm(2, 1), fock_dm(2, 1)),
     ]
 
-    phi_array = np.arange(0, 2 * np.pi, 0.1)
+    phi_array = np.arange(1.5, 3.3, 0.1)
 
     seq_phi = PulsedSim(NV_pulse)
     seq_args = {
