@@ -1,5 +1,4 @@
 # TODO: think on a better strategy for the plot_energy_B0 function
-# TODO: implement eV units conversion to frequencies
 
 """
 This module contains the plot_energy_B0 function, compose_sys function and the QSys class.
@@ -10,6 +9,8 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from qutip import Qobj, basis, qeye, tensor
+
+from scipy.constants import eV, h
 
 __all__ = [
     'QSys',
@@ -80,18 +81,22 @@ class QSys:
         units_H0 : str
             Units of the Hamiltonian
         """
+        self.H0 = Qobj(H0)
+
         # if the units are in frequency, assign the Hamiltonian as it is
         if units_H0 is None:
             self.units_H0 = "MHz"
             warnings.warn("No units supplied, assuming default value of MHz.")
-        elif units_H0 in ["MHz", "GHz", "kHz", "eV"]:
+        elif units_H0 in ["MHz", "GHz", "kHz"]:
+            self.units_H0 = units_H0    
+        elif units_H0 == "eV":
             self.units_H0 = units_H0
+            self.H0 *= eV / h / 1e6
+            warnings.warn('Converting Hamiltonian units to MHz')
         else:
             raise ValueError(
                 f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz."
             )
-
-        self.H0 = Qobj(H0)
 
         if not self.H0.isherm:
             warnings.warn("Passed H0 is not a hermitian object.")
@@ -424,7 +429,7 @@ def plot_energy_B0(
     if not isinstance(B0, (np.ndarray, list)) and all(isinstance(b, (int, float)) for b in B0):
         raise ValueError("B0 must be a list or a numpy array of real numbers")
 
-    if not isinstance(H0, list) or not all(isinstance(h, Qobj) for h in H0) or len(H0) != len(B0):
+    if not isinstance(H0, list) or not all(isinstance(h0, Qobj) for h0 in H0) or len(H0) != len(B0):
         raise ValueError("H0 must be a list of Qobj of the same size as B0")
 
     energy_levels = []
