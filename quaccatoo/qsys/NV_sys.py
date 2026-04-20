@@ -5,7 +5,7 @@ This module contains NV class, which is a subclass of QSys.
 """
 
 import warnings
-from typing import Optional, Literal
+from typing import Literal
 
 import numpy as np
 import scipy.constants as cte
@@ -86,12 +86,12 @@ class NV(QSys):
         self,
         B0: float | int,
         N: Literal[15, 14, 0, None],
-        c_ops: Optional[Qobj | list[Qobj]] = None,
+        c_ops: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
         theta: float | int = 0.0,
         phi_r: float | int = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
-        temp: Optional[float | int] = None,
+        temp: float | int | None = None,
         units_temp: Literal["C", "K"] = "K",
         E: float | int = 0,
     ) -> None:

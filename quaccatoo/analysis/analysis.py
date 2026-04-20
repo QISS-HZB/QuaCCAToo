@@ -8,7 +8,7 @@ from lmfit import Model
 from qutip import Bloch, Qobj, fidelity
 from scipy.signal import find_peaks
 from scipy.stats import linregress, pearsonr
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
@@ -178,7 +178,7 @@ class Analysis:
     def plot_comparison(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel: Optional[str] = None,
+        xlabel: str | None = None,
         ylabel: str = "Observable",
         title: str = "Results Comparisons",
     ) -> None:
@@ -283,9 +283,9 @@ class Analysis:
 
     def plot_FFT(
         self,
-        freq_lim: Optional[tuple[float, float]] = None,
+        freq_lim: tuple[float, float] | None = None,
         figsize: tuple[int, int] = (6, 4),
-        xlabel: Optional[str] = None,
+        xlabel: str | None = None,
         ylabel: str = "FFT Intensity",
         title: str = "FFT of the Results",
     ) -> None:
@@ -362,7 +362,7 @@ class Analysis:
     ######################################################## FIT Methods ########################################################
 
     def run_fit(
-        self, fit_model: Model, results_index: int = 0, guess: Optional[dict] = None
+        self, fit_model: Model, results_index: int = 0, guess: dict | None = None
     ) -> dict:
         """
         Run the fit method from lmfit to fit the results of the experiment with a given model,
@@ -466,7 +466,7 @@ class Analysis:
     def plot_fit(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel: Optional[str] = None,
+        xlabel: str | None = None,
         ylabel: str = "Expectation Value",
         title: str = "Pulsed Result",
     ) -> None:
@@ -503,7 +503,7 @@ class Analysis:
     def plot_results(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel: Optional[str] = None,
+        xlabel: str | None = None,
         ylabel: str = "Observable",
         title: str = "Results",
     ) -> None:
@@ -598,7 +598,7 @@ class Analysis:
 
 def plot_histogram(
     rho: Qobj | np.ndarray,
-    rho_comparison: Optional[Qobj] | np.ndarray = None,
+    rho_comparison: Qobj | np.ndarray | None = None,
     component: Literal["real", "imag", "abs"] = "real",
     figsize: tuple[int, int] = (5, 5),
     title: str = "Matrix Histogram",

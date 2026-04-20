@@ -6,7 +6,6 @@ This module contains the plot_energy_B0 function, compose_sys function and the Q
 """
 
 import warnings
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -59,10 +58,10 @@ class QSys:
     def __init__(
         self,
         H0: Qobj | np.ndarray,
-        rho0: Optional[Qobj | np.ndarray | int] = None,
-        c_ops: Optional[Qobj | list[Qobj]] = None,
+        rho0: Qobj | np.ndarray | int | None = None,
+        c_ops: Qobj | list[Qobj] | None = None,
         observable: Qobj | list[Qobj] | None = None,
-        units_H0: Optional[str] = None,
+        units_H0: str | None = None,
     ) -> None:
         """
         Construct the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable.
@@ -158,7 +157,7 @@ class QSys:
         self.eigenstates = self.H0.eigenstates()[1]
 
     def plot_energy(
-        self, figsize: tuple[int, int] = (2, 6), energy_lim: Optional[tuple[int | float, int | float]] = None
+        self, figsize: tuple[int, int] = (2, 6), energy_lim: tuple[int | float, int | float] | None = None
     ) -> None:
         """
         Plots the energy levels of the Hamiltonian defined in the system.
@@ -397,7 +396,7 @@ def plot_energy_B0(
     B0: np.ndarray | list[float | int],
     H0: Qobj | list[Qobj],
     figsize: tuple[int, int] = (6, 4),
-    energy_lim: Optional[tuple[int | float, int | float]] = None,
+    energy_lim: tuple[int | float, int | float] | None = None,
     xlabel: str = "Magnetic Field",
     ylabel: str = "Energy (MHz)",
 ) -> None:

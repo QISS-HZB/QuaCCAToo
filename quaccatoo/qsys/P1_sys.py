@@ -4,7 +4,7 @@ being a subclass of QSys.
 """
 
 import warnings
-from typing import Optional, Literal
+from typing import Literal
 
 import numpy as np
 import scipy.constants as cte
@@ -87,15 +87,15 @@ class P1(QSys):
         B0: float | int,
         rot_index: Literal[0, 1, 2, 3],
         N: Literal[15, 14, 0, None] = None,
-        rho0: Optional[Qobj | np.ndarray | int] = None,
-        c_ops: Optional[Qobj | list[Qobj]] = None,
+        rho0: Qobj | np.ndarray | int | None = None,
+        c_ops: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
         theta: float | int = 0.0,
         phi_r: float | int = 0.0,
         theta_1: float | int = 90.0,
         phi_r_1: float | int = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
-        observable: Optional[Qobj | list[Qobj]] = None,
+        observable: Qobj | list[Qobj] | None = None,
     ) -> None:
         """
         Constructor for the P1 class.

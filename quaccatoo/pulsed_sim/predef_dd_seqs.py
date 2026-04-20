@@ -5,7 +5,7 @@ This module contains dynamical decoupling pulse sequences, used in quantum sensi
 import warnings
 import numpy as np
 from qutip import Qobj
-from typing import Callable, Optional
+from typing import Callable
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
@@ -47,15 +47,15 @@ class CPMG(PulsedSim):
         system: QSys,
         M: int,
         pi_pulse_duration: float | int,
-        h1: Optional[Qobj | list[Qobj]] = None,
-        Rx: Optional[Qobj] = None,
-        Ry: Optional[Qobj] = None,
-        H2: Optional[tuple[Qobj, Callable]] = None,
+        h1: Qobj | list[Qobj] | None = None,
+        Rx: Qobj | None = None,
+        Ry: Qobj | None = None,
+        H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: Optional[dict[str, float | int]] = None,
+        pulse_params: dict[str, float | int] | None = None,
         time_steps: int = 100,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> None:
         """
         Class constructor for the Carr-Purcell-Meiboom-Gill sequence
@@ -162,7 +162,7 @@ class CPMG(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
+    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
         """
         Generates the pulse profiles for the CPMG sequence for a given tau.
 
@@ -211,7 +211,7 @@ class CPMG(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: Optional[float | int] = None,
+        tau: float | int | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
@@ -262,15 +262,15 @@ class XY(PulsedSim):
         system: QSys,
         M: int,
         pi_pulse_duration: float | int,
-        h1: Optional[Qobj | list[Qobj]] = None,
-        Rx: Optional[Qobj] = None,
-        Ry: Optional[Qobj] = None,
-        H2: Optional[tuple[Qobj, Callable]] = None,
+        h1: Qobj | list[Qobj] | None = None,
+        Rx: Qobj | None = None,
+        Ry: Qobj | None = None,
+        H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: Optional[dict[str, float | int]] = None,
+        pulse_params: dict[str, float | int] | None = None,
         time_steps: int = 100,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> None:
         """
         Class constructor for the XY sequence
@@ -379,7 +379,7 @@ class XY(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
+    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
         """
         Generates the pulse profiles for the XY-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -429,7 +429,7 @@ class XY(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: Optional[float | int] = None,
+        tau: float | int | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
@@ -482,15 +482,15 @@ class XY8(PulsedSim):
         system: QSys,
         M: int,
         pi_pulse_duration: float | int,
-        h1: Optional[Qobj | list[Qobj]] = None,
-        Rx: Optional[Qobj] = None,
-        Ry: Optional[Qobj] = None,
-        H2: Optional[tuple[Qobj, Callable]] = None,
+        h1: Qobj | list[Qobj] | None = None,
+        Rx: Qobj | None = None,
+        Ry: Qobj | None = None,
+        H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: Optional[dict[str, float | int]] = None,
+        pulse_params: dict[str, float | int] | None = None,
         time_steps: int = 100,
-        options: Optional[dict] = None,
+        options: dict | None = None,
         RXY8: bool = False,
     ) -> None:
         """
@@ -637,7 +637,7 @@ class XY8(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: Optional[float | int] = None) -> None:
+    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
         """
         Generates the pulse profiles for the XY8-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
@@ -687,7 +687,7 @@ class XY8(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: Optional[float | int] = None,
+        tau: float | int | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first
