@@ -123,39 +123,14 @@ class NV(QSys):
         E : float | int
             Perpedicular component of the zero field splitting
         """
-        if not isinstance(B0, (int, float)):
-            raise TypeError(f"B0 must be a real number, got {B0}: {type(B0)}.")
-        else:
-            self.B0 = B0
+        self.B0 = B0
+        self.units_B0 = units_B0
+        self._check_B0()
 
-        if units_B0 is None:
-            warnings.warn(
-                "No units for the magnetic field were given. The magnetic field will be considered in mT."
-            )
-        elif units_B0 == "T":
-            self.B0 *= 1e3
-        elif units_B0 == "mT":
-            pass
-        elif units_B0 == "G":
-            self.B0 *= 1e-1
-        else:
-            raise ValueError(
-                f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
-            )
-
-        if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
-            raise TypeError(
-                f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}."
-            )
-        elif units_angles == "deg":
-            theta = np.deg2rad(theta)
-            phi_r = np.deg2rad(phi_r)
-        elif units_angles == "rad":
-            pass
-        else:
-            raise ValueError(
-                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}."
-            )
+        self.theta = theta
+        self.phi_r = phi_r
+        self.units_angles = units_angles
+        self._check_angles()
 
         if not isinstance(E, (int, float)):
             raise TypeError(f"E must be a real number, got {E}: {type(E)}.")
@@ -185,10 +160,7 @@ class NV(QSys):
                 f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}."
             )
 
-        self.theta = theta
-        self.phi_r = phi_r
         self.N = N
-
         # calculates the Hamiltonian for the given field and nitrogen isotope
         if N == 15:
             H0 = (
