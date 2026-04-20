@@ -44,7 +44,9 @@ def save(object, file_name):
             attr
             for attr in dir(object)
             if not attr.startswith("__")
-            and not (inspect.isfunction(getattr(object, attr)) or inspect.ismethod(getattr(object, attr)))
+            and not (
+                inspect.isfunction(getattr(object, attr)) or inspect.ismethod(getattr(object, attr))
+            )
         ]
         py_attr = []
 
@@ -52,7 +54,8 @@ def save(object, file_name):
         for attr in attributes:
             value = getattr(object, attr)
             if isinstance(value, Qobj) or (
-                isinstance(value, (list, np.ndarray)) and all(isinstance(item, Qobj) for item in value)
+                isinstance(value, (list, np.ndarray))
+                and all(isinstance(item, Qobj) for item in value)
             ):
                 # Save Qobj attributes to a file in the temporary directory
                 fileio.qsave(value, os.path.join(tmp_dir, str(attr)))

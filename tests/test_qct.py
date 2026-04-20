@@ -46,7 +46,10 @@ with the `--runslow` CLI flag passed to `pytest`.
 def qsys():
     delta = 1
     return QSys(
-        H0=delta * jmat(1 / 2, "z"), rho0=fock_dm(2, 0), observable=jmat(1 / 2, "z") * 2, units_H0="MHz"
+        H0=delta * jmat(1 / 2, "z"),
+        rho0=fock_dm(2, 0),
+        observable=jmat(1 / 2, "z") * 2,
+        units_H0="MHz",
     )
 
 
@@ -160,7 +163,10 @@ class TestHahn:
         hahn_analysis = Analysis(hahn_exp)
         hahn_analysis.run_fit(fit_model=ExpDecayModel())
         assert np.allclose(
-            [hahn_analysis.fit_params.best_values["Tc"], hahn_analysis.fit_params.best_values["amp"]],
+            [
+                hahn_analysis.fit_params.best_values["Tc"],
+                hahn_analysis.fit_params.best_values["amp"],
+            ],
             [3.953, 1.905],
             atol=1e-3,
         )
@@ -170,13 +176,19 @@ class TestHahn:
         gamma = 0.1
         qsys.c_ops = gamma * jmat(1 / 2, "z") * 2
         hahn_sim_delta = Hahn(
-            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=jmat(1 / 2, "x") * 2
+            free_duration=np.linspace(2.5, 25, 30),
+            system=qsys,
+            pi_pulse_duration=0,
+            Rx=jmat(1 / 2, "x") * 2,
         )
         hahn_sim_delta.run()
         hahn_analysis = Analysis(hahn_sim_delta)
         hahn_analysis.run_fit(fit_model=ExpDecayModel())
         assert np.allclose(
-            [hahn_analysis.fit_params.best_values["Tc"], hahn_analysis.fit_params.best_values["amp"]],
+            [
+                hahn_analysis.fit_params.best_values["Tc"],
+                hahn_analysis.fit_params.best_values["amp"],
+            ],
             [3.9774, 1.0002],
             atol=1e-3,
         )
@@ -209,7 +221,10 @@ class TestXY:
         XY_analysis = Analysis(XY_15N)
         XY_analysis.run_fit(fit_model=GaussianModel())
         assert np.allclose(
-            [XY_analysis.fit_params.best_values["center"], XY_analysis.fit_params.best_values["amplitude"]],
+            [
+                XY_analysis.fit_params.best_values["center"],
+                XY_analysis.fit_params.best_values["amplitude"],
+            ],
             [0.317, 0.010],
             atol=1e-3,
         )
@@ -368,7 +383,14 @@ class TestP1:
         phi = 0
 
         qsys = P1(
-            B0=B0, rot_index=1, observable=1, N=14, theta=theta, phi_r=phi, theta_1=90 + theta, phi_r_1=phi
+            B0=B0,
+            rot_index=1,
+            observable=1,
+            N=14,
+            theta=theta,
+            phi_r=phi,
+            theta_1=90 + theta,
+            phi_r_1=phi,
         )
 
         sim = PMR(
@@ -380,10 +402,12 @@ class TestP1:
 
         sim.run()
         analysis = Analysis(sim)
-        analysis.run_fit(fit_model=Model(fit_sinc2), guess={"A": 0.33, "gamma": 5, "f0": 1050, "C": 1})
-        assert np.isclose(analysis.fit_params.best_values["gamma"], 3.003, atol=1e-3) and np.isclose(
-            analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3
+        analysis.run_fit(
+            fit_model=Model(fit_sinc2), guess={"A": 0.33, "gamma": 5, "f0": 1050, "C": 1}
         )
+        assert np.isclose(
+            analysis.fit_params.best_values["gamma"], 3.003, atol=1e-3
+        ) and np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
 
 
 ########################################################################
@@ -526,7 +550,9 @@ def test_add_free_evolution():
     }
 
     custom_seq = PulsedSim(qsys)
-    custom_seq.run(variable=np.linspace(5, 25, 30), sequence=custom_Hahn, sequence_kwargs=sequence_kwargs)
+    custom_seq.run(
+        variable=np.linspace(5, 25, 30), sequence=custom_Hahn, sequence_kwargs=sequence_kwargs
+    )
     analysis = Analysis(custom_seq)
     analysis.run_fit(fit_model=RabiModel())
     assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3) and np.isclose(

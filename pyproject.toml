@@ -82,7 +82,7 @@ features = [
 ]
 
 [tool.ruff]
-line-length = 109
+line-length = 100
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
@@ -100,3 +100,6 @@ skip_empty = true
 
 [tool.ty.src]
 exclude = ["tests/", "docs/"]
+
+[tool.pylint."messages control"]
+disable = ["R1720", "R1705", "C0103", "C0301"]

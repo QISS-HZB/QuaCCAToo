@@ -2,10 +2,10 @@
 This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.
 """
 
+from typing import Callable
 import warnings
 import numpy as np
 from qutip import Qobj
-from typing import Callable
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
@@ -179,7 +179,9 @@ class CPMG(PulsedSim):
 
         self._append_pulse_to_profile(0, self.pi_pulse_duration / 2, self.pulse_params[1])
         t0 = self.pi_pulse_duration / 2
-        self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
+        self.pulse_profiles.append(
+            ["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None]
+        )
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
         for idx_M in range(self.M):
@@ -397,7 +399,9 @@ class XY(PulsedSim):
 
         self._append_pulse_to_profile(0, self.pi_pulse_duration / 2, self.pulse_params[0])
         t0 = self.pi_pulse_duration / 2
-        self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
+        self.pulse_profiles.append(
+            ["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None]
+        )
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
         for idx_M in range(2 * self.M):
@@ -541,7 +545,9 @@ class XY8(PulsedSim):
         self.sequence = self.XY8_sequence
 
         if self.pi_pulse_duration == 0 and RXY8:
-            warnings.warn("RXY8 with delta pulses is not implemented, as it has not experimental relevance.")
+            warnings.warn(
+                "RXY8 with delta pulses is not implemented, as it has not experimental relevance."
+            )
             random_phases = None
         elif RXY8:
             random_phases = np.random.rand(M) * 2 * np.pi
@@ -656,7 +662,9 @@ class XY8(PulsedSim):
 
         self._append_pulse_to_profile(0, self.pi_pulse_duration / 2, self.pulse_params[0])
         t0 = self.pi_pulse_duration / 2
-        self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None])
+        self.pulse_profiles.append(
+            ["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None]
+        )
         t0 += ps / 2 - self.pi_pulse_duration / 2
 
         for idx_M in range(8 * self.M):

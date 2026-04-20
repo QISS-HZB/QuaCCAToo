@@ -9,9 +9,9 @@ Classes
 - Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
 """
 
+from typing import Callable
 import numpy as np
 from qutip import Qobj, mesolve, propagator
-from typing import Callable
 
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
@@ -71,7 +71,17 @@ class Rabi(PulsedSim):
         """
         super().__init__(system, H2)
         self._check_attr_predef_seqs(
-            h1, None, None, pulse_shape, pulse_params, options, len(pulse_duration), None, None, None, None
+            h1,
+            None,
+            None,
+            pulse_shape,
+            pulse_params,
+            options,
+            len(pulse_duration),
+            None,
+            None,
+            None,
+            None,
         )
 
         # check whether pulse_duration is a numpy array and if it is, assign it to the object
@@ -609,7 +619,9 @@ class Hahn(PulsedSim):
             t0 += self.pi_pulse_duration / 2
         else:
             # free evolution
-            self.pulse_profiles.append(["free_evo", [t0, t0 + ps + self.pi_pulse_duration / 2], None, None])
+            self.pulse_profiles.append(
+                ["free_evo", [t0, t0 + ps + self.pi_pulse_duration / 2], None, None]
+            )
             t0 += ps + self.pi_pulse_duration / 2
 
         self.total_time = t0
