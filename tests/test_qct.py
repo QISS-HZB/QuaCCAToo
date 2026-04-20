@@ -45,7 +45,9 @@ with the `--runslow` CLI flag passed to `pytest`.
 @pytest.fixture
 def qsys():
     delta = 1
-    return QSys(H0=delta *jmat(1/2, 'z'), rho0=fock_dm(2, 0), observable=jmat(1/2, 'z')*2, units_H0="MHz")
+    return QSys(
+        H0=delta * jmat(1 / 2, "z"), rho0=fock_dm(2, 0), observable=jmat(1 / 2, "z") * 2, units_H0="MHz"
+    )
 
 
 # Test if the eigenstates of the qsys fixture are correct
@@ -113,7 +115,7 @@ def rabi_exp(qsys):
     rabi_exp = Rabi(
         pulse_duration=np.linspace(0, 40, 100),
         system=qsys,
-        h1=[w1 *jmat(1/2, 'x'), w1 *jmat(1/2, 'y')],
+        h1=[w1 * jmat(1 / 2, "x"), w1 * jmat(1 / 2, "y")],
         pulse_shape=[custom_pulseX, custom_pulseY],
     )
     rabi_exp.run()
@@ -144,13 +146,13 @@ class TestHahn:
         delta = 1
         gamma = 0.1
 
-        qsys.c_ops = gamma *jmat(1/2, 'z')*2
+        qsys.c_ops = gamma * jmat(1 / 2, "z") * 2
         hahn_exp = Hahn(
             free_duration=np.linspace(5, 25, 30),
             pi_pulse_duration=1 / 2 / w1,
             projection_pulse=True,
             system=qsys,
-            h1=w1 * jmat(1/2, 'x')*2,
+            h1=w1 * jmat(1 / 2, "x") * 2,
             pulse_shape=square_pulse,
             pulse_params={"f_pulse": delta},
         )
@@ -166,9 +168,9 @@ class TestHahn:
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_hahn_delta(self, qsys):
         gamma = 0.1
-        qsys.c_ops = gamma *jmat(1/2, 'z')*2
+        qsys.c_ops = gamma * jmat(1 / 2, "z") * 2
         hahn_sim_delta = Hahn(
-            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=jmat(1/2, 'x')*2
+            free_duration=np.linspace(2.5, 25, 30), system=qsys, pi_pulse_duration=0, Rx=jmat(1 / 2, "x") * 2
         )
         hahn_sim_delta.run()
         hahn_analysis = Analysis(hahn_sim_delta)
@@ -509,14 +511,14 @@ def test_add_free_evolution():
     w1 = w0 / 10
 
     qsys = QSys(
-        H0=w0*jmat(1/2, 'z'),
+        H0=w0 * jmat(1 / 2, "z"),
         rho0=basis(2, 0),
-        observable=jmat(1/2, 'z')*2,
+        observable=jmat(1 / 2, "z") * 2,
         units_H0="MHz",
     )
     sequence_kwargs = {
         "qsys": qsys,
-        "h1": w1*jmat(1/2, 'x')*2,
+        "h1": w1 * jmat(1 / 2, "x") * 2,
         "pulse_shape": square_pulse,
         "delta": w0,
         "t_pi": 1 / 2 / w1,

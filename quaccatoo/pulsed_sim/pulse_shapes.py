@@ -6,13 +6,10 @@ This module contains pulse shape functions to be used in the PulsedSim classes a
 
 import numpy as np
 
-__all__ = [
-    'square_pulse',
-    'gaussian_pulse',
-    'lorentzian_pulse'
-]
+__all__ = ["square_pulse", "gaussian_pulse", "lorentzian_pulse"]
 
 ####################################################################################################
+
 
 def square_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarray:
     """
