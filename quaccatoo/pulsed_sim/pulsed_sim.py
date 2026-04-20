@@ -5,7 +5,7 @@ This module contains the PulsedSim class that is used to define a general pulsed
 """
 
 import warnings
-from typing import Callable, Optional, Any
+from typing import Callable, Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -98,7 +98,7 @@ class PulsedSim:
         Appends the pulse profile to the pulse_profiles list, which is used for plotting purposes.
     """
 
-    def __init__(self, system: QSys, H2: Optional[tuple[Qobj, Callable]] = None) -> None:
+    def __init__(self, system: QSys, H2: tuple[Qobj, Callable] | None = None) -> None:
         """
         Initializes a general PulsedSim object with a quantum system, time dependent Hamiltonian and collapse operators.
 
@@ -140,7 +140,7 @@ class PulsedSim:
         self.sequence = None
         self.time_steps = None
 
-    def add_free_evolution(self, duration: float | int, options: Optional[dict] = None) -> None:
+    def add_free_evolution(self, duration: float | int, options: dict | None = None) -> None:
         """
         Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.
 
@@ -201,9 +201,9 @@ class PulsedSim:
         duration: float | int,
         h1: Qobj | list[Qobj],
         pulse_shape: Callable | list[Callable] = square_pulse,
-        pulse_params: Optional[dict[str, float | int]] = None,
+        pulse_params: dict[str, float | int] | None = None,
         time_steps: int = 100,
-        options: Optional[dict] = None,
+        options: dict | None = None,
     ) -> None:
         """
         Perform variables checks and adds a pulse operation to the sequence of operations of the experiment for a given duration of the pulse,
@@ -364,7 +364,7 @@ class PulsedSim:
             self.rho = R * self.rho * R.dag()
 
     def measure_qsys(
-        self, observable: Optional[Qobj] = None, tol: Optional[float | int] = None
+        self, observable: Qobj | None = None, tol: float | int | None = None
     ) -> float | list[float]:
         """
         Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
@@ -408,10 +408,10 @@ class PulsedSim:
 
     def run(
         self,
-        variable: Optional[np.ndarray | list[float | int]] = None,
-        sequence: Optional[Callable] = None,
-        sequence_kwargs: Optional[Any] = None,
-        map_kw: Optional[Any] = None,
+        variable: np.ndarray | list[float | int] | None = None,
+        sequence: Callable | None = None,
+        sequence_kwargs: dict[str, Any] | None = None,
+        map_kw: dict[str, Any] | None = None,
     ) -> None:
         """
         Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.
@@ -495,7 +495,7 @@ class PulsedSim:
     def plot_pulses(
         self,
         figsize: tuple[int, int] = (6, 4),
-        xlabel: Optional[str] = None,
+        xlabel: str | None = None,
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles",
     ) -> None:
@@ -760,7 +760,7 @@ class PulsedSim:
                 )
 
     def _append_pulse_to_profile(
-        self, t0: float | int, duration: float | int, pulse_params: Optional[dict[str, float | int]] = None
+        self, t0: float | int, duration: float | int, pulse_params: dict[str, float | int] | None = None
     ) -> None:
         """
         Internal method for appending a pulse to the pulse_profiles list to be called by _get_pulse_profiles.

@@ -54,7 +54,7 @@ class ExpData:
         plot: bool = False,
         figsize: tuple[int, int] = (6, 4),
         figtitle: str = "Experimental Data",
-        **loadtxt_kwargs: Any,
+        **loadtxt_kwargs: Any
     ) -> None:
         """
         Constructor of the ExpData class.
