@@ -83,12 +83,11 @@
   <section id="quaccatoo-quantum-color-centers-analysis-toolbox">
 <h1>QuaCCAToo: Quantum Color Centers Analysis Toolbox<a class="headerlink" href="#quaccatoo-quantum-color-centers-analysis-toolbox" title="Link to this heading"></a></h1>
 <img alt="_images/QuaCCAToo_logo.svg" src="_images/QuaCCAToo_logo.svg" />
-<p>QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum
-technology applications. The systems’ time evolution under pulsed experiments are calculated through quantum
-master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. The
-software is built on top of QuTip, inheriting its object-oriented framework and the <cite>Qobj</cite> class. This way,
-the software provides accessibility from the high level of abstraction and human-readability of Python, but
-at the expense of limited performance compared to compiled programming languages.</p>
+<p>QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
+The library provides several predefined pulsed sequences, analysis methods and quantum systems divided into four integrated modules: <cite>qsys</cite>, <cite>pulsed_sim</cite>, <cite>analysis</cite> and <cite>exp_data</cite>.
+The systems’ time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame without rotating frame approximations.
+The software is built on top of QuTip, inheriting its object-oriented framework and the <cite>Qobj</cite> class.
+The code is continously improved and maintained using <cite>pytest</cite>, <cite>ruff</cite>, <cite>pylint</cite> and <cite>ty</cite>.</p>
 <p>If you used QuaCCAToo in your work, please cite <a class="reference external" href="https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691">Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond</a>.</p>
 <p>The documentation for QuaCCAToo is available here. Merge requests welcome at the <a class="reference external" href="https://github.com/QISS-HZB/QuaCCAToo">Github repository</a>!</p>
 <p>To see usage examples, check the tutorial notebooks linked here. They
@@ -198,7 +197,7 @@ and functions relevant for analysis of color centers are provided in the <code c
 </ol>
 </li>
 <li><ol class="upperalpha simple" start="19">
-<li><p>Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, &amp; B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. <a class="reference external" href="https://arxiv.org/abs/2507.13295">arXiv:2507.13295 quant-ph</a>.</p></li>
+<li><p>Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, &amp; B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0925963526002414">10.1016/j.diamond.2026.113530</a>.</p></li>
 </ol>
 </li>
 </ul>

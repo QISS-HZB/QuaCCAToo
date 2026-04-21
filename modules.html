@@ -22,6 +22,8 @@
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="_static/copybutton.js?v=f281be69"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -152,12 +154,37 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.analysis.fit_functions">fit_functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ConstantModel"><code class="docutils literal notranslate"><span class="pre">ConstantModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ConstantModel.guess"><code class="docutils literal notranslate"><span class="pre">ConstantModel.guess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExponentialModel"><code class="docutils literal notranslate"><span class="pre">ExponentialModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExponentialModel.guess"><code class="docutils literal notranslate"><span class="pre">ExponentialModel.guess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel"><code class="docutils literal notranslate"><span class="pre">GaussianModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel.fwhm_factor"><code class="docutils literal notranslate"><span class="pre">GaussianModel.fwhm_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel.height_factor"><code class="docutils literal notranslate"><span class="pre">GaussianModel.height_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel.guess"><code class="docutils literal notranslate"><span class="pre">GaussianModel.guess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LinearModel"><code class="docutils literal notranslate"><span class="pre">LinearModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LinearModel.guess"><code class="docutils literal notranslate"><span class="pre">LinearModel.guess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LorentzianModel"><code class="docutils literal notranslate"><span class="pre">LorentzianModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LorentzianModel.guess"><code class="docutils literal notranslate"><span class="pre">LorentzianModel.guess()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.SineModel"><code class="docutils literal notranslate"><span class="pre">SineModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.SineModel.guess"><code class="docutils literal notranslate"><span class="pre">SineModel.guess()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi"><code class="docutils literal notranslate"><span class="pre">fit_rabi()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiModel"><code class="docutils literal notranslate"><span class="pre">RabiModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExpDecayModel"><code class="docutils literal notranslate"><span class="pre">ExpDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_rabi_decay"><code class="docutils literal notranslate"><span class="pre">fit_rabi_decay()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.RabiDecayModel"><code class="docutils literal notranslate"><span class="pre">RabiDecayModel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_exp_decay_n"><code class="docutils literal notranslate"><span class="pre">fit_exp_decay_n()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quaccatoo.analysis.fit_functions.fit_hahn_mod_decay"><code class="docutils literal notranslate"><span class="pre">fit_hahn_mod_decay()</span></code></a></li>
@@ -181,8 +208,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-quaccatoo.utils">utils</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.save"><code class="docutils literal notranslate"><span class="pre">save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.load_quaccatoo"><code class="docutils literal notranslate"><span class="pre">load_quaccatoo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quaccatoo.utils.save_quaccatoo"><code class="docutils literal notranslate"><span class="pre">save_quaccatoo()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -258,6 +285,18 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.qsys.QSys.truncate" title="quaccatoo.qsys.qsys.QSys.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>(indexes)</p></td>
 <td><p>Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian, the initial state, the observable and the collapse operators.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_B0</span></code>(B0, units_B0)</p></td>
+<td><p>Internal function for checking if external magnetic field B0 is correctly defined.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_angles</span></code>(theta, phi_r, units_angles)</p></td>
+<td><p>Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_temp</span></code>(temp, units_temp)</p></td>
+<td><p>Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_tensor_product_N</span></code>(H, N)</p></td>
+<td><p>Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope</p></td>
 </tr>
 </tbody>
 </table>
@@ -458,7 +497,7 @@ after checking if all parameters are valid.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.add_spin" title="quaccatoo.qsys.NV_sys.NV.add_spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_spin</span></code></a>(H_spin)</p></td>
 <td><p>Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([mS, mI])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([indexes, mS, mI])</p></td>
 <td><p>Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.</p></td>
 </tr>
 </tbody>
@@ -516,7 +555,7 @@ relevant attributes.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.quadrupole" title="quaccatoo.qsys.NV_sys.NV.quadrupole"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quadrupole</span></code></a>()</p></td>
 <td><p>Get the quadrupole term</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([mS, mI])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="quaccatoo.qsys.NV_sys.NV.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([indexes, mS, mI])</p></td>
 <td><p>Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quaccatoo.qsys.NV_sys.NV.zero_field" title="quaccatoo.qsys.NV_sys.NV.zero_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_field</span></code></a>()</p></td>
@@ -592,7 +631,7 @@ relevant attributes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.qsys.NV_sys.NV.truncate">
-<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mI</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/qsys/NV_sys.html#NV.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mI</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/qsys/NV_sys.html#NV.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.qsys.NV_sys.NV.truncate" title="Link to this definition"></a></dt>
 <dd><p>Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.
 The indexes to be removed are calculated according to the mS and mI parameters.</p>
 <dl class="field-list simple">
@@ -715,6 +754,9 @@ By default the Hamiltonian is in frequency units and the time is in time units.<
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_attr_predef_seqs</span></code>(h1, Rx, Ry, ...)</p></td>
 <td><p>Checks the commom attributes of the PulsedSim object for the predefined sequences and sets them accordingly.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_tau</span></code>(tau)</p></td>
+<td><p>Check if tau is correctly defined and if it's None, assign to the smallest value of the variable attribute</p></td>
 </tr>
 </tbody>
 </table>
@@ -864,7 +906,7 @@ The rho attribute needs to be normalized before the measurement is performed, in
 
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_kw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_kw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/pulsed_sim/pulsed_sim.html#PulsedSim.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.pulsed_sim.pulsed_sim.PulsedSim.run" title="Link to this definition"></a></dt>
 <dd><p>Runs the pulsed experiment by calling the parallel_map function from QuTip over the variable attribute.
 The rho attribute is updated.</p>
 <dl class="field-list simple">
@@ -2054,7 +2096,7 @@ The results are centered around the mean value before the FFT is calculated in o
 
 <dl class="py method">
 <dt class="sig sig-object py" id="quaccatoo.analysis.analysis.Analysis.run_fit">
-<span class="sig-name descname"><span class="pre">run_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#Analysis.run_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.Analysis.run_fit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#Analysis.run_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.Analysis.run_fit" title="Link to this definition"></a></dt>
 <dd><p>Run the fit method from lmfit to fit the results of the experiment with a given model,
 guess for the initial parameters.</p>
 <dl class="field-list simple">
@@ -2104,7 +2146,7 @@ parameters can be referred to from the source file (fit_functions.py).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.analysis.plot_histogram">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qobj</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_comparison</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qobj</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'real'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'imag'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'abs'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'real'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Matrix</span> <span class="pre">Histogram'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#plot_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.plot_histogram" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qobj</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_comparison</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qobj</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'real'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'imag'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'abs'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'real'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Matrix</span> <span class="pre">Histogram'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/analysis.html#plot_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.analysis.plot_histogram" title="Link to this definition"></a></dt>
 <dd><p>Plot a 3D histogram of the final density matrix of the simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2132,6 +2174,1132 @@ parameters can be referred to from the source file (fit_functions.py).</p>
 <p>The general mechanism is the same as that of lmfit. So a lot of functions have been taken from there.
 To create additional fit models, simply instantiate an lmfit model with the target fit function.</p>
 <p>Refer to the documentation of analysis.run_fit for usage details.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ConstantModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">ConstantModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#ConstantModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ConstantModel" title="Link to this definition"></a></dt>
+<dd><p>Constant model, with a single Parameter: <cite>c</cite>.</p>
+<p>Note that this is ‘constant’ in the sense of having no dependence on
+the independent variable <cite>x</cite>, not in the sense of being non-varying.
+To be clear, <cite>c</cite> will be a Parameter that will be varied in the fit
+(by default, of course).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ConstantModel.guess" title="quaccatoo.analysis.fit_functions.ConstantModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data[, x])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ConstantModel.guess" title="quaccatoo.analysis.fit_functions.ConstantModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data[, x])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ConstantModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#ConstantModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ConstantModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ExponentialModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">ExponentialModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#ExponentialModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ExponentialModel" title="Link to this definition"></a></dt>
+<dd><p>A model based on an exponential decay function.</p>
+<p>The model has two Parameters: <cite>amplitude</cite> (<span class="math notranslate nohighlight">\(A\)</span>) and <cite>decay</cite>
+(<span class="math notranslate nohighlight">\(\tau\)</span>) and is defined as:</p>
+<div class="math notranslate nohighlight">
+\[f(x; A, \tau) = A e^{-x/\tau}\]</div>
+<p>For more information, see:
+<a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_decay">https://en.wikipedia.org/wiki/Exponential_decay</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExponentialModel.guess" title="quaccatoo.analysis.fit_functions.ExponentialModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.ExponentialModel.guess" title="quaccatoo.analysis.fit_functions.ExponentialModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.ExponentialModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#ExponentialModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.ExponentialModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.GaussianModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">GaussianModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#GaussianModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.GaussianModel" title="Link to this definition"></a></dt>
+<dd><p>A model based on a Gaussian or normal distribution lineshape.</p>
+<p>The model has three Parameters: <cite>amplitude</cite>, <cite>center</cite>, and <cite>sigma</cite>.
+In addition, parameters <cite>fwhm</cite> and <cite>height</cite> are included as
+constraints to report full width at half maximum and maximum peak
+height, respectively.</p>
+<div class="math notranslate nohighlight">
+\[f(x; A, \mu, \sigma) = \frac{A}{\sigma\sqrt{2\pi}} e^{[{-{(x-\mu)^2}/{{2\sigma}^2}}]}\]</div>
+<p>where the parameter <cite>amplitude</cite> corresponds to <span class="math notranslate nohighlight">\(A\)</span>, <cite>center</cite> to
+<span class="math notranslate nohighlight">\(\mu\)</span>, and <cite>sigma</cite> to <span class="math notranslate nohighlight">\(\sigma\)</span>. The full width at half
+maximum is <span class="math notranslate nohighlight">\(2\sigma\sqrt{2\ln{2}}\)</span>, approximately
+<span class="math notranslate nohighlight">\(2.3548\sigma\)</span>.</p>
+<p>For more information, see: <a class="reference external" href="https://en.wikipedia.org/wiki/Normal_distribution">https://en.wikipedia.org/wiki/Normal_distribution</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel.guess" title="quaccatoo.analysis.fit_functions.GaussianModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x[, negative])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.GaussianModel.guess" title="quaccatoo.analysis.fit_functions.GaussianModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x[, negative])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.GaussianModel.fwhm_factor">
+<span class="sig-name descname"><span class="pre">fwhm_factor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">np.float64(2.3548200450309493)</span></span><a class="headerlink" href="#quaccatoo.analysis.fit_functions.GaussianModel.fwhm_factor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.GaussianModel.height_factor">
+<span class="sig-name descname"><span class="pre">height_factor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">np.float64(0.3989422804014327)</span></span><a class="headerlink" href="#quaccatoo.analysis.fit_functions.GaussianModel.height_factor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.GaussianModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#GaussianModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.GaussianModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.LinearModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">LinearModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#LinearModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.LinearModel" title="Link to this definition"></a></dt>
+<dd><p>Linear model, with two Parameters: <cite>intercept</cite> and <cite>slope</cite>.</p>
+<p>Defined as:</p>
+<div class="math notranslate nohighlight">
+\[f(x; m, b) = m x + b\]</div>
+<p>with <cite>slope</cite> for <span class="math notranslate nohighlight">\(m\)</span> and <cite>intercept</cite> for <span class="math notranslate nohighlight">\(b\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LinearModel.guess" title="quaccatoo.analysis.fit_functions.LinearModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LinearModel.guess" title="quaccatoo.analysis.fit_functions.LinearModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.LinearModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#LinearModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.LinearModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.LorentzianModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">LorentzianModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#LorentzianModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.LorentzianModel" title="Link to this definition"></a></dt>
+<dd><p>A model based on a Lorentzian or Cauchy-Lorentz distribution function.</p>
+<p>The model has three Parameters: <cite>amplitude</cite>, <cite>center</cite>, and <cite>sigma</cite>. In
+addition, parameters <cite>fwhm</cite> and <cite>height</cite> are included as constraints
+to report full width at half maximum and maximum peak height,
+respectively.</p>
+<div class="math notranslate nohighlight">
+\[f(x; A, \mu, \sigma) = \frac{A}{\pi} \big[\frac{\sigma}{(x - \mu)^2 + \sigma^2}\big]\]</div>
+<p>where the parameter <cite>amplitude</cite> corresponds to <span class="math notranslate nohighlight">\(A\)</span>, <cite>center</cite> to
+<span class="math notranslate nohighlight">\(\mu\)</span>, and <cite>sigma</cite> to <span class="math notranslate nohighlight">\(\sigma\)</span>. The full width at half
+maximum is <span class="math notranslate nohighlight">\(2\sigma\)</span>.</p>
+<p>For more information, see:
+<a class="reference external" href="https://en.wikipedia.org/wiki/Cauchy_distribution">https://en.wikipedia.org/wiki/Cauchy_distribution</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LorentzianModel.guess" title="quaccatoo.analysis.fit_functions.LorentzianModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x[, negative])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.LorentzianModel.guess" title="quaccatoo.analysis.fit_functions.LorentzianModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x[, negative])</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.LorentzianModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#LorentzianModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.LorentzianModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.SineModel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">SineModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#SineModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.SineModel" title="Link to this definition"></a></dt>
+<dd><p>A model based on a sinusoidal lineshape.</p>
+<p>The model has three Parameters: <cite>amplitude</cite>, <cite>frequency</cite>, and <cite>shift</cite>.</p>
+<div class="math notranslate nohighlight">
+\[f(x; A, \phi, f) = A \sin (f x + \phi)\]</div>
+<p>where the parameter <cite>amplitude</cite> corresponds to <span class="math notranslate nohighlight">\(A\)</span>, <cite>frequency</cite> to
+<span class="math notranslate nohighlight">\(f\)</span>, and <cite>shift</cite> to <span class="math notranslate nohighlight">\(\phi\)</span>. All are constrained to be
+non-negative, and <cite>shift</cite> additionally to be smaller than <span class="math notranslate nohighlight">\(2\pi\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.SineModel.guess" title="quaccatoo.analysis.fit_functions.SineModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>independent_vars</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional</span></dt><dd><p>Arguments to the model function that are independent variables
+default is [‘x’]).</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>String to prepend to parameter names, needed to add two Models
+that have parameter names in common.</p>
+</dd>
+<dt><strong>nan_policy</strong><span class="classifier">{‘raise’, ‘propagate’, ‘omit’}, optional</span></dt><dd><p>How to handle NaN and missing values in data. See Notes below.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Keyword arguments to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
+<td><p>DOES NOT WORK.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
+<td><p>Dump serialization of Model to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
+<td><p>Dump serialization of Model as a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
+<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
+<td><p>Evaluate the model with the supplied parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
+<td><p>Fit the model to the data using the supplied Parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quaccatoo.analysis.fit_functions.SineModel.guess" title="quaccatoo.analysis.fit_functions.SineModel.guess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code></a>(data, x, **kwargs)</p></td>
+<td><p>Guess starting values for the parameters of a model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
+<td><p>Load JSON representation of Model from a file-like object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
+<td><p>Load Model from a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
+<td><p>Convert parameter values and keywords to function arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
+<td><p>Create a Parameters object for a Model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
+<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
+<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
+<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>1. <cite>nan_policy</cite> sets what to do when a NaN or missing value is seen in
+the data. Should be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>‘raise’</cite> : raise a <cite>ValueError</cite> (default)</p></li>
+<li><p><cite>‘propagate’</cite> : do nothing</p></li>
+<li><p><cite>‘omit’</cite> : drop missing data</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.SineModel.guess">
+<span class="sig-name descname"><span class="pre">guess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lmfit/models.html#SineModel.guess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.SineModel.guess" title="Link to this definition"></a></dt>
+<dd><p>Guess starting values for the parameters of a model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>Array of data (i.e., y-values) to use to guess parameter values.</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">array_like</span></dt><dd><p>Array of values for the independent variable (i.e., x-values).</p>
+</dd>
+<dt><strong>**kws</strong><span class="classifier">optional</span></dt><dd><p>Additional keyword arguments, passed to model function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">Parameters</span></dt><dd><p>Initial, guessed values for the parameters of a Model.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.3: </span>Argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is now explicitly required to estimate starting values.</p>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.fit_rabi">
 <span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">fit_rabi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#fit_rabi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.fit_rabi" title="Link to this definition"></a></dt>
@@ -2332,74 +3500,6 @@ To create additional fit models, simply instantiate an lmfit model with the targ
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="quaccatoo.analysis.fit_functions.RabiDecayModel">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quaccatoo.analysis.fit_functions.</span></span><span class="sig-name descname"><span class="pre">RabiDecayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['x']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/analysis/fit_functions.html#RabiDecayModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.analysis.fit_functions.RabiDecayModel" title="Link to this definition"></a></dt>
-<dd><p>Analogous to RabiModel, modulated with an exponential decay.</p>
-<p>Takes the same parameters as the fit_rabi_decay function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code></dt><dd><p>Return components for composite model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>Return Model name.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_names</span></code></dt><dd><p>Return the parameter names of the Model.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></dt><dd><p>Return Model prefix.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(**kwargs)</p></td>
-<td><p>DOES NOT WORK.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(fp, **kws)</p></td>
-<td><p>Dump serialization of Model to a file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>(**kws)</p></td>
-<td><p>Dump serialization of Model as a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>([params])</p></td>
-<td><p>Evaluate the model with supplied parameters and keyword arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_components</span></code>([params])</p></td>
-<td><p>Evaluate the model with the supplied parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code>(data[, params, weights, method, ...])</p></td>
-<td><p>Fit the model to the data using the supplied Parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess</span></code>(data, x, **kwargs)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(fp[, funcdefs])</p></td>
-<td><p>Load JSON representation of Model from a file-like object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(s[, funcdefs])</p></td>
-<td><p>Load Model from a JSON string.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_funcargs</span></code>([params, kwargs, strip])</p></td>
-<td><p>Convert parameter values and keywords to function arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_params</span></code>([verbose])</p></td>
-<td><p>Create a Parameters object for a Model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">post_fit</span></code>(fitresult)</p></td>
-<td><p>function that is called just after fit, can be overloaded by subclasses to add non-fitting 'calculated parameters'</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_param_hints</span></code>([colwidth])</p></td>
-<td><p>Print a nicely aligned text-table of parameter hints.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_param_hint</span></code>(name, **kwargs)</p></td>
-<td><p>Set <em>hints</em> to use when creating parameters with <cite>make_params()</cite>.</p></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="py function">
@@ -2822,20 +3922,20 @@ The baseline is fitted to the data between x_start and x_end, representing the s
 <span id="utils"></span><h2>utils<a class="headerlink" href="#module-quaccatoo.utils" title="Link to this heading"></a></h2>
 <p>This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="quaccatoo.utils.load">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.load" title="Link to this definition"></a></dt>
-<dd><p>Loads the attributes of an object from a zip file,
-creates an instance of the object, and sets the attributes.</p>
+<dt class="sig sig-object py" id="quaccatoo.utils.load_quaccatoo">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">load_quaccatoo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#load_quaccatoo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.load_quaccatoo" title="Link to this definition"></a></dt>
+<dd><p>Loads the attributes of an obj from a zip file,
+creates an instance of the obj, and sets the attributes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>Path to the zip file where the attributes are saved.</p>
+<dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>Path to the zip file where the attributes are saved.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>object</dt><dd><p>The loaded object.</p>
+<dt>obj</dt><dd><p>The loaded obj.</p>
 </dd>
 </dl>
 </dd>
@@ -2843,17 +3943,17 @@ creates an instance of the object, and sets the attributes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="quaccatoo.utils.save">
-<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.save" title="Link to this definition"></a></dt>
-<dd><p>Look for all the attributes of the object, save Qobj attributes to separate files,
+<dt class="sig sig-object py" id="quaccatoo.utils.save_quaccatoo">
+<span class="sig-prename descclassname"><span class="pre">quaccatoo.utils.</span></span><span class="sig-name descname"><span class="pre">save_quaccatoo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quaccatoo/utils.html#save_quaccatoo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quaccatoo.utils.save_quaccatoo" title="Link to this definition"></a></dt>
+<dd><p>Look for all the attributes of the obj, save Qobj attributes to separate files,
 and save the rest of the attributes to a pickle file. Finally, create a zip file
 containing all the files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>object</strong><span class="classifier">quaccatoo object</span></dt><dd><p>The object to be saved.</p>
+<dt><strong>obj_save</strong><span class="classifier">quaccatoo obj</span></dt><dd><p>The obj to be saved.</p>
 </dd>
-<dt><strong>file_name</strong><span class="classifier">str</span></dt><dd><p>Path to the file where the attributes will be saved.</p>
+<dt><strong>file_path</strong><span class="classifier">str</span></dt><dd><p>Path to the file where the attributes will be saved.</p>
 </dd>
 </dl>
 </dd>

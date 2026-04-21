@@ -121,7 +121,7 @@ the external spin (13C nuclei) under multipulse dynamical decoupling sequences. 
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">qeye</span>
 
-<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">Hahn</span><span class="p">,</span> <span class="n">CPMG</span><span class="p">,</span> <span class="n">save</span><span class="p">,</span> <span class="n">load</span>
+<span class="kn">from</span> <span class="nn">quaccatoo</span> <span class="kn">import</span> <span class="n">NV</span><span class="p">,</span> <span class="n">Rabi</span><span class="p">,</span> <span class="n">square_pulse</span><span class="p">,</span> <span class="n">Analysis</span><span class="p">,</span> <span class="n">RabiModel</span><span class="p">,</span> <span class="n">Hahn</span><span class="p">,</span> <span class="n">CPMG</span><span class="p">,</span> <span class="n">save_quaccatoo</span><span class="p">,</span> <span class="n">load_quaccatoo</span>
 </pre></div>
 </div>
 </div>
@@ -301,7 +301,7 @@ corresponding to twice the pulse separation <span class="math notranslate nohigh
 </pre></div>
 </div>
 </div>
-<p>To run the CPMG simulation with <code class="docutils literal notranslate"><span class="pre">M</span></code> pulses, we instantiate the <code class="docutils literal notranslate"><span class="pre">CPMG</span></code> class. Given the high computational cost of the simulation, we execute it in a server with multiple cores using the <code class="docutils literal notranslate"><span class="pre">save</span></code> method to save the simulations.</p>
+<p>To run the CPMG simulation with <code class="docutils literal notranslate"><span class="pre">M</span></code> pulses, we instantiate the <code class="docutils literal notranslate"><span class="pre">CPMG</span></code> class. Given the high computational cost of the simulation, we execute it in a server with multiple cores using the <code class="docutils literal notranslate"><span class="pre">save_quaccatoo</span></code> method to save the simulations.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -327,18 +327,18 @@ corresponding to twice the pulse separation <span class="math notranslate nohigh
     <span class="p">)</span>
 
     <span class="n">cpmg_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-    <span class="n">save</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+    <span class="n">save_quaccatoo</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">sol_opt</span></code> variable contains a series of parameters for the ODE solver, which can be passed to the object through the <code class="docutils literal notranslate"><span class="pre">options</span></code> argument. In this case, the absolute and relative tolerances are decreased, while the number of steps and order are increased, to have a more robust solution for such a long pulse sequence.</p>
-<p>To retrieve the results we use the <code class="docutils literal notranslate"><span class="pre">load</span></code> method.</p>
+<p>To retrieve the results we use the <code class="docutils literal notranslate"><span class="pre">load_quaccatoo</span></code> method.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M</span><span class="p">)):</span>
-    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
+    <span class="n">cpmg_sim</span> <span class="o">=</span> <span class="n">load_quaccatoo</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./sim_data_tutorials/CPMG-</span><span class="si">{</span><span class="n">M</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">}</span><span class="s1">_13C&#39;</span><span class="p">)</span>
     <span class="n">Analysis</span><span class="p">(</span><span class="n">cpmg_sim</span><span class="p">)</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
