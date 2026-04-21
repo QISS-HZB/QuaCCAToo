@@ -8,12 +8,11 @@ QuaCCAToo: Quantum Color Centers Analysis Toolbox
 
 .. image:: QuaCCAToo_logo.svg
 
-QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum
-technology applications. The systems' time evolution under pulsed experiments are calculated through quantum
-master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. The
-software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class. This way,
-the software provides accessibility from the high level of abstraction and human-readability of Python, but
-at the expense of limited performance compared to compiled programming languages.
+QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
+The library provides several predefined pulsed sequences, analysis methods and quantum systems divided into four integrated modules: `qsys`, `pulsed_sim`, `analysis` and `exp_data`.
+The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame without rotating frame approximations.
+The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
+The code is continously improved and maintained using `pytest`, `ruff`, `pylint` and `ty`.
 
 If you used QuaCCAToo in your work, please cite `Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond <https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691>`__.
 
@@ -96,6 +95,6 @@ Featured In
 - L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. Advanced Quantum Technologies, e00691. doi: `10.1002/qute.202500691 <https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691>`__.
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: `10.1103/PhysRevA.111.022606 <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
 - L. Tsunaki, M. Dotan, K. Volkova, & B. Naydenov. (2025). Quantum Gates via Dynamical Decoupling of Central Qubit on IBMQ and 15NV Center in Diamond. doi: `arXiv:2509.22107 quant-ph <https://arxiv.org/abs/2509.22107>`__.
-- S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. `arXiv:2507.13295 quant-ph <https://arxiv.org/abs/2507.13295>`__.
+- S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. `10.1016/j.diamond.2026.113530 <https://www.sciencedirect.com/science/article/pii/S0925963526002414>`__.
 
 If you used QuaCCAToo in your work, please let us know so we can add it to the list!

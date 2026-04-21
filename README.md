@@ -2,16 +2,25 @@
 ![Logo](./docs/QuaCCAToo_logo.svg)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19596973.svg)](https://doi.org/10.5281/zenodo.19596973)
-[![PyPI](https://img.shields.io/pypi/v/QuaCCAToo)](https://pypi.org/project/QuaCCAToo)
 [![Documentation](https://img.shields.io/badge/docs-online-blue?logo=readthedocs)](https://qiss-hzb.github.io/QuaCCAToo/)
+[![Python](https://img.shields.io/pypi/pyversions/QuaCCAToo)](https://pypi.org/project/QuaCCAToo)
+[![PyPI](https://img.shields.io/pypi/v/QuaCCAToo)](https://pypi.org/project/QuaCCAToo)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/QuaCCAToo)](https://pypi.org/project/QuaCCAToo)
+
+[![Pylint](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml/badge.svg)](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml)
+[![Ruff](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/ruff.yml/badge.svg)](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/ruff.yml)
+[![Tests](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pytest.yml/badge.svg)](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pytest.yml)
+
 
 QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
-The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame. 
+The library provides several predefined pulsed sequences, analysis methods and quantum systems divided into four integrated modules: `qsys`, `pulsed_sim`, `analysis` and `exp_data`.
+The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame without rotating frame approximations. 
 The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
+The code is continously improved and maintained using `pytest`, `ruff`, `pylint` and `ty`.
 
 For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/tutorials.html) section.
 
-If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond](https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691) and this repository via [10.5281/zenodo.19596973](https://doi.org/10.5281/zenodo.19596973).
+If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond](https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691).
 
 ## Links
 - Repository: https://github.com/QISS-HZB/QuaCCAToo
