@@ -277,19 +277,7 @@ class P1(QSys):
             )
         )
 
-        if self.N == 14:
-            return tensor(H_ez, qeye(3))
-
-        elif self.N == 15:
-            return tensor(H_ez, qeye(2))
-
-        elif self.N == 0 or self.N is None:
-            return H_ez
-
-        else:
-            raise ValueError(
-                f"Invalid value for nitrogen isotope N. Expected either 14 or 15, got {self.N}."
-            )
+        return self._tensor_product_N(H_ez, self.N)
 
     def hyperfine(self) -> Qobj:
         """

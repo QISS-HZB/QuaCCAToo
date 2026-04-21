@@ -4,6 +4,7 @@
 This module contains the plot_energy_B0 function, compose_sys function and the QSys class.
 """
 
+from typing import Literal
 import warnings
 
 import matplotlib.pyplot as plt
@@ -49,6 +50,12 @@ class QSys:
         Adds another spin to the system's Hamiltonian and updates the system accordingly.
     truncate
         Truncates the quantum system by removing the states specified by the indexes from the system
+    _check_B0
+        Internal function for checking if external magnetic field B0 is correctly defined.
+    _check_angles
+        Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
+    _tensor_product_N
+        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope
     """
 
     def __init__(
@@ -307,6 +314,13 @@ class QSys:
     def _check_B0(self, B0: float | int, units_B0: str) -> None:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
+
+        Parameters
+        ----------
+        B0 : float | int
+            External magnetic field
+        units_BO : str
+            str for the units of the magnetic field
         """
         self.B0 = B0
         self.units_B0 = units_B0
@@ -332,6 +346,15 @@ class QSys:
     def _check_angles(self, theta: float | int, phi_r: float | int, units_angles: str) -> None:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
+
+        Parameters
+        ----------
+        theta : float | int
+            Polar angle between color center axis and external magnetic field
+        phi_r : float | int
+            Azimuthal angle between color center axis and external magnetic field
+        units_agnles : str
+            str for the units of the angles
         """
         if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
             raise TypeError(
@@ -349,6 +372,27 @@ class QSys:
             raise ValueError(
                 f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {self.units_angles}."
             )
+        
+    def _tensor_product_N(self, H: Qobj, N: Literal[None, 0, 14, 15]) -> Qobj:
+        """
+        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
+        to the dimension of the nitrogen isoptope
+
+        Parameters
+        ----------
+        H: Qobj
+            Electronic Hamiltonian of the color center
+        N: None, 0, 14, 15
+            Nitrogen isotope
+        """
+        if N == 14:
+            return tensor(H, qeye(3))
+        elif N == 15:
+            return tensor(H, qeye(2))
+        elif N == 0 or N is None:
+            return H
+        else:
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
 
 
 ####################################################################################################
