@@ -102,6 +102,16 @@ class TestNV:
             ),
         )
 
+    def test_lowT_rho0(self):
+        rho0 = NV(
+                    N = 15,
+                    B0 = 100,
+                    units_B0 = 'T',
+                    temp = 5.6,
+                    units_temp = 'K' 
+                ).rho0
+        assert np.isclose(rho0[3,3] - rho0[2,2], 0.00185, atol=1e-5)
+
 
 # Rabi object (fixture) used in the TestRabi class below
 @pytest.fixture
