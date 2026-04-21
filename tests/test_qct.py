@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pytest
 from lmfit import Model
-from qutip import basis, fock_dm, jmat, qeye, tensor, Qobj
+from qutip import basis, fock_dm, jmat, qeye, tensor
 
 from quaccatoo import (
     CPMG,
