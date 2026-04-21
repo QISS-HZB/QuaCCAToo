@@ -64,3 +64,6 @@ Once again, we strongly recommend using a virtual environment. Please set it up 
    git clone https://github.com/QISS-HZB/QuaCCAToo
    cd QuaCCAToo
    pip install -e '.[dev]'    #not the system pip
+
+
+Contribution guidelines can be found in the `Github repository <https://github.com/QISS-HZB/QuaCCAToo>`__.
