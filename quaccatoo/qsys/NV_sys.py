@@ -405,16 +405,7 @@ class NV(QSys):
 
         H_zf = D * jmat(1, "z") ** 2 + self.E * (jmat(1, "x") ** 2 - jmat(1, "y") ** 2)
 
-        if self.N == 14:
-            return tensor(H_zf, qeye(3))
-
-        elif self.N == 15:
-            return tensor(H_zf, qeye(2))
-
-        elif self.N == 0 or self.N is None:
-            return H_zf
-        else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+        return self._tensor_product_N(H_zf, self.N)
 
     def electron_zeeman(self) -> Qobj:
         """
@@ -434,16 +425,7 @@ class NV(QSys):
             )
         )
 
-        if self.N == 14:
-            return tensor(H_ez, qeye(3))
-
-        elif self.N == 15:
-            return tensor(H_ez, qeye(2))
-
-        elif self.N == 0 or self.N is None:
-            return H_ez
-        else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+        return self._tensor_product_N(H_ez, self.N)
 
     def nuclear_zeeman(self) -> Qobj | int:
         """
