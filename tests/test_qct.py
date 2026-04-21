@@ -20,7 +20,7 @@ from quaccatoo import (
     P1,
     PulsedSim,
     load_quaccatoo,
-    save_quaccatoo
+    save_quaccatoo,
 )
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
@@ -569,30 +569,24 @@ def test_add_free_evolution():
 
 def test_save_load():
     qsys_saved = NV(
-        B0 = 4.2,
-        units_B0 = 'mT',
-        theta = -45,
-        units_angles = 'deg',
-        N = 14,
-        temp = 300,
-        units_temp = 'K'
-	)
+        B0=4.2, units_B0="mT", theta=-45, units_angles="deg", N=14, temp=300, units_temp="K"
+    )
     psim_saved = XY8(
-            M=2,
-            free_duration=np.linspace(0.25, 0.36, 30),
-            pi_pulse_duration=1 / 2 / 10,
-            system=qsys_saved,
-            h1=10 * qsys_saved.MW_h1,
-            pulse_params={"f_pulse": qsys_saved.MW_freqs[1]},
-            time_steps=100,
-        )
-    
-    try:
-        save_quaccatoo(qsys_saved, './test_qsys')
-        save_quaccatoo(psim_saved, './test_psim')
+        M=2,
+        free_duration=np.linspace(0.25, 0.36, 30),
+        pi_pulse_duration=1 / 2 / 10,
+        system=qsys_saved,
+        h1=10 * qsys_saved.MW_h1,
+        pulse_params={"f_pulse": qsys_saved.MW_freqs[1]},
+        time_steps=100,
+    )
 
-        loaded_qsys = load_quaccatoo('./test_qsys')
-        loaded_psim = load_quaccatoo('./test_psim')
+    try:
+        save_quaccatoo(qsys_saved, "./test_qsys")
+        save_quaccatoo(psim_saved, "./test_psim")
+
+        loaded_qsys = load_quaccatoo("./test_qsys")
+        loaded_psim = load_quaccatoo("./test_psim")
 
         assert set(loaded_qsys.__dict__.keys()) == set(qsys_saved.__dict__.keys())
         assert set(loaded_psim.__dict__.keys()) == set(psim_saved.__dict__.keys())
