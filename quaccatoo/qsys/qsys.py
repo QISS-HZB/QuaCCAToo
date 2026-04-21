@@ -313,7 +313,7 @@ class QSys:
                     for op in self.c_ops
                 ]
 
-    def _check_B0(self, B0: float | int, units_B0: Literal['T', 'mT', 'G']) -> None:
+    def _check_B0(self, B0: float | int, units_B0: Literal["T", "mT", "G"]) -> None:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
 
@@ -348,10 +348,12 @@ class QSys:
             raise ValueError(
                 f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
             )
-        
-        return B0, 'mT'
 
-    def _check_angles(self, theta: float | int, phi_r: float | int, units_angles: Literal['deg', 'rad']) -> None:
+        return B0, "mT"
+
+    def _check_angles(
+        self, theta: float | int, phi_r: float | int, units_angles: Literal["deg", "rad"]
+    ) -> None:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
 
@@ -385,12 +387,12 @@ class QSys:
             pass
         else:
             raise ValueError(
-                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {self.units_angles}."
+                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}."
             )
-        
-        return theta, phi_r, 'rad'
-    
-    def _check_temp(self, temp: float | int | None, units_temp: Literal['K', 'C']) -> float:
+
+        return theta, phi_r, "rad"
+
+    def _check_temp(self, temp: float | int | None, units_temp: Literal["K", "C"]) -> float:
         """
         Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
         to the dimension of the nitrogen isoptope
@@ -410,7 +412,9 @@ class QSys:
             elif units_temp == "C":
                 temp += 273.15
             elif units_temp == "F":
-                raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
+                raise ValueError(
+                    "'F' is not a valid unit for temperature, learn the metric system."
+                )
             else:
                 raise ValueError(
                     f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}."
@@ -419,7 +423,7 @@ class QSys:
             raise ValueError(f"'temp' must be None or a positive float or int. Got: {temp}")
 
         return temp
-        
+
     def _tensor_product_N(self, H: Qobj, N: Literal[None, 0, 14, 15]) -> Qobj:
         """
         Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
@@ -439,7 +443,7 @@ class QSys:
         elif N == 0 or N is None:
             return H
         else:
-            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+            raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {N}.")
 
 
 ####################################################################################################

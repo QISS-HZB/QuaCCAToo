@@ -113,11 +113,11 @@ class RabiModel(Model):
     Takes the same parameters as the fit_rabi function.
     """
 
-    def __init__( # pylint: disable=dangerous-default-value
+    def __init__(  # pylint: disable=dangerous-default-value
         self,
         independent_vars: list[str] = ["x"],
         prefix: str = "",
-        nan_policy: str = "raise", 
+        nan_policy: str = "raise",
         **kwargs: Any,
     ):
         kwargs.update(
@@ -210,7 +210,7 @@ class ExpDecayModel(Model):
     Takes the same parameters as the fit_exp_decay function.
     """
 
-    def __init__( # pylint: disable=dangerous-default-value
+    def __init__(  # pylint: disable=dangerous-default-value
         self,
         independent_vars: list[str] = ["x"],
         prefix: str = "",
@@ -272,7 +272,7 @@ class RabiDecayModel(Model):
     Takes the same parameters as the fit_rabi_decay function.
     """
 
-    def __init__( # pylint: disable=dangerous-default-value
+    def __init__(  # pylint: disable=dangerous-default-value
         self,
         independent_vars: list[str] = ["x"],
         prefix: str = "",

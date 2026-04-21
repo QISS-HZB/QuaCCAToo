@@ -93,6 +93,8 @@ class PulsedSim:
         Plots the pulse profiles of the experiment by iterating over the pulse_profiles list and plotting each pulse profile and free evolution
     _check_attr_predef_seqs :
         Checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
+    _check_tau :
+        Check if tau is correctly defined and if it's None, assign to the smallest value of the variable attribute
     _append_pulse_to_profiles :
         Appends the pulse profile to the pulse_profiles list, which is used for plotting purposes.
     """
@@ -607,7 +609,7 @@ class PulsedSim:
         # Adapted from user Julien J in https://stackoverflow.com/questions/19385639/duplicate-items-in-legend-in-matplotlib/40870637#40870637
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [
-            (h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]
+            (h, labs) for i, (h, labs) in enumerate(zip(handles, labels)) if labs not in labels[:i]
         ]
         ax.legend(*zip(*unique_legend), loc="upper right", bbox_to_anchor=(1.2, 1))
 
@@ -781,6 +783,28 @@ class PulsedSim:
                 raise ValueError(
                     "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )
+    
+    def _check_tau(self, tau: float | int | None) ->  float | int :
+        """
+        Check if tau is correctly defined and if it's None,
+        assign to the smallest value of the variable attribute
+
+        Parameters
+        ----------
+        tau : float | int | None
+            Pulse separation
+        
+        Returns
+        -------
+        tau : float | int | None
+            Checked pulse separation
+        """
+        if tau is None:
+            tau = self.variable[-1]
+        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
+            raise ValueError(f"tau must be a positive real number larger than pi_pulse_duration. Got: {tau}")
+
+        return tau
 
     def _append_pulse_to_profile(
         self,

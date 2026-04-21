@@ -407,11 +407,7 @@ class Ramsey(PulsedSim):
         tau : float | int
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
-        # check if tau is correctly defined
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+        tau = self._check_tau(tau)
 
         self.pulse_profiles = []
 
@@ -592,11 +588,7 @@ class Hahn(PulsedSim):
         tau : float | int
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
-        # check if tau is correctly defined
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+        tau = self._check_tau(tau)
 
         self.pulse_profiles = []
         ps = tau - self.pi_pulse_duration

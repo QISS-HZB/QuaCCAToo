@@ -135,7 +135,13 @@ class P1(QSys):
         self.theta_1, self.phi_r_1, _ = self._check_angles(theta_1, phi_r_1, units_angles)
 
         self.B0_vector = np.array(
-            [[np.sin(self.theta) * np.cos(self.phi_r), np.sin(self.theta) * np.sin(self.phi_r), np.cos(self.theta)]]
+            [
+                [
+                    np.sin(self.theta) * np.cos(self.phi_r),
+                    np.sin(self.theta) * np.sin(self.phi_r),
+                    np.cos(self.theta),
+                ]
+            ]
         )
         self.B1_vector = np.array(
             [
