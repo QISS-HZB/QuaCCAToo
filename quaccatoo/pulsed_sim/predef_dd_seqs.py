@@ -168,11 +168,7 @@ class CPMG(PulsedSim):
         tau : float | int
             Free evolution variable or pulse spacing for the  sequence.
         """
-        # check if tau is correctly defined
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+        tau = self._check_tau(tau)
 
         self.pulse_profiles = []
         ps = tau - self.pi_pulse_duration
@@ -388,11 +384,7 @@ class XY(PulsedSim):
         tau : float | int
             free evolution variable or pulse spacing for the  sequence
         """
-        # checl if tau is correctly define
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+        tau = self._check_tau(tau)
 
         self.pulse_profiles = []
         ps = tau - self.pi_pulse_duration
@@ -651,11 +643,7 @@ class XY8(PulsedSim):
         tau : float | int
             free evolution variable or pulse spacing for the  sequence
         """
-        # check if tau is correctly defined
-        if tau is None:
-            tau = self.variable[-1]
-        elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError("tau must be a positive real number larger than pi_pulse_duration")
+        tau = self._check_tau(tau)
 
         self.pulse_profiles = []
         ps = tau - self.pi_pulse_duration
