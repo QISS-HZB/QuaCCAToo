@@ -30,7 +30,7 @@ dependencies = [
     "lmfit",
     "matplotlib",
     "numpy",
-    "qutip",
+    "qutip>=5",
     "scipy",
     "dill",
 ]
