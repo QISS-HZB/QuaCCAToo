@@ -102,7 +102,8 @@ def load(file_name):
     # Extract the zip file to a temporary directory
     tmp_dir = "tmp"
 
-    import quaccatoo # pylint: disable=import-outside-toplevel,cyclic-import
+    import quaccatoo  # pylint: disable=import-outside-toplevel,cyclic-import
+
     try:
         os.makedirs(tmp_dir, exist_ok=True)
         with zipfile.ZipFile(file_name, "r") as zip_file:

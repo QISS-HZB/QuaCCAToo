@@ -11,13 +11,14 @@ readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 authors = [
     { name = "Lucas Tsunaki", email = "tsunakilucas@gmail.com" },
     { name = "Anmol Singh"},
     { name = "Sergei Trofimov", email = "sergei.trofimov@helmholtz-berlin.de" },
     { name = "Kseniia Volkova", email = "kseniia.volkova@helmholtz-berlin.de" },
+    { name = "Boris Naydenov", email = "boris.naydenov@helmholtz-berlin.de" }
 ]
 
 maintainers = [
@@ -74,6 +75,7 @@ dev = [
     "pytest",
     "ruff",
     "ty",
+    "pylint"
 ]
 
 [tool.hatch.envs.dev]
@@ -117,3 +119,9 @@ disable = [
     "W0221", "W0223", # overriding of parameters in parent class
     "W0201" # lazy init
     ]
+
+[tool.pylint.similarities]
+ignore-imports = true
+ignore-comments = true
+ignore-docstrings = true
+min-similarity-lines = 9

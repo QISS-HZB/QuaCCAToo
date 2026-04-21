@@ -783,8 +783,8 @@ class PulsedSim:
                 raise ValueError(
                     "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )
-    
-    def _check_tau(self, tau: float | int | None) ->  float | int :
+
+    def _check_tau(self, tau: float | int | None) -> float | int:
         """
         Check if tau is correctly defined and if it's None,
         assign to the smallest value of the variable attribute
@@ -793,7 +793,7 @@ class PulsedSim:
         ----------
         tau : float | int | None
             Pulse separation
-        
+
         Returns
         -------
         tau : float | int | None
@@ -802,7 +802,9 @@ class PulsedSim:
         if tau is None:
             tau = self.variable[-1]
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
-            raise ValueError(f"tau must be a positive real number larger than pi_pulse_duration. Got: {tau}")
+            raise ValueError(
+                f"tau must be a positive real number larger than pi_pulse_duration. Got: {tau}"
+            )
 
         return tau
 

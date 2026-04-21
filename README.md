@@ -11,7 +11,7 @@ The software is built on top of QuTip, inheriting its object-oriented framework 
 
 For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/tutorials.html) section.
 
-If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond](https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691).
+If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond](https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691) and this repository via [10.5281/zenodo.19596973](https://doi.org/10.5281/zenodo.19596973).
 
 ## Links
 - Repository: https://github.com/QISS-HZB/QuaCCAToo
@@ -65,12 +65,14 @@ Several fit models and functions relevant for analysis of color centers are prov
 Any contribution or bug report are welcome.
 
 - To contribute, fork the main branch and make a pull request.
-- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest`, `ruff`,
-  and `ty`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
+- We use `hatch/hatchling` as the build backend. The other development dependencies include `pytest`, `ruff`, `pylint`
+ and `ty`. They can be installed by running `pip install -e '.[dev]'` from within the cloned repository. See
   [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for details.
 - Properly _document everything_ in details following the `numpy` [docstring
   format](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
-- Test your branch by running `pytest` and the tutorial notebooks. Feel free to add more tests.
+- Test your branch by running `pytest` and the tutorial notebooks.
+- Add corresponding tests to every new method, function or functionality in general.
+- Run `pylint quaccatoo` within the directory to check for code quality and ensure no new warnings are introduced.
 - Please pay attention to linter warnings (`ruff check`) and format your code with `ruff format`. Also
   recommended is to run `ty check` for type hints.
 - Module level refactors require corresponding changes in the `sphinx` setup, too.
