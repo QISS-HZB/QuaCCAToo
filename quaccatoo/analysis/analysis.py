@@ -13,7 +13,7 @@ from scipy.stats import linregress, pearsonr
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
 
-__all__ = ["Analysis"]
+__all__ = ["Analysis", "plot_histogram"]
 
 ####################################################################################################
 
