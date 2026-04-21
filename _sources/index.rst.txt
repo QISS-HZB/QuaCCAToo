@@ -8,6 +8,34 @@ QuaCCAToo: Quantum Color Centers Analysis Toolbox
 
 .. image:: QuaCCAToo_logo.svg
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.19682839.svg
+   :target: https://doi.org/10.5281/zenodo.19682839
+   :alt: DOI
+
+.. image:: https://img.shields.io/badge/docs-online-blue?logo=readthedocs
+   :target: https://qiss-hzb.github.io/QuaCCAToo/
+   :alt: Documentation
+
+.. image:: https://img.shields.io/pypi/v/quaccatoo?logo=pypi&logoColor=white
+   :target: https://pypi.org/project/quaccatoo/
+   :alt: PyPI
+
+.. image:: https://static.pepy.tech/badge/quaccatoo?logo=pypi&logoColor=white
+   :target: https://pepy.tech/project/quaccatoo
+   :alt: Downloads
+
+.. image:: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml/badge.svg
+   :target: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml
+   :alt: Pylint
+
+.. image:: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/ruff.yml/badge.svg
+   :target: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/ruff.yml
+   :alt: Ruff
+
+.. image:: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pytest.yml/badge.svg
+   :target: https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pytest.yml
+   :alt: Tests
+
 QuaCCAToo is a Python library for simulating and analyzing spin dynamics of color centers for quantum technology applications.
 The library provides several predefined pulsed sequences, analysis methods and quantum systems divided into four integrated modules: `qsys`, `pulsed_sim`, `analysis` and `exp_data`.
 The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame without rotating frame approximations.
