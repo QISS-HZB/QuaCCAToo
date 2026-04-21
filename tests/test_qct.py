@@ -1,7 +1,8 @@
+import os
 import numpy as np
 import pytest
 from lmfit import Model
-from qutip import basis, fock_dm, jmat, qeye, tensor
+from qutip import basis, fock_dm, jmat, qeye, tensor, Qobj
 
 from quaccatoo import (
     CPMG,
@@ -18,6 +19,8 @@ from quaccatoo import (
     square_pulse,
     P1,
     PulsedSim,
+    load_quaccatoo,
+    save_quaccatoo
 )
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
@@ -562,3 +565,38 @@ def test_add_free_evolution():
     assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3) and np.isclose(
         analysis.fit_params.best_values["Tpi"], 0.714, atol=1e-3
     )
+
+
+def test_save_load():
+    qsys_saved = NV(
+        B0 = 4.2,
+        units_B0 = 'mT',
+        theta = -45,
+        units_angles = 'deg',
+        N = 14,
+        temp = 300,
+        units_temp = 'K'
+	)
+    psim_saved = XY8(
+            M=2,
+            free_duration=np.linspace(0.25, 0.36, 30),
+            pi_pulse_duration=1 / 2 / 10,
+            system=qsys_saved,
+            h1=10 * qsys_saved.MW_h1,
+            pulse_params={"f_pulse": qsys_saved.MW_freqs[1]},
+            time_steps=100,
+        )
+    
+    try:
+        save_quaccatoo(qsys_saved, './test_qsys')
+        save_quaccatoo(psim_saved, './test_psim')
+
+        loaded_qsys = load_quaccatoo('./test_qsys')
+        loaded_psim = load_quaccatoo('./test_psim')
+
+        assert set(loaded_qsys.__dict__.keys()) == set(qsys_saved.__dict__.keys())
+        assert set(loaded_psim.__dict__.keys()) == set(psim_saved.__dict__.keys())
+
+    finally:
+        if os.path.exists("./test.zip"):
+            os.remove("./test.zip")
