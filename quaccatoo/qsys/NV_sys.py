@@ -123,36 +123,13 @@ class NV(QSys):
         E : float | int
             Perpedicular component of the zero field splitting
         """
-        self._check_B0(B0, units_B0)
-        self._check_angles(theta, phi_r, units_angles)
+        self.B0, self.units_B0 = self._check_B0(B0, units_B0)
+        self.theta, self.phi_r, self.units_angles = self._check_angles(theta, phi_r, units_angles)
+        self.temp = self._check_temp(temp, units_temp)
 
         if not isinstance(E, (int, float)):
             raise TypeError(f"E must be a real number, got {E}: {type(E)}.")
-        else:
-            self.E = E
-
-        if temp is None:
-            self.temp = temp
-        elif isinstance(temp, (int, float)) and temp > 0:
-            self.temp = temp
-            if temp < 5.6 or temp > 700:
-                warnings.warn(
-                    "The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate."
-                )
-        else:
-            raise ValueError("T must be a positive real number.")
-
-        # by default quaccatoo uses temperatures in Kelvin
-        if units_temp == "K":
-            pass
-        elif units_temp == "C":
-            self.temp += 273.15
-        elif units_temp == "F":
-            raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
-        else:
-            raise ValueError(
-                f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}."
-            )
+        self.E = E
 
         self.N = N
         # calculates the Hamiltonian for the given field and nitrogen isotope
@@ -191,7 +168,10 @@ class NV(QSys):
 
         if self.temp is not None:
             self._rho0_T()
-
+            if self.temp < 5.6 or self.temp > 700:
+                warnings.warn(
+                    "The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate."
+                )
         self.MW_h1 = None
         self.RF_h1 = None
         self._set_MW()

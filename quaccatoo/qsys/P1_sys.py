@@ -130,49 +130,32 @@ class P1(QSys):
         observable : Qobj | list(Qobj)
             Observable to be measured
         """
-        self._check_B0(B0, units_B0)
-        self._check_angles(theta, phi_r, units_angles)
-
-        if not isinstance(theta_1, (int, float)) or not isinstance(phi_r_1, (int, float)):
-            raise TypeError(
-                f"Invalid type for theta_1 or phi_r_1. Expected a float or int, got theta_1: {type(theta)}, phi_r_1: {type(phi_r)}."
-            )
-
-        if units_angles == "deg":
-            theta_1 = np.deg2rad(theta_1)
-            phi_r_1 = np.deg2rad(phi_r_1)
-        elif units_angles == "rad":
-            pass
-        else:
-            raise ValueError(
-                f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {units_angles}."
-            )
+        self.B0, self.units_B0 = self._check_B0(B0, units_B0)
+        self.theta, self.phi_r, self.units_angles = self._check_angles(theta, phi_r, units_angles)
+        self.theta_1, self.phi_r_1, _ = self._check_angles(theta_1, phi_r_1, units_angles)
 
         self.B0_vector = np.array(
-            [[np.sin(theta) * np.cos(phi_r), np.sin(theta) * np.sin(phi_r), np.cos(theta)]]
+            [[np.sin(self.theta) * np.cos(self.phi_r), np.sin(self.theta) * np.sin(self.phi_r), np.cos(self.theta)]]
         )
         self.B1_vector = np.array(
             [
                 [
-                    np.sin(theta_1) * np.cos(phi_r_1),
-                    np.sin(theta_1) * np.sin(phi_r_1),
-                    np.cos(theta_1),
+                    np.sin(self.theta_1) * np.cos(self.phi_r_1),
+                    np.sin(self.theta_1) * np.sin(self.phi_r_1),
+                    np.cos(self.theta_1),
                 ]
             ]
         )
 
-        if rot_index in range(4):
-            self.rot_index = rot_index
-        else:
+        if rot_index not in range(4):
             raise ValueError(
                 f"Invalid value for rotation index r. Expected an integer between 0 and 3, got {rot_index}."
             )
+        self.rot_index = rot_index
 
-        self.theta_1 = theta_1
-        self.phi_r_1 = phi_r_1
         self._rot_pas_to_lab()
-        self.N = N
 
+        self.N = N
         if N == 14:
             H0 = (
                 self.electron_zeeman()
@@ -191,7 +174,7 @@ class P1(QSys):
 
         self.eigenstates = np.array([psi * psi.dag() for psi in H0.eigenstates()[1]])
 
-        # check if the obervable is an integen or a list of integers
+        # check if the obervable is an integer or a list of integers
         # if yes then takes the eigenstates' observables corresponding to the integer
         if isinstance(observable, int) and observable in range(len(self.eigenstates)):
             observable = self.eigenstates[observable]

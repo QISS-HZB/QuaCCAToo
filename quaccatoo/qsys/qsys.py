@@ -54,8 +54,10 @@ class QSys:
         Internal function for checking if external magnetic field B0 is correctly defined.
     _check_angles
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
+    _check_temp
+        Internal function for checking if the temperature is correctly defined.
     _tensor_product_N
-        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope
+        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope.
     """
 
     def __init__(
@@ -311,7 +313,7 @@ class QSys:
                     for op in self.c_ops
                 ]
 
-    def _check_B0(self, B0: float | int, units_B0: str) -> None:
+    def _check_B0(self, B0: float | int, units_B0: Literal['T', 'mT', 'G']) -> None:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
 
@@ -319,12 +321,16 @@ class QSys:
         ----------
         B0 : float | int
             External magnetic field
-        units_BO : str
-            str for the units of the magnetic field
-        """
-        self.B0 = B0
-        self.units_B0 = units_B0
+        units_BO : 'T', 'mT', 'G'
+            String for the units of the magnetic field
 
+        Returns
+        ----------
+        B0 : float | int
+            Checked external magnetic field in mT
+        units_BO : 'mT'
+            Units of the magnetic field
+        """
         if not isinstance(B0, (int, float)):
             raise TypeError(f"B0 must be a real number, got: {type(B0)}.")
 
@@ -333,17 +339,19 @@ class QSys:
                 "No units for the magnetic field were given. The magnetic field will be considered in mT."
             )
         elif units_B0 == "T":
-            self.B0 *= 1e3
+            B0 *= 1e3
         elif units_B0 == "mT":
             pass
         elif units_B0 == "G":
-            self.B0 *= 1e-1
+            B0 *= 1e-1
         else:
             raise ValueError(
                 f"Invalid value for units_B0. Expected either 'G', 'mT' or 'T', got {units_B0}."
             )
+        
+        return B0, 'mT'
 
-    def _check_angles(self, theta: float | int, phi_r: float | int, units_angles: str) -> None:
+    def _check_angles(self, theta: float | int, phi_r: float | int, units_angles: Literal['deg', 'rad']) -> None:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
 
@@ -353,25 +361,64 @@ class QSys:
             Polar angle between color center axis and external magnetic field
         phi_r : float | int
             Azimuthal angle between color center axis and external magnetic field
-        units_agnles : str
-            str for the units of the angles
+        units_angles : 'deg', 'rad'
+            String for the units of the angles
+
+        Returns
+        ----------
+        theta : float | int
+            Checked polar angle between color center axis and external magnetic field in rad
+        phi_r : float | int
+            Checked azimuthal angle between color center axis and external magnetic field in rad
+        units_angles : 'rad'
+            Units of the angles
         """
         if not isinstance(theta, (int, float)) or not isinstance(phi_r, (int, float)):
             raise TypeError(
                 f"Invalid type for theta or phi_r. Expected a float or int, got theta: {type(theta)}, phi_r: {type(phi_r)}."
             )
 
-        self.units_angles = units_angles
         if units_angles == "deg":
-            self.theta = np.deg2rad(theta)
-            self.phi_r = np.deg2rad(phi_r)
+            theta = np.deg2rad(theta)
+            phi_r = np.deg2rad(phi_r)
         elif units_angles == "rad":
-            self.theta = theta
-            self.phi_r = phi_r
+            pass
         else:
             raise ValueError(
                 f"Invalid value for units_angles. Expected either 'deg' or 'rad', got {self.units_angles}."
             )
+        
+        return theta, phi_r, 'rad'
+    
+    def _check_temp(self, temp: float | int | None, units_temp: Literal['K', 'C']) -> float:
+        """
+        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
+        to the dimension of the nitrogen isoptope
+
+        Parameters
+        ----------
+        H: Qobj
+            Electronic Hamiltonian of the color center
+        N: None, 0, 14, 15
+            Nitrogen isotope
+        """
+        if temp is None:
+            pass
+        elif isinstance(temp, (float, int)) and temp > 0:
+            if units_temp == "K":
+                pass
+            elif units_temp == "C":
+                temp += 273.15
+            elif units_temp == "F":
+                raise ValueError("'F' is not a valid unit for temperature, learn the metric system.")
+            else:
+                raise ValueError(
+                    f"Invalid value for units_temp. Expected either 'K' or 'C', got {units_temp}."
+                )
+        else:
+            raise ValueError(f"'temp' must be None or a positive float or int. Got: {temp}")
+
+        return temp
         
     def _tensor_product_N(self, H: Qobj, N: Literal[None, 0, 14, 15]) -> Qobj:
         """
