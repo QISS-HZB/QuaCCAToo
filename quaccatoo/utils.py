@@ -11,8 +11,6 @@ import dill
 import numpy as np
 from qutip import Qobj, fileio
 
-import quaccatoo
-
 __all__ = ["save", "load"]
 
 ####################################################################################################
@@ -103,9 +101,10 @@ def load(file_name):
 
     # Extract the zip file to a temporary directory
     tmp_dir = "tmp"
-    os.makedirs(tmp_dir, exist_ok=True)
 
+    import quaccatoo # pylint: disable=import-outside-toplevel,cyclic-import
     try:
+        os.makedirs(tmp_dir, exist_ok=True)
         with zipfile.ZipFile(file_name, "r") as zip_file:
             zip_file.extractall(tmp_dir)
 
@@ -134,5 +133,6 @@ def load(file_name):
         return obj
 
     finally:
-        # Remove the temporary directory
-        shutil.rmtree(tmp_dir)
+        if os.path.exists(tmp_dir):
+            # Remove the temporary directory
+            shutil.rmtree(tmp_dir)
