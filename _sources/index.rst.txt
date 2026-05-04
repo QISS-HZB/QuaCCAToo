@@ -80,7 +80,7 @@ contain:
   `Local nanoscale probing of electron spins using NV centers in diamond
   <https://arxiv.org/abs/2507.13295>`__.
 - `08 - Quantum Gates via Dynamical Decoupling with NV <https://qiss-hzb.github.io/QuaCCAToo/tutorials/08_NV_DD_gates.html>`__:
-  simulation of Quantum Gates via `Dynamical Decoupling of Central Qubit 15NV Center in Diamond <https://arxiv.org/abs/2509.22107>`__.
+  simulation of Quantum Gates via `Quantum gates via dynamical decoupling of a central qubit on IBMQ and 15N-vacancy centers in diamond <https://journals.aps.org/pra/abstract/10.1103/6st7-qh12>`__.
 
 Class Hierarchy
 ---------------
@@ -122,7 +122,7 @@ Featured In
 
 - L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. Advanced Quantum Technologies, e00691. doi: `10.1002/qute.202500691 <https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691>`__.
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: `10.1103/PhysRevA.111.022606 <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
-- L. Tsunaki, M. Dotan, K. Volkova, & B. Naydenov. (2025). Quantum Gates via Dynamical Decoupling of Central Qubit on IBMQ and 15NV Center in Diamond. doi: `arXiv:2509.22107 quant-ph <https://arxiv.org/abs/2509.22107>`__.
+- L. Tsunaki, M. Dotan, K. Volkova, & B. Naydenov. (2025). Quantum gates via dynamical decoupling of a central qubit on IBMQ and 15N-vacancy centers in diamond. doi: `Physical Review A: 10.1103/6st7-qh12 <https://journals.aps.org/pra/abstract/10.1103/6st7-qh12>`__.
 - S. Trofimov, C. Thessalonikios, V. Deinhart, A. Spyrantis, L. Tsunaki, K. Volkova, K. Höflich, & B. Naydenov. (2025). Local nanoscale probing of electron spins using NV centers in diamond. `10.1016/j.diamond.2026.113530 <https://www.sciencedirect.com/science/article/pii/S0925963526002414>`__.
 
 If you used QuaCCAToo in your work, please let us know so we can add it to the list!
