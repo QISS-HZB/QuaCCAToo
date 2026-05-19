@@ -7,4 +7,4 @@ from .pulsed_sim import *
 from .qsys import *
 from .utils import *
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
