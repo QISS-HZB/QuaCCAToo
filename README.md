@@ -24,7 +24,7 @@ If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbo
 ## Links
 - Repository: https://github.com/QISS-HZB/QuaCCAToo
 - Documentation: https://qiss-hzb.github.io/QuaCCAToo/
-- PyPI: https://pypi.org/project/QuaCCAToo/
+- PyPI: https://pypi.org/project/quaccatoo/
 
 ## Installation
 
