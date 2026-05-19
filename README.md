@@ -15,7 +15,7 @@ QuaCCAToo is a Python library for simulating and analyzing spin dynamics of colo
 The library provides several predefined pulsed sequences, analysis methods and quantum systems divided into four integrated modules: `qsys`, `pulsed_sim`, `analysis` and `exp_data`.
 The systems' time evolution under pulsed experiments are calculated through quantum master equations based on the provided Hamiltonian, with realistic pulses in the laboratory frame without rotating frame approximations. 
 The software is built on top of QuTip, inheriting its object-oriented framework and the `Qobj` class.
-The code is continously improved and maintained using `pytest`, `ruff`, `pylint` and `ty`.
+The code is continuously improved and maintained using `pytest`, `ruff`, `pylint` and `ty`.
 
 For learning more about the package, we recommend first checking the [tutorials](https://qiss-hzb.github.io/QuaCCAToo/tutorials.html) section.
 
