@@ -4,6 +4,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19682839.svg)](https://doi.org/10.5281/zenodo.19682839)
 [![Documentation](https://img.shields.io/badge/docs-online-blue?logo=readthedocs)](https://qiss-hzb.github.io/QuaCCAToo/)
 [![PyPI](https://img.shields.io/pypi/v/quaccatoo?logo=pypi&logoColor=white)](https://pypi.org/project/quaccatoo/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/quaccatoo?logo=anaconda&logoColor=white)](https://anaconda.org/conda-forge/quaccatoo)
 [![PyPI Downloads](https://static.pepy.tech/badge/quaccatoo?logo=pypi&logoColor=white)](https://pepy.tech/project/quaccatoo)
 
 [![Pylint](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml/badge.svg)](https://github.com/QISS-HZB/QuaCCAToo/actions/workflows/pylint.yml)
