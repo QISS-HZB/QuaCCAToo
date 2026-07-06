@@ -87,11 +87,21 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <section id="normal-installation">
 <h2>Normal installation<a class="headerlink" href="#normal-installation" title="Link to this heading"></a></h2>
-<p>We strongly recommend using a virtual environment so that the system
-Python remains untouched.</p>
-<p>You can create a <code class="docutils literal notranslate"><span class="pre">conda</span></code> virtual environment as follows:</p>
+<p>We strongly recommend using a virtual environment using whichever tool like <cite>venv</cite>/<cite>conda</cite>/<cite>uv</cite> that you prefer so that the system Python remains untouched. For example, with conda:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>quaccatoo-env<span class="w"> </span>python
 conda<span class="w"> </span>activate<span class="w"> </span>quaccatoo-env
+</pre></div>
+</div>
+<p>The package can then be installed from pip:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>quaccatoo
+</pre></div>
+</div>
+<p>Or from conda-forge:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>quaccatoo
+</pre></div>
+</div>
+<p>Finally, to check installation:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>list<span class="w"> </span>quaccatoo
 </pre></div>
 </div>
 <p>In some cases, switching to an alternate <code class="docutils literal notranslate"><span class="pre">BLAS</span></code> implementation can provide
@@ -99,21 +109,6 @@ speedups (in particular, <code class="docutils literal notranslate"><span class=
 Refer <a class="reference external" href="https://conda-forge.org/docs/maintainer/knowledge_base/#blas">here</a>
 for more details and instructions.</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;libblas=*=*_blis&quot;</span>
-conda<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scipy
-</pre></div>
-</div>
-<p><strong>OR</strong></p>
-<p>You can use a native Python venv (you’ll need <code class="docutils literal notranslate"><span class="pre">pip</span></code> as well)</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>quaccatoo-env
-<span class="nb">source</span><span class="w"> </span>quaccatoo-env/bin/activate
-</pre></div>
-</div>
-<p>After the virtual environment has been setup,</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>quaccatoo
-</pre></div>
-</div>
-<p>To check the installation, you can run</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>show<span class="w"> </span>quaccatoo
 </pre></div>
 </div>
 <div class="admonition note">
