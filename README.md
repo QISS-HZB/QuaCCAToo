@@ -28,10 +28,28 @@ If you used QuaCCAToo in your work, please cite [Digital Twin Simulations Toolbo
 
 ## Installation
 
-We strongly recommend using a virtual environment (use whichever tool like `venv`/`conda`/`uv` that you prefer) so that the system Python remains untouched.
+We strongly recommend using a virtual environment using whichever tool like `venv`/`conda`/`uv` that you prefer so that the system Python remains untouched. For example, with conda:
+
+``` sh
+conda create --name quaccatoo-env python
+conda activate quaccatoo-env
+```
+
+The package can then be installed from pip:
 
 ``` sh
 pip install quaccatoo
+```
+
+Or from conda-forge:
+
+``` sh
+conda install -c conda-forge quaccatoo
+```
+
+Finally, to check installation:
+``` sh
+conda list quaccatoo
 ```
 
 Check [here](https://qiss-hzb.github.io/QuaCCAToo/installation.html) for detailed installation instructions.
