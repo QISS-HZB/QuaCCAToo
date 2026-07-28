@@ -1,10 +1,9 @@
 """QuaCCAToo Package"""
 
-# ruff: noqa: F403
 from .analysis import *
 from .exp_data import *
 from .pulsed_sim import *
 from .qsys import *
 from .utils import *
 
-__version__ = "1.2.1"
+__version__ = "1.3.0"
