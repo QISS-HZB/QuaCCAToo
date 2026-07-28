@@ -22,8 +22,7 @@ authors = [
 ]
 
 maintainers = [
-    { name = "Lucas Tsunaki", email = "tsunakilucas@gmail.com" },
-    { name = "Anmol Singh", email = "anmol.singh@helmholtz-berlin.de" },
+    { name = "Lucas Tsunaki", email = "tsunakilucas@gmail.com" }
 ]
 
 dependencies = [
@@ -88,6 +87,16 @@ line-length = 100
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
+# E4/E7/E9 and F are the defaults of ruff, the rest are:
+# I    import sorting
+# W    pycodestyle warnings
+# SIM  simplifiable code
+# C4   comprehensions
+# NPY  numpy specific rules
+# B    likely bugs, such as mutable default arguments or warnings without stacklevel
+# PT   pytest style
+# ARG  unused arguments
+select = ["E4", "E7", "E9", "F", "I", "W", "SIM", "C4", "NPY", "B", "PT", "ARG"]
 ignore = ["E741"]
 task-tags = [""]
 

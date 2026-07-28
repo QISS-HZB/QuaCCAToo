@@ -114,13 +114,15 @@ class RabiModel(Model):
     Takes the same parameters as the fit_rabi function.
     """
 
-    def __init__(  # pylint: disable=dangerous-default-value
+    def __init__(
         self,
-        independent_vars: list[str] = ["x"],
+        independent_vars: list[str] | None = None,
         prefix: str = "",
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
+        if independent_vars is None:
+            independent_vars = ["x"]
         kwargs.update(
             {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
         )
@@ -211,13 +213,15 @@ class ExpDecayModel(Model):
     Takes the same parameters as the fit_exp_decay function.
     """
 
-    def __init__(  # pylint: disable=dangerous-default-value
+    def __init__(
         self,
-        independent_vars: list[str] = ["x"],
+        independent_vars: list[str] | None = None,
         prefix: str = "",
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
+        if independent_vars is None:
+            independent_vars = ["x"]
         kwargs.update(
             {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
         )
@@ -273,13 +277,15 @@ class RabiDecayModel(Model):
     Takes the same parameters as the fit_rabi_decay function.
     """
 
-    def __init__(  # pylint: disable=dangerous-default-value
+    def __init__(
         self,
-        independent_vars: list[str] = ["x"],
+        independent_vars: list[str] | None = None,
         prefix: str = "",
         nan_policy: str = "raise",
         **kwargs: Any,
     ):
+        if independent_vars is None:
+            independent_vars = ["x"]
         kwargs.update(
             {"prefix": prefix, "nan_policy": nan_policy, "independent_vars": independent_vars}
         )

@@ -7,6 +7,8 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 
+from ..utils import _check_figsize
+
 __all__ = ["ExpData"]
 
 ####################################################################################################
@@ -84,10 +86,10 @@ class ExpData:
             Additional arguments for the np.loadtxt function
         """
         if not isinstance(file_path, str):
-            raise ValueError("file_path must be a string")
+            raise ValueError("file_path must be a string")  # noqa: TRY004
 
         if not isinstance(variable_column, int):
-            raise ValueError("variable_column must be an integer")
+            raise ValueError("variable_column must be an integer")  # noqa: TRY004
 
         # the results columns needs to be an integer or a list of integers
         if not isinstance(results_columns, int) and not (
@@ -109,7 +111,7 @@ class ExpData:
             raise ValueError("yerr_columns must have the same lenght of the results_columns")
 
         if not isinstance(variable_name, str) or not isinstance(result_name, str):
-            raise ValueError("variable_name and result_name must be strings")
+            raise ValueError("variable_name and result_name must be strings")  # noqa: TRY004
 
         # loads experimental data from a file with the specified arguments
         exp_data = np.loadtxt(file_path, **loadtxt_kwargs)
@@ -122,16 +124,20 @@ class ExpData:
         else:
             self.results = [exp_data[:, column] for column in results_columns]
 
+        # yerror is always defined, so that the plotting methods can check it against None
+        # instead of probing the object for the attribute
         if isinstance(yerr_columns, int):
             self.yerror = exp_data[:, yerr_columns]
         elif isinstance(yerr_columns, list):
             self.yerror = [exp_data[:, column] for column in yerr_columns]
+        else:
+            self.yerror = None
 
         self.variable_name = variable_name
         self.result_name = result_name
 
         if not isinstance(plot, bool):
-            raise ValueError("plot must be a boolean")
+            raise ValueError("plot must be a boolean")  # noqa: TRY004
         # plots the experimental data
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
@@ -163,14 +169,14 @@ class ExpData:
         if not isinstance(self.results[pos_col], np.ndarray) or not isinstance(
             self.results[neg_col], np.ndarray
         ):
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 f"pos_col={pos_col} and neg_col={neg_col} where not found in the results."
             )
 
         self.results = self.results[pos_col] - self.results[neg_col]
 
         if not isinstance(plot, bool):
-            raise ValueError("plot must be a boolean")
+            raise ValueError("plot must be a boolean")  # noqa: TRY004
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
@@ -196,7 +202,7 @@ class ExpData:
             Title of the figure for the plot
         """
         if not isinstance(background_value, (int, float)):
-            raise ValueError("background_value must be a number.")
+            raise ValueError("background_value must be a number.")  # noqa: TRY004
 
         if isinstance(self.results, np.ndarray):
             self.results = self.results - background_value
@@ -208,7 +214,7 @@ class ExpData:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
 
         if not isinstance(plot, bool):
-            raise ValueError("plot must be a boolean")
+            raise ValueError("plot must be a boolean")  # noqa: TRY004
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
@@ -234,7 +240,7 @@ class ExpData:
             Title of the figure for the plot
         """
         if not isinstance(rescale_value, (int, float)):
-            raise ValueError("rescale_value must be a number.")
+            raise ValueError("rescale_value must be a number.")  # noqa: TRY004
 
         if isinstance(self.results, np.ndarray):
             self.results = self.results * rescale_value
@@ -246,7 +252,7 @@ class ExpData:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
 
         if not isinstance(plot, bool):
-            raise ValueError("plot must be a boolean")
+            raise ValueError("plot must be a boolean")  # noqa: TRY004
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
@@ -295,40 +301,51 @@ class ExpData:
             raise ValueError("x_end must be a integer index or a list of integer indexes.")
 
         if not isinstance(poly_order, int):
-            raise ValueError("poly_order must be an integer.")
+            raise ValueError("poly_order must be an integer.")  # noqa: TRY004
 
-        # crops the x and y axis for performing the baseline fit
+        # selects the indexes of the baseline regions. The indexes are used instead of slicing the
+        # results directly, as the results can be a list of arrays, where the first index refers to
+        # the column and not to the data points
+        all_indexes = np.arange(len(self.variable))
+
         if isinstance(x_start, int) and isinstance(x_end, int):
-            baseline_xaxis = self.variable[x_start:x_end]
-            baseline_yaxis = self.results[x_start:x_end]
+            baseline_indexes = all_indexes[x_start:x_end]
         elif isinstance(x_start, list) and isinstance(x_end, list) and len(x_start) == len(x_end):
-            baseline_xaxis = np.concatenate(
-                [self.variable[start:end] for start, end in zip(x_start, x_end)]
-            )
-            baseline_yaxis = np.concatenate(
-                [self.results[start:end] for start, end in zip(x_start, x_end)]
+            baseline_indexes = np.concatenate(
+                [all_indexes[start:end] for start, end in zip(x_start, x_end, strict=True)]
             )
         else:
             raise ValueError("x_start and x_end must int or a list of the same length.")
 
+        if len(baseline_indexes) <= poly_order:
+            raise ValueError(
+                f"The baseline region contains {len(baseline_indexes)} points, which is not enough "
+                f"to fit a polynomial of order {poly_order}."
+            )
+
+        baseline_xaxis = self.variable[baseline_indexes]
+
         if isinstance(self.results, np.ndarray):
-            poly_fit = np.polyfit(baseline_xaxis, baseline_yaxis, poly_order)
-            self.results -= np.polyval(poly_fit, self.variable)
+            poly_fit = np.polyfit(baseline_xaxis, self.results[baseline_indexes], poly_order)
+            self.results = self.results - np.polyval(poly_fit, self.variable)
 
         elif isinstance(self.results, list) and all(
             isinstance(result, np.ndarray) for result in self.results
         ):
-            poly_fit = [
-                np.polyfit(baseline_xaxis[idx_res], val_res, poly_order)
-                for idx_res, val_res in enumerate(self.results)
-            ]
+            # each column has its own baseline, fitted over the same region of the variable
             self.results = [
-                val_res - np.polyval(poly_fit[idx_res], self.variable)
-                for idx_res, val_res in enumerate(self.results)
+                val_res
+                - np.polyval(
+                    np.polyfit(baseline_xaxis, val_res[baseline_indexes], poly_order), self.variable
+                )
+                for val_res in self.results
             ]
 
+        else:
+            raise ValueError("Results must be a numpy array or a list of numpy arrays")
+
         if not isinstance(plot, bool):
-            raise ValueError("plot must be a boolean")
+            raise ValueError("plot must be a boolean")  # noqa: TRY004
         elif plot:
             self.plot_exp_data(figsize=figsize, figtitle=figtitle)
 
@@ -347,17 +364,18 @@ class ExpData:
         figtitle : str
             Title of the figure for the plot
         """
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
+        _check_figsize(figsize)
 
         if not isinstance(figtitle, str):
-            raise ValueError("figtitle must be a string")
+            raise ValueError("figtitle must be a string")  # noqa: TRY004
 
         _, ax = plt.subplots(1, 1, figsize=figsize)
 
         # check if the results is a list of results or a single result
         if isinstance(self.results, np.ndarray):
-            if hasattr(self, "yerror"):
+            # the uncertainties are only plotted if they still match the shape of the results,
+            # which is not the case anymore after the columns were subtracted
+            if isinstance(self.yerror, np.ndarray):
                 ax.errorbar(
                     self.variable, self.results, self.yerror, alpha=0.7, label="Observable", fmt="o"
                 )
@@ -368,13 +386,14 @@ class ExpData:
             isinstance(result, np.ndarray) for result in self.results
         ):
             for idx_res, val_res in enumerate(self.results):
-                if hasattr(self, "yerror"):
+                # the uncertainties are only plotted if one was loaded for each column
+                if isinstance(self.yerror, list) and len(self.yerror) == len(self.results):
                     ax.errorbar(
                         self.variable,
                         val_res,
                         self.yerror[idx_res],
                         alpha=0.7,
-                        label="Observable",
+                        label=f"Observable {idx_res}",
                         fmt="o",
                     )
                 else:

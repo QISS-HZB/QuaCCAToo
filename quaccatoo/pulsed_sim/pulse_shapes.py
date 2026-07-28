@@ -56,9 +56,7 @@ def gaussian_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarra
     """
     return np.exp(
         -((t - pulse_params["t_mid"]) ** 2) / (2 * pulse_params["sigma"] ** 2.0)
-    ) * np.cos(  # satisfy the python typing demon (2.)
-        pulse_params["f_pulse"] * t + pulse_params["phi_t"]
-    )
+    ) * np.cos(pulse_params["f_pulse"] * t + pulse_params["phi_t"])
 
 
 def lorentzian_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndarray:
@@ -85,6 +83,6 @@ def lorentzian_pulse(t: np.ndarray, **pulse_params: dict[str, float]) -> np.ndar
     """
     return (
         1
-        / (1 + ((t - pulse_params["t_mid"]) / ["gamma"]) ** 2)
+        / (1 + ((t - pulse_params["t_mid"]) / pulse_params["gamma"]) ** 2)
         * np.cos(pulse_params["f_pulse"] * t + pulse_params["phi_t"])
     )

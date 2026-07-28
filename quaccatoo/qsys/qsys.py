@@ -12,6 +12,8 @@ import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, qeye, tensor
 
+from ..utils import _check_figsize
+
 __all__ = ["QSys", "compose_sys", "plot_energy_B0"]
 
 ####################################################################################################
@@ -90,26 +92,27 @@ class QSys:
         # if the units are in frequency, assign the Hamiltonian as it is
         if units_H0 is None:
             self.units_H0 = "MHz"
-            warnings.warn("No units supplied, assuming default value of MHz.")
+            warnings.warn("No units supplied, assuming default value of MHz.", stacklevel=2)
         elif units_H0 in ["MHz", "GHz", "kHz"]:
             self.units_H0 = units_H0
         elif units_H0 == "eV":
             self.units_H0 = units_H0
             self.H0 *= cte.eV / cte.h / 1e6
-            warnings.warn("Converting Hamiltonian units to MHz")
+            warnings.warn("Converting Hamiltonian units to MHz", stacklevel=2)
         else:
             raise ValueError(
                 f"Invalid value for units_H0. Expected either units of frequencies or 'eV', got {units_H0}. The Hamiltonian will be considered in MHz."
             )
 
         if not self.H0.isherm:
-            warnings.warn("Passed H0 is not a hermitian object.")
+            warnings.warn("Passed H0 is not a hermitian object.", stacklevel=2)
 
         self._get_energy_levels()
 
         # check if rho0 is correctly defined
         if rho0 is None:
-            warnings.warn("Initial state not provided.")
+            self.rho0 = None
+            warnings.warn("Initial state not provided.", stacklevel=2)
         elif isinstance(rho0, int) and rho0 in range(len(self.eigenstates)):
             self.rho0 = self.eigenstates[
                 rho0
@@ -132,7 +135,7 @@ class QSys:
         elif isinstance(observable, Qobj) and observable.shape == H0.shape:
             self.observable = observable
             if not observable.isherm:
-                warnings.warn("Passed observable is not hermitian.")
+                warnings.warn("Passed observable is not hermitian.", stacklevel=2)
         elif (
             isinstance(observable, list)
             and all(isinstance(obs, (Qobj, np.ndarray)) for obs in observable)
@@ -140,7 +143,7 @@ class QSys:
         ):
             self.observable = observable
             if not all(obs.isherm for obs in observable):  # ty: ignore[unresolved-attribute], list comprehension, handled manually
-                warnings.warn("Passed observables are not hermitian.")
+                warnings.warn("Passed observables are not hermitian.", stacklevel=2)
         else:
             raise ValueError(
                 "Invalid value for observable. Expected a Qobj or a list of Qobj of the same dimensions as H0."
@@ -186,8 +189,7 @@ class QSys:
         energy_lim : tuple
             Limits of the energy levels
         """
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
+        _check_figsize(figsize)
 
         _, ax = plt.subplots(1, 1, figsize=figsize)
 
@@ -222,12 +224,12 @@ class QSys:
             Hamiltonian of the new spin
         """
         if not isinstance(H_spin, Qobj):
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 "H_spin must be a Qobj in the form of a tensor with the original Hamiltonian H0."
             )
 
         if not Qobj(H_spin).isherm:
-            warnings.warn("Passed H_spin is not a hermitian object.")
+            warnings.warn("Passed H_spin is not a hermitian object.", stacklevel=2)
 
         self.dim_add_spin = int(H_spin.shape[0] / self.H0.shape[0])
 
@@ -237,7 +239,9 @@ class QSys:
         self.H0 = tensor(self.H0, qeye(self.dim_add_spin)) + H_spin
         self._get_energy_levels()
 
-        if self.rho0.isherm:
+        if self.rho0 is None:
+            pass
+        elif self.rho0.isherm:
             self.rho0 = tensor(self.rho0, qeye(self.dim_add_spin))
             self.rho0 /= self.rho0.tr()
         elif self.rho0.isket:
@@ -269,17 +273,21 @@ class QSys:
         indexes : int or list of int
             Index or list of indexes to be removed from the system.
         """
-        if isinstance(indexes, int):
+        if isinstance(indexes, (int, np.integer)):
             if indexes < 0 or indexes >= self.H0.shape[0]:
-                raise ValueError("sel must be a valid index of the Hamiltonian.")
-        if isinstance(indexes, (list, np.ndarray)):
-            if not all(isinstance(i, int) for i in indexes) and not all(  # ty: ignore[not-iterable], handled manually
+                raise ValueError(
+                    f"indexes must be a valid index of the Hamiltonian, got {indexes}."
+                )
+        elif isinstance(indexes, (list, np.ndarray)):
+            if not all(isinstance(i, (int, np.integer)) for i in indexes) or not all(  # ty: ignore[not-iterable], handled manually
                 0 <= i < self.H0.shape[0]
                 for i in indexes  # ty: ignore[not-iterable], handled manually
             ):
-                raise ValueError("All elements in sel must be valid indices of the Hamiltonian.")
+                raise ValueError(
+                    "All elements in indexes must be valid indices of the Hamiltonian."
+                )
         else:
-            raise ValueError("sel must be an integer or a list of integers.")
+            raise ValueError(f"indexes must be an integer or a list of integers, got {indexes}.")  # noqa: TRY004
 
         self.H0 = Qobj(np.delete(np.delete(self.H0.full(), indexes, axis=0), indexes, axis=1))
         self._get_energy_levels()
@@ -315,7 +323,7 @@ class QSys:
                     for op in self.c_ops
                 ]
 
-    def _check_B0(self, B0: float, units_B0: Literal["T", "mT", "G"]) -> None:
+    def _check_B0(self, B0: float, units_B0: Literal["T", "mT", "G"]) -> tuple[float, str]:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
 
@@ -327,7 +335,7 @@ class QSys:
             String for the units of the magnetic field
 
         Returns
-        ----------
+        -------
         B0 : float
             Checked external magnetic field in mT
         units_BO : 'mT'
@@ -338,7 +346,8 @@ class QSys:
 
         if units_B0 is None:
             warnings.warn(
-                "No units for the magnetic field were given. The magnetic field will be considered in mT."
+                "No units for the magnetic field were given. The magnetic field will be considered in mT.",
+                stacklevel=3,
             )
         elif units_B0 == "T":
             B0 *= 1e3
@@ -355,7 +364,7 @@ class QSys:
 
     def _check_angles(
         self, theta: float, phi_r: float, units_angles: Literal["deg", "rad"]
-    ) -> None:
+    ) -> tuple[float, float, str]:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
 
@@ -369,7 +378,7 @@ class QSys:
             String for the units of the angles
 
         Returns
-        ----------
+        -------
         theta : float
             Checked polar angle between color center axis and external magnetic field in rad
         phi_r : float
@@ -394,17 +403,22 @@ class QSys:
 
         return theta, phi_r, "rad"
 
-    def _check_temp(self, temp: float | None, units_temp: Literal["K", "C"]) -> float:
+    def _check_temp(self, temp: float | None, units_temp: Literal["K", "C"]) -> float | None:
         """
-        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
-        to the dimension of the nitrogen isoptope
+        Internal function for checking if the temperature is correctly defined,
+        converting it to Kelvin if it was given in Celsius.
 
         Parameters
         ----------
-        H: Qobj
-            Electronic Hamiltonian of the color center
-        N: None, 0, 14, 15
-            Nitrogen isotope
+        temp : float or None
+            Temperature of the system
+        units_temp : 'K', 'C'
+            String for the units of the temperature
+
+        Returns
+        -------
+        temp : float or None
+            Checked temperature in K
         """
         if temp is None:
             pass
@@ -469,17 +483,19 @@ def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
         Composed quantum system.
     """
     if not isinstance(qsys1, QSys) or not isinstance(qsys2, QSys):
-        raise ValueError("Both qsys1 and qsys2 must be instances of the QSys class.")
+        raise ValueError("Both qsys1 and qsys2 must be instances of the QSys class.")  # noqa: TRY004
 
     if qsys1.units_H0 != qsys2.units_H0:
-        warnings.warn("The two systems have different units.")
+        warnings.warn("The two systems have different units.", stacklevel=2)
 
     if isinstance(qsys1.H0, Qobj) and isinstance(qsys2.H0, Qobj):
         H0 = tensor(qsys1.H0, qeye(qsys2.H0.dims[0])) + tensor(qeye(qsys1.H0.dims[0]), qsys2.H0)
     else:
-        raise ValueError("Both Hamiltonians must be Qobj.")
+        raise ValueError("Both Hamiltonians must be Qobj.")  # noqa: TRY004
 
-    if qsys1.rho0.isket and qsys2.rho0.isket:
+    if qsys1.rho0 is None or qsys2.rho0 is None:
+        rho0 = None
+    elif qsys1.rho0.isket and qsys2.rho0.isket:
         rho0 = tensor(qsys1.rho0, qsys2.rho0).unit()
     elif qsys1.rho0.isherm and qsys2.rho0.isherm:
         rho0 = tensor(qsys1.rho0, qsys2.rho0)
@@ -579,10 +595,11 @@ def plot_energy_B0(
     ylabel : str
         Label of the y-axis.
     """
-    if not (isinstance(figsize, tuple) or len(figsize) == 2):
-        raise ValueError("figsize must be a tuple of two positive floats")
+    _check_figsize(figsize)
 
-    if not isinstance(B0, (np.ndarray, list)) and all(isinstance(b, (int, float)) for b in B0):
+    if not isinstance(B0, (np.ndarray, list)) or not all(
+        isinstance(b, (int, float, np.floating, np.integer)) for b in B0
+    ):
         raise ValueError("B0 must be a list or a numpy array of real numbers")
 
     if not isinstance(H0, list) or not all(isinstance(h0, Qobj) for h0 in H0) or len(H0) != len(B0):

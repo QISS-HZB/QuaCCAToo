@@ -2,6 +2,7 @@
 This module contains the Analysis class and the plot_histogram method.
 """
 
+import warnings
 from typing import Any, Literal
 
 import matplotlib.pyplot as plt
@@ -13,6 +14,7 @@ from scipy.stats import linregress, pearsonr
 
 from ..exp_data.exp_data import ExpData
 from ..pulsed_sim.pulsed_sim import PulsedSim
+from ..utils import _check_figsize
 
 __all__ = ["Analysis", "plot_histogram"]
 
@@ -37,10 +39,13 @@ class Analysis:
         List with the fitted parameters for each result
     fit_cov : list
         List with the covariance of the fitted parameters for each result
-    pearson : float
-        Pearson correlation coefficient between two experiments
+    pearson : scipy result or None
+        Result of the linear regression or of the Pearson correlation between two experiments,
+        as returned by scipy. None if compare_with was not run yet.
     exp_comparison : PulsedSim or ExpData
-        Experiment to be compared with the first one
+        Experiment to be compared with the first one. The object itself is never modified.
+    comparison_results : np.ndarray
+        Results of the comparison experiment, rescaled by the linear fit if one was performed
 
     Methods
     -------
@@ -76,7 +81,7 @@ class Analysis:
         if isinstance(experiment, (ExpData, PulsedSim)):
             self.experiment = experiment
         else:
-            raise ValueError("experiment must be a PulsedSimulation or ExpData object")
+            raise ValueError("experiment must be a PulsedSimulation or ExpData object")  # noqa: TRY004
 
         if not isinstance(experiment.results, np.ndarray) and not (
             isinstance(experiment.results, list)
@@ -95,6 +100,9 @@ class Analysis:
 
         self.FFT_values = []
         self.FFT_peaks = []
+        self.pearson = None
+        self.exp_comparison = None
+        self.comparison_results = None
         # the fit attributes need to be lists of the same length as the results attribute to avoid index errors
         self.fit_model = [None] * len(self.experiment.results)
         self.fit_params = [None] * len(self.experiment.results)
@@ -129,54 +137,70 @@ class Analysis:
             Pearson correlation coefficient between the two experiments
         """
         if not isinstance(exp_comparison, PulsedSim) and not isinstance(exp_comparison, ExpData):
-            raise ValueError("experiment_2 must be a PulsedSim or ExpData object")
+            raise ValueError("experiment_2 must be a PulsedSim or ExpData object")  # noqa: TRY004
 
         if not isinstance(results_index, int) or not isinstance(comparison_index, int):
-            raise ValueError("results_index and comparison_index must be integers")
-        elif (
-            results_index > len(self.experiment.results) - 1
-            or comparison_index > len(exp_comparison.results) - 1
-        ):
-            raise ValueError(
-                "results_index and comparison_index must be less than the number of results"
-            )
+            raise ValueError("results_index and comparison_index must be integers")  # noqa: TRY004
 
         if not isinstance(linear_fit, bool):
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 "linear_fit must be a boolean indicating whether or not to perform a linear fit between the two data sets."
             )
 
         if len(self.experiment.variable) != len(exp_comparison.variable):
             raise ValueError("The variable attributes of the experiments must have the same length")
 
+        # the indexes are only meaningful when the corresponding results are a list of arrays,
+        # in which case they must point to one of the arrays
+        results = self._index_results(self.experiment.results, results_index, "results_index")
+        comparison = self._index_results(
+            exp_comparison.results, comparison_index, "comparison_index"
+        )
+
         self.exp_comparison = exp_comparison
 
-        # if linear_fit is True, perform a linear fit between the two data sets, otherwise calculate the Pearson correlation coefficient
+        # if linear_fit is True, perform a linear fit between the two data sets, otherwise calculate the Pearson correlation coefficient.
+        # The rescaled results are kept in the comparison_results attribute, so that the experiment
+        # object given by the user is not modified by the comparison
         if linear_fit:
-            if isinstance(exp_comparison.results, np.ndarray):
-                r = linregress(exp_comparison.results, self.experiment.results)
-                self.exp_comparison.results = r[0] * exp_comparison.results + r[1]
-            else:
-                # if the results are a list, index the results and perform the linear fit
-                r = linregress(
-                    exp_comparison.results[comparison_index], self.experiment.results[results_index]
-                )
-                self.exp_comparison.results = r[0] * exp_comparison.results[comparison_index] + r[1]
-
+            r = linregress(comparison, results)
+            self.comparison_results = r[0] * comparison + r[1]
             self.pearson = r
             return r.rvalue
 
         else:
-            if isinstance(exp_comparison.results, np.ndarray):
-                r = pearsonr(exp_comparison.results, self.experiment.results)
-            else:
-                r = pearsonr(
-                    exp_comparison.results[comparison_index], self.experiment.results[results_index]
-                )
-
-            self.exp_comparison.results = exp_comparison.results
+            r = pearsonr(comparison, results)
+            self.comparison_results = comparison
             self.pearson = r
             return r.statistic
+
+    def _index_results(self, results: np.ndarray | list, index: int, name: str) -> np.ndarray:
+        """
+        Internal method returning the array of results to be used by the comparison methods.
+        If results is a single array it is returned as it is, otherwise the array at the given index
+        of the list is returned.
+
+        Parameters
+        ----------
+        results : np.ndarray or list of np.ndarray
+            Results attribute of an experiment
+        index : int
+            Index of the results to be used if results is a list
+        name : str
+            Name of the index argument, used for the error message
+
+        Returns
+        -------
+        results : np.ndarray
+            The selected array of results
+        """
+        if isinstance(results, np.ndarray):
+            return results
+
+        if index < 0 or index >= len(results):
+            raise ValueError(f"{name} must be a valid index of the results, got {index}.")
+
+        return results[index]
 
     def plot_comparison(
         self,
@@ -199,15 +223,15 @@ class Analysis:
         title : str
             Title of the plot
         """
-        self.plot_results(figsize, xlabel, ylabel, title)
-
         if self.pearson is None:
             raise ValueError("You must run the compare_with method before plotting the comparison")
 
-        if hasattr(self.exp_comparison, "yerror"):
+        self.plot_results(figsize, xlabel, ylabel, title)
+
+        if getattr(self.exp_comparison, "yerror", None) is not None:
             plt.errorbar(
                 self.exp_comparison.variable,
-                self.exp_comparison.results,
+                self.comparison_results,
                 self.exp_comparison.yerror,
                 label="Compared Experiment",
                 alpha=0.7,
@@ -217,7 +241,7 @@ class Analysis:
         else:
             plt.scatter(
                 self.exp_comparison.variable,
-                self.exp_comparison.results,
+                self.comparison_results,
                 label="Compared Experiment",
                 alpha=0.7,
                 s=15,
@@ -247,9 +271,17 @@ class Analysis:
         else:
             raise ValueError("Results must be a numpy array or a list of numpy arrays")
 
-        freqs = np.fft.rfftfreq(
-            len(self.experiment.variable), self.experiment.variable[1] - self.experiment.variable[0]
-        )
+        # the FFT is only defined for uniformly sampled data, otherwise the frequency axis
+        # calculated from the first two points of the variable is meaningless
+        spacings = np.diff(self.experiment.variable)
+        if not np.allclose(spacings, spacings[0]):
+            warnings.warn(
+                "The variable of the experiment is not uniformly spaced, therefore the frequency "
+                "axis of the FFT is not meaningful.",
+                stacklevel=2,
+            )
+
+        freqs = np.fft.rfftfreq(len(self.experiment.variable), spacings[0])
 
         self.FFT_values = (freqs, y)
 
@@ -282,7 +314,7 @@ class Analysis:
             ]
             self.FFT_peaks = [self.FFT_values[0][index[0]] for index in self.FFT_peaks_index]
         else:
-            raise ValueError("Results must be a numpy array or a list of numpy arrays")
+            raise ValueError("Results must be a numpy array or a list of numpy arrays")  # noqa: TRY004
 
         return self.FFT_peaks
 
@@ -311,9 +343,7 @@ class Analysis:
         if len(self.FFT_values) == 0:
             raise ValueError("No FFT values to plot, you must run the FFT first")
 
-        # check if figsize is a tuple of two positive floats
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
+        _check_figsize(figsize)
 
         if xlabel is None and isinstance(self.experiment, PulsedSim):
             xlabel = f"Frequency ({self.experiment.system.units_H0})"
@@ -473,7 +503,7 @@ class Analysis:
             return self.fit_params[results_index].best_values
 
         else:
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 f"Experiments results are not valid. Expected list or np.ndarray, got: {type(self.experiment.results)}"
             )
 
@@ -537,11 +567,10 @@ class Analysis:
         title : str
             Title of the plot
         """
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
+        _check_figsize(figsize)
 
         if not isinstance(ylabel, str) or not isinstance(title, str):
-            raise ValueError("ylabel and title must be strings")
+            raise ValueError("ylabel and title must be strings")  # noqa: TRY004
 
         if xlabel is None:
             xlabel = self.experiment.variable_name
@@ -561,19 +590,19 @@ class Analysis:
             )
 
         elif isinstance(self.experiment.results, list):
-            # if it is a list, iterate over the observables and plot each one
-            for idx_obs, _ in enumerate(self.experiment.system.observable):
-                # plot all observables in the results
+            # if it is a list, iterate over the results and plot each one. The results are iterated
+            # instead of the observables, as ExpData objects have no system attribute
+            for idx_res, val_res in enumerate(self.experiment.results):
                 ax.plot(
                     self.experiment.variable,
-                    self.experiment.results[idx_obs],
-                    label=f"Observable {idx_obs}",
+                    val_res,
+                    label=f"Observable {idx_res}",
                     lw=2,
                     alpha=0.7,
                 )
 
         else:
-            raise ValueError("Results must be a numpy array or a list of numpy arrays")
+            raise ValueError("Results must be a numpy array or a list of numpy arrays")  # noqa: TRY004
 
         # set the x-axis limits to the variable of the experiment
         ax.set_xlim(self.experiment.variable[0], self.experiment.variable[-1])
@@ -593,7 +622,7 @@ class Analysis:
             Size of the figure to be passed to matplotlib.pyplot
         """
         if not isinstance(self.experiment, PulsedSim):
-            raise ValueError("experiment must be a PulsedSim object")
+            raise ValueError("experiment must be a PulsedSim object")  # noqa: TRY004
 
         if len(self.experiment.rho) == 1:
             raise ValueError("Density matrices were not calculated, please run experiment first.")
@@ -604,8 +633,7 @@ class Analysis:
         else:
             raise ValueError("QSys must have dimension of two to be able to plot a Bloch sphere")
 
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive floats")
+        _check_figsize(figsize)
 
         fig, _ = plt.subplots(1, 1, figsize=figsize, subplot_kw={"projection": "3d"})
 
@@ -643,8 +671,7 @@ def plot_histogram(
     title : str
         Title of the plot
     """
-    if not (isinstance(figsize, tuple) or len(figsize) == 2):
-        raise ValueError("figsize must be a tuple of two positive floats")
+    _check_figsize(figsize)
 
     if isinstance(rho, Qobj) and rho.shape[0] == rho.shape[1]:
         N = rho.shape[0]
@@ -664,7 +691,7 @@ def plot_histogram(
         )
 
     # Create 3D plot
-    fig = plt.figure(figsize=(3, 3))
+    fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111, projection="3d")
     ax.view_init(azim=-50, elev=30)
 

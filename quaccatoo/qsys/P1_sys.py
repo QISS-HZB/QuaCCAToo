@@ -6,14 +6,10 @@ being a subclass of QSys.
 from typing import Literal
 
 import numpy as np
-import scipy.constants as cte
 from qutip import Qobj, jmat, qeye, tensor
 
+from .constants import gamma_e, gamma_N14, gamma_N15
 from .qsys import QSys
-
-gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
-gamma_N14 = 3.077e-3
-gamma_N15 = -4.316e-3
 
 __all__ = ["P1"]
 

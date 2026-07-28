@@ -1,5 +1,3 @@
-# TODO: units in plot_pulses
-
 """
 This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations, part of the QuaCAAToo package.
 """
@@ -13,6 +11,7 @@ import numpy as np
 from qutip import Qobj, measurement, mesolve, parallel_map
 
 from ..qsys.qsys import QSys
+from ..utils import _check_figsize
 from .pulse_shapes import square_pulse
 
 __all__ = ["PulsedSim"]
@@ -95,10 +94,17 @@ class PulsedSim:
     _check_attr_predef_seqs :
         Checks the common attributes of the PulsedSim object for the predefined sequences and sets them accordingly
     _check_tau :
-        Check if tau is correctly defined and if it's None, assign to the smallest value of the variable attribute
+        Check if tau is correctly defined and if it's None, assign to the largest value of the variable attribute
     _append_pulse_to_profiles :
         Appends the pulse profile to the pulse_profiles list, which is used for plotting purposes.
+    _reset_sequence :
+        Resets the density matrix to the initial state of the system and the clock of the sequence to zero,
+        to be called at the beginning of the sequences.
     """
+
+    # Minimum free evolution time of the sequence in units of pi_pulse_duration, such that there are no negative time evolution
+    # Overwritten by the sequences that have a free evolution.
+    _min_tau_factor = None
 
     def __init__(self, system: QSys, H2: tuple[Qobj, Callable] | None = None) -> None:
         """
@@ -112,25 +118,33 @@ class PulsedSim:
             Time dependent sensing Hamiltonian of the system
         """
         if not isinstance(system, QSys):
-            raise ValueError("system must be a QSys object")
+            raise ValueError("system must be a QSys object")  # noqa: TRY004
 
         self.system = system
 
         if system.rho0 is not None:
             self.rho = system.rho0.copy()
 
-        # if collapse operators are given, the H0_H2 attributed needs to be set with H0 for the mesolve function
-        if self.system.c_ops is not None:
-            self.H0_H2 = self.system.H0
+        # H0_H2 is the Hamiltonian handed to mesolve during the free evolutions. It is always
+        # defined, so that collapse operators added to the system after the construction of the
+        # PulsedSim object do not lead to a missing attribute
+        self.H0_H2 = self.system.H0
 
         if H2 is None:
             self.H2 = None
-        elif H2[0].shape != self.system.H0.shape or not callable(H2[1]):
+        elif (
+            not isinstance(H2, (list, tuple))
+            or len(H2) != 2
+            or not isinstance(H2[0], Qobj)
+            or H2[0].shape != self.system.H0.shape
+            or not callable(H2[1])
+        ):
             raise ValueError(
                 "H2 must be a list where the first element is a Qobj of the same shape as H0 and the second element is a time dependent function"
             )
         else:
-            self.H2 = H2
+            # QuTip only accepts time dependent terms as lists, so a tuple is converted here
+            self.H2 = list(H2)
             self.H0_H2 = [self.system.H0, self.H2]
 
         # initialize the rest of the attributes
@@ -142,7 +156,7 @@ class PulsedSim:
         self.sequence = None
         self.time_steps = None
 
-    def add_free_evolution(self, duration: float | int, options: dict | None = None) -> None:
+    def add_free_evolution(self, duration: float, options: dict | None = None) -> None:
         """
         Adds a free evolution operation to the sequence of operations of the experiment for a given duration of the free evolution by calling the _free_evolution method.
 
@@ -282,21 +296,25 @@ class PulsedSim:
             and all(isinstance(op, Qobj) and op.shape == self.system.H0.shape for op in h1)
             and len(h1) == len(pulse_shape)  # ty: ignore[invalid-argument-type], handled manually
         ):
-            self.pulse_profiles = [
+            self.pulse_profiles.append(
                 [
-                    val_h1,
-                    np.linspace(self.total_time, self.total_time + duration, self.time_steps),
-                    pulse_shape[idx_h1],
-                    pulse_params,
+                    [
+                        val_h1,
+                        np.linspace(self.total_time, self.total_time + duration, self.time_steps),
+                        pulse_shape[idx_h1],
+                        pulse_params,
+                    ]
+                    for idx_h1, val_h1 in enumerate(h1)
                 ]
-                for idx_h1, val_h1 in enumerate(h1)
-            ]
+            )
             Ht = [self.system.H0] + [
                 [val_h1, pulse_shape[idx_h1]] for idx_h1, val_h1 in enumerate(h1)
             ]
 
+            # H2 has to be appended as a single [Qobj, callable] term, otherwise the
+            # operator and its time dependence are passed to QuTip as two separate terms
             if self.H2 is not None:
-                Ht += self.H2
+                Ht.append(self.H2)
 
         else:
             raise ValueError(
@@ -403,7 +421,7 @@ class PulsedSim:
 
         if isinstance(observable, Qobj) and observable.shape == self.system.H0.shape:
             if not observable.isherm:
-                warnings.warn("Passed observable is not hermitian.")
+                warnings.warn("Passed observable is not hermitian.", stacklevel=2)
             self.results, self.rho = measurement.measure_observable(self.rho, observable, tol)
 
         elif observable is None and (
@@ -475,6 +493,12 @@ class PulsedSim:
                 "sequence_args must be a dictionary of arguments to be passed to the sequence function"
             )
 
+        if self.system.rho0 is None:
+            raise ValueError(
+                "The quantum system has no initial state, therefore the sequence cannot be run. "
+                "Define rho0 in the QSys object."
+            )
+
         # the rho attribute needs to be reset to the initial state, so it doesnt run over the previous simulation
         self.rho = self.system.rho0.copy()
 
@@ -532,8 +556,7 @@ class PulsedSim:
         title : str
             Title of the plot
         """
-        if not (isinstance(figsize, tuple) or len(figsize) == 2):
-            raise ValueError("figsize must be a tuple of two positive integers")
+        _check_figsize(figsize)
 
         if xlabel is None:
             xlabel = self.variable_name
@@ -610,9 +633,11 @@ class PulsedSim:
         # Adapted from user Julien J in https://stackoverflow.com/questions/19385639/duplicate-items-in-legend-in-matplotlib/40870637#40870637
         handles, labels = ax.get_legend_handles_labels()
         unique_legend = [
-            (h, labs) for i, (h, labs) in enumerate(zip(handles, labels)) if labs not in labels[:i]
+            (h, labs)
+            for i, (h, labs) in enumerate(zip(handles, labels, strict=True))
+            if labs not in labels[:i]
         ]
-        ax.legend(*zip(*unique_legend), loc="upper right", bbox_to_anchor=(1.2, 1))
+        ax.legend(*zip(*unique_legend, strict=True), loc="upper right", bbox_to_anchor=(1.2, 1))
 
     def _check_attr_predef_seqs(
         self,
@@ -709,14 +734,17 @@ class PulsedSim:
 
         if pi_pulse_duration is not None:
             if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration < 0:
-                warnings.warn("pi_pulse_duration must be a positive real number")
+                warnings.warn("pi_pulse_duration must be a positive real number", stacklevel=3)
             elif (
-                self.sequence.__name__ != "spin_locking_sequence"
-                and pi_pulse_duration > free_duration[0]
+                self._min_tau_factor is not None
+                and self._min_tau_factor * pi_pulse_duration > free_duration[0]
             ):
                 warnings.warn(
-                    "pi_pulse_duration must be smaller than the free evolution time, "
-                    "otherwise pulses will overlap"
+                    f"the free evolution time must be larger than {self._min_tau_factor} times "
+                    f"pi_pulse_duration={pi_pulse_duration}, otherwise pulses will overlap and the "
+                    f"sequence will contain negative free evolutions. "
+                    f"Got a minimum free evolution of {free_duration[0]}.",
+                    stacklevel=3,
                 )
 
         # check whether M is a positive integer and if it is, assign it to the object
@@ -778,8 +806,10 @@ class PulsedSim:
                     [val_h1, pulse_shape[idx_h1]] for idx_h1, val_h1 in enumerate(h1)
                 ]
 
+                # H2 has to be appended as a single [Qobj, callable] term, otherwise the
+                # operator and its time dependence are passed to QuTip as two separate terms
                 if self.H2 is not None:
-                    self.Ht += self.H2
+                    self.Ht.append(self.H2)
                     self.H0_H2 = [self.system.H0, self.H2]
 
             else:
@@ -787,10 +817,22 @@ class PulsedSim:
                     "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )
 
+    def _reset_sequence(self) -> None:
+        """
+        Resets the density matrix to the initial state of the system and the clock of the sequence to zero.
+        The sequences mutate the rho and total_time attributes in place, therefore they have to be reset at
+        the beginning of each sequence. Otherwise consecutive calls of the same sequence would evolve the
+        state of the previous call and start the pulses at a shifted time, which changes their phase.
+        Through the run method this is masked by QuTip's parallel_map, which hands a fresh copy of the
+        object to each task, but it also matters after plot_pulses, which advances total_time.
+        """
+        self.rho = self.system.rho0.copy()
+        self.total_time = 0
+
     def _check_tau(self, tau: float | None) -> float | int:
         """
         Check if tau is correctly defined and if it's None,
-        assign to the smallest value of the variable attribute
+        assign to the largest value of the variable attribute
 
         Parameters
         ----------
@@ -803,7 +845,7 @@ class PulsedSim:
             Checked pulse separation
         """
         if tau is None:
-            tau = self.variable[-1]
+            tau = self.variable[-1]  # the largest value of the variable attribute
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
             raise ValueError(
                 f"tau or tp must be a positive real number larger than pi_pulse_duration. Got: {tau}"

@@ -39,6 +39,10 @@ class CPMG(PulsedSim):
     The CPMG sequence inherits the methods and attributes from the PulsedSim class.
     """
 
+    # the sequence opens and closes with tau/2 around the pi pulses, therefore
+    # tau must be at least twice the pi_pulse_duration to avoid negative free evolutions
+    _min_tau_factor = 2
+
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
@@ -122,6 +126,8 @@ class CPMG(PulsedSim):
         rho : Qobj
             Final state
         """
+        self._reset_sequence()
+
         if self.pi_pulse_duration == 0:
             # initial pi/2 pulse on Y
             self._delta_pulse(self.Ry_half)
@@ -197,7 +203,7 @@ class CPMG(PulsedSim):
             t0 += self.pi_pulse_duration / 2
         else:
             self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2], None, None])
-            self.total_time += ps / 2
+            t0 += ps / 2
 
         self.total_time = t0
 
@@ -232,6 +238,21 @@ class XY(PulsedSim):
 
     The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
     It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
+    The initial and final pi/2 pulses are played on the Y axis, while the refocusing pi pulses alternate between X and Y.
+
+    Notes
+    -----
+    The XY sequence inherits the methods and attributes from the PulsedSim class.
+
+    On the phase convention of the pi/2 pulses: contrary to the XY8 sequence implemented in this
+    module, which prepares and projects along X, the XY-M sequence here prepares and projects along Y.
+    This is deliberate and must not be "harmonized" with XY8. Differently from XY8, whose eight pulse
+    phase pattern is reproduced consistently across the literature, the plain XY-M sequence is not
+    standardized in the field, with the axis of the initial pi/2 pulse varying between references.
+    The convention used here is the one of the experimental setup the sequence was written for, and
+    published results were obtained with it. The choice is not merely cosmetic, as the phase of the
+    preparation pulse relative to the refocusing pulses determines whether the prepared state is
+    locked along a refocusing axis, which changes how sensitive the sequence is to pulse errors.
 
     Methods
     -------
@@ -242,11 +263,11 @@ class XY(PulsedSim):
         Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.
-
-    Notes
-    -----
-    The XY sequence inherits the methods and attributes from the PulsedSim class.
     """
+
+    # the sequence opens and closes with tau/2 around the pi pulses, therefore
+    # tau must be at least twice the pi_pulse_duration to avoid negative free evolutions
+    _min_tau_factor = 2
 
     def __init__(
         self,
@@ -316,7 +337,8 @@ class XY(PulsedSim):
     def XY_sequence(self, tau: float) -> Qobj:
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-        If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
+        The sequence starts with a pi/2 pulse on the Y axis, see the note on the phase convention in the class docstring.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
         If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
@@ -330,9 +352,11 @@ class XY(PulsedSim):
         rho : Qobj
             Final state
         """
+        self._reset_sequence()
+
         if self.pi_pulse_duration == 0:
-            # initial pi/2 pulse on X
-            self._delta_pulse(self.Rx_half)
+            # initial pi/2 pulse on Y, matching the finite pulse branch below
+            self._delta_pulse(self.Ry_half)
             self._free_evolution(tau / 2, self.options)
 
             # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
@@ -343,14 +367,16 @@ class XY(PulsedSim):
                 if idx_M != self.M - 1:
                     self._free_evolution(tau, self.options)
 
-            self._free_evolution(tau, self.options)
+            # the sequence is symmetric, therefore it closes with tau/2 as it started,
+            # giving a total sequence time of 2*M*tau
+            self._free_evolution(tau / 2, self.options)
 
             if self.projection_pulse:
-                self._delta_pulse(self.Rx_half)
+                self._delta_pulse(self.Ry_half)
 
         else:
             ps = tau - self.pi_pulse_duration
-            # initial pi/2 pulse on Y
+            # initial pi/2 pulse on Y, see the note on the phase convention in the class docstring
             self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
@@ -386,7 +412,8 @@ class XY(PulsedSim):
         self.pulse_profiles = []
         ps = tau - self.pi_pulse_duration
 
-        self._append_pulse_to_profile(0, self.pi_pulse_duration / 2, self.pulse_params[0])
+        # the first and last pi/2 pulses are played on Y by XY_sequence, thus pulse_params[1]
+        self._append_pulse_to_profile(0, self.pi_pulse_duration / 2, self.pulse_params[1])
         t0 = self.pi_pulse_duration / 2
         self.pulse_profiles.append(
             ["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None]
@@ -405,11 +432,11 @@ class XY(PulsedSim):
                 ["free_evo", [t0, t0 + ps / 2 - self.pi_pulse_duration / 2], None, None]
             )
             t0 += ps / 2 - self.pi_pulse_duration / 2
-            self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2, self.pulse_params[0])
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2, self.pulse_params[1])
             t0 += self.pi_pulse_duration / 2
         else:
             self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2], None, None])
-            self.total_time += ps / 2
+            t0 += ps / 2
 
         self.total_time = t0
 
@@ -462,6 +489,10 @@ class XY8(PulsedSim):
     The XY8 sequence inherits the methods and attributes from the PulsedSim class.
     """
 
+    # the sequence opens and closes with tau/2 around the pi pulses, therefore
+    # tau must be at least twice the pi_pulse_duration to avoid negative free evolutions
+    _min_tau_factor = 2
+
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
@@ -478,6 +509,7 @@ class XY8(PulsedSim):
         time_steps: int = 100,
         options: dict | None = None,
         RXY8: bool = False,
+        seed: int | None = None,
     ) -> None:
         """
         Class constructor for the XY8 sequence
@@ -512,7 +544,15 @@ class XY8(PulsedSim):
             Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
         RXY8 : bool
             Boolen to determine if a random phase is to be added to each XY8 block
+        seed : int or None
+            Seed for the random phases of the RXY8 sequence, so that the simulation is reproducible.
+            Only used if RXY8 is True.
         """
+        if not isinstance(RXY8, bool):
+            raise ValueError(  # noqa: TRY004
+                f"RXY8 must be a boolean value indicating whether to add a random phase to each XY8 block or not, got {RXY8}."
+            )
+
         super().__init__(system, H2)
         self.sequence = self.XY8_sequence
         self._check_attr_predef_seqs(
@@ -531,17 +571,16 @@ class XY8(PulsedSim):
 
         if self.pi_pulse_duration == 0 and RXY8:
             warnings.warn(
-                "RXY8 with delta pulses is not implemented, as it has not experimental relevance."
+                "RXY8 with delta pulses is not implemented, as it has not experimental relevance.",
+                stacklevel=2,
             )
-            random_phases = None
-        elif RXY8:
-            random_phases = np.random.rand(M) * 2 * np.pi
-        elif not RXY8:
             random_phases = np.zeros(M)
+        elif RXY8:
+            # the phases are drawn once for the whole simulation, so that every point of the
+            # variable is calculated with the same sequence
+            random_phases = np.random.default_rng(seed).random(M) * 2 * np.pi
         else:
-            raise ValueError(
-                "RXY8 must be a boolean value indicating weather to add a random phase to each XY8 block or not."
-            )
+            random_phases = np.zeros(M)
 
         # generate the pulse parameters for the XY8 sequence with the correct order of the x and y pulses
         base_pulse = self.pulse_params.copy()
@@ -576,6 +615,8 @@ class XY8(PulsedSim):
         rho : Qobj
             Final state
         """
+        self._reset_sequence()
+
         if self.pi_pulse_duration == 0:
             # initial pi/2 pulse on X
             self._delta_pulse(self.Rx_half)
@@ -664,7 +705,7 @@ class XY8(PulsedSim):
             t0 += self.pi_pulse_duration / 2
         else:
             self.pulse_profiles.append(["free_evo", [t0, t0 + ps / 2], None, None])
-            self.total_time += ps / 2
+            t0 += ps / 2
 
         self.total_time = t0
 

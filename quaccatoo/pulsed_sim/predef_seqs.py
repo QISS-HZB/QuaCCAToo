@@ -10,6 +10,7 @@ Classes
 - SpinLocking: spin locking experiment, composed by a pi/2-y pulse to drive the spin to the +X state followed by a pulse along x of varying duration. During the driving, the system is usually in an eigenstate of the driving Hamiltonian.
 """
 
+import copy
 from collections.abc import Callable
 
 import numpy as np
@@ -215,13 +216,16 @@ class PMR(PulsedSim):
             self.variable = frequencies
             self.variable_name = f"Frequency ({self.system.units_H0})"
 
-        # check whether pulse_duration is a numpy array and if it is, assign it to the object
+        # check whether pulse_duration is a numpy array and if it is, assign it to the object.
+        # pulse_duration is kept in its own attribute, so that total_time stays a clock counting
+        # from the beginning of the sequence, as in all the other sequences
         if not isinstance(pulse_duration, (float, int)) or pulse_duration <= 0:
             raise ValueError("pulse_duration must be a positive real number")
         else:
+            self.pulse_duration = pulse_duration
             self.total_time = pulse_duration
 
-        self._append_pulse_to_profile(0, self.total_time)
+        self._append_pulse_to_profile(0, self.pulse_duration)
 
     def PMR_sequence(self, f: float) -> Qobj:
         """
@@ -238,9 +242,10 @@ class PMR(PulsedSim):
         rho : Qobj
             Final state.
         """
+        self._reset_sequence()
         self.pulse_params["f_pulse"] = f
 
-        self._pulse(self.Ht, self.total_time, self.options, self.pulse_params)
+        self._pulse(self.Ht, self.pulse_duration, self.options, self.pulse_params)
 
         return self.rho
 
@@ -298,6 +303,10 @@ class Ramsey(PulsedSim):
     -----
     The Ramsey sequence inherits the methods and attributes from the PulsedSim class.
     """
+
+    # the free evolution of the sequence is shortened by the pulses, therefore
+    # tau must be at least as long as pi_pulse_duration
+    _min_tau_factor = 1
 
     def __init__(
         self,
@@ -378,6 +387,8 @@ class Ramsey(PulsedSim):
         rho : Qobj
             Final state.
         """
+        self._reset_sequence()
+
         if self.pi_pulse_duration == 0:
             self._delta_pulse(self.Rx_half)
             self._free_evolution(tau, self.options)
@@ -411,8 +422,11 @@ class Ramsey(PulsedSim):
         self._append_pulse_to_profile(0, self.pi_pulse_duration / 2)
         t0 = self.pi_pulse_duration / 2
 
-        self.pulse_profiles.append(["free_evo", [t0, t0 + tau], None, None])
-        t0 += tau
+        # the free evolution of ramsey_sequence is shortened by the duration of the first pi/2
+        # pulse, so that the second pulse starts at tau
+        ps = tau - self.pi_pulse_duration / 2
+        self.pulse_profiles.append(["free_evo", [t0, t0 + ps], None, None])
+        t0 += ps
 
         if self.projection_pulse:
             self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2)
@@ -468,6 +482,10 @@ class Hahn(PulsedSim):
     -----
     The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.
     """
+
+    # the free evolution of the sequence is shortened by the pulses, therefore
+    # tau must be at least as long as pi_pulse_duration
+    _min_tau_factor = 1
 
     def __init__(
         self,
@@ -545,6 +563,8 @@ class Hahn(PulsedSim):
         rho : Qobj
             Final state.
         """
+        self._reset_sequence()
+
         # if pi_pulse_duration is 0, use the delta pulse method
         if self.pi_pulse_duration == 0:
             self._delta_pulse(self.Rx_half)
@@ -689,7 +709,8 @@ class SpinLocking(PulsedSim):
         pi_pulse_duration : float
             Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
-            Control Hamiltonian of the system.
+            Control Hamiltonian of the system. Contrary to the other sequences, h1 is required
+            even when pi_pulse_duration is 0, as it defines the locking Hamiltonian.
         Ry : Qobj or None
             Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.
         H2 : Qobj or list of Qobj
@@ -724,7 +745,19 @@ class SpinLocking(PulsedSim):
         self.variable_name = f"Pulse Duration (1/{self.system.units_H0})"
 
         if pi_pulse_duration == 0:
-            self.system.H0 += h1
+            # in the delta pulse limit only the pi/2 pulses are instantaneous, the locking drive
+            # itself still has to be described by a Hamiltonian, therefore h1 remains necessary
+            if not isinstance(h1, Qobj) or h1.shape != self.system.H0.shape:
+                raise ValueError(
+                    "For a spin locking sequence with delta pulses, h1 must still be given as a Qobj "
+                    "of the same shape as H0, since it defines the locking Hamiltonian driving the "
+                    "system during the free evolution."
+                )
+            # the system is copied before adding the locking drive to H0, otherwise the QSys object
+            # given by the user would be modified by the simulation
+            self.system = copy.deepcopy(system)
+            self.system.H0 = self.system.H0 + h1
+            self.system._get_energy_levels()  # pylint: disable=protected-access
         else:
             base_pulse = self.pulse_params.copy()
             self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
@@ -746,6 +779,8 @@ class SpinLocking(PulsedSim):
         rho : Qobj
             Final state.
         """
+        self._reset_sequence()
+
         # if pi_pulse_duration is 0, use the delta pulse method
         if self.pi_pulse_duration == 0:
             self._delta_pulse(self.Ry_half)

@@ -1,5 +1,6 @@
 """
 This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.
+It also contains small internal helpers shared by the plotting methods of the other modules.
 """
 
 import os
@@ -13,6 +14,29 @@ from qutip import Qobj, fileio
 __all__ = ["load_quaccatoo", "save_quaccatoo"]
 
 ####################################################################################################
+
+
+def _check_figsize(figsize) -> None:
+    """
+    Internal helper checking that figsize is a tuple of two positive numbers,
+    as expected by matplotlib.pyplot.
+
+    Parameters
+    ----------
+    figsize : tuple
+        Size of the figure to be passed to matplotlib.pyplot
+
+    Raises
+    ------
+    ValueError
+        If figsize is not a tuple of two positive numbers.
+    """
+    if (
+        not isinstance(figsize, tuple)
+        or len(figsize) != 2
+        or not all(isinstance(dim, (int, float)) and dim > 0 for dim in figsize)
+    ):
+        raise ValueError(f"figsize must be a tuple of two positive floats, got {figsize}.")
 
 
 def save_quaccatoo(obj_save, file_path):
@@ -29,7 +53,7 @@ def save_quaccatoo(obj_save, file_path):
         Path to the file where the attributes will be saved.
     """
     if not isinstance(file_path, str):
-        raise ValueError("file_path must be a string")
+        raise ValueError("file_path must be a string")  # noqa: TRY004
 
     tmp_dir = "tmp"
 
@@ -91,7 +115,7 @@ def load_quaccatoo(file_path):
         The loaded obj.
     """
     if not isinstance(file_path, str):
-        raise ValueError("file_name must be a string")
+        raise ValueError("file_name must be a string")  # noqa: TRY004
 
     tmp_dir = "tmp"
 

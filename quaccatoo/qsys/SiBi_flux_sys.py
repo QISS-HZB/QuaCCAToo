@@ -7,13 +7,10 @@ This system is the same as used in Tikai Chang et al. 'Strong coupling of a supe
 from typing import Literal
 
 import numpy as np
-import scipy.constants as cte
 from qutip import Qobj, jmat, qeye, tensor
 
+from .constants import A_Bi, gamma_Bi, gamma_e
 from .qsys import QSys
-
-gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
-gamma_Bi = 6.962e-3
 
 __all__ = ["SiBiFlux"]
 
@@ -247,13 +244,14 @@ class SiBiFlux(QSys):
     ) -> Qobj:
         """
         Calculates the hyperine Hamiltonian of the isotropic contact hyperfine interaction between the donor electron and the bismuth nucleus, acting on the electron-nucleus product space.
+        The coupling constant A_Bi is 1475.4 MHz, giving the well known 7.377 GHz zero field splitting between the F=4 and F=5 manifolds.
 
         Returns
         -------
         H_hf : Qobj
             Hyperfine Hamiltonina
         """
-        H_hf = 1.4754 * (
+        H_hf = A_Bi * (
             tensor(jmat(1 / 2, "x"), jmat(9 / 2, "x"))
             + tensor(jmat(1 / 2, "y"), jmat(9 / 2, "y"))
             + tensor(jmat(1 / 2, "z"), jmat(9 / 2, "z"))

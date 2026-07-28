@@ -11,11 +11,8 @@ import numpy as np
 import scipy.constants as cte
 from qutip import Qobj, basis, fock_dm, jmat, qeye, tensor
 
+from .constants import gamma_e, gamma_N14, gamma_N15
 from .qsys import QSys
-
-gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3  # MHz/mT
-gamma_N14 = 3.077e-3
-gamma_N15 = -4.316e-3
 
 __all__ = ["NV"]
 
@@ -170,7 +167,8 @@ class NV(QSys):
             self._rho0_T()
             if self.temp < 5.6 or self.temp > 700:
                 warnings.warn(
-                    "The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate."
+                    "The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate.",
+                    stacklevel=2,
                 )
         self.MW_h1 = None
         self.RF_h1 = None
@@ -495,6 +493,91 @@ class NV(QSys):
         self.MW_h1 = tensor(self.MW_h1, qeye(self.dim_add_spin))
         self.RF_h1 = tensor(self.RF_h1, qeye(self.dim_add_spin))
 
+        # the rotation operators used by the delta pulses must follow the new dimensions
+        for attr in ("MW_Rx", "MW_Ry", "RF_Rx", "RF_Ry"):
+            rotation = getattr(self, attr)
+            if isinstance(rotation, Qobj):
+                setattr(self, attr, tensor(rotation, qeye(self.dim_add_spin)))
+            elif isinstance(rotation, list):
+                setattr(self, attr, [tensor(R, qeye(self.dim_add_spin)) for R in rotation])
+
+    def _truncation_indexes(
+        self,
+        mS: Literal[1, 0, -1] | None,
+        mI: Literal[1, 0, -1] | None,
+    ) -> tuple[list[int], list[int]] | None:
+        """
+        Internal method calculating the indexes to be removed from the system and the dimensions
+        of the truncated objects, according to the selected mS and mI levels and the nitrogen isotope.
+
+        Parameters
+        ----------
+        mS : 1, 0, -1 or None
+            Electronic level to be excluded
+        mI : 1, 0, -1 or None
+            Nuclear level to be excluded
+
+        Returns
+        -------
+        indexes, dims : tuple(list(int), list(int)) or None
+            Indexes to be removed and dimensions of the truncated system.
+            None if there is nothing to truncate.
+        """
+        # the indexes of the electronic and nuclear levels to be removed, where the states are
+        # ordered as |mS, mI> with mS and mI running from the highest to the lowest projection
+        mS_indexes = {1: 0, 0: 1, -1: 2}
+        mI_indexes = {1: 0, 0: 1, -1: 2}
+
+        if self.N == 0 or self.N is None:
+            if mI is not None:
+                warnings.warn(
+                    "The system has no nuclear spin, therefore the mI parameter will be ignored.",
+                    stacklevel=3,
+                )
+            if mS is None:
+                warnings.warn(
+                    "No mS parameter was given. The system will not be truncated.", stacklevel=3
+                )
+                return None
+
+            return [mS_indexes[mS]], [2]
+
+        if self.N == 15:
+            if mI is not None:
+                warnings.warn(
+                    "The 15N isotope is already a two-level system and can't be truncated, therefore the mI parameter will be ignored.",
+                    stacklevel=3,
+                )
+            if mS is None:
+                warnings.warn(
+                    "No mS parameter was given. The system will not be truncated.", stacklevel=3
+                )
+                return None
+
+            return [2 * mS_indexes[mS], 2 * mS_indexes[mS] + 1], [2, 2]
+
+        if self.N == 14:
+            indexes = []
+            dims = []
+
+            # the electronic level removes a full block of three nuclear states
+            if mS is None:
+                dims.append(3)
+            else:
+                indexes += [3 * mS_indexes[mS] + idx for idx in range(3)]
+                dims.append(2)
+
+            # the nuclear level removes one state out of each of the three electronic blocks
+            if mI is None:
+                dims.append(3)
+            else:
+                indexes += [3 * idx + mI_indexes[mI] for idx in range(3)]
+                dims.append(2)
+
+            return sorted(set(indexes)), dims
+
+        raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")
+
     def truncate(
         self,
         indexes: int | list[int] | None = None,
@@ -518,61 +601,44 @@ class NV(QSys):
             Electronic level to be excluded
         """
         if mS is None and mI is None:
-            warnings.warn("No mS or mI parameters were given. The system will not be truncated.")
+            warnings.warn(
+                "No mS or mI parameters were given. The system will not be truncated.", stacklevel=2
+            )
             return
         if mS not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mS. Expected either 1, 0 or -1, got {mS}.")
         if mI in (-1 / 2, 1 / 2):
             warnings.warn(
-                "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated."
+                "mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can't be truncated.",
+                stacklevel=2,
             )
         elif mI not in {1, 0, -1, None}:
             raise ValueError(f"Invalid value for mI. Expected either 1, 0 or -1, got {mI}.")
 
-        # set the indexes to be removed and the dimensions of the new objects according to the mS and mI parameters
-        if self.N == 0 or self.N is None:
-            if mS == 1:
-                indexes, dims = [0], [2]
-            elif mS == 0:
-                indexes, dims = [1], [2]
-            elif mS == -1:
-                indexes, dims = [2], [2]
+        truncation = self._truncation_indexes(mS, mI)
 
-        elif self.N == 15:
-            if mS == 1:
-                indexes, dims = [0, 1], [2, 2]
-            elif mS == 0:
-                indexes, dims = [2, 3], [2, 2]
-            elif mS == -1:
-                indexes, dims = [4, 5], [2, 2]
+        if truncation is None:
+            return
 
-        elif self.N == 14:
-            if mS == 1:
-                indexes, dims = [0, 1, 2], [2]
-            elif mS == 0:
-                indexes, dims = [3, 4, 5], [2]
-            elif mS == -1:
-                indexes, dims = [6, 7, 8], [2]
-            else:
-                dims = [3]
-
-            if mI == 1:
-                indexes.extend([0, 3, 6])
-                dims.append(2)
-            elif mI == 0:
-                indexes.extend([1, 4, 7])
-                dims.append(2)
-            elif mI == -1:
-                indexes.extend([2, 5, 8])
-                dims.append(2)
-            else:
-                dims.append(3)
-
-        indexes = sorted(set(indexes))
+        indexes, dims = truncation
         super().truncate(indexes)
 
         self.MW_h1 = Qobj(np.delete(np.delete(self.MW_h1.full(), indexes, axis=0), indexes, axis=1))
         self.RF_h1 = Qobj(np.delete(np.delete(self.RF_h1.full(), indexes, axis=0), indexes, axis=1))
+
+        # the rotation operators used by the delta pulses must be truncated as well,
+        # otherwise they keep the dimensions of the original system
+        def _truncate_rotation(R):
+            R_trunc = Qobj(np.delete(np.delete(R.full(), indexes, axis=0), indexes, axis=1))
+            R_trunc.dims = [dims, dims]
+            return R_trunc
+
+        for attr in ("MW_Rx", "MW_Ry", "RF_Rx", "RF_Ry"):
+            rotation = getattr(self, attr)
+            if isinstance(rotation, Qobj):
+                setattr(self, attr, _truncate_rotation(rotation))
+            elif isinstance(rotation, list):
+                setattr(self, attr, [_truncate_rotation(R) for R in rotation])
 
         # corrrect the dimensions of the objects
         self.H0.dims = [dims, dims]
