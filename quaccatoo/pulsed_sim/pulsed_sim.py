@@ -4,8 +4,9 @@
 This module contains the PulsedSim class that is used to define a general pulsed experiment with a sequence of pulses and free evolution operations, part of the QuaCAAToo package.
 """
 
-from typing import Callable, Any
 import warnings
+from collections.abc import Callable
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -168,7 +169,7 @@ class PulsedSim:
 
         self._free_evolution(duration, options)
 
-    def _free_evolution(self, duration: float | int, options: dict) -> None:
+    def _free_evolution(self, duration: float, options: dict) -> None:
         """
         Updates the total time of the experiment and applies the time-evolution operator to the initial state.
         This method should be used internally by other methods, as it does not perform any checks on the input parameters for better performance.
@@ -177,7 +178,7 @@ class PulsedSim:
 
         Parameters
         ----------
-        duration : float or int
+        duration : float
             Duration of the free evolution
         """
         if self.system.c_ops is not None or self.H2 is not None:
@@ -203,7 +204,7 @@ class PulsedSim:
 
     def add_pulse(
         self,
-        duration: float | int,
+        duration: float,
         h1: Qobj | list[Qobj],
         pulse_shape: Callable | list[Callable] = square_pulse,
         pulse_params: dict[str, float | int] | None = None,
@@ -216,7 +217,7 @@ class PulsedSim:
 
         Parameters
         ----------
-        duration : float or int
+        duration : float
             Duration of the pulse
         h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system
@@ -373,7 +374,7 @@ class PulsedSim:
             self.rho = R * self.rho * R.dag()
 
     def measure_qsys(
-        self, observable: Qobj | None = None, tol: float | int | None = None
+        self, observable: Qobj | None = None, tol: float | None = None
     ) -> float | list[float]:
         """
         Measures the observable over the system, storing the measurent outcome in the results attribute and collapsing rho in the corresponding eigenstate of the observable.
@@ -623,7 +624,7 @@ class PulsedSim:
         options: dict,
         time_steps: int,
         free_duration: np.ndarray | list[float],
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         M: int,
         projection_pulse: bool,
     ) -> None:
@@ -696,25 +697,27 @@ class PulsedSim:
             or not np.all(np.isreal(free_duration))
             or not np.all(np.greater_equal(free_duration, 0))
         ):
-            raise ValueError("free_duration must be a numpy array with real positive elements")
+            raise ValueError(
+                "free_duration or pulse_duration must be a numpy array with real positive elements"
+            )
         else:
             self.variable = free_duration
             self.variable_name = f"Tau (1/{self.system.units_H0})"
 
         # check whether pi_pulse_duration is a positive real number and if it is, assign it to the object
-        if pi_pulse_duration is None:
-            pass
-        elif (
-            not isinstance(pi_pulse_duration, (int, float))
-            or pi_pulse_duration < 0
-            or pi_pulse_duration > free_duration[0]
-        ):
-            warnings.warn(
-                "pulse_duration must be a positive real number and pi_pulse_duration must be smaller than the free evolution time, otherwise pulses will overlap"
-            )
-            self.pi_pulse_duration = pi_pulse_duration
-        else:
-            self.pi_pulse_duration = pi_pulse_duration
+        self.pi_pulse_duration = pi_pulse_duration
+
+        if pi_pulse_duration is not None:
+            if not isinstance(pi_pulse_duration, (int, float)) or pi_pulse_duration < 0:
+                warnings.warn("pi_pulse_duration must be a positive real number")
+            elif (
+                self.sequence.__name__ != "spin_locking_sequence"
+                and pi_pulse_duration > free_duration[0]
+            ):
+                warnings.warn(
+                    "pi_pulse_duration must be smaller than the free evolution time, "
+                    "otherwise pulses will overlap"
+                )
 
         # check whether M is a positive integer and if it is, assign it to the object
         if M is None:
@@ -740,7 +743,7 @@ class PulsedSim:
                 self.Rx_half = Rx.sqrtm()
             elif Rx is None:
                 raise ValueError(
-                    "If pi_pulse_duration is 0, the rotation operator Rx must be provided"
+                    "If pi_pulse_duration is 0, the rotation operator Rx or Ry must be provided"
                 )
             else:
                 raise ValueError("Rx must be a Qobj of the same shape as H0")
@@ -784,7 +787,7 @@ class PulsedSim:
                     "h1 must be a Qobj or a list of Qobjs of the same shape as H0 with the same length as the pulse_shape list"
                 )
 
-    def _check_tau(self, tau: float | int | None) -> float | int:
+    def _check_tau(self, tau: float | None) -> float | int:
         """
         Check if tau is correctly defined and if it's None,
         assign to the smallest value of the variable attribute
@@ -803,15 +806,15 @@ class PulsedSim:
             tau = self.variable[-1]
         elif not isinstance(tau, (int, float)) or tau < self.pi_pulse_duration:
             raise ValueError(
-                f"tau must be a positive real number larger than pi_pulse_duration. Got: {tau}"
+                f"tau or tp must be a positive real number larger than pi_pulse_duration. Got: {tau}"
             )
 
         return tau
 
     def _append_pulse_to_profile(
         self,
-        t0: float | int,
-        duration: float | int,
+        t0: float,
+        duration: float,
         pulse_params: dict[str, float | int] | None = None,
     ) -> None:
         """

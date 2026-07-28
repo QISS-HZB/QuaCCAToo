@@ -3,6 +3,7 @@ This module contains the Analysis class and the plot_histogram method.
 """
 
 from typing import Any, Literal
+
 import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Model

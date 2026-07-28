@@ -4,8 +4,8 @@
 This module contains the plot_energy_B0 function, compose_sys function and the QSys class.
 """
 
-from typing import Literal
 import warnings
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -157,7 +157,9 @@ class QSys:
             else:
                 raise ValueError("All items in c_ops must be Qobj with the same dimensions as H0")
         else:
-            raise ValueError("c_ops must be a list of Qobj or None")
+            raise ValueError(
+                "c_ops must be None, a list of Qobj or Qobj of the same dimensions as H0"
+            )
 
     def _get_energy_levels(self) -> None:
         """
@@ -313,20 +315,20 @@ class QSys:
                     for op in self.c_ops
                 ]
 
-    def _check_B0(self, B0: float | int, units_B0: Literal["T", "mT", "G"]) -> None:
+    def _check_B0(self, B0: float, units_B0: Literal["T", "mT", "G"]) -> None:
         """
         Internal function for checking if external magnetic field B0 is correctly defined.
 
         Parameters
         ----------
-        B0 : float | int
+        B0 : float
             External magnetic field
         units_BO : 'T', 'mT', 'G'
             String for the units of the magnetic field
 
         Returns
         ----------
-        B0 : float | int
+        B0 : float
             Checked external magnetic field in mT
         units_BO : 'mT'
             Units of the magnetic field
@@ -352,25 +354,25 @@ class QSys:
         return B0, "mT"
 
     def _check_angles(
-        self, theta: float | int, phi_r: float | int, units_angles: Literal["deg", "rad"]
+        self, theta: float, phi_r: float, units_angles: Literal["deg", "rad"]
     ) -> None:
         """
         Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
 
         Parameters
         ----------
-        theta : float | int
+        theta : float
             Polar angle between color center axis and external magnetic field
-        phi_r : float | int
+        phi_r : float
             Azimuthal angle between color center axis and external magnetic field
         units_angles : 'deg', 'rad'
             String for the units of the angles
 
         Returns
         ----------
-        theta : float | int
+        theta : float
             Checked polar angle between color center axis and external magnetic field in rad
-        phi_r : float | int
+        phi_r : float
             Checked azimuthal angle between color center axis and external magnetic field in rad
         units_angles : 'rad'
             Units of the angles
@@ -392,7 +394,7 @@ class QSys:
 
         return theta, phi_r, "rad"
 
-    def _check_temp(self, temp: float | int | None, units_temp: Literal["K", "C"]) -> float:
+    def _check_temp(self, temp: float | None, units_temp: Literal["K", "C"]) -> float:
         """
         Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
         to the dimension of the nitrogen isoptope
@@ -424,7 +426,7 @@ class QSys:
 
         return temp
 
-    def _tensor_product_N(self, H: Qobj, N: Literal[None, 0, 14, 15]) -> Qobj:
+    def _tensor_product_N(self, H: Qobj, N: Literal[0, 14, 15] | None) -> Qobj:
         """
         Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
         to the dimension of the nitrogen isoptope
@@ -552,7 +554,7 @@ def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
 
 
 def plot_energy_B0(
-    B0: np.ndarray | list[float | int],
+    B0: np.ndarray | list[float],
     H0: Qobj | list[Qobj],
     figsize: tuple[int, int] = (6, 4),
     energy_lim: tuple[int | float, int | float] | None = None,

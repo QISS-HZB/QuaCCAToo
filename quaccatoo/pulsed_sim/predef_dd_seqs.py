@@ -2,14 +2,15 @@
 This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.
 """
 
-from typing import Callable
 import warnings
+from collections.abc import Callable
+
 import numpy as np
 from qutip import Qobj
 
+from ..qsys.qsys import QSys
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
-from ..qsys.qsys import QSys
 
 __all__ = ["CPMG", "XY", "XY8"]
 
@@ -40,17 +41,17 @@ class CPMG(PulsedSim):
 
     def __init__(
         self,
-        free_duration: np.ndarray | list[float | int],
+        free_duration: np.ndarray | list[float],
         system: QSys,
         M: int,
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
         Rx: Qobj | None = None,
         Ry: Qobj | None = None,
         H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
     ) -> None:
@@ -85,6 +86,7 @@ class CPMG(PulsedSim):
             Number of time steps in the pulses for the simulation
         """
         super().__init__(system, H2)
+        self.sequence = self.CPMG_sequence
         self._check_attr_predef_seqs(
             h1,
             Rx,
@@ -98,12 +100,11 @@ class CPMG(PulsedSim):
             M,
             projection_pulse,
         )
-        self.sequence = self.CPMG_sequence
 
         base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
-    def CPMG_sequence(self, tau: float | int) -> Qobj:
+    def CPMG_sequence(self, tau: float) -> Qobj:
         """
         Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
@@ -159,13 +160,13 @@ class CPMG(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
+    def _get_pulse_profiles(self, tau: float | None = None) -> None:
         """
         Generates the pulse profiles for the CPMG sequence for a given tau.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution variable or pulse spacing for the  sequence.
         """
         tau = self._check_tau(tau)
@@ -206,7 +207,7 @@ class CPMG(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: float | int | None = None,
+        tau: float | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
@@ -214,12 +215,8 @@ class CPMG(PulsedSim):
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         self._get_pulse_profiles(tau)
         # call the plot_pulses method of the parent class
@@ -253,17 +250,17 @@ class XY(PulsedSim):
 
     def __init__(
         self,
-        free_duration: np.ndarray | list[float | int],
+        free_duration: np.ndarray | list[float],
         system: QSys,
         M: int,
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
         Rx: Qobj | None = None,
         Ry: Qobj | None = None,
         H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
     ) -> None:
@@ -298,6 +295,7 @@ class XY(PulsedSim):
             Dictionary of solver options
         """
         super().__init__(system, H2)
+        self.sequence = self.XY_sequence
         self._check_attr_predef_seqs(
             h1,
             Rx,
@@ -311,12 +309,11 @@ class XY(PulsedSim):
             M,
             projection_pulse,
         )
-        self.sequence = self.XY_sequence
 
         base_pulse = self.pulse_params.copy()
         self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
 
-    def XY_sequence(self, tau: float | int) -> Qobj:
+    def XY_sequence(self, tau: float) -> Qobj:
         """
         Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
@@ -374,14 +371,14 @@ class XY(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
+    def _get_pulse_profiles(self, tau: float | None = None) -> None:
         """
         Generates the pulse profiles for the XY-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             free evolution variable or pulse spacing for the  sequence
         """
         tau = self._check_tau(tau)
@@ -422,7 +419,7 @@ class XY(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: float | int | None = None,
+        tau: float | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to
@@ -430,12 +427,8 @@ class XY(PulsedSim):
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         # generate the pulse profiles for the given tau
         self._get_pulse_profiles(tau)
@@ -471,17 +464,17 @@ class XY8(PulsedSim):
 
     def __init__(
         self,
-        free_duration: np.ndarray | list[float | int],
+        free_duration: np.ndarray | list[float],
         system: QSys,
         M: int,
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
         Rx: Qobj | None = None,
         Ry: Qobj | None = None,
         H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
         RXY8: bool = False,
@@ -521,6 +514,7 @@ class XY8(PulsedSim):
             Boolen to determine if a random phase is to be added to each XY8 block
         """
         super().__init__(system, H2)
+        self.sequence = self.XY8_sequence
         self._check_attr_predef_seqs(
             h1,
             Rx,
@@ -534,7 +528,6 @@ class XY8(PulsedSim):
             M,
             projection_pulse,
         )
-        self.sequence = self.XY8_sequence
 
         if self.pi_pulse_duration == 0 and RXY8:
             warnings.warn(
@@ -565,7 +558,7 @@ class XY8(PulsedSim):
 
             self.pulse_params.extend([px, py, px, py, py, px, py, px])
 
-    def XY8_sequence(self, tau: float | int) -> Qobj:
+    def XY8_sequence(self, tau: float) -> Qobj:
         """
         Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
         If random_phase is set to True, a random phase is added in each XY8 block.
@@ -633,14 +626,14 @@ class XY8(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
+    def _get_pulse_profiles(self, tau: float | None = None) -> None:
         """
         Generates the pulse profiles for the XY8-M sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             free evolution variable or pulse spacing for the  sequence
         """
         tau = self._check_tau(tau)
@@ -681,7 +674,7 @@ class XY8(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of XY8 Sequence",
-        tau: float | int | None = None,
+        tau: float | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first
@@ -689,12 +682,8 @@ class XY8(PulsedSim):
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         self._get_pulse_profiles(tau)
         # call the plot_pulses method of the parent class

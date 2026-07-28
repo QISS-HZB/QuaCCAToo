@@ -4,8 +4,8 @@
 This module contains NV class, which is a subclass of QSys.
 """
 
-from typing import Literal
 import warnings
+from typing import Literal
 
 import numpy as np
 import scipy.constants as cte
@@ -83,16 +83,16 @@ class NV(QSys):
 
     def __init__(
         self,
-        B0: float | int,
-        N: Literal[15, 14, 0, None],
+        B0: float,
+        N: Literal[15, 14, 0] | None,
         c_ops: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
-        theta: float | int = 0.0,
-        phi_r: float | int = 0.0,
+        theta: float = 0.0,
+        phi_r: float = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
-        temp: float | int | None = None,
+        temp: float | None = None,
         units_temp: Literal["C", "K"] = "K",
-        E: float | int = 0,
+        E: float = 0,
     ) -> None:
         """
         Constructor for the NV class.
@@ -110,17 +110,17 @@ class NV(QSys):
             List of collapse operators
         units_B0 : str
             Units of the magnetic field (T, mT or G)
-        theta : float | int
+        theta : float
             Angle of the magnetic field with respect to the NV axis
-        phi_r : float | int
+        phi_r : float
             Angle of the magnetic field in the xy plane
         units_angles : str
             Units of the angles (deg or rad)
-        temp : float | int
+        temp : float
             Temperature
         units_temp : str
             Temperature units ('C'/'K')
-        E : float | int
+        E : float
             Perpedicular component of the zero field splitting
         """
         self.B0, self.units_B0 = self._check_B0(B0, units_B0)
@@ -498,8 +498,13 @@ class NV(QSys):
     def truncate(
         self,
         indexes: int | list[int] | None = None,
-        mS: Literal[1, 0, -1, None] = None,
-        mI: Literal[1, 0, -1, None] = None,
+        mS: Literal[
+            1,
+            0,
+            -1,
+        ]
+        | None = None,
+        mI: Literal[1, 0, -1] | None = None,
     ) -> None:
         """
         Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.

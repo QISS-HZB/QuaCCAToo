@@ -3,6 +3,7 @@ This module contains the ExpData class as part of the QuaCCAToo package.
 """
 
 from typing import Any
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -175,7 +176,7 @@ class ExpData:
 
     def offset_correction(
         self,
-        background_value: int | float,
+        background_value: float,
         plot: bool = False,
         figsize: tuple[int, int] = (6, 4),
         figtitle: str = "Expt. Data with Offset Correction",
@@ -185,7 +186,7 @@ class ExpData:
 
         Parameters
         ----------
-        background_value : int or float
+        background_value : float
             Value to be substracted from the results
         plot : bool
             Boolean indicating whether to plot the experimental data or not
@@ -213,7 +214,7 @@ class ExpData:
 
     def rescale_correction(
         self,
-        rescale_value: int | float,
+        rescale_value: float,
         plot: bool = False,
         figsize: tuple[int, int] = (6, 4),
         figtitle: str = "Expt. Data with Rescale Correction",
@@ -223,7 +224,7 @@ class ExpData:
 
         Parameters
         ----------
-        rescale_value : int or float
+        rescale_value : float
             Value to be multiplied by the results
         plot : bool
             Boolean indicating whether to plot the experimental data or not

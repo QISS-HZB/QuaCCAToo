@@ -37,13 +37,13 @@ class P1(QSys):
         Nitrogen isotope, or 0 for no nuclear spin.
     units_B0 : str
         Units of the magnetic field (T, mT or G)
-    theta : float | int
+    theta : float
         Angle of the static magnetic field vector with respect to the z axis
-    phi_r : float | int
+    phi_r : float
         Azimutal angle of the static magnetic field vector within the xy plane
-    theta_1 : float | int
+    theta_1 : float
         Angle of the MW magnetic field vector with respect to the z axis
-    phi_r_1 : float | int
+    phi_r_1 : float
         Azimutal angle of the MW magnetic field vector within the xy plane
     units_angles : str
         Units of the angles (deg or rad)
@@ -82,16 +82,16 @@ class P1(QSys):
 
     def __init__(
         self,
-        B0: float | int,
+        B0: float,
         rot_index: Literal[0, 1, 2, 3],
-        N: Literal[15, 14, 0, None] = None,
-        rho0: Qobj | np.ndarray | int | None = None,
+        N: Literal[15, 14, 0] | None = None,
+        rho0: Qobj | np.ndarray | None = None,
         c_ops: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
-        theta: float | int = 0.0,
-        phi_r: float | int = 0.0,
-        theta_1: float | int = 90.0,
-        phi_r_1: float | int = 0.0,
+        theta: float = 0.0,
+        phi_r: float = 0.0,
+        theta_1: float = 90.0,
+        phi_r_1: float = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
         observable: Qobj | list[Qobj] | None = None,
     ) -> None:
@@ -107,19 +107,19 @@ class P1(QSys):
             Rotation index, integer between 0 and 3.
         N : 15 | 14 | 0 | None
             Nitrogen isotope, or 0 for no nuclear spin
-        rho0 : Qobj | array | int
+        rho0 : Qobj | array
             Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
         c_ops : Qobj | list(Qobj)
             List of collapse operators
         units_B0 : str
             Units of the magnetic field (T, mT or G)
-        theta : float | int
+        theta : float
             Angle of the static magnetic field vector with respect to the z axis
-        phi_r : float | int
+        phi_r : float
             Azimutal angle of the static magnetic field vector within the xy plane
-        theta_1 : float | int
+        theta_1 : float
             Angle of the MW magnetic field vector with respect to the z axis
-        phi_r_1 : float | int
+        phi_r_1 : float
             Azimutal angle of the MW magnetic field vector within the xy plane
         units_angles : str
             Units of the angles (deg or rad)
@@ -300,7 +300,7 @@ class P1(QSys):
         """
         if self.N == 14:
             return -3.97 * tensor(qeye(2), jmat(1, "z") ** 2)
-        elif self.N == 15:
+        elif self.N in (0, 15):
             return 0
         else:
             raise ValueError(

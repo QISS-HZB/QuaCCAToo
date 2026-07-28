@@ -7,17 +7,19 @@ Classes
 - PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.
 - Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.
 - Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
+- SpinLocking: spin locking experiment, composed by a pi/2-y pulse to drive the spin to the +X state followed by a pulse along x of varying duration. During the driving, the system is usually in an eigenstate of the driving Hamiltonian.
 """
 
-from typing import Callable
+from collections.abc import Callable
+
 import numpy as np
 from qutip import Qobj, mesolve, propagator
 
+from ..qsys.qsys import QSys
 from .pulse_shapes import square_pulse
 from .pulsed_sim import PulsedSim
-from ..qsys.qsys import QSys
 
-__all__ = ["Rabi", "PMR", "Ramsey", "Hahn"]
+__all__ = ["PMR", "Hahn", "Rabi", "Ramsey", "SpinLocking"]
 
 ####################################################################################################
 
@@ -41,12 +43,12 @@ class Rabi(PulsedSim):
 
     def __init__(
         self,
-        pulse_duration: np.ndarray | list[float | int],
+        pulse_duration: np.ndarray | list[float],
         system: QSys,
         h1: Qobj | list[Qobj],
         H2: tuple[Qobj, Callable] | None = None,
         pulse_shape: Callable | list[Callable] = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         options: dict | None = None,
     ) -> None:
         """
@@ -162,13 +164,13 @@ class PMR(PulsedSim):
 
     def __init__(
         self,
-        frequencies: np.ndarray | list[float | int],
+        frequencies: np.ndarray | list[float],
         system: QSys,
-        pulse_duration: float | int,
+        pulse_duration: float,
         h1: Qobj | list[Qobj],
         H2: tuple[Qobj, Callable] | None = None,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
     ) -> None:
@@ -197,6 +199,7 @@ class PMR(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
+        self.sequence = self.PMR_sequence
         self._check_attr_predef_seqs(
             h1, None, None, pulse_shape, pulse_params, options, time_steps, None, None, None, None
         )
@@ -218,11 +221,9 @@ class PMR(PulsedSim):
         else:
             self.total_time = pulse_duration
 
-        # set the sequence attribute to the PMR_sequence method
-        self.sequence = self.PMR_sequence
         self._append_pulse_to_profile(0, self.total_time)
 
-    def PMR_sequence(self, f: float | int) -> Qobj:
+    def PMR_sequence(self, f: float) -> Qobj:
         """
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
@@ -249,7 +250,7 @@ class PMR(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles",
-        f_pulse: float | int | None = None,
+        f_pulse: float | None = None,
     ):
         """
         Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
@@ -258,10 +259,6 @@ class PMR(PulsedSim):
         ----------
         f_pulse : float or int
             Frequency of the pulse to be plotted.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
         if f_pulse is None:
@@ -304,15 +301,15 @@ class Ramsey(PulsedSim):
 
     def __init__(
         self,
-        free_duration: np.ndarray | list[float | int],
+        free_duration: np.ndarray | list[float],
         system: QSys,
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
         Rx: Qobj | None = None,
         H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
     ) -> None:
@@ -348,6 +345,7 @@ class Ramsey(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
+        self.sequence = self.ramsey_sequence
         self._check_attr_predef_seqs(
             h1,
             Rx,
@@ -361,9 +359,8 @@ class Ramsey(PulsedSim):
             None,
             projection_pulse,
         )
-        self.sequence = self.ramsey_sequence
 
-    def ramsey_sequence(self, tau: float | int) -> Qobj:
+    def ramsey_sequence(self, tau: float) -> Qobj:
         """
         Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
@@ -397,14 +394,14 @@ class Ramsey(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
+    def _get_pulse_profiles(self, tau: float | None = None) -> None:
         """
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
         tau = self._check_tau(tau)
@@ -429,19 +426,15 @@ class Ramsey(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of Ramsey Sequence",
-        tau: float | int | None = None,
+        tau: float | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         # generate the pulse profiles for the Ramsey sequence for a given tau
         self._get_pulse_profiles(tau)
@@ -478,15 +471,15 @@ class Hahn(PulsedSim):
 
     def __init__(
         self,
-        free_duration: np.ndarray | list[float | int],
+        free_duration: np.ndarray | list[float],
         system: QSys,
-        pi_pulse_duration: float | int,
+        pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
         Rx: Qobj | None = None,
         H2: tuple[Qobj, Callable] | None = None,
         projection_pulse: bool = True,
         pulse_shape: Callable = square_pulse,
-        pulse_params: dict[str, float | int] | None = None,
+        pulse_params: dict[str, float] | None = None,
         time_steps: int = 100,
         options: dict | None = None,
     ) -> None:
@@ -520,6 +513,7 @@ class Hahn(PulsedSim):
             Dictionary of solver options from Qutip.
         """
         super().__init__(system, H2)
+        self.sequence = self.hahn_sequence
         self._check_attr_predef_seqs(
             h1,
             Rx,
@@ -533,9 +527,8 @@ class Hahn(PulsedSim):
             None,
             projection_pulse,
         )
-        self.sequence = self.hahn_sequence
 
-    def hahn_sequence(self, tau: float | int) -> Qobj:
+    def hahn_sequence(self, tau: float) -> Qobj:
         """
         Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
         The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
@@ -578,14 +571,14 @@ class Hahn(PulsedSim):
 
         return self.rho
 
-    def _get_pulse_profiles(self, tau: float | int | None = None) -> None:
+    def _get_pulse_profiles(self, tau: float | None = None) -> None:
         """
         Generates the pulse profiles for the Hahn echo sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution variable or pulse spacing for the Hahn echo sequence.
         """
         tau = self._check_tau(tau)
@@ -625,22 +618,196 @@ class Hahn(PulsedSim):
         xlabel: str = "Time",
         ylabel: str = "Pulse Intensity",
         title: str = "Pulse Profiles of Hahn Echo Sequence",
-        tau: float | int | None = None,
+        tau: float | None = None,
     ) -> None:
         """
         Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
 
         Parameters
         ----------
-        tau : float | int
+        tau : float
             Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
-
-        Notes
-        -----
-        The method uses the same parameters as plot_pulses
         """
         # generate the pulse profiles for the Hahn echo sequence for a given tau
         self._get_pulse_profiles(tau)
+
+        # call the plot_pulses method of the parent class
+        super().plot_pulses(figsize, xlabel, ylabel, title)
+
+
+####################################################################################################
+
+
+class SpinLocking(PulsedSim):
+    """
+    A class containing a spin locking experiment.
+
+    A spin locking is composed by a pi/2-y pulse to drive the spin to the +X state followed by a pulse along x of varying duration.
+    During the driving, the system is usually in an eigenstate of the driving Hamiltonian.
+
+    Methods
+    -------
+    spin_locking_sequence :
+        Defines the spin locking sequence for a given pulse duration and the set of attributes defined in the constructor.
+        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final pi/2-y pulse if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        The sequence is to be called by the parallel_map method of QuTip.
+    _get_pulse_profiles :
+        Generates the pulse profiles for the spin locking sequence for a given pulse duration.
+        The pulse profiles are stored in the pulse_profiles attribute of the object.
+    plot_pulses :
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the spin locking sequence for a given pulse duration and then plot them.
+
+    Notes
+    -----
+    The SpinLocking class inherits the methods and attributes from the PulsedSim class.
+    """
+
+    def __init__(
+        self,
+        pulse_duration: np.ndarray | list[float],
+        system: QSys,
+        pi_pulse_duration: float,
+        h1: Qobj | list[Qobj] | None = None,
+        Ry: Qobj | None = None,
+        H2: tuple[Qobj, Callable] | None = None,
+        projection_pulse: bool = True,
+        pulse_shape: Callable = square_pulse,
+        pulse_params: dict[str, float] | None = None,
+        time_steps: int = 100,
+        options: dict | None = None,
+    ) -> None:
+        """
+        Constructor for the spin locking pulsed experiment class, taking a specific pulse_duration to run the simulation.
+
+        Parameters
+        ----------
+        pulse_duration : numpy.ndarray
+            Time array for the simulation representing the pulse duration to be used as the variable attribute for the simulation.
+        system : QSys
+            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+        pi_pulse_duration : float
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        h1 : Qobj or list of Qobj
+            Control Hamiltonian of the system.
+        Ry : Qobj or None
+            Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.
+        H2 : Qobj or list of Qobj
+            Time dependent sensing Hamiltonian of the system.
+        projection_pulse : bool
+            Boolean to determine if the measurement is to be performed in the Sz basis or not.
+            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
+        pulse_shape : FunctionType or list of FunctionType
+            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+        pulse_params : dict
+            Dictionary of parameters for the pulse_shape functions.
+        time_steps : int
+            Number of time steps in the pulses for the simulation.
+        options : dict
+            Dictionary of solver options from Qutip.
+        """
+        super().__init__(system, H2)
+        self.sequence = self.spin_locking_sequence
+        self._check_attr_predef_seqs(
+            h1,
+            Ry,
+            Ry,
+            pulse_shape,
+            pulse_params,
+            options,
+            time_steps,
+            pulse_duration,
+            pi_pulse_duration,
+            None,
+            projection_pulse,
+        )
+        self.variable_name = f"Pulse Duration (1/{self.system.units_H0})"
+
+        if pi_pulse_duration == 0:
+            self.system.H0 += h1
+        else:
+            base_pulse = self.pulse_params.copy()
+            self.pulse_params = [{**base_pulse, "phi_t": 0}, {**base_pulse, "phi_t": -np.pi / 2}]
+
+    def spin_locking_sequence(self, tp: float) -> Qobj:
+        """
+        Defines the spin locking sequence for a given pulse duration and the set of attributes defined in the constructor.
+        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final pi/2-y pulse if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        The sequence is to be called by the parallel_map method of QuTip.
+
+        Parameters
+        ----------
+        tp : float
+            Pulse duration.
+
+        Returns
+        -------
+        rho : Qobj
+            Final state.
+        """
+        # if pi_pulse_duration is 0, use the delta pulse method
+        if self.pi_pulse_duration == 0:
+            self._delta_pulse(self.Ry_half)
+            self._free_evolution(tp, self.options)
+
+            if self.projection_pulse:
+                self._delta_pulse(self.Ry_half)
+
+        else:
+            self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+            self._pulse(self.Ht, tp, self.options, self.pulse_params[0])
+
+            if self.projection_pulse:
+                self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
+
+        return self.rho
+
+    def _get_pulse_profiles(self, tp: float | None = None) -> None:
+        """
+        Generates the pulse profiles for the spin locking sequence for a given pulse duration.
+        The pulse profiles are stored in the pulse_profiles attribute of the object.
+
+        Parameters
+        ----------
+        tp : float
+            Pulse duration
+        """
+        tp = self._check_tau(tp)
+
+        self.pulse_profiles = []
+
+        # pi/2 pulse
+        self._append_pulse_to_profile(0, self.pi_pulse_duration / 2)
+        t0 = self.pi_pulse_duration / 2
+        # pulse
+        self._append_pulse_to_profile(t0, tp)
+        t0 += tp
+
+        if self.projection_pulse:
+            # pi/2 pulse
+            self._append_pulse_to_profile(t0, self.pi_pulse_duration / 2)
+            t0 += self.pi_pulse_duration / 2
+
+        self.total_time = t0
+
+    def plot_pulses(
+        self,
+        figsize: tuple[int, int] = (6, 4),
+        xlabel: str = "Time",
+        ylabel: str = "Pulse Intensity",
+        title: str = "Pulse Profiles of the Spin Locking Sequence",
+        tp: float | None = None,
+    ) -> None:
+        """
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the spin locking sequence for a given pulse duration and then plot them.
+
+        Parameters
+        ----------
+        tp : float
+            Pulse duration. Contrary to the run method, the pulse duration must be a single number in order to plot the pulse profiles.
+        """
+        self._get_pulse_profiles(tp)
 
         # call the plot_pulses method of the parent class
         super().plot_pulses(figsize, xlabel, ylabel, title)
