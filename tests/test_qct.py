@@ -1,34 +1,35 @@
-import os
 import numpy as np
 import pytest
+import scipy.constants as cte
 from lmfit import Model
-from qutip import basis, fock_dm, jmat, qeye, tensor
-
 from quaccatoo import (
     CPMG,
     NV,
+    P1,
     PMR,
     XY,
     XY8,
     Analysis,
     ExpData,
     Hahn,
+    PulsedSim,
     QSys,
     Rabi,
+    SiBiFlux,
+    SpinLocking,
     compose_sys,
-    square_pulse,
-    P1,
-    PulsedSim,
     load_quaccatoo,
     save_quaccatoo,
+    square_pulse,
 )
 from quaccatoo.analysis.fit_functions import (
     ExpDecayModel,
     GaussianModel,
     RabiModel,
-    fit_two_lorentz_sym,
     fit_sinc2,
+    fit_two_lorentz_sym,
 )
+from qutip import basis, fock_dm, jmat, qeye, tensor
 
 """
 The testing framework for QuaCCAToo.
@@ -59,9 +60,9 @@ def qsys():
 # Test if the eigenstates of the qsys fixture are correct
 class TestQSys:
     def test_states(self, qsys):
-        assert (qsys.eigenstates[0], qsys.eigenstates[1]) == (
-            -basis(2, 1),
-            -basis(2, 0),
+        assert (qsys.eigenstates[0].proj(), qsys.eigenstates[1].proj()) == (
+            basis(2, 1).proj(),
+            basis(2, 0).proj(),
         )
 
     def test_levels(self, qsys):
@@ -417,6 +418,65 @@ class TestP1:
         ) and np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
 
 
+class TestSiBiFlux:
+    def test_flux_only(self):
+        Delta, epsilon = 7257.0, 400.0
+        sys = SiBiFlux(
+            rho0=basis(2, 0),
+            observable=fock_dm(2, 0),
+            Delta=Delta,
+            epsilon=epsilon,
+            spin=False,
+        )
+        assert sys.H0.shape == (2, 2)
+        assert np.isclose(
+            sys.energy_levels[1] - sys.energy_levels[0],
+            np.sqrt(Delta**2 + epsilon**2),
+            atol=1e-3,
+        )
+
+    def test_flux_spin_nuclear_dims(self):
+        sys = SiBiFlux(
+            rho0=tensor(basis(2, 0), basis(2, 0), basis(10, 0)),
+            observable=tensor(jmat(1 / 2, "z"), qeye(2), qeye(10)),
+            Delta=7257.0,
+            B0=261.0,
+            g=4 * 1.8,
+            N=True,
+        )
+        assert sys.H0.dims == [[2, 2, 10], [2, 2, 10]]
+
+
+class TestSpinLocking:
+    @pytest.mark.slow
+    def test_flipflop_freq(self):
+        Delta, Omega, g_paper = 7257.0, 60.5, 1.8
+        gamma_e = cte.value("electron gyromag. ratio in MHz/T") * 1e-3
+
+        sys = SiBiFlux(
+            rho0=tensor(basis(2, 0), basis(2, 0)),
+            observable=tensor(jmat(1 / 2, "z"), qeye(2)),
+            Delta=Delta,
+            B0=(Delta + Omega) / gamma_e,
+            g=4 * g_paper,
+            N=False,
+        )
+
+        sim = SpinLocking(
+            pulse_duration=np.linspace(0, 2, 20),
+            system=sys,
+            pi_pulse_duration=1 / 2 / Omega,
+            h1=2 * Omega * tensor(jmat(1 / 2, "x"), qeye(2)),
+            pulse_params={"f_pulse": Delta},
+            options={"nsteps": 1e6},
+        )
+        sim.run()
+
+        analysis = Analysis(sim)
+        analysis.run_FFT()
+        assert np.isclose(analysis.get_peaks_FFT()[0], g_paper, atol=0.1)
+
+
 ########################################################################
 # Standalone tests
 ########################################################################
@@ -567,7 +627,7 @@ def test_add_free_evolution():
     )
 
 
-def test_save_load():
+def test_save_load(tmp_path):
     qsys_saved = NV(
         B0=4.2, units_B0="mT", theta=-45, units_angles="deg", N=14, temp=300, units_temp="K"
     )
@@ -581,16 +641,14 @@ def test_save_load():
         time_steps=100,
     )
 
-    try:
-        save_quaccatoo(qsys_saved, "./test_qsys")
-        save_quaccatoo(psim_saved, "./test_psim")
+    qsys_path = str(tmp_path / "test_qsys")
+    psim_path = str(tmp_path / "test_psim")
 
-        loaded_qsys = load_quaccatoo("./test_qsys")
-        loaded_psim = load_quaccatoo("./test_psim")
+    save_quaccatoo(qsys_saved, qsys_path)
+    save_quaccatoo(psim_saved, psim_path)
 
-        assert set(loaded_qsys.__dict__.keys()) == set(qsys_saved.__dict__.keys())
-        assert set(loaded_psim.__dict__.keys()) == set(psim_saved.__dict__.keys())
+    loaded_qsys = load_quaccatoo(qsys_path)
+    loaded_psim = load_quaccatoo(psim_path)
 
-    finally:
-        if os.path.exists("./test.zip"):
-            os.remove("./test.zip")
+    assert set(loaded_qsys.__dict__.keys()) == set(qsys_saved.__dict__.keys())
+    assert set(loaded_psim.__dict__.keys()) == set(psim_saved.__dict__.keys())
