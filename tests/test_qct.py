@@ -1,7 +1,23 @@
+"""
+The testing framework for QuaCCAToo.
+
+We use `pytest` for testing. See https://docs.pytest.org/en/stable/getting-started.html
+for a quick introduction to pytest.
+
+The gist is to use fixtures (`@pytest.fixture` decorator) for objects which are needed
+repeatedly, and group related tests into an appropriately named test class.
+
+Remember to mark long running tests with the `@pytest.mark.slow` decorator. These can then be run
+with the `--runslow` CLI flag passed to `pytest`.
+"""
+
+import matplotlib
 import numpy as np
 import pytest
 import scipy.constants as cte
 from lmfit import Model
+from qutip import basis, fock_dm, jmat, qeye, tensor
+
 from quaccatoo import (
     CPMG,
     NV,
@@ -19,6 +35,8 @@ from quaccatoo import (
     SpinLocking,
     compose_sys,
     load_quaccatoo,
+    lorentzian_pulse,
+    plot_histogram,
     save_quaccatoo,
     square_pulse,
 )
@@ -29,20 +47,10 @@ from quaccatoo.analysis.fit_functions import (
     fit_sinc2,
     fit_two_lorentz_sym,
 )
-from qutip import basis, fock_dm, jmat, qeye, tensor
 
-"""
-The testing framework for QuaCCAToo.
-
-We use `pytest` for testing. See https://docs.pytest.org/en/stable/getting-started.html
-for a quick introduction to pytest.
-
-The gist is to use fixtures (`@pytest.fixture` decorator) for objects which are needed
-repeatedly, and group related tests into an appropriately named test class.
-
-Remember to mark long running tests with the `@pytest.mark.slow` decorator. These can then be run
-with the `--runslow` CLI flag passed to `pytest`.
-"""
+# the plotting methods are only called to check that they run, no window is needed
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 
 # QSys fixture for reuse in multiple tests
@@ -67,6 +75,23 @@ class TestQSys:
 
     def test_levels(self, qsys):
         assert np.array_equal(qsys.energy_levels, np.array([0, 1]))
+
+    @pytest.mark.filterwarnings("ignore:Initial state not provided")
+    def test_no_rho0(self):
+        qsys_no_rho0 = QSys(H0=jmat(1 / 2, "z"), units_H0="MHz")
+        assert qsys_no_rho0.rho0 is None
+        assert PulsedSim(qsys_no_rho0).system.rho0 is None
+        assert compose_sys(qsys_no_rho0, qsys_no_rho0).rho0 is None
+
+    def test_truncate(self, qsys):
+        trunc = QSys(H0=jmat(1, "z"), rho0=1, observable=fock_dm(3, 1), units_H0="MHz")
+        trunc.truncate(0)
+        assert trunc.H0.shape == (2, 2)
+
+        with pytest.raises(ValueError):
+            qsys.truncate(5)
+        with pytest.raises(ValueError):
+            qsys.truncate([0, 7])
 
 
 # Tests for the NV class methods
@@ -110,6 +135,14 @@ class TestNV:
         rho0 = NV(N=15, B0=100, units_B0="T", temp=5.6, units_temp="K").rho0
         assert np.isclose(rho0[3, 3] - rho0[2, 2], 0.00185, atol=1e-5)
 
+    # the nuclear spin can be truncated on its own, and the rotation operators of the
+    # delta pulses have to follow the new dimensions
+    def test_truncate_mI(self):
+        sys = NV(B0=25, units_B0="mT", N=14)
+        sys.truncate(mI=1)
+        assert sys.H0.dims == [[3, 2], [3, 2]]
+        assert all(R.shape == sys.H0.shape for R in sys.MW_Rx + sys.MW_Ry + sys.RF_Rx + sys.RF_Ry)
+
 
 # Rabi object (fixture) used in the TestRabi class below
 @pytest.fixture
@@ -145,6 +178,18 @@ class TestRabi:
         rabi_analysis = Analysis(rabi_exp)
         rabi_analysis.run_FFT()
         assert np.isclose(rabi_analysis.get_peaks_FFT()[0], 1 / 2 / 5, atol=1e-3)
+
+    # without an initial state the propagator is calculated instead of the density matrices
+    @pytest.mark.filterwarnings("ignore:Initial state not provided")
+    def test_propagator(self):
+        rabi_U = Rabi(
+            pulse_duration=np.linspace(0, 4, 10),
+            system=QSys(H0=jmat(1 / 2, "z"), units_H0="MHz"),
+            h1=0.1 * jmat(1 / 2, "x"),
+            pulse_params={"f_pulse": 1},
+        )
+        rabi_U.run()
+        assert len(rabi_U.U) == 10
 
 
 class TestHahn:
@@ -237,6 +282,17 @@ class TestXY:
             atol=1e-3,
         )
 
+    # the sequence is symmetric, therefore it lasts 2*M*tau with both realistic and delta pulses
+    def test_duration(self, qsys):
+        tau, M = 2.0, 2
+        for pulses in (
+            {"pi_pulse_duration": 0.2, "h1": jmat(1 / 2, "x") * 2, "pulse_params": {"f_pulse": 1}},
+            {"pi_pulse_duration": 0, "Rx": jmat(1 / 2, "x") * 2, "Ry": jmat(1 / 2, "y") * 2},
+        ):
+            XY_sim = XY(free_duration=np.array([tau]), system=qsys, M=M, **pulses)
+            XY_sim.sequence(tau)
+            assert np.isclose(XY_sim.total_time, 2 * M * tau)
+
 
 class TestXY8:
     @pytest.mark.slow
@@ -274,6 +330,33 @@ class TestXY8:
             atol=1e-3,
         )
 
+    def test_duration(self, qsys):
+        tau, M = 2.0, 1
+        for pulses in (
+            {"pi_pulse_duration": 0.2, "h1": jmat(1 / 2, "x") * 2, "pulse_params": {"f_pulse": 1}},
+            {"pi_pulse_duration": 0, "Rx": jmat(1 / 2, "x") * 2, "Ry": jmat(1 / 2, "y") * 2},
+        ):
+            XY8_sim = XY8(free_duration=np.array([tau]), system=qsys, M=M, **pulses)
+            XY8_sim.sequence(tau)
+            assert np.isclose(XY8_sim.total_time, 8 * M * tau)
+
+    # the random phases are drawn once, so that all the points share the same sequence
+    def test_RXY8(self, qsys):
+        phases = []
+        for _ in range(2):
+            RXY8_sim = XY8(
+                free_duration=np.array([2.0]),
+                system=qsys,
+                M=2,
+                pi_pulse_duration=0.2,
+                h1=jmat(1 / 2, "x") * 2,
+                pulse_params={"f_pulse": 1},
+                RXY8=True,
+                seed=7,
+            )
+            phases.append([pulse["phi_t"] for pulse in RXY8_sim.pulse_params])
+        assert phases[0] == phases[1]
+
 
 class TestCPMG:
     # Runs the CPMG sequence on an NV object
@@ -307,6 +390,28 @@ class TestCPMG:
             [0.353, 0.003],
             atol=1e-3,
         )
+
+    def test_duration(self, qsys):
+        tau, M = 2.0, 2
+        for pulses in (
+            {"pi_pulse_duration": 0.2, "h1": jmat(1 / 2, "x") * 2, "pulse_params": {"f_pulse": 1}},
+            {"pi_pulse_duration": 0, "Rx": jmat(1 / 2, "x") * 2, "Ry": jmat(1 / 2, "y") * 2},
+        ):
+            CPMG_sim = CPMG(free_duration=np.array([tau]), system=qsys, M=M, **pulses)
+            CPMG_sim.sequence(tau)
+            assert np.isclose(CPMG_sim.total_time, M * tau)
+
+    # tau shorter than twice the pi pulse gives negative free evolutions
+    def test_short_tau(self, qsys):
+        with pytest.warns(UserWarning, match="free evolution time must be larger"):
+            CPMG(
+                free_duration=np.array([1.5]),
+                system=qsys,
+                M=1,
+                pi_pulse_duration=1,
+                h1=jmat(1 / 2, "x") * 2,
+                pulse_params={"f_pulse": 1},
+            )
 
 
 class TestPODMR:
@@ -381,6 +486,18 @@ class TestExpData:
         exp_data.offset_correction(2)
         assert np.allclose(data_corr, exp_data.results)
 
+    # a purely polynomial baseline has to be corrected to zero, on single and multiple columns
+    def test_poly_base(self):
+        exp_data = ExpData(file_path="./tests/data/xy82.dat")
+        exp_data.results = 3 * exp_data.variable + 5
+        exp_data.poly_base_correction(poly_order=1)
+        assert np.allclose(exp_data.results, 0, atol=1e-6)
+
+        columns = ExpData(file_path="./tests/data/xy82.dat", results_columns=[1, 2])
+        columns.results = [3 * columns.variable + 5, columns.variable - 2]
+        columns.poly_base_correction(poly_order=1)
+        assert np.allclose(columns.results, 0, atol=1e-6)
+
 
 class TestP1:
     def test_P1(self):
@@ -413,8 +530,11 @@ class TestP1:
         analysis.run_fit(
             fit_model=Model(fit_sinc2), guess={"A": 0.33, "gamma": 5, "f0": 1050, "C": 1}
         )
+        # the fitted gamma recovers the Rabi frequency w2. It moved from 3.003 to 3.0046 when the
+        # PMR pulse was corrected to start at t=0 instead of at pulse_duration, as the phase of the
+        # drive at the beginning of the pulse enters through the counter rotating terms
         assert np.isclose(
-            analysis.fit_params.best_values["gamma"], 3.003, atol=1e-3
+            analysis.fit_params.best_values["gamma"], 3.0046, atol=1e-3
         ) and np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
 
 
@@ -446,6 +566,18 @@ class TestSiBiFlux:
         )
         assert sys.H0.dims == [[2, 2, 10], [2, 2, 10]]
 
+    # the hyperfine coupling gives the known 7.377 GHz zero field splitting of the bismuth donor
+    def test_hyperfine(self):
+        sys = SiBiFlux(
+            rho0=tensor(basis(2, 0), basis(10, 0)),
+            observable=tensor(jmat(1 / 2, "z"), qeye(10)),
+            flux=False,
+            N=True,
+            B0=0,
+        )
+        levels = np.unique(np.round(sys.energy_levels, 6))
+        assert np.isclose(levels[-1] - levels[0], 7377, atol=1e-3)
+
 
 class TestSpinLocking:
     @pytest.mark.slow
@@ -475,6 +607,107 @@ class TestSpinLocking:
         analysis = Analysis(sim)
         analysis.run_FFT()
         assert np.isclose(analysis.get_peaks_FFT()[0], g_paper, atol=0.1)
+
+    # with delta pulses h1 is still needed, as it drives the system during the locking,
+    # and it must not be added to the H0 of the system given by the user
+    def test_delta_pulse(self, qsys):
+        with pytest.raises(ValueError, match="h1 must still be given"):
+            SpinLocking(
+                pulse_duration=np.linspace(0, 2, 5),
+                system=qsys,
+                pi_pulse_duration=0,
+                Ry=jmat(1 / 2, "y") * 2,
+            )
+
+        H0 = qsys.H0.copy()
+        locking = SpinLocking(
+            pulse_duration=np.linspace(0, 2, 5),
+            system=qsys,
+            pi_pulse_duration=0,
+            Ry=jmat(1 / 2, "y") * 2,
+            h1=0.1 * jmat(1 / 2, "x") * 2,
+        )
+        assert qsys.H0 == H0
+        assert locking.system.H0 != H0
+
+
+class TestPulseShapes:
+    def test_lorentzian(self):
+        value = lorentzian_pulse(np.array([0.0]), t_mid=0.5, gamma=1, f_pulse=1, phi_t=0)
+        assert np.allclose(value, 1 / (1 + 0.5**2))
+
+
+class TestPulsedSim:
+    # the sensing Hamiltonian must stay a single term of Ht, also with several control Hamiltonians
+    def test_H2(self, qsys):
+        def sensing(t, **kwargs):
+            return np.cos(t)
+
+        rabi_H2 = Rabi(
+            pulse_duration=np.linspace(0, 4, 10),
+            system=qsys,
+            h1=[0.1 * jmat(1 / 2, "x"), 0.1 * jmat(1 / 2, "y")],
+            pulse_shape=[square_pulse, square_pulse],
+            H2=[0.01 * jmat(1 / 2, "z"), sensing],
+            pulse_params={"f_pulse": 1},
+        )
+        assert sensing not in rabi_H2.Ht
+        rabi_H2.run()
+        assert len(rabi_H2.results) == 10
+
+    # a pulse must be appended to the profiles, without discarding the previous operations
+    def test_pulse_profiles(self, qsys):
+        seq = PulsedSim(qsys)
+        seq.add_free_evolution(1)
+        free_evo = seq.pulse_profiles[0]
+        seq.add_pulse(
+            1,
+            [0.1 * jmat(1 / 2, "x"), 0.1 * jmat(1 / 2, "y")],
+            pulse_shape=[square_pulse, square_pulse],
+            pulse_params={"f_pulse": 1},
+            time_steps=10,
+        )
+        assert len(seq.pulse_profiles) == 2
+        assert seq.pulse_profiles[0] is free_evo
+
+    # the sequences reset rho and the clock, so that they can also be called outside of run
+    def test_reset(self, qsys):
+        qsys.c_ops = 0.1 * jmat(1 / 2, "z") * 2
+        free_duration = np.linspace(5, 25, 4)
+        hahn_reset = Hahn(
+            free_duration=free_duration,
+            system=qsys,
+            pi_pulse_duration=0,
+            Rx=jmat(1 / 2, "x") * 2,
+        )
+        hahn_reset.run()
+        direct = [
+            np.real((hahn_reset.hahn_sequence(tau) * qsys.observable).tr()) for tau in free_duration
+        ]
+        assert np.allclose(hahn_reset.results, direct)
+
+
+class TestAnalysis:
+    # the comparison must not overwrite the results of the experiment given by the user
+    def test_compare_with(self):
+        experiment = ExpData(file_path="./tests/data/xy82.dat", results_columns=1)
+        comparison = ExpData(file_path="./tests/data/xy82.dat", results_columns=2)
+        results = comparison.results.copy()
+        analysis = Analysis(experiment)
+        analysis.compare_with(comparison)
+        assert np.array_equal(results, comparison.results)
+        assert analysis.comparison_results is not None
+
+    # ExpData has no system attribute, the results are iterated instead of the observables
+    def test_plot_columns(self):
+        Analysis(ExpData(file_path="./tests/data/xy82.dat", results_columns=[1, 2])).plot_results()
+
+    def test_figsize(self):
+        plt.close("all")
+        plot_histogram(fock_dm(2, 0), figsize=(9, 9))
+        assert np.allclose(plt.gcf().get_size_inches(), (9, 9))
+        with pytest.raises(ValueError, match="figsize"):
+            plot_histogram(fock_dm(2, 0), figsize=(9, 9, 9))
 
 
 ########################################################################
