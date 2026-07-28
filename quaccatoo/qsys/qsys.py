@@ -65,6 +65,7 @@ class QSys:
     def __init__(
         self,
         H0: Qobj | np.ndarray,
+        *,
         rho0: Qobj | np.ndarray | int | None = None,
         c_ops: Qobj | list[Qobj] | None = None,
         observable: Qobj | list[Qobj] | None = None,
@@ -566,7 +567,7 @@ def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
     else:
         raise ValueError("Both collapse operators must be Qobj, a list of Qobj or None")
 
-    return QSys(H0, rho0, c_ops, observable, qsys1.units_H0)
+    return QSys(H0, rho0=rho0, c_ops=c_ops, observable=observable, units_H0=qsys1.units_H0)
 
 
 def plot_energy_B0(

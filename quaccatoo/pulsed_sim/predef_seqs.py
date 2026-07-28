@@ -45,6 +45,7 @@ class Rabi(PulsedSim):
     def __init__(
         self,
         pulse_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         h1: Qobj | list[Qobj],
         H2: tuple[Qobj, Callable] | None = None,
@@ -72,7 +73,7 @@ class Rabi(PulsedSim):
         options : dict
             Dictionary of solver options from Qutip.
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self._check_attr_predef_seqs(
             h1,
             None,
@@ -166,6 +167,7 @@ class PMR(PulsedSim):
     def __init__(
         self,
         frequencies: np.ndarray | list[float],
+        *,
         system: QSys,
         pulse_duration: float,
         h1: Qobj | list[Qobj],
@@ -199,7 +201,7 @@ class PMR(PulsedSim):
         options : dict
             Dictionary of solver options from Qutip.
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.PMR_sequence
         self._check_attr_predef_seqs(
             h1, None, None, pulse_shape, pulse_params, options, time_steps, None, None, None, None
@@ -311,6 +313,7 @@ class Ramsey(PulsedSim):
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
@@ -353,7 +356,7 @@ class Ramsey(PulsedSim):
         options : dict
             Dictionary of solver options from Qutip.
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.ramsey_sequence
         self._check_attr_predef_seqs(
             h1,
@@ -490,6 +493,7 @@ class Hahn(PulsedSim):
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
@@ -530,7 +534,7 @@ class Hahn(PulsedSim):
         options : dict
             Dictionary of solver options from Qutip.
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.hahn_sequence
         self._check_attr_predef_seqs(
             h1,
@@ -686,6 +690,7 @@ class SpinLocking(PulsedSim):
     def __init__(
         self,
         pulse_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         pi_pulse_duration: float,
         h1: Qobj | list[Qobj] | None = None,
@@ -727,7 +732,7 @@ class SpinLocking(PulsedSim):
         options : dict
             Dictionary of solver options from Qutip.
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.spin_locking_sequence
         self._check_attr_predef_seqs(
             h1,

@@ -46,6 +46,7 @@ class CPMG(PulsedSim):
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         M: int,
         pi_pulse_duration: float,
@@ -89,7 +90,7 @@ class CPMG(PulsedSim):
         time_steps : int
             Number of time steps in the pulses for the simulation
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.CPMG_sequence
         self._check_attr_predef_seqs(
             h1,
@@ -272,6 +273,7 @@ class XY(PulsedSim):
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         M: int,
         pi_pulse_duration: float,
@@ -315,7 +317,7 @@ class XY(PulsedSim):
         options : dict, optional
             Dictionary of solver options
         """
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.XY_sequence
         self._check_attr_predef_seqs(
             h1,
@@ -496,6 +498,7 @@ class XY8(PulsedSim):
     def __init__(
         self,
         free_duration: np.ndarray | list[float],
+        *,
         system: QSys,
         M: int,
         pi_pulse_duration: float,
@@ -553,7 +556,7 @@ class XY8(PulsedSim):
                 f"RXY8 must be a boolean value indicating whether to add a random phase to each XY8 block or not, got {RXY8}."
             )
 
-        super().__init__(system, H2)
+        super().__init__(system, H2=H2)
         self.sequence = self.XY8_sequence
         self._check_attr_predef_seqs(
             h1,

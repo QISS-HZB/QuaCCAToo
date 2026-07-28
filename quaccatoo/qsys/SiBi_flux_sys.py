@@ -65,20 +65,21 @@ class SiBiFlux(QSys):
 
     def __init__(
         self,
+        *,
         rho0: Qobj | None,
+        c_ops: Qobj | list[Qobj] | None = None,
         observable: Qobj | list[Qobj] | None,
         flux: bool = True,
         spin: bool = True,
+        N: bool = False,
         Delta: float = 0.0,
         epsilon: float = 0.0,
+        g: float = 0.0,
         B0: float = 0.0,
         units_B0: Literal["T", "mT", "G"] = "mT",
         theta: float = 0.0,
         phi_r: float = 0.0,
-        N: bool = False,
-        g: float = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
-        c_ops: Qobj | list[Qobj] | None = None,
     ) -> None:
         """
         Constructor for the SiBiFlux class.
@@ -88,18 +89,26 @@ class SiBiFlux(QSys):
         ----------
         rho0 : Qobj or None
             Initial state of the system, passed to the QSys constructor.
+        c_ops : Qobj or list[Qobj] or None
+            Collapse operators for the Lindblad master equation, passed to the QSys constructor.
         observable : Qobj or list[Qobj] or None
             Observable or list of observables to be measured, passed to the QSys constructor.
         flux : bool
             Whether the superconducting flux qubit is included in the system.
         spin : bool
             Whether the bismuth donor spin is included in the system.
+        N : bool
+            Whether the bismuth nuclear spin (I=9/2) is included, adding the nuclear
+            Zeeman and hyperfine terms to the Hamiltonian. Only used if spin is True.
         Delta : float
             Coefficient of the sigma_z term of the flux qubit Hamiltonian, in MHz.
             Only used if flux is True.
         epsilon : float
             Coefficient of the sigma_x term of the flux qubit Hamiltonian, in MHz.
             Only used if flux is True.
+        g : float
+            Transverse coupling strength between the flux qubit and the donor electron
+            spin, in MHz. Only used if both flux and spin are True.
         B0 : float
             Intensity of the static magnetic field. Only used if spin is True.
         units_B0 : str
@@ -110,16 +119,8 @@ class SiBiFlux(QSys):
         phi_r : float
             Azimuthal angle of the static magnetic field vector within the xy plane.
             Only used if spin is True.
-        N : bool
-            Whether the bismuth nuclear spin (I=9/2) is included, adding the nuclear
-            Zeeman and hyperfine terms to the Hamiltonian. Only used if spin is True.
-        g : float
-            Transverse coupling strength between the flux qubit and the donor electron
-            spin, in MHz. Only used if both flux and spin are True.
         units_angles : str
             Units of the angles (deg or rad). Only used if spin is True.
-        c_ops : Qobj or list[Qobj] or None
-            Collapse operators for the Lindblad master equation, passed to the QSys constructor.
         """
         for name, val in (("flux", flux), ("spin", spin), ("N", N)):
             if not isinstance(val, bool):
@@ -171,7 +172,7 @@ class SiBiFlux(QSys):
         else:
             raise ValueError("Both flux and spin are False. At least one must be set to true")
 
-        super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
+        super().__init__(H0, rho0=rho0, c_ops=c_ops, observable=observable, units_H0="MHz")
 
     def _get_H_flux(self, Delta: float, epsilon: float) -> Qobj:
         """

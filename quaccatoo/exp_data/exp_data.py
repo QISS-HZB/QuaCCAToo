@@ -48,6 +48,7 @@ class ExpData:
     def __init__(
         self,
         file_path: str,
+        *,
         variable_column: int = 0,
         results_columns: int | list[int] = 1,
         yerr_columns: int | None = None,

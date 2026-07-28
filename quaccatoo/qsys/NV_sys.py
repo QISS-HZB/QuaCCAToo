@@ -81,6 +81,7 @@ class NV(QSys):
     def __init__(
         self,
         B0: float,
+        *,
         N: Literal[15, 14, 0] | None,
         c_ops: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
@@ -161,7 +162,7 @@ class NV(QSys):
                 f"Invalid value for Nitrogen isotope. Expected either 14 or 15, got {N}."
             )
 
-        super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
+        super().__init__(H0, rho0=rho0, c_ops=c_ops, observable=observable, units_H0="MHz")
 
         if self.temp is not None:
             self._rho0_T()
@@ -349,6 +350,8 @@ class NV(QSys):
             self.RF_h1 = qeye(3)
             self.RF_Rx = qeye(3)
             self.RF_Ry = qeye(3)
+            # without a nuclear spin there are no RF transitions to drive
+            self.RF_freqs = None
 
         else:
             raise ValueError(f"Invalid value for Nitrogen. Expected either 14 or 15, got {self.N}.")

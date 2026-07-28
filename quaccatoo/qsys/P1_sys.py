@@ -79,17 +79,18 @@ class P1(QSys):
     def __init__(
         self,
         B0: float,
+        *,
         rot_index: Literal[0, 1, 2, 3],
         N: Literal[15, 14, 0] | None = None,
         rho0: Qobj | np.ndarray | None = None,
         c_ops: Qobj | list[Qobj] | None = None,
+        observable: Qobj | list[Qobj] | None = None,
         units_B0: Literal["T", "mT", "G"] = "mT",
         theta: float = 0.0,
         phi_r: float = 0.0,
         theta_1: float = 90.0,
         phi_r_1: float = 0.0,
         units_angles: Literal["rad", "deg"] = "deg",
-        observable: Qobj | list[Qobj] | None = None,
     ) -> None:
         """
         Constructor for the P1 class.
@@ -107,6 +108,8 @@ class P1(QSys):
             Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
         c_ops : Qobj | list(Qobj)
             List of collapse operators
+        observable : Qobj | list(Qobj)
+            Observable to be measured
         units_B0 : str
             Units of the magnetic field (T, mT or G)
         theta : float
@@ -119,12 +122,6 @@ class P1(QSys):
             Azimutal angle of the MW magnetic field vector within the xy plane
         units_angles : str
             Units of the angles (deg or rad)
-        B0_vector : np.ndarray
-            Unit vector of the static magnetic field in the lab frame
-        B1_vector : np.ndarray
-            Unit vector of the MW magnetic field in the lab frame
-        observable : Qobj | list(Qobj)
-            Observable to be measured
         """
         self.B0, self.units_B0 = self._check_B0(B0, units_B0)
         self.theta, self.phi_r, self.units_angles = self._check_angles(theta, phi_r, units_angles)
@@ -190,7 +187,7 @@ class P1(QSys):
         ):
             observable = [self.eigenstates[obs] for obs in observable]
 
-        super().__init__(H0, rho0, c_ops, observable, units_H0="MHz")
+        super().__init__(H0, rho0=rho0, c_ops=c_ops, observable=observable, units_H0="MHz")
 
         self._set_h1()
 

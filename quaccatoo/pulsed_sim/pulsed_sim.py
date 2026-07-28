@@ -106,7 +106,7 @@ class PulsedSim:
     # Overwritten by the sequences that have a free evolution.
     _min_tau_factor = None
 
-    def __init__(self, system: QSys, H2: tuple[Qobj, Callable] | None = None) -> None:
+    def __init__(self, system: QSys, *, H2: tuple[Qobj, Callable] | None = None) -> None:
         """
         Initializes a general PulsedSim object with a quantum system, time dependent Hamiltonian and collapse operators.
 
