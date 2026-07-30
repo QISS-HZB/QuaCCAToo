@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quaccatoo.qsys.SiBi_flux_sys &mdash; QuaCCAToo  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/icon.svg"/>
+    <link rel="canonical" href="https://qiss-hzb.github.io/quaccatoo/_modules/quaccatoo/qsys/SiBi_flux_sys.html" />
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            QuaCCAToo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">QuaCCAToo modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QuaCCAToo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quaccatoo.qsys.SiBi_flux_sys</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quaccatoo.qsys.SiBi_flux_sys</h1><div class="highlight"><pre>
+<span></span><span class="c1"># TODO: add truncation method</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains a class for modelling a Bismuth atom coupled to a flux superconducting qubit</span>
+<span class="sd">being a subclass of QSys.</span>
+
+<span class="sd">This system is the same as used in Tikai Chang et al. &#39;Strong coupling of a superconducting flux</span>
+<span class="sd">qubit to single bismuth donors&#39;, Nature Communications 10.1038/s41467-025-64757-5.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">tensor</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">A_Bi</span><span class="p">,</span> <span class="n">gamma_Bi</span><span class="p">,</span> <span class="n">gamma_e</span>
+<span class="kn">from</span> <span class="nn">.qsys</span> <span class="kn">import</span> <span class="n">QSys</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SiBiFlux&quot;</span><span class="p">]</span>
+
+<span class="c1">####################################################################################################</span>
+
+
+<div class="viewcode-block" id="SiBiFlux">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.SiBi_flux_sys.SiBiFlux">[docs]</a>
+<span class="k">class</span> <span class="nc">SiBiFlux</span><span class="p">(</span><span class="n">QSys</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for modelling a Bismuth atom coupled to a flux superconducting qubit being a subclass of</span>
+<span class="sd">    QSys.</span>
+
+<span class="sd">    This system is the same as used in Tikai Chang et al. &#39;Strong coupling of a superconducting flux</span>
+<span class="sd">    qubit to single bismuth donors&#39;, Nature Communications 10.1038/s41467-025-64757-5.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    B0 : float</span>
+<span class="sd">        Intensity of the static magnetic field. Only set if spin is True.</span>
+<span class="sd">    units_B0 : str</span>
+<span class="sd">        Units of the static magnetic field (T, mT or G). Only set if spin is True.</span>
+<span class="sd">    theta : float</span>
+<span class="sd">        Polar angle of the static magnetic field vector with respect to the z axis.</span>
+<span class="sd">        Only set if spin is True.</span>
+<span class="sd">    phi_r : float</span>
+<span class="sd">        Azimuthal angle of the static magnetic field vector within the xy plane.</span>
+<span class="sd">        Only set if spin is True.</span>
+<span class="sd">    units_angles : str</span>
+<span class="sd">        Units of the angles (deg or rad). Only set if spin is True.</span>
+<span class="sd">    N : bool</span>
+<span class="sd">        Whether the bismuth nuclear spin (I=9/2) is included in the Hilbert space.</span>
+<span class="sd">        Only set if spin is True.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    _get_H_flux</span>
+<span class="sd">        Calculates and returns the superconducting flux qubit Hamiltonian.</span>
+<span class="sd">    electron_zeeman</span>
+<span class="sd">        Calculates and returns the Hamiltonian of the electron Zeeman interaction.</span>
+<span class="sd">    nuclear_zeeman</span>
+<span class="sd">        Calculates and returns the Hamiltonian of the nuclear Zeeman interaction.</span>
+<span class="sd">    hyperfine</span>
+<span class="sd">        Calculates and returns the Hamiltonian of the hyperfine interaction between</span>
+<span class="sd">        the donor electron and the bismuth nucleus.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The SiBiFlux class inherits the methods and attributes from the QSys class.</span>
+
+<span class="sd">    The composite Hilbert space is ordered as flux qubit (dim 2), donor electron spin</span>
+<span class="sd">    (dim 2) and, if N is True, bismuth nuclear spin (dim 10). Subsystems absent from</span>
+<span class="sd">    the model are omitted from the tensor product instead of being traced over, such</span>
+<span class="sd">    that the dimension of H0 depends on the flux, spin and N flags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">rho0</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_ops</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">observable</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">spin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">Delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">g</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">B0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">units_B0</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span>
+        <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">phi_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">units_angles</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the SiBiFlux class.</span>
+<span class="sd">        Takes the flux qubit parameters and/or the spin.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rho0 : Qobj or None</span>
+<span class="sd">            Initial state of the system, passed to the QSys constructor.</span>
+<span class="sd">        c_ops : Qobj or list[Qobj] or None</span>
+<span class="sd">            Collapse operators for the Lindblad master equation, passed to the QSys constructor.</span>
+<span class="sd">        observable : Qobj or list[Qobj] or None</span>
+<span class="sd">            Observable or list of observables to be measured, passed to the QSys constructor.</span>
+<span class="sd">        flux : bool</span>
+<span class="sd">            Whether the superconducting flux qubit is included in the system.</span>
+<span class="sd">        spin : bool</span>
+<span class="sd">            Whether the bismuth donor spin is included in the system.</span>
+<span class="sd">        N : bool</span>
+<span class="sd">            Whether the bismuth nuclear spin (I=9/2) is included, adding the nuclear</span>
+<span class="sd">            Zeeman and hyperfine terms to the Hamiltonian. Only used if spin is True.</span>
+<span class="sd">        Delta : float</span>
+<span class="sd">            Coefficient of the sigma_z term of the flux qubit Hamiltonian, in MHz.</span>
+<span class="sd">            Only used if flux is True.</span>
+<span class="sd">        epsilon : float</span>
+<span class="sd">            Coefficient of the sigma_x term of the flux qubit Hamiltonian, in MHz.</span>
+<span class="sd">            Only used if flux is True.</span>
+<span class="sd">        g : float</span>
+<span class="sd">            Transverse coupling strength between the flux qubit and the donor electron</span>
+<span class="sd">            spin, in MHz. Only used if both flux and spin are True.</span>
+<span class="sd">        B0 : float</span>
+<span class="sd">            Intensity of the static magnetic field. Only used if spin is True.</span>
+<span class="sd">        units_B0 : str</span>
+<span class="sd">            Units of the static magnetic field (T, mT or G). Only used if spin is True.</span>
+<span class="sd">        theta : float</span>
+<span class="sd">            Polar angle of the static magnetic field vector with respect to the z axis.</span>
+<span class="sd">            Only used if spin is True.</span>
+<span class="sd">        phi_r : float</span>
+<span class="sd">            Azimuthal angle of the static magnetic field vector within the xy plane.</span>
+<span class="sd">            Only used if spin is True.</span>
+<span class="sd">        units_angles : str</span>
+<span class="sd">            Units of the angles (deg or rad). Only used if spin is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">flux</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">N</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a boolean, got </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">H_flux</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">flux</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Delta</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Delta must be a real number, got </span><span class="si">{</span><span class="n">Delta</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Delta</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E must be a real number, got </span><span class="si">{</span><span class="n">epsilon</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="n">H_flux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_H_flux</span><span class="p">(</span><span class="n">Delta</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="n">H_SiBi</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units_B0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_B0</span><span class="p">(</span><span class="n">B0</span><span class="p">,</span> <span class="n">units_B0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_angles</span><span class="p">(</span>
+                <span class="n">theta</span><span class="p">,</span> <span class="n">phi_r</span><span class="p">,</span> <span class="n">units_angles</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="n">H_SiBi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclear_zeeman</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperfine</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="n">H_SiBi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">electron_zeeman</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n must be a boolean, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># builds the Hamiltonian</span>
+        <span class="k">if</span> <span class="n">flux</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;g must be a real number, got </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">N</span><span class="p">:</span>
+                <span class="n">H_coupling</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+                <span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_flux</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">H_SiBi</span><span class="p">)</span> <span class="o">+</span> <span class="n">H_coupling</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">H_coupling</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
+                <span class="n">H0</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_flux</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">H_SiBi</span><span class="p">)</span> <span class="o">+</span> <span class="n">H_coupling</span>
+
+        <span class="k">elif</span> <span class="n">flux</span><span class="p">:</span>
+            <span class="n">H0</span> <span class="o">=</span> <span class="n">H_flux</span>
+        <span class="k">elif</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="n">H0</span> <span class="o">=</span> <span class="n">H_SiBi</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both flux and spin are False. At least one must be set to true&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">rho0</span><span class="o">=</span><span class="n">rho0</span><span class="p">,</span> <span class="n">c_ops</span><span class="o">=</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">observable</span><span class="o">=</span><span class="n">observable</span><span class="p">,</span> <span class="n">units_H0</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_H_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the superconducting flux qubit hamiltonian</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Delta : float</span>
+<span class="sd">            Coefficient of the sigma_z term, in MHz.</span>
+<span class="sd">        epsilon : float</span>
+<span class="sd">            Coefficient of the sigma_x term, in MHz.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        H_flux : Qobj</span>
+<span class="sd">            Flux qubit Hamiltonian</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Delta</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SiBiFlux.electron_zeeman">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.SiBi_flux_sys.SiBiFlux.electron_zeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">electron_zeeman</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the hamiltonian for the electron Zeeman interaction.</span>
+<span class="sd">        If the nuclear spin is present, it performs a tensor product with nuclear spin space.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        H_ez : Qobj</span>
+<span class="sd">            Electron Zeeman Hamiltonian</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H_ez</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">gamma_e</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">H_ez</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">H_ez</span></div>
+
+
+<div class="viewcode-block" id="SiBiFlux.nuclear_zeeman">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.SiBi_flux_sys.SiBiFlux.nuclear_zeeman">[docs]</a>
+    <span class="k">def</span> <span class="nf">nuclear_zeeman</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the nuclear Zeeman Hamiltonian of the bismuth nuclear Zeeman interaction, with</span>
+<span class="sd">        the field orientation set by theta and phi_r, embedded in the electron-nucleus product space</span>
+<span class="sd">        through a tensor product with the identity on the electron.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        H_nz : Qobj</span>
+<span class="sd">            Nuclear Zeeman Hamiltonian</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H_nz</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="n">gamma_Bi</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span>
+            <span class="o">*</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi_r</span><span class="p">)</span> <span class="o">*</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">H_nz</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SiBiFlux.hyperfine">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.SiBi_flux_sys.SiBiFlux.hyperfine">[docs]</a>
+    <span class="k">def</span> <span class="nf">hyperfine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the hyperine Hamiltonian of the isotropic contact hyperfine interaction between</span>
+<span class="sd">        the donor electron and the bismuth nucleus, acting on the electron-nucleus product space.</span>
+<span class="sd">        The coupling constant A_Bi is 1475.4 MHz, giving the well known 7.377 GHz zero field</span>
+<span class="sd">        splitting between the F=4 and F=5 manifolds.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        H_hf : Qobj</span>
+<span class="sd">            Hyperfine Hamiltonina</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H_hf</span> <span class="o">=</span> <span class="n">A_Bi</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
+            <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">))</span>
+            <span class="o">+</span> <span class="n">tensor</span><span class="p">(</span><span class="n">jmat</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="n">jmat</span><span class="p">(</span><span class="mi">9</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">H_hf</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

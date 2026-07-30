@@ -80,12 +80,13 @@
 <span></span><span class="c1"># TODO: expand and test</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module contains pulse shape functions to be used in the PulsedSim classes as part of the QuaCAAToo package.</span>
+<span class="sd">This module contains pulse shape functions to be used in the PulsedSim classes as part of the</span>
+<span class="sd">QuaCAAToo package.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;square_pulse&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian_pulse&quot;</span><span class="p">,</span> <span class="s2">&quot;lorentzian_pulse&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gaussian_pulse&quot;</span><span class="p">,</span> <span class="s2">&quot;lorentzian_pulse&quot;</span><span class="p">,</span> <span class="s2">&quot;square_pulse&quot;</span><span class="p">]</span>
 
 <span class="c1">####################################################################################################</span>
 
@@ -140,9 +141,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
         <span class="o">-</span><span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;t_mid&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
-    <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>  <span class="c1"># satisfy the python typing demon (2.)</span>
-        <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">]</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">])</span></div>
 
 
 
@@ -172,7 +171,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="mi">1</span>
-        <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;t_mid&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;t_mid&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;phi_t&quot;</span><span class="p">])</span>
     <span class="p">)</span></div>
 

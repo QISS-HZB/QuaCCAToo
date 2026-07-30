@@ -78,25 +78,37 @@
              
   <h1>Source code for quaccatoo.pulsed_sim.predef_seqs</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module contains predefined basic pulsed experiments inheriting from the PulsedSim class as part of the QuaCCAToo package.</span>
+<span class="sd">This module contains predefined basic pulsed experiments inheriting from the PulsedSim class as part</span>
+<span class="sd">of the QuaCCAToo package.</span>
 
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
-<span class="sd">- Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.</span>
-<span class="sd">- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.</span>
-<span class="sd">- Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.</span>
-<span class="sd">- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</span>
+<span class="sd">- Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical</span>
+<span class="sd">  transitions between the excited and ground states.</span>
+<span class="sd">- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is</span>
+<span class="sd">  changed such that when it corresponds to a transition in the Hamiltonian of the system, the</span>
+<span class="sd">  observable will be affected.</span>
+<span class="sd">- Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between</span>
+<span class="sd">  states in the system which can be used for interferometry.</span>
+<span class="sd">- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in</span>
+<span class="sd">  order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a</span>
+<span class="sd">  quantum system, however it can also be used to sense coupled spins.</span>
+<span class="sd">- SpinLocking: spin locking experiment, composed by a pi/2-y pulse to drive the spin to the +X state</span>
+<span class="sd">  followed by a pulse along x of varying duration. During the driving, the system is usually in an</span>
+<span class="sd">  eigenstate of the driving Hamiltonian.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">mesolve</span><span class="p">,</span> <span class="n">propagator</span>
 
+<span class="kn">from</span> <span class="nn">..qsys.qsys</span> <span class="kn">import</span> <span class="n">QSys</span>
 <span class="kn">from</span> <span class="nn">.pulse_shapes</span> <span class="kn">import</span> <span class="n">square_pulse</span>
 <span class="kn">from</span> <span class="nn">.pulsed_sim</span> <span class="kn">import</span> <span class="n">PulsedSim</span>
-<span class="kn">from</span> <span class="nn">..qsys.qsys</span> <span class="kn">import</span> <span class="n">QSys</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Rabi&quot;</span><span class="p">,</span> <span class="s2">&quot;PMR&quot;</span><span class="p">,</span> <span class="s2">&quot;Ramsey&quot;</span><span class="p">,</span> <span class="s2">&quot;Hahn&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PMR&quot;</span><span class="p">,</span> <span class="s2">&quot;Hahn&quot;</span><span class="p">,</span> <span class="s2">&quot;Rabi&quot;</span><span class="p">,</span> <span class="s2">&quot;Ramsey&quot;</span><span class="p">,</span> <span class="s2">&quot;SpinLocking&quot;</span><span class="p">]</span>
 
 <span class="c1">####################################################################################################</span>
 
@@ -108,7 +120,8 @@
 <span class="sd">    A class containing Rabi experiments.</span>
 
 <span class="sd">    A Rabi sequence is composed of a resonant pulse of varying duration,</span>
-<span class="sd">    such that the quantum system will undergo periodical transitions between the excited and ground states.</span>
+<span class="sd">    such that the quantum system will undergo periodical transitions between the excited and ground</span>
+<span class="sd">    states.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -122,12 +135,13 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">pulse_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">pulse_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
         <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
         <span class="n">H2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -136,21 +150,24 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pulse_duration : numpy.ndarray</span>
-<span class="sd">            Time array for the simulation representing the pulse duration to be used as the variable for the simulation.</span>
+<span class="sd">            Time array for the simulation representing the pulse duration to be used as the variable</span>
+<span class="sd">            for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse</span>
+<span class="sd">            operators.</span>
 <span class="sd">        h1 : Qobj or list(Qobj)</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        H2 : Qobj or list(Qobj)</span>
 <span class="sd">            Time-dependent sensing Hamiltonian of the system.</span>
 <span class="sd">        pulse_shape : FunctionType or list(FunctionType)</span>
-<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of h1.</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation</span>
+<span class="sd">            of h1.</span>
 <span class="sd">        pulse_params : dict</span>
 <span class="sd">            Dictionary of parameters for the pulse_shape functions.</span>
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span>
             <span class="n">h1</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
@@ -184,10 +201,12 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Rabi.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.</span>
+<span class="sd">        Overwrites the run method of the parent class. Runs the simulation and stores the results in</span>
+<span class="sd">        the results attribute.</span>
 <span class="sd">        If the system has no initial state, the propagator is calcualated.</span>
 <span class="sd">        If an observable is given, the expectation values are stored in the results attribute.</span>
-<span class="sd">        For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths,</span>
+<span class="sd">        For the Rabi sequence, the calculation is optimally performed sequentially instead of in</span>
+<span class="sd">        parallel over the pulse lengths,</span>
 <span class="sd">        thus the run method from the parent class is overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">rho0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -221,12 +240,16 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.PMR">[docs]</a>
 <span class="k">class</span> <span class="nc">PMR</span><span class="p">(</span><span class="n">PulsedSim</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed.</span>
+<span class="sd">    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the</span>
+<span class="sd">    variable being changed.</span>
 
-<span class="sd">    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,</span>
+<span class="sd">    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency</span>
+<span class="sd">    matches a resonance of the system,</span>
 <span class="sd">    it will undergo some transition which will affect the observable.</span>
-<span class="sd">    This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.</span>
-<span class="sd">    Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,</span>
+<span class="sd">    This way, the differences between energy levels can be determined with the linewidth usually</span>
+<span class="sd">    limited by the pulse length.</span>
+<span class="sd">    Here we make reference to optical detection as it is the most common detection scheme of pulsed</span>
+<span class="sd">    magnetic resonance in color centers,</span>
 <span class="sd">    however the method can be more general.</span>
 
 <span class="sd">    Attributes</span>
@@ -240,7 +263,8 @@
 <span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 <span class="sd">        To be called by the parallel_map in run method.</span>
 <span class="sd">    plot_pulses :</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse</span>
+<span class="sd">        frequency to be plotted.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -249,13 +273,14 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pulse_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">],</span>
         <span class="n">H2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -267,7 +292,8 @@
 <span class="sd">        frequencies : numpy.ndarray</span>
 <span class="sd">            Array of frequencies to run the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse</span>
+<span class="sd">            operators.</span>
 <span class="sd">        pulse_duration : float or int</span>
 <span class="sd">            Duration of the pulse.</span>
 <span class="sd">        h1 : Qobj or list(Qobj)</span>
@@ -275,7 +301,8 @@
 <span class="sd">        H2 : Qobj or list(Qobj)</span>
 <span class="sd">            Time-dependent sensing Hamiltonian of the system.</span>
 <span class="sd">        pulse_shape : FunctionType or list(FunctionType)</span>
-<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of h1.</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation</span>
+<span class="sd">            of h1.</span>
 <span class="sd">        pulse_params : dict</span>
 <span class="sd">            Dictionary of parameters for the pulse_shape functions.</span>
 <span class="sd">        time_steps : int</span>
@@ -283,7 +310,8 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMR_sequence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span>
             <span class="n">h1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pulse_shape</span><span class="p">,</span> <span class="n">pulse_params</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>
@@ -299,19 +327,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">frequencies</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Frequency (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span>
 
-        <span class="c1"># check whether pulse_duration is a numpy array and if it is, assign it to the object</span>
+        <span class="c1"># check whether pulse_duration is a numpy array and if it is, assign it to the object.</span>
+        <span class="c1"># pulse_duration is kept in its own attribute, so that total_time stays a clock counting</span>
+        <span class="c1"># from the beginning of the sequence, as in all the other sequences</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="n">pulse_duration</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pulse_duration must be a positive real number&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">pulse_duration</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">pulse_duration</span>
 
-        <span class="c1"># set the sequence attribute to the PMR_sequence method</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PMR_sequence</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PMR.PMR_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.PMR.PMR_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">PMR_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">PMR_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.</span>
 <span class="sd">        To be called by the parallel_map in run method.</span>
@@ -326,9 +355,10 @@
 <span class="sd">        rho : Qobj</span>
 <span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_sequence</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
@@ -341,21 +371,19 @@
         <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
         <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
         <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles&quot;</span><span class="p">,</span>
-        <span class="n">f_pulse</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">f_pulse</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first define a pulse</span>
+<span class="sd">        frequency to be plotted.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        f_pulse : float or int</span>
 <span class="sd">            Frequency of the pulse to be plotted.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The method uses the same parameters as plot_pulses</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary</span>
+        <span class="c1"># if f_pulse is None, assign the first element of the variable attribute to the pulse_params</span>
+        <span class="c1"># dictionary</span>
         <span class="k">if</span> <span class="n">f_pulse</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="s2">&quot;f_pulse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># if f_pulse is a float or an integer, assign it to the pulse_params dictionary</span>
@@ -378,37 +406,45 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class containing Ramsey experiments.</span>
 
-<span class="sd">    The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization axis,</span>
-<span class="sd">    which causes a phase accumulation between states in the system which can be used for sensing.</span>
+<span class="sd">    The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization</span>
+<span class="sd">    axis, which causes a phase accumulation between states in the system which can be used for</span>
+<span class="sd">    sensing.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    ramsey_sequence :</span>
-<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
+<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes</span>
+<span class="sd">        defined in the constructor.</span>
 <span class="sd">        The sequence consists of an initial pi/2 pulse and a single free evolution.</span>
 <span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
 <span class="sd">    _get_pulse_profiles :</span>
 <span class="sd">        Generates the pulse profiles for the Ramsey sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
 <span class="sd">    plot_pulses :</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the Ramsey sequence for a given tau and then plot them.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The Ramsey sequence inherits the methods and attributes from the PulsedSim class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># the free evolution of the sequence is shortened by the pulses, therefore</span>
+    <span class="c1"># tau must be at least as long as pi_pulse_duration</span>
+    <span class="n">_min_tau_factor</span> <span class="o">=</span> <span class="mi">1</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">Rx</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">H2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">projection_pulse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -418,11 +454,14 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        free_duration : numpy.ndarray</span>
-<span class="sd">            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.</span>
+<span class="sd">            Time array for the simulation representing the free evolution time to be used as the</span>
+<span class="sd">            variable attribute for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse</span>
+<span class="sd">            operators.</span>
 <span class="sd">        pi_pulse_duration : float, int or 0</span>
-<span class="sd">            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.</span>
+<span class="sd">            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">            time-evolution is calculated with the rotation operator.</span>
 <span class="sd">        h1 : Qobj or list(Qobj)</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        Rx : Qobj or None</span>
@@ -433,9 +472,11 @@
 <span class="sd">            Time-dependent sensing Hamiltonian of the system.</span>
 <span class="sd">        projection_pulse : bool</span>
 <span class="sd">            Boolean to determine if the measurement is to be performed in the Sz basis or not.</span>
-<span class="sd">            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as for most color centers.</span>
+<span class="sd">            If True, a final pi/2 pulse is included in order to project the result into the Sz</span>
+<span class="sd">            basis, as for most color centers.</span>
 <span class="sd">        pulse_shape : FunctionType or list(FunctionType)</span>
-<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of h1.</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation</span>
+<span class="sd">            of h1.</span>
 <span class="sd">        pulse_params : dict</span>
 <span class="sd">            Dictionary of parameters for the pulse_shape functions.</span>
 <span class="sd">        time_steps : int</span>
@@ -443,7 +484,8 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span>
             <span class="n">h1</span><span class="p">,</span>
             <span class="n">Rx</span><span class="p">,</span>
@@ -457,16 +499,18 @@
             <span class="kc">None</span><span class="p">,</span>
             <span class="n">projection_pulse</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramsey_sequence</span>
 
 <div class="viewcode-block" id="Ramsey.ramsey_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Ramsey.ramsey_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">ramsey_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ramsey_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
+<span class="sd">        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes</span>
+<span class="sd">        defined in the constructor.</span>
 <span class="sd">        The sequence consists of an initial pi/2 pulse and a single free evolution.</span>
-<span class="sd">        If the projection_pulse is set to True, a final pi/2 pulse is included in order to project the result into the Sz basis.</span>
-<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.</span>
+<span class="sd">        If the projection_pulse is set to True, a final pi/2 pulse is included in order to project</span>
+<span class="sd">        the result into the Sz basis.</span>
+<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">        time-evolution is calculated with the rotation operator.</span>
 <span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
 
 <span class="sd">        Parameters</span>
@@ -479,6 +523,8 @@
 <span class="sd">        rho : Qobj</span>
 <span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_sequence</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rx_half</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
@@ -496,14 +542,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the pulse profiles for the Ramsey sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        tau : float | int</span>
+<span class="sd">        tau : float</span>
 <span class="sd">            Free evolution variable or pulse spacing for the Hahn echo sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_tau</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
@@ -513,8 +559,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;free_evo&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">tau</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
-        <span class="n">t0</span> <span class="o">+=</span> <span class="n">tau</span>
+        <span class="c1"># the free evolution of ramsey_sequence is shortened by the duration of the first pi/2</span>
+        <span class="c1"># pulse, so that the second pulse starts at tau</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;free_evo&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">ps</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="n">t0</span> <span class="o">+=</span> <span class="n">ps</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
@@ -530,19 +579,17 @@
         <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
         <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
         <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Ramsey Sequence&quot;</span><span class="p">,</span>
-        <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the Ramsey sequence for a given tau and then plot them.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        tau : float | int</span>
-<span class="sd">            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The method uses the same parameters as plot_pulses</span>
+<span class="sd">        tau : float</span>
+<span class="sd">            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free</span>
+<span class="sd">            evolution must be a single number in order to plot the pulse profiles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># generate the pulse profiles for the Ramsey sequence for a given tau</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_pulse_profiles</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
@@ -562,50 +609,63 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class containing Hahn echo experiments.</span>
 
-<span class="sd">    The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.</span>
-<span class="sd">    The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.</span>
+<span class="sd">    The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order</span>
+<span class="sd">    to cancel out dephasings.</span>
+<span class="sd">    The Hahn echo is usually used to measure the coherence time of a quantum system, however it can</span>
+<span class="sd">    also be used to sense coupled spins.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    hahn_sequence :</span>
-<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,</span>
+<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes</span>
+<span class="sd">        defined in the constructor,</span>
 <span class="sd">        returning the final state. The sequence is to be called by the parallel_map method of QuTip.</span>
 <span class="sd">    _get_pulse_profiles :</span>
 <span class="sd">        Generates the pulse profiles for the Hahn echo sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
 <span class="sd">    plot_pulses :</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the Hahn echo sequence for a given tau and then plot them.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The Hahn echo sequence inherits the methods and attributes from the PulsedSim class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># the free evolution of the sequence is shortened by the pulses, therefore</span>
+    <span class="c1"># tau must be at least as long as pi_pulse_duration</span>
+    <span class="n">_min_tau_factor</span> <span class="o">=</span> <span class="mi">1</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">free_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
-        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">Rx</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">H2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">projection_pulse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
-        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.</span>
+<span class="sd">        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to</span>
+<span class="sd">        run the simulation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        free_duration : numpy.ndarray</span>
-<span class="sd">            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.</span>
+<span class="sd">            Time array for the simulation representing the free evolution time to be used as the</span>
+<span class="sd">            variable attribute for the simulation.</span>
 <span class="sd">        system : QSys</span>
-<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse</span>
+<span class="sd">            operators.</span>
 <span class="sd">        pi_pulse_duration : float, int or 0</span>
-<span class="sd">            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.</span>
+<span class="sd">            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">            time-evolution is calculated with the rotation operator.</span>
 <span class="sd">        h1 : Qobj or list of Qobj</span>
 <span class="sd">            Control Hamiltonian of the system.</span>
 <span class="sd">        Rx : Qobj or None</span>
@@ -614,9 +674,11 @@
 <span class="sd">            Time dependent sensing Hamiltonian of the system.</span>
 <span class="sd">        projection_pulse : bool</span>
 <span class="sd">            Boolean to determine if the measurement is to be performed in the Sz basis or not.</span>
-<span class="sd">            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.</span>
+<span class="sd">            If True, a final pi/2 pulse is included in order to project the result into the Sz</span>
+<span class="sd">            basis, as done for the most color centers.</span>
 <span class="sd">        pulse_shape : FunctionType or list of FunctionType</span>
-<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation of h1.</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation</span>
+<span class="sd">            of h1.</span>
 <span class="sd">        pulse_params : dict</span>
 <span class="sd">            Dictionary of parameters for the pulse_shape functions.</span>
 <span class="sd">        time_steps : int</span>
@@ -624,7 +686,8 @@
 <span class="sd">        options : dict</span>
 <span class="sd">            Dictionary of solver options from Qutip.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span>
             <span class="n">h1</span><span class="p">,</span>
             <span class="n">Rx</span><span class="p">,</span>
@@ -638,15 +701,17 @@
             <span class="kc">None</span><span class="p">,</span>
             <span class="n">projection_pulse</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hahn_sequence</span>
 
 <div class="viewcode-block" id="Hahn.hahn_sequence">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.Hahn.hahn_sequence">[docs]</a>
-    <span class="k">def</span> <span class="nf">hahn_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">hahn_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.</span>
-<span class="sd">        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.</span>
-<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.</span>
+<span class="sd">        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes</span>
+<span class="sd">        defined in the constructor.</span>
+<span class="sd">        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another</span>
+<span class="sd">        free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.</span>
+<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">        time-evolution is calculated with the rotation operator.</span>
 <span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
 
 <span class="sd">        Parameters</span>
@@ -659,6 +724,8 @@
 <span class="sd">        rho : Qobj</span>
 <span class="sd">            Final state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_sequence</span><span class="p">()</span>
+
         <span class="c1"># if pi_pulse_duration is 0, use the delta pulse method</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rx_half</span><span class="p">)</span>
@@ -686,14 +753,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the pulse profiles for the Hahn echo sequence for a given tau.</span>
 <span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        tau : float | int</span>
+<span class="sd">        tau : float</span>
 <span class="sd">            Free evolution variable or pulse spacing for the Hahn echo sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_tau</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
@@ -735,22 +802,239 @@
         <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
         <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
         <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of Hahn Echo Sequence&quot;</span><span class="p">,</span>
-        <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the Hahn echo sequence for a given tau and then plot them.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        tau : float | int</span>
-<span class="sd">            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The method uses the same parameters as plot_pulses</span>
+<span class="sd">        tau : float</span>
+<span class="sd">            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free</span>
+<span class="sd">            evolution must be a single number in order to plot the pulse profiles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># generate the pulse profiles for the Hahn echo sequence for a given tau</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_pulse_profiles</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+
+        <span class="c1"># call the plot_pulses method of the parent class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1">####################################################################################################</span>
+
+
+<div class="viewcode-block" id="SpinLocking">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.SpinLocking">[docs]</a>
+<span class="k">class</span> <span class="nc">SpinLocking</span><span class="p">(</span><span class="n">PulsedSim</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class containing a spin locking experiment.</span>
+
+<span class="sd">    A spin locking is composed by a pi/2-y pulse to drive the spin to the +X state followed by a</span>
+<span class="sd">    pulse along x of varying duration.</span>
+<span class="sd">    During the driving, the system is usually in an eigenstate of the driving Hamiltonian.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    spin_locking_sequence :</span>
+<span class="sd">        Defines the spin locking sequence for a given pulse duration and the set of attributes</span>
+<span class="sd">        defined in the constructor.</span>
+<span class="sd">        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final</span>
+<span class="sd">        pi/2-y pulse if the projection pulse is set to True.</span>
+<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">        time-evolution is calculated with the rotation operator.</span>
+<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
+<span class="sd">    _get_pulse_profiles :</span>
+<span class="sd">        Generates the pulse profiles for the spin locking sequence for a given pulse duration.</span>
+<span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
+<span class="sd">    plot_pulses :</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the spin locking sequence for a given pulse duration and then plot them.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The SpinLocking class inherits the methods and attributes from the PulsedSim class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pulse_duration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">system</span><span class="p">:</span> <span class="n">QSys</span><span class="p">,</span>
+        <span class="n">pi_pulse_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">h1</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">Ry</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">H2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Qobj</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">projection_pulse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pulse_shape</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">square_pulse</span><span class="p">,</span>
+        <span class="n">pulse_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for the spin locking pulsed experiment class, taking a specific pulse_duration</span>
+<span class="sd">        to run the simulation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pulse_duration : numpy.ndarray</span>
+<span class="sd">            Time array for the simulation representing the pulse duration to be used as the variable</span>
+<span class="sd">            attribute for the simulation.</span>
+<span class="sd">        system : QSys</span>
+<span class="sd">            Quantum system object containing the initial state, internal Hamiltonian and collapse</span>
+<span class="sd">            operators.</span>
+<span class="sd">        pi_pulse_duration : float</span>
+<span class="sd">            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">            time-evolution is calculated with the rotation operator.</span>
+<span class="sd">        h1 : Qobj or list of Qobj</span>
+<span class="sd">            Control Hamiltonian of the system. Contrary to the other sequences, h1 is required</span>
+<span class="sd">            even when pi_pulse_duration is 0, as it defines the locking Hamiltonian.</span>
+<span class="sd">        Ry : Qobj or None</span>
+<span class="sd">            Rotation operator around the y-axis, used only if the pi_pulse_duration is set to 0.</span>
+<span class="sd">        H2 : Qobj or list of Qobj</span>
+<span class="sd">            Time dependent sensing Hamiltonian of the system.</span>
+<span class="sd">        projection_pulse : bool</span>
+<span class="sd">            Boolean to determine if the measurement is to be performed in the Sz basis or not.</span>
+<span class="sd">            If True, a final pi/2 pulse is included in order to project the result into the Sz</span>
+<span class="sd">            basis, as done for the most color centers.</span>
+<span class="sd">        pulse_shape : FunctionType or list of FunctionType</span>
+<span class="sd">            Pulse shape function or list of pulse shape functions representing the time modulation</span>
+<span class="sd">            of h1.</span>
+<span class="sd">        pulse_params : dict</span>
+<span class="sd">            Dictionary of parameters for the pulse_shape functions.</span>
+<span class="sd">        time_steps : int</span>
+<span class="sd">            Number of time steps in the pulses for the simulation.</span>
+<span class="sd">        options : dict</span>
+<span class="sd">            Dictionary of solver options from Qutip.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">H2</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_locking_sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_attr_predef_seqs</span><span class="p">(</span>
+            <span class="n">h1</span><span class="p">,</span>
+            <span class="n">Ry</span><span class="p">,</span>
+            <span class="n">Ry</span><span class="p">,</span>
+            <span class="n">pulse_shape</span><span class="p">,</span>
+            <span class="n">pulse_params</span><span class="p">,</span>
+            <span class="n">options</span><span class="p">,</span>
+            <span class="n">time_steps</span><span class="p">,</span>
+            <span class="n">pulse_duration</span><span class="p">,</span>
+            <span class="n">pi_pulse_duration</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">projection_pulse</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Pulse Duration (1/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">units_H0</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="k">if</span> <span class="n">pi_pulse_duration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># in the delta pulse limit only the pi/2 pulses are instantaneous, the locking drive</span>
+            <span class="c1"># itself still has to be described by a Hamiltonian, therefore h1 remains necessary</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">)</span> <span class="ow">or</span> <span class="n">h1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;For a spin locking sequence with delta pulses, h1 must still be given as a Qobj &quot;</span>
+                    <span class="s2">&quot;of the same shape as H0, since it defines the locking Hamiltonian driving the &quot;</span>
+                    <span class="s2">&quot;system during the free evolution.&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># the system is copied before adding the locking drive to H0, otherwise the QSys object</span>
+            <span class="c1"># given by the user would be modified by the simulation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">H0</span> <span class="o">+</span> <span class="n">h1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">_get_energy_levels</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span> <span class="o">=</span> <span class="p">[{</span><span class="o">**</span><span class="n">base_pulse</span><span class="p">,</span> <span class="s2">&quot;phi_t&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="o">**</span><span class="n">base_pulse</span><span class="p">,</span> <span class="s2">&quot;phi_t&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">}]</span>
+
+<div class="viewcode-block" id="SpinLocking.spin_locking_sequence">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.SpinLocking.spin_locking_sequence">[docs]</a>
+    <span class="k">def</span> <span class="nf">spin_locking_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tp</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Defines the spin locking sequence for a given pulse duration and the set of attributes</span>
+<span class="sd">        defined in the constructor.</span>
+<span class="sd">        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final</span>
+<span class="sd">        pi/2-y pulse if the projection pulse is set to True.</span>
+<span class="sd">        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the</span>
+<span class="sd">        time-evolution is calculated with the rotation operator.</span>
+<span class="sd">        The sequence is to be called by the parallel_map method of QuTip.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tp : float</span>
+<span class="sd">            Pulse duration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rho : Qobj</span>
+<span class="sd">            Final state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_sequence</span><span class="p">()</span>
+
+        <span class="c1"># if pi_pulse_duration is 0, use the delta pulse method</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ry_half</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_free_evolution</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delta_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ry_half</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ht</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_params</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_pulse_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates the pulse profiles for the spin locking sequence for a given pulse duration.</span>
+<span class="sd">        The pulse profiles are stored in the pulse_profiles attribute of the object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tp : float</span>
+<span class="sd">            Pulse duration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_tau</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_profiles</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># pi/2 pulse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="c1"># pulse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">tp</span><span class="p">)</span>
+        <span class="n">t0</span> <span class="o">+=</span> <span class="n">tp</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_pulse</span><span class="p">:</span>
+            <span class="c1"># pi/2 pulse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_append_pulse_to_profile</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">t0</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi_pulse_duration</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">t0</span>
+
+<div class="viewcode-block" id="SpinLocking.plot_pulses">
+<a class="viewcode-back" href="../../../modules.html#quaccatoo.pulsed_sim.predef_seqs.SpinLocking.plot_pulses">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_pulses</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span>
+        <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Intensity&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pulse Profiles of the Spin Locking Sequence&quot;</span><span class="p">,</span>
+        <span class="n">tp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overwrites the plot_pulses method of the parent class in order to first generate the pulse</span>
+<span class="sd">        profiles for the spin locking sequence for a given pulse duration and then plot them.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tp : float</span>
+<span class="sd">            Pulse duration. Contrary to the run method, the pulse duration must be a single number</span>
+<span class="sd">            in order to plot the pulse profiles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_pulse_profiles</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span>
 
         <span class="c1"># call the plot_pulses method of the parent class</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plot_pulses</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></div>

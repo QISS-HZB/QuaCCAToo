@@ -7,9 +7,24 @@ qsys
 .. automodule:: quaccatoo.qsys.qsys
    :members:
 
-NV_Sys
+NV_sys
 ------
 .. automodule:: quaccatoo.qsys.NV_sys
+   :members:
+
+P1_sys
+------
+.. automodule:: quaccatoo.qsys.P1_sys
+   :members:
+
+SiBi_flux_sys
+-------------
+.. automodule:: quaccatoo.qsys.SiBi_flux_sys
+   :members:
+
+constants
+---------
+.. automodule:: quaccatoo.qsys.constants
    :members:
 
 pulsed_sim

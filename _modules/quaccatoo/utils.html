@@ -78,7 +78,9 @@
              
   <h1>Source code for quaccatoo.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.</span>
+<span class="sd">This module provides functions to save and load quaccatoo objects, such as instances from QSys,</span>
+<span class="sd">ExpData, Analysis and PulsedSim.</span>
+<span class="sd">It also contains small internal helpers shared by the plotting methods of the other modules.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -89,9 +91,32 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">fileio</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;save_quaccatoo&quot;</span><span class="p">,</span> <span class="s2">&quot;load_quaccatoo&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;load_quaccatoo&quot;</span><span class="p">,</span> <span class="s2">&quot;save_quaccatoo&quot;</span><span class="p">]</span>
 
 <span class="c1">####################################################################################################</span>
+
+
+<span class="k">def</span> <span class="nf">_check_figsize</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal helper checking that figsize is a tuple of two positive numbers,</span>
+<span class="sd">    as expected by matplotlib.pyplot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    figsize : tuple</span>
+<span class="sd">        Size of the figure to be passed to matplotlib.pyplot</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If figsize is not a tuple of two positive numbers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">figsize</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
+        <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">figsize</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;figsize must be a tuple of two positive floats, got </span><span class="si">{</span><span class="n">figsize</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="save_quaccatoo">
@@ -110,12 +135,13 @@
 <span class="sd">        Path to the file where the attributes will be saved.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_path must be a string&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_path must be a string&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
 
     <span class="n">tmp_dir</span> <span class="o">=</span> <span class="s2">&quot;tmp&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># create a temporary directory to store files and get a list of all the attributes defined in the obj</span>
+        <span class="c1"># create a temporary directory to store files and get a list of all the attributes defined</span>
+        <span class="c1"># in the obj</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">obj_save</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">py_attr</span> <span class="o">=</span> <span class="p">[]</span>
@@ -175,7 +201,7 @@
 <span class="sd">        The loaded obj.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_name must be a string&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_name must be a string&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
 
     <span class="n">tmp_dir</span> <span class="o">=</span> <span class="s2">&quot;tmp&quot;</span>
 

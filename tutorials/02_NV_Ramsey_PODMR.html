@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorial6.html">06 - Teleportation Protocol with NV Pair</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial7.html">07 - Double Electron-Electron Resonace with P1 Center</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorial8.html">08 - Quantum Gates via Dynamical Decoupling with NV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial9.html">09 - Bismuth Donor Coupled to a Superconducting Flux Qubit</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">QuaCCAToo modules</a></li>
@@ -201,11 +202,20 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_31494/4129145445.py:1: UserWarning: The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate.
+  NV(
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_10_0.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_10_0.png" />
+<img alt="../_images/tutorials_02_NV_Ramsey_PODMR_10_1.png" src="../_images/tutorials_02_NV_Ramsey_PODMR_10_1.png" />
 </div>
 </div>
 <p>Notice that the differece at <span class="math notranslate nohighlight">\(T=3\)</span> K is really small as compared to room temperature. The operational temperature range for this Hamiltonian is between 2.5 K to 700 K.</p>
@@ -217,7 +227,7 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 \[\hat{h}_1 = \hat{S}_x \otimes \mathbb{1},\]</div>
 <p>which can be obtained by the <code class="docutils literal notranslate"><span class="pre">MW_h1</span></code> method. While the resonant frequencies for the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> and <span class="math notranslate nohighlight">\(m_s=0 \rightarrow +1\)</span> can be obtained from <code class="docutils literal notranslate"><span class="pre">MW_freqs</span></code> attribute, which takes the average between the two nuclear spin states. Again, we will consider a square cosine wave for the pulse.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># typical NV Rabi frequency in MHz</span>
@@ -251,7 +261,7 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </div>
 <p>If we want to compare with the simulation with experimental data, we can use the <code class="docutils literal notranslate"><span class="pre">ExpData</span></code> class to load it from .dat or .txt file and the <code class="docutils literal notranslate"><span class="pre">compare_with</span></code> method. In this case, the experimental data was measured for the same NV parameters as defined previously.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exp_data</span> <span class="o">=</span> <span class="n">ExpData</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;./exp_data_tutorials/Ex02_NV_rabi.dat&#39;</span><span class="p">,</span>
@@ -269,12 +279,12 @@ energy levels, we use the <code class="docutils literal notranslate"><span class
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0453606037750993), rvalue=np.float64(0.9872724331132969), pvalue=np.float64(5.450830010550885e-40), stderr=np.float64(0.060209767213068484), intercept_stderr=np.float64(0.05996996938639089))
+LinregressResult(slope=np.float64(2.589543312483201), intercept=np.float64(-2.0453606037741343), rvalue=np.float64(0.9872724331132606), pvalue=np.float64(5.450830010921875e-40), stderr=np.float64(0.060209767213129525), intercept_stderr=np.float64(0.05996996938645169))
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -286,7 +296,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>We observe a strong correlation of the simulation and experimental data with an rvalue of 0.987. The standard observable for the NV is the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> given by the fluorescence. To see the populations of the other two states <span class="math notranslate nohighlight">\(m_s=\pm 1\)</span>, we need to redefine the system observables and run again the Rabi experiment.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_1</span><span class="o">.</span><span class="n">observable</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">fock_dm</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">2</span><span class="p">))]</span>
@@ -306,7 +316,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>Note that population of the <span class="math notranslate nohighlight">\(m_s=+1\)</span> remains 0, as we are using the <span class="math notranslate nohighlight">\(m_s=0 \rightarrow -1\)</span> resonant frequency, while the <span class="math notranslate nohighlight">\(m_s=-1\)</span> population oscillates with the same frequency as the <span class="math notranslate nohighlight">\(m_s=0\)</span> population, but with opposite sign. If we used the other resonant frequency, the <span class="math notranslate nohighlight">\(m_s=+1\)</span> population would oscillate but <span class="math notranslate nohighlight">\(m_s=-1\)</span> would remain 0.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_sim_2</span> <span class="o">=</span> <span class="n">Rabi</span><span class="p">(</span>
@@ -332,7 +342,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>Finally, by running a fit of the observable we can extract the <span class="math notranslate nohighlight">\(\pi\)</span>-pulse duration.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rabi_analysis_2</span><span class="o">.</span><span class="n">run_fit</span><span class="p">(</span>
@@ -347,11 +357,11 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>26</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 3.3365e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 3.3499e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-14905.1798</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-14885.5488</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99999731</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.49650660</td><td style='text-align:left'> 2.5932e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>0.49757541936557315</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 0.02978212</td><td style='text-align:left'> 3.0015e-07</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>0.02993424046055625</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'> 3.14178728</td><td style='text-align:left'> 1.0842e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>3.4271919857343196</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'> 0.49592288</td><td style='text-align:left'> 1.8962e-05</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>0.4934025679635617</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8761</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>-0.2614</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>-0.2291</td></tr></table></div>
+<h2>Fit Result</h2> <p>Model: Model(fit_rabi)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>26</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>1000</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>4</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 3.3365e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 3.3499e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-14905.1798</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-14885.5488</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99999731</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>amp</td><td style='text-align:left'> 0.49650660</td><td style='text-align:left'> 2.5932e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>0.49757541936535227</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'> 0.02978212</td><td style='text-align:left'> 3.0015e-07</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>0.02993424046055625</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'> 3.14178728</td><td style='text-align:left'> 1.0842e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>3.4271919857343196</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>offset</td><td style='text-align:left'> 0.49592288</td><td style='text-align:left'> 1.8962e-05</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>0.4934025679629326</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>phi</td><td style='text-align:right'>+0.8761</td></tr><tr><td style='text-align:left'>Tpi</td><td style='text-align:left'>offset</td><td style='text-align:right'>-0.2614</td></tr><tr><td style='text-align:left'>phi</td><td style='text-align:left'>offset</td><td style='text-align:right'>-0.2291</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -368,7 +378,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <h2>3.1 Lab Frame<a class="headerlink" href="#3.1-Lab-Frame" title="Link to this heading"></a></h2>
 <p>A simple, but important, pulse sequence in quantum sensing is the Ramsey experiment. It measures the accumulated phase difference in the two levels, by applying a <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, waiting for a time <span class="math notranslate nohighlight">\(\tau\)</span> and applying another <span class="math notranslate nohighlight">\(\pi/2\)</span> pulse, then measuring the population in the <span class="math notranslate nohighlight">\(m_s=0\)</span> state.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NV center system same as before with standard observables</span>
@@ -402,7 +412,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -419,7 +429,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>We could fit the results again with a period oscillation, but to illustrate a different method we will use the FFT from quaccatoo. First, the FFT is run with <code class="docutils literal notranslate"><span class="pre">run_FFT</span></code> method, then the peaks are found with <code class="docutils literal notranslate"><span class="pre">get_peaks_FFT</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">ramsey_sim</span><span class="p">)</span>
@@ -454,7 +464,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 \end{pmatrix},\end{split}\]</div>
 <p>which can be obtained through the <code class="docutils literal notranslate"><span class="pre">MW_Rx</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">NV</span></code> class. As in the previous tutorial, the simulation with delta pulses can be defined by setting <code class="docutils literal notranslate"><span class="pre">pi_pulse_duration</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_delta_sim</span> <span class="o">=</span> <span class="n">Ramsey</span><span class="p">(</span>
@@ -477,7 +487,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>In this case then, the delta pulses appear as vertical lines.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ramsey_delta_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -494,7 +504,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>The expectation value of the observable presents fast modulations, contrary to the previous case. This is because that by adopting delta pulses we are also assuming the rotating frame. Thus, the Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}_0\)</span> needs to be modified accordingly. For that, we make a new quantum system, without the electronic terms and the perpendicular terms of the Hyperfine interaction.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qsys_3</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qsys_2</span><span class="p">)</span>
@@ -529,7 +539,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 <h1>4. Pulsed Optically Detected Magnetic Resonance (pODMR)<a class="headerlink" href="#4.-Pulsed-Optically-Detected-Magnetic-Resonance-(pODMR)" title="Link to this heading"></a></h1>
 <p>To further study the energy levels of the system, we simulate a pODMR experiment. A pODMR experiment is simply composed by a pulse of varying frequency, thus when it corresponds to a resonance, a change in the observable is expected.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_sim_1</span> <span class="o">=</span> <span class="n">PMR</span><span class="p">(</span>
@@ -554,7 +564,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>Two resonances can be observed, corresponding to the two electronic spin transitions and with a splitting given by the Zeeman interaction with the external magnetic field. To see the nuclear spin splitting, we need to reduce the Rabi frequency to have a better spectral resolution.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="mf">0.3</span>
@@ -580,7 +590,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>The two resonances now correspond to the two nuclear spin transitions. To get the splitting, we can fit them with Lorentzian Functions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_1</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_2</span><span class="p">)</span>
@@ -597,11 +607,11 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<h2>Fit Result</h2> <p>Model: Model(fit_two_lorentz_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>24</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.11917074</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.6884e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-1142.37949</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-1127.00363</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.95699766</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.53979745</td><td style='text-align:left'> 0.01113653</td><td style='text-align:left'>(2.06%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.19905193</td><td style='text-align:left'> 0.00681276</td><td style='text-align:left'>(3.42%)</td><td style='text-align:left'>0.2</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00959</td><td style='text-align:left'> 0.00410490</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02851926</td><td style='text-align:left'> 0.00817442</td><td style='text-align:left'>(0.27%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 1.00473312</td><td style='text-align:left'> 0.00311801</td><td style='text-align:left'>(0.31%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.5631</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.5552</td></tr></table></div>
+<h2>Fit Result</h2> <p>Model: Model(fit_two_lorentz_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>24</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 0.11917558</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.6887e-04</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-1142.37300</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-1126.99713</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.95699503</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.53978264</td><td style='text-align:left'> 0.01113652</td><td style='text-align:left'>(2.06%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.19906076</td><td style='text-align:left'> 0.00681328</td><td style='text-align:left'>(3.42%)</td><td style='text-align:left'>0.2</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00957</td><td style='text-align:left'> 0.00410519</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02851436</td><td style='text-align:left'> 0.00817499</td><td style='text-align:left'>(0.27%)</td><td style='text-align:left'>3.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 1.00473394</td><td style='text-align:left'> 0.00311813</td><td style='text-align:left'>(0.31%)</td><td style='text-align:left'>1.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.5631</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.5552</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -612,7 +622,7 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 <p>From the fit we can extract the parallel component of the hyperfine splitting <span class="math notranslate nohighlight">\(a_{||}^n=3.03\)</span> MHz. However, the commonly used Lorentzian function does not completely describes all features of the resonace. A better fit is provided with a sinc function.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">podmr_analysis_2</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">podmr_sim_2</span><span class="p">)</span>
@@ -628,11 +638,11 @@ LinregressResult(slope=np.float64(2.5895433124843423), intercept=np.float64(-2.0
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<h2>Fit Result</h2> <p>Model: Model(fit_two_sinc2_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>37</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 1.1519e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.4315e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2253.05942</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2237.68355</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99995843</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.49680377</td><td style='text-align:left'> 2.6730e-04</td><td style='text-align:left'>(0.05%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.30066414</td><td style='text-align:left'> 1.1410e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>0.4</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00884</td><td style='text-align:left'> 1.2166e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02839718</td><td style='text-align:left'> 2.4124e-04</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>3</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 0.99916985</td><td style='text-align:left'> 8.0476e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>1</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.4124</td></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.2688</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.2126</td></tr></table></div>
+<h2>Fit Result</h2> <p>Model: Model(fit_two_sinc2_sym)</p> <table class="jp-toc-ignore"><caption class="jp-toc-ignore">Fit Statistics</caption><tr><td style='text-align:left'>fitting method</td><td style='text-align:right'>leastsq</td></tr><tr><td style='text-align:left'># function evals</td><td style='text-align:right'>37</td></tr><tr><td style='text-align:left'># data points</td><td style='text-align:right'>160</td></tr><tr><td style='text-align:left'># variables</td><td style='text-align:right'>5</td></tr><tr><td style='text-align:left'>chi-square</td><td style='text-align:right'> 1.1555e-04</td></tr><tr><td style='text-align:left'>reduced chi-square</td><td style='text-align:right'> 7.4547e-07</td></tr><tr><td style='text-align:left'>Akaike info crit.</td><td style='text-align:right'>-2252.56082</td></tr><tr><td style='text-align:left'>Bayesian info crit.</td><td style='text-align:right'>-2237.18495</td></tr><tr><td style='text-align:left'>R-squared</td><td style='text-align:right'> 0.99995830</td></tr></table><table class="jp-toc-ignore"><caption>Parameters</caption><tr><th style='text-align:left'>name</th><th style='text-align:left'>value</th><th style='text-align:left'>standard error</th><th style='text-align:left'>relative error</th><th style='text-align:left'>initial value</th><th style='text-align:left'>min</th><th style='text-align:left'>max</th><th style='text-align:right'>vary</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'> 0.49679723</td><td style='text-align:left'> 2.6771e-04</td><td style='text-align:left'>(0.05%)</td><td style='text-align:left'>0.5</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'> 0.30066634</td><td style='text-align:left'> 1.1429e-04</td><td style='text-align:left'>(0.04%)</td><td style='text-align:left'>0.4</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_mean</td><td style='text-align:left'> 1749.00882</td><td style='text-align:left'> 1.2186e-04</td><td style='text-align:left'>(0.00%)</td><td style='text-align:left'>1749.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>f_delta</td><td style='text-align:left'> 3.02839469</td><td style='text-align:left'> 2.4162e-04</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>3.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr><tr><td style='text-align:left'>C</td><td style='text-align:left'> 0.99916892</td><td style='text-align:left'> 8.0602e-05</td><td style='text-align:left'>(0.01%)</td><td style='text-align:left'>1.0</td><td style='text-align:left'>       -inf</td><td style='text-align:left'>        inf</td><td style='text-align:right'>True</td></tr></table><table class="jp-toc-ignore"><caption>Correlations (unreported values are < 0.100)</caption><tr><th style='text-align:left'>Parameter1</th><th style='text-align:left'>Parameter 2</th><th style='text-align:right'>Correlation</th></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.4124</td></tr><tr><td style='text-align:left'>A</td><td style='text-align:left'>gamma</td><td style='text-align:right'>-0.2688</td></tr><tr><td style='text-align:left'>gamma</td><td style='text-align:left'>C</td><td style='text-align:right'>+0.2126</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">

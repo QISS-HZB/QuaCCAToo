@@ -83,18 +83,15 @@
 <span class="sd">This module contains NV class, which is a subclass of QSys.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">cte</span>
 <span class="kn">from</span> <span class="nn">qutip</span> <span class="kn">import</span> <span class="n">Qobj</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">fock_dm</span><span class="p">,</span> <span class="n">jmat</span><span class="p">,</span> <span class="n">qeye</span><span class="p">,</span> <span class="n">tensor</span>
 
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">gamma_e</span><span class="p">,</span> <span class="n">gamma_N14</span><span class="p">,</span> <span class="n">gamma_N15</span>
 <span class="kn">from</span> <span class="nn">.qsys</span> <span class="kn">import</span> <span class="n">QSys</span>
-
-<span class="n">gamma_e</span> <span class="o">=</span> <span class="n">cte</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;electron gyromag. ratio in MHz/T&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-3</span>  <span class="c1"># MHz/mT</span>
-<span class="n">gamma_N14</span> <span class="o">=</span> <span class="mf">3.077e-3</span>
-<span class="n">gamma_N15</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.316e-3</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;NV&quot;</span><span class="p">]</span>
 
@@ -137,11 +134,14 @@
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    _rho0_T</span>
-<span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann distribution</span>
+<span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann</span>
+<span class="sd">        distribution</span>
 <span class="sd">    _set_MW</span>
-<span class="sd">        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions</span>
+<span class="sd">        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center</span>
+<span class="sd">        corresponding to the electronic spin transitions</span>
 <span class="sd">    _set_RF</span>
-<span class="sd">        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions</span>
+<span class="sd">        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to</span>
+<span class="sd">        the nuclear spin transitions</span>
 <span class="sd">    zero_field</span>
 <span class="sd">        Get the NV Hamiltonian term accounting for zero field splitting</span>
 <span class="sd">    electron_zeeman</span>
@@ -164,16 +164,17 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">B0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">N</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="n">B0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">c_ops</span><span class="p">:</span> <span class="n">Qobj</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qobj</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">units_B0</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mT&quot;</span><span class="p">,</span>
-        <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">phi_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">phi_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">units_angles</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
-        <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">units_temp</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
-        <span class="n">E</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for the NV class.</span>
@@ -191,17 +192,17 @@
 <span class="sd">            List of collapse operators</span>
 <span class="sd">        units_B0 : str</span>
 <span class="sd">            Units of the magnetic field (T, mT or G)</span>
-<span class="sd">        theta : float | int</span>
+<span class="sd">        theta : float</span>
 <span class="sd">            Angle of the magnetic field with respect to the NV axis</span>
-<span class="sd">        phi_r : float | int</span>
+<span class="sd">        phi_r : float</span>
 <span class="sd">            Angle of the magnetic field in the xy plane</span>
 <span class="sd">        units_angles : str</span>
 <span class="sd">            Units of the angles (deg or rad)</span>
-<span class="sd">        temp : float | int</span>
+<span class="sd">        temp : float</span>
 <span class="sd">            Temperature</span>
 <span class="sd">        units_temp : str</span>
 <span class="sd">            Temperature units (&#39;C&#39;/&#39;K&#39;)</span>
-<span class="sd">        E : float | int</span>
+<span class="sd">        E : float</span>
 <span class="sd">            Perpedicular component of the zero field splitting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units_B0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_B0</span><span class="p">(</span><span class="n">B0</span><span class="p">,</span> <span class="n">units_B0</span><span class="p">)</span>
@@ -245,13 +246,14 @@
                 <span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen isotope. Expected either 14 or 15, got </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">c_ops</span><span class="p">,</span> <span class="n">observable</span><span class="p">,</span> <span class="n">units_H0</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">rho0</span><span class="o">=</span><span class="n">rho0</span><span class="p">,</span> <span class="n">c_ops</span><span class="o">=</span><span class="n">c_ops</span><span class="p">,</span> <span class="n">observable</span><span class="o">=</span><span class="n">observable</span><span class="p">,</span> <span class="n">units_H0</span><span class="o">=</span><span class="s2">&quot;MHz&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_T</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">&lt;</span> <span class="mf">5.6</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">&gt;</span> <span class="mi">700</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">&quot;The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate.&quot;</span>
+                    <span class="s2">&quot;The operational temperature range for the Hamiltonian model is between 5.6 K to 700 K. Results might be inaccurate.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="kc">None</span>
@@ -260,8 +262,10 @@
 
     <span class="k">def</span> <span class="nf">_rho0_T</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann distribution.</span>
-<span class="sd">        At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.</span>
+<span class="sd">        Calculates the initial state of the system at low temperatures using the Boltzmann</span>
+<span class="sd">        distribution.</span>
+<span class="sd">        At room temperatures and moderate fields, the initial state of the nuclear spins is simply</span>
+<span class="sd">        an identity matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -275,7 +279,8 @@
         <span class="n">index_1</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">index_2</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">index_3</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># iterates over all the eigenstates and find the one closest related to the |0,1/2&gt; and |0,-1/2&gt; states</span>
+        <span class="c1"># iterates over all the eigenstates and find the one closest related to the |0,1/2&gt; and</span>
+        <span class="c1"># |0,-1/2&gt; states</span>
         <span class="k">for</span> <span class="n">idx_eig</span><span class="p">,</span> <span class="n">val_eig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
                 <span class="n">proj_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">val_eig</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
@@ -286,7 +291,8 @@
                 <span class="n">proj_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">val_eig</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
                 <span class="n">proj_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">val_eig</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">basis</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
                 <span class="k">if</span> <span class="n">proj_3</span> <span class="o">&gt;</span> <span class="n">max_3</span><span class="p">:</span>
-                    <span class="c1"># if the projection is higher than the previous maximum, update the maximum and the index</span>
+                    <span class="c1"># if the projection is higher than the previous maximum, update the maximum and</span>
+                    <span class="c1"># the index</span>
                     <span class="n">max_3</span> <span class="o">=</span> <span class="n">proj_3</span>
                     <span class="n">index_3</span> <span class="o">=</span> <span class="n">idx_eig</span>
             <span class="k">else</span><span class="p">:</span>
@@ -345,8 +351,10 @@
 
     <span class="k">def</span> <span class="nf">_set_MW</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.</span>
-<span class="sd">        Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.</span>
+<span class="sd">        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic</span>
+<span class="sd">        spin transitions.</span>
+<span class="sd">        Sets the corresponding frequencies for microwave pulses with the transitions corresponding</span>
+<span class="sd">        to the energy levels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Rx_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
         <span class="n">Rx_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
@@ -385,8 +393,10 @@
 
     <span class="k">def</span> <span class="nf">_set_RF</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.</span>
-<span class="sd">        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.</span>
+<span class="sd">        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin</span>
+<span class="sd">        transitions.</span>
+<span class="sd">        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the</span>
+<span class="sd">        energy levels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Rx_0</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
         <span class="n">Rx_1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
@@ -409,7 +419,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_Rx</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Rx_0</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Rx_1</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_Ry</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Ry_0</span><span class="p">),</span> <span class="n">tensor</span><span class="p">(</span><span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">Ry_1</span><span class="p">)]</span>
 
-            <span class="c1"># for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1</span>
+            <span class="c1"># for the 14N isotope, the RF frequencies are more complicated as they need to respect</span>
+            <span class="c1"># the selection rule of Delta mI = +-1</span>
             <span class="c1"># the order of the ms states changes above the GSLAC</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">B0</span> <span class="o">&lt;=</span> <span class="mf">102.5</span><span class="p">:</span>
                 <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 0 -&gt; -1 at ms=0</span>
@@ -432,6 +443,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_Rx</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">RF_Ry</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="c1"># without a nuclear spin there are no RF transitions to drive</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RF_freqs</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -440,8 +453,9 @@
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.zero_field">[docs]</a>
     <span class="k">def</span> <span class="nf">zero_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Qobj</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the NV Hamiltonian term accounting for the zero field splitting.</span>
-<span class="sd">        If the temperature attribute is set to a value below 295 K, the D parameter is calculated using a</span>
-<span class="sd">        5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903 (2011).</span>
+<span class="sd">        If the temperature attribute is set to a value below 295 K, the D parameter is calculated</span>
+<span class="sd">        using a 5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903</span>
+<span class="sd">        (2011).</span>
 <span class="sd">        Otherwise, if the temperature is above 295 K, a 3rd order polynomial function from</span>
 <span class="sd">        D. M. Toyli et al. Phys. Rev. X 2, 031001 (2012) is used.</span>
 
@@ -591,16 +605,107 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_spin</span><span class="p">(</span><span class="n">H_spin</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span>
 
+        <span class="c1"># the rotation operators used by the delta pulses must follow the new dimensions</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;MW_Rx&quot;</span><span class="p">,</span> <span class="s2">&quot;MW_Ry&quot;</span><span class="p">,</span> <span class="s2">&quot;RF_Rx&quot;</span><span class="p">,</span> <span class="s2">&quot;RF_Ry&quot;</span><span class="p">):</span>
+            <span class="n">rotation</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">tensor</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">)))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">qeye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_add_spin</span><span class="p">))</span> <span class="k">for</span> <span class="n">R</span> <span class="ow">in</span> <span class="n">rotation</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_truncation_indexes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mS</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mI</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method calculating the indexes to be removed from the system and the dimensions</span>
+<span class="sd">        of the truncated objects, according to the selected mS and mI levels and the nitrogen</span>
+<span class="sd">        isotope.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mS : 1, 0, -1 or None</span>
+<span class="sd">            Electronic level to be excluded</span>
+<span class="sd">        mI : 1, 0, -1 or None</span>
+<span class="sd">            Nuclear level to be excluded</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        indexes, dims : tuple(list(int), list(int)) or None</span>
+<span class="sd">            Indexes to be removed and dimensions of the truncated system.</span>
+<span class="sd">            None if there is nothing to truncate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># the indexes of the electronic and nuclear levels to be removed, where the states are</span>
+        <span class="c1"># ordered as |mS, mI&gt; with mS and mI running from the highest to the lowest projection</span>
+        <span class="n">mS_indexes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+        <span class="n">mI_indexes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The system has no nuclear spin, therefore the mI parameter will be ignored.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mS</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;No mS parameter was given. The system will not be truncated.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="n">mS_indexes</span><span class="p">[</span><span class="n">mS</span><span class="p">]],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mI</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The 15N isotope is already a two-level system and can&#39;t be truncated, therefore the mI parameter will be ignored.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mS</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;No mS parameter was given. The system will not be truncated.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mS_indexes</span><span class="p">[</span><span class="n">mS</span><span class="p">],</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">mS_indexes</span><span class="p">[</span><span class="n">mS</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># the electronic level removes a full block of three nuclear states</span>
+            <span class="k">if</span> <span class="n">mS</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indexes</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">mS_indexes</span><span class="p">[</span><span class="n">mS</span><span class="p">]</span> <span class="o">+</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># the nuclear level removes one state out of each of the three electronic blocks</span>
+            <span class="k">if</span> <span class="n">mI</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indexes</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">mI_indexes</span><span class="p">[</span><span class="n">mI</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">indexes</span><span class="p">)),</span> <span class="n">dims</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for Nitrogen. Expected either 14 or 15, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NV.truncate">
 <a class="viewcode-back" href="../../../modules.html#quaccatoo.qsys.NV_sys.NV.truncate">[docs]</a>
     <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">indexes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mS</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mI</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mS</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mI</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overwrites the parent class method by calling it and updating MW_h1 and RF_h1 attributes.</span>
@@ -614,61 +719,44 @@
 <span class="sd">            Electronic level to be excluded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mS</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mI</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No mS or mI parameters were given. The system will not be truncated.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;No mS or mI parameters were given. The system will not be truncated.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+            <span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">mS</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for mS. Expected either 1, 0 or -1, got </span><span class="si">{</span><span class="n">mS</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mI</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can&#39;t be truncated.&quot;</span>
+                <span class="s2">&quot;mI should be either 1, 0 or -1 for the NV system. The 15N isotope is already a two-level system and can&#39;t be truncated.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">mI</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for mI. Expected either 1, 0 or -1, got </span><span class="si">{</span><span class="n">mI</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># set the indexes to be removed and the dimensions of the new objects according to the mS and mI parameters</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">truncation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncation_indexes</span><span class="p">(</span><span class="n">mS</span><span class="p">,</span> <span class="n">mI</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">truncation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">mS</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">mI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">mI</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
-                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">mI</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">indexes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
-                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-        <span class="n">indexes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">indexes</span><span class="p">))</span>
+        <span class="n">indexes</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="n">truncation</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW_h1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RF_h1</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># the rotation operators used by the delta pulses must be truncated as well,</span>
+        <span class="c1"># otherwise they keep the dimensions of the original system</span>
+        <span class="k">def</span> <span class="nf">_truncate_rotation</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+            <span class="n">R_trunc</span> <span class="o">=</span> <span class="n">Qobj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">R_trunc</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">R_trunc</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;MW_Rx&quot;</span><span class="p">,</span> <span class="s2">&quot;MW_Ry&quot;</span><span class="p">,</span> <span class="s2">&quot;RF_Rx&quot;</span><span class="p">,</span> <span class="s2">&quot;RF_Ry&quot;</span><span class="p">):</span>
+            <span class="n">rotation</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">Qobj</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_truncate_rotation</span><span class="p">(</span><span class="n">rotation</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="p">[</span><span class="n">_truncate_rotation</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="k">for</span> <span class="n">R</span> <span class="ow">in</span> <span class="n">rotation</span><span class="p">])</span>
 
         <span class="c1"># corrrect the dimensions of the objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span>
