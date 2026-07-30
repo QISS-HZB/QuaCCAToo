@@ -7,3 +7,4 @@ dist/
 /.coverage*
 tests/.coverage*
 docs/_build/
+.hidden_files/
