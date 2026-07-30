@@ -1,9 +1,11 @@
 """
 Collection of in built fit models and functions.
 
-The predefined model classes take a (fit) function and implement a guess subroutine for intelligent initial values.
+The predefined model classes take a (fit) function and implement a guess subroutine for intelligent
+initial values.
 
-The general mechanism is the same as that of lmfit. So a lot of functions have been taken from there.
+The general mechanism is the same as that of lmfit. So a lot of functions have been taken from
+there.
 To create additional fit models, simply instantiate an lmfit model with the target fit function.
 
 Refer to the documentation of analysis.run_fit for usage details.
@@ -47,7 +49,7 @@ __all__ = [
     "fit_two_sinc2_sym",
 ]
 
-############################################## Rabi - Periodic Oscillation ##############################################
+################################### Rabi - Periodic Oscillation ####################################
 
 
 def _guess_sin(
@@ -153,7 +155,7 @@ class RabiModel(Model):
         return update_param_vals(pars, self.prefix, **kwargs)
 
 
-################################################ Exponential Decay ####################################################
+######################################## Exponential Decay #########################################
 
 
 def _guess_exp(
@@ -238,7 +240,7 @@ class ExpDecayModel(Model):
         return update_param_vals(pars, self.prefix, **kwargs)
 
 
-######################################################### Rabi with Exp Decay ####################################################
+####################################### Rabi with Exp Decay ########################################
 
 
 def fit_rabi_decay(
@@ -346,7 +348,7 @@ def fit_exp_decay_n(
     return A * np.exp(-((x / Tc) ** n)) + C
 
 
-####################################################### Hahn Modulation ##############################################################
+######################################### Hahn Modulation ##########################################
 
 
 def fit_hahn_mod(
@@ -413,7 +415,7 @@ def fit_hahn_mod_decay(
     return np.exp(-((x / Tc) ** n)) * (fit_hahn_mod(x, A, B, C, f1, f2) - C) + C
 
 
-####################################################### Lorentzian and sinc ##############################################################
+####################################### Lorentzian and sinc ########################################
 
 
 def fit_lorentz(

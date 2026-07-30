@@ -23,7 +23,8 @@ __all__ = ["Analysis", "plot_histogram"]
 
 class Analysis:
     """
-    The Analysis class contains several methods for data Analysis, such as FFT, fitting and plotting.
+    The Analysis class contains several methods for data Analysis, such as FFT, fitting and
+    plotting.
 
     Attributes
     ----------
@@ -54,7 +55,8 @@ class Analysis:
     plot_comparison :
         Plot the results of the experiment and the comparison experiment
     run_FFT :
-        Run the real fast fast Fourier transform for the results and variable attributes of the PulsedSimulation object
+        Run the real fast fast Fourier transform for the results and variable attributes of the
+        PulsedSimulation object
     get_peaks_FFT :
         Find the peaks of the FFT values calculated by the run_FFT method
     plot_FFT :
@@ -66,12 +68,14 @@ class Analysis:
     plot_results :
         Plot the results of the experiment
     plot_bloch :
-        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two
+        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of
+        two
     """
 
     def __init__(self, experiment: ExpData | PulsedSim) -> None:
         """
-        Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks if the results and variable attributes are not empty and have the same length.
+        Class constructor for Analysis. It takes a PulsedSim or ExpData object as input and checks
+        if the results and variable attributes are not empty and have the same length.
 
         Parameters
         ----------
@@ -103,7 +107,8 @@ class Analysis:
         self.pearson = None
         self.exp_comparison = None
         self.comparison_results = None
-        # the fit attributes need to be lists of the same length as the results attribute to avoid index errors
+        # the fit attributes need to be lists of the same length as the results attribute to avoid
+        # index errors
         self.fit_model = [None] * len(self.experiment.results)
         self.fit_params = [None] * len(self.experiment.results)
         self.fit_cov = [None] * len(self.experiment.results)
@@ -117,8 +122,10 @@ class Analysis:
     ) -> float:
         """
         Loads a second experiment to compare with the first one.
-        If linear_fit is True, a linear fit is performed between the two data sets, which is common for optical experiments.
-        Otherwise the Pearson correlation coefficient without linear fit is calculated between the two data sets.
+        If linear_fit is True, a linear fit is performed between the two data sets, which is common
+        for optical experiments.
+        Otherwise the Pearson correlation coefficient without linear fit is calculated between the
+        two data sets.
 
         Parameters
         ----------
@@ -127,7 +134,8 @@ class Analysis:
         results_index : int
             Index of the results to be compared if the results attribute is a list
         comparison_index : int
-            Index of the results to be compared if the results attribute of the exp_comparison is a list
+            Index of the results to be compared if the results attribute of the exp_comparison is a
+            list
         linear_fit : bool
             Boolean indicating whether or not to perform a linear fit between the two data sets
 
@@ -159,7 +167,8 @@ class Analysis:
 
         self.exp_comparison = exp_comparison
 
-        # if linear_fit is True, perform a linear fit between the two data sets, otherwise calculate the Pearson correlation coefficient.
+        # if linear_fit is True, perform a linear fit between the two data sets, otherwise calculate
+        # the Pearson correlation coefficient.
         # The rescaled results are kept in the comparison_results attribute, so that the experiment
         # object given by the user is not modified by the comparison
         if linear_fit:
@@ -248,12 +257,14 @@ class Analysis:
             )
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
-    ######################################################## FFT Methods ########################################################
+    ######################################### FFT Methods ##########################################
 
     def run_FFT(self) -> None:
         """
-        Run the real fast Fourier transform for the results and variable attributes of the PulsedSimulation object.
-        The results are centered around the mean value before the FFT is calculated in order to remove the DC component.
+        Run the real fast Fourier transform for the results and variable attributes of the
+        PulsedSimulation object.
+        The results are centered around the mean value before the FFT is calculated in order to
+        remove the DC component.
 
         Returns
         -------
@@ -355,7 +366,8 @@ class Analysis:
         # initialize the figure and axis for the plot
         _, ax = plt.subplots(1, 1, figsize=figsize)
 
-        # if the FFT_values[1] is an array plot it, otherwise if it is a list iterate over the elements and plot each one
+        # if the FFT_values[1] is an array plot it, otherwise if it is a list iterate over the
+        # elements and plot each one
         if isinstance(self.FFT_values[1], np.ndarray):
             ax.plot(self.FFT_values[0], self.FFT_values[1])
             if len(self.FFT_peaks) != 0:
@@ -394,7 +406,7 @@ class Analysis:
         ax.set_ylabel(ylabel)
         ax.set_title(title)
 
-    ######################################################## FIT Methods ########################################################
+    ######################################### FIT Methods ##########################################
 
     def run_fit(self, fit_model: Model, results_index: int = 0, guess: dict | None = None) -> dict:
         """
@@ -409,15 +421,17 @@ class Analysis:
             Index of the results to be fitted if the results attribute is a list
         guess : dict
             Initial guess for the parameters of the model
-            Takes a dictionary consisting of parameter names as the keys and their initial guess as the value.
+            Takes a dictionary consisting of parameter names as the keys and their initial guess as
+            the value.
             See the definitions of the models in the fit_functions.py file for details.
 
         Examples
         --------
-        The typical usage scheme is to pass a model and optionally, a dictionary of initial values. The file
-        fit_functions.py includes a bunch of predefined models and imports some commonly needed ones from lmfit
-        which can be directly passed to the function and used. Alternatively, the Model function from lmfit takes
-        a custom Python function and instantiates a model class object with it, which can then be used here.
+        The typical usage scheme is to pass a model and optionally, a dictionary of initial values.
+        The file fit_functions.py includes a bunch of predefined models and imports some commonly
+        needed ones from lmfit which can be directly passed to the function and used. Alternatively,
+        the Model function from lmfit takes a custom Python function and instantiates a model class
+        object with it, which can then be used here.
 
         >>> from lmfit import Model #needed for custom models
         >>> # my_analysis_obj is an instance of the analysis class
@@ -427,13 +441,14 @@ class Analysis:
                 guess = {'A': 0.5, 'gamma': 0.2, 'f_mean':1749, 'f_delta':3,'C':1}
                 )
 
-        In the snippet above, we showcase some ways to perform fits using this method. Using predefined
-        models takes care of most of the stuff. One can still pass a guess dictionary to provide better
-        initial values. The second example shows the usage with a custom model instantiated from a function
-        along with user provided guesses. It's important to note that the first parameter of these custom
-        functions should be `x`. Moreover, the keys in the dictionary should correspond to the other
-        parameters of the function (this holds true for the predefined models as well). The names of the
-        parameters can be referred to from the source file (fit_functions.py).
+        In the snippet above, we showcase some ways to perform fits using this method. Using
+        predefined models takes care of most of the stuff. One can still pass a guess dictionary to
+        provide better initial values. The second example shows the usage with a custom model
+        instantiated from a function along with user provided guesses. It's important to note that
+        the first parameter of these custom functions should be `x`. Moreover, the keys in the
+        dictionary should correspond to the other parameters of the function (this holds true for
+        the predefined models as well). The names of the parameters can be referred to from the
+        source file (fit_functions.py).
 
         Returns
         -------
@@ -467,7 +482,8 @@ class Analysis:
 
             return self.fit_params.best_values
 
-        # if there are multiple results, check if the results_index is an integer and if it is less than the number of results then fit
+        # if there are multiple results, check if the results_index is an integer and if it is less
+        # than the number of results then fit
         elif isinstance(self.experiment.results, list):
             if (
                 not isinstance(results_index, int)
@@ -544,7 +560,7 @@ class Analysis:
 
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1))
 
-    ######################################################## Other Plotting Methods ########################################################
+    #################################### Other Plotting Methods ####################################
 
     def plot_results(
         self,
@@ -614,7 +630,8 @@ class Analysis:
 
     def plot_bloch(self, figsize: tuple[int, int] = (6, 4)) -> None:
         """
-        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of two.
+        Plot the results of the experiment in a Bloch sphere if the quantum system has dimension of
+        two.
 
         Parameters
         ----------
@@ -645,7 +662,7 @@ class Analysis:
         bloch.render()
 
 
-#####################################
+####################################################################################################
 
 
 def plot_histogram(

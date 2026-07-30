@@ -1,9 +1,11 @@
 # TODO: add truncation method
 
 """
-This module contains a class for modelling a Bismuth atom coupled to a flux superconducting qubit being a subclass of QSys.
+This module contains a class for modelling a Bismuth atom coupled to a flux superconducting qubit
+being a subclass of QSys.
 
-This system is the same as used in Tikai Chang et al. 'Strong coupling of a superconducting flux qubit to single bismuth donors', Nature Communications 10.1038/s41467-025-64757-5.
+This system is the same as used in Tikai Chang et al. 'Strong coupling of a superconducting flux
+qubit to single bismuth donors', Nature Communications 10.1038/s41467-025-64757-5.
 """
 
 from typing import Literal
@@ -21,9 +23,11 @@ __all__ = ["SiBiFlux"]
 
 class SiBiFlux(QSys):
     """
-    Class for modelling a Bismuth atom coupled to a flux superconducting qubit being a subclass of QSys.
+    Class for modelling a Bismuth atom coupled to a flux superconducting qubit being a subclass of
+    QSys.
 
-    This system is the same as used in Tikai Chang et al. 'Strong coupling of a superconducting flux qubit to single bismuth donors', Nature Communications 10.1038/s41467-025-64757-5.
+    This system is the same as used in Tikai Chang et al. 'Strong coupling of a superconducting flux
+    qubit to single bismuth donors', Nature Communications 10.1038/s41467-025-64757-5.
 
     Attributes
     ----------
@@ -224,7 +228,9 @@ class SiBiFlux(QSys):
         self,
     ) -> Qobj:
         """
-        Calculates the nuclear Zeeman Hamiltonian of the bismuth nuclear Zeeman interaction, with the field orientation set by theta and phi_r, embedded in the electron-nucleus product space through a tensor product with the identity on the electron.
+        Calculates the nuclear Zeeman Hamiltonian of the bismuth nuclear Zeeman interaction, with
+        the field orientation set by theta and phi_r, embedded in the electron-nucleus product space
+        through a tensor product with the identity on the electron.
 
         Returns
         -------
@@ -246,8 +252,10 @@ class SiBiFlux(QSys):
         self,
     ) -> Qobj:
         """
-        Calculates the hyperine Hamiltonian of the isotropic contact hyperfine interaction between the donor electron and the bismuth nucleus, acting on the electron-nucleus product space.
-        The coupling constant A_Bi is 1475.4 MHz, giving the well known 7.377 GHz zero field splitting between the F=4 and F=5 manifolds.
+        Calculates the hyperine Hamiltonian of the isotropic contact hyperfine interaction between
+        the donor electron and the bismuth nucleus, acting on the electron-nucleus product space.
+        The coupling constant A_Bi is 1475.4 MHz, giving the well known 7.377 GHz zero field
+        splitting between the F=4 and F=5 manifolds.
 
         Returns
         -------

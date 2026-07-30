@@ -21,7 +21,8 @@ __all__ = ["QSys", "compose_sys", "plot_energy_B0"]
 
 class QSys:
     """
-    The QSys class defines a general quantum system and contains a method for plotting the energy levels of the Hamiltonian.
+    The QSys class defines a general quantum system and contains a method for plotting the energy
+    levels of the Hamiltonian.
 
     Attributes
     ----------
@@ -45,7 +46,8 @@ class QSys:
     Methods
     -------
     _get_energy_levels
-        Calculates the eigenenergies of the Hamiltonian and sets the energy_levels and eigenstates attributes.
+        Calculates the eigenenergies of the Hamiltonian and sets the energy_levels and eigenstates
+        attributes.
     plot_energy
         Plots the energy levels of the Hamiltonian.
     add_spin
@@ -55,11 +57,13 @@ class QSys:
     _check_B0
         Internal function for checking if external magnetic field B0 is correctly defined.
     _check_angles
-        Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
+        Internal function for checking if the angles with external magnetic field theta and phi_r
+        are correctly defined.
     _check_temp
         Internal function for checking if the temperature is correctly defined.
     _tensor_product_N
-        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding to the dimension of the nitrogen isoptope.
+        Performs a tensor product of the provided Hamiltonian with the identity operator
+        corresponding to the dimension of the nitrogen isoptope.
     """
 
     def __init__(
@@ -72,7 +76,8 @@ class QSys:
         units_H0: str | None = None,
     ) -> None:
         """
-        Construct the QSys class. It initializes the system with the Hamiltonian, the initial state, the collapse operators and the observable.
+        Construct the QSys class. It initializes the system with the Hamiltonian, the initial state,
+        the collapse operators and the observable.
         Checking all inputs and calculating the energy levels of the Hamiltonian.
 
         Parameters
@@ -80,7 +85,8 @@ class QSys:
         H0 : Qobj | array
             Time-independent internal Hamiltonian of the system
         rho0 : Qobj | array | int
-            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
+            Initial state of the system. Can be a Qobj, an array or an index number indicating the
+            system eigenstates
         c_ops : Qobj | list(Qobj)
             List of collapse operators
         observable : Qobj | list(Qobj)
@@ -130,7 +136,8 @@ class QSys:
                 "rho0 must be a Qobj, None or an index number indicating the system eigenstates"
             )
 
-        # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list of Qobj
+        # check if observable is not None, or if it is a Qobj of the same dimension as H0 or a list
+        # of Qobj
         if observable is None:
             self.observable = None
         elif isinstance(observable, Qobj) and observable.shape == H0.shape:
@@ -167,7 +174,8 @@ class QSys:
 
     def _get_energy_levels(self) -> None:
         """
-        Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from all of them to get the lowest level at 0.
+        Calculates the eigenenergies of the Hamiltonian and subtract the ground state energy from
+        all of them to get the lowest level at 0.
         Sets the energy_levels and eigenstates attributes of the class.
         """
         H_eig = self.H0.eigenenergies()
@@ -217,7 +225,8 @@ class QSys:
     def add_spin(self, H_spin: Qobj) -> None:
         """
         Adds another spin to the system's Hamiltonian, given a Hamiltonian for the new spin.
-        Updates the time-independent Hamiltonian, the energy levels, the initial state, the observable and the collapse operators accordingly.
+        Updates the time-independent Hamiltonian, the energy levels, the initial state, the
+        observable and the collapse operators accordingly.
 
         Parameters
         ----------
@@ -264,10 +273,11 @@ class QSys:
 
     def truncate(self, indexes: int | list[int]) -> None:
         """
-        Truncantes the quantum system by removing the states specified by the indexes from the Hamiltonian,
-        the initial state, the observable and the collapse operators. For example, if S=1 and the user wants to remove the ms=-1 state,
-        the indexes is set to 0 and the qsys is truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function
-        to remove the specified indexes from the Hamiltonian and the initial state.
+        Truncantes the quantum system by removing the states specified by the indexes from the
+        Hamiltonian, the initial state, the observable and the collapse operators. For example, if
+        S=1 and the user wants to remove the ms=-1 state, the indexes is set to 0 and the qsys is
+        truncated to the ms=0 and ms=+1 subspace. The method uses the numpy.delete function to
+        remove the specified indexes from the Hamiltonian and the initial state.
 
         Parameters
         ----------
@@ -367,7 +377,8 @@ class QSys:
         self, theta: float, phi_r: float, units_angles: Literal["deg", "rad"]
     ) -> tuple[float, float, str]:
         """
-        Internal function for checking if the angles with external magnetic field theta and phi_r are correctly defined.
+        Internal function for checking if the angles with external magnetic field theta and phi_r
+        are correctly defined.
 
         Parameters
         ----------
@@ -443,8 +454,8 @@ class QSys:
 
     def _tensor_product_N(self, H: Qobj, N: Literal[0, 14, 15] | None) -> Qobj:
         """
-        Performs a tensor product of the provided Hamiltonian with the identity operator corresponding
-        to the dimension of the nitrogen isoptope
+        Performs a tensor product of the provided Hamiltonian with the identity operator
+        corresponding to the dimension of the nitrogen isoptope
 
         Parameters
         ----------
@@ -468,8 +479,8 @@ class QSys:
 
 def compose_sys(qsys1: QSys, qsys2: QSys) -> QSys:
     """
-    Takes two quantum systems and returns the composed system by performing tensor products of the two,
-    after checking if all parameters are valid.
+    Takes two quantum systems and returns the composed system by performing tensor products of the
+    two, after checking if all parameters are valid.
 
     Parameters
     ----------

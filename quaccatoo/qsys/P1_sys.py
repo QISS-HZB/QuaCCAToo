@@ -18,8 +18,13 @@ __all__ = ["P1"]
 
 class P1(QSys):
     """
-    P1 class contains attributes and methods to simulate the neutral substitutional nitrogen center in diamond.
-    Due to Jahn-Teller effect this defect has a C_{3v} point symmetry, which means there are four isolated orientation families of P1 centers in diamond. In simulations the lab reference frame is chosen in such a way that it is a principal axis system (PAS) for one of the four families (rotation index 0). Hamiltonians of other orientation families are obtained by the transition from PAS to the corresponding orientation using rotation matrices.
+    P1 class contains attributes and methods to simulate the neutral substitutional nitrogen center
+    in diamond.
+    Due to Jahn-Teller effect this defect has a C_{3v} point symmetry, which means there are four
+    isolated orientation families of P1 centers in diamond. In simulations the lab reference frame
+    is chosen in such a way that it is a principal axis system (PAS) for one of the four families
+    (rotation index 0). Hamiltonians of other orientation families are obtained by the transition
+    from PAS to the corresponding orientation using rotation matrices.
 
     Attributes
     ----------
@@ -48,7 +53,8 @@ class P1(QSys):
     B1_vector : np.ndarray
         Unit vector of the MW magnetic field in the lab frame
     h1 : Qobj
-        Standard microwave Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+        Standard microwave Hamiltonian for the P1 center corresponding to the electronic spin
+        transitions.
     eigenstates : np.ndarray
         Array containing the eigenstates of the Hamiltonian.
     dim_add_spin : int
@@ -57,7 +63,8 @@ class P1(QSys):
     Methods
     -------
     _rot_pas_to_lab
-        Defines the rotation matrices to go from the PAS (principal axis system) frame to the lab frame.
+        Defines the rotation matrices to go from the PAS (principal axis system) frame to the lab
+        frame.
     electron_zeeman
         Calculates the electron Zeeman Hamiltonian term.
     hyperfine
@@ -67,7 +74,8 @@ class P1(QSys):
     nuclear_zeeman
         Calculates the nuclear Zeeman Hamiltonian term.
     _set_h1
-        Sets the standard microwave Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+        Sets the standard microwave Hamiltonian for the P1 center corresponding to the electronic
+        spin transitions.
     add_spin
         Adds an extra spin to the system and updates the microwave Hamiltonian accordingly.
 
@@ -94,7 +102,8 @@ class P1(QSys):
     ) -> None:
         """
         Constructor for the P1 class.
-        Takes the nitrogen isotope, the rotation index, the magnetic field intensity as inputs and calculates the Hamiltonian with all relevant attributes.
+        Takes the nitrogen isotope, the rotation index, the magnetic field intensity as inputs and
+        calculates the Hamiltonian with all relevant attributes.
 
         Parameters
         ----------
@@ -105,7 +114,8 @@ class P1(QSys):
         N : 15 | 14 | 0 | None
             Nitrogen isotope, or 0 for no nuclear spin
         rho0 : Qobj | array
-            Initial state of the system. Can be a Qobj, an array or an index number indicating the system eigenstates
+            Initial state of the system. Can be a Qobj, an array or an index number indicating the
+            system eigenstates
         c_ops : Qobj | list(Qobj)
             List of collapse operators
         observable : Qobj | list(Qobj)
@@ -336,7 +346,8 @@ class P1(QSys):
 
     def _set_h1(self) -> None:
         """
-        Sets the standard control Hamiltonian for the P1 center corresponding to the electronic spin transitions.
+        Sets the standard control Hamiltonian for the P1 center corresponding to the electronic spin
+        transitions.
         """
         h1_e = 2 * (
             (self.R[self.rot_index] @ self.B1_vector.T)[0][0] * jmat(1 / 2, "x")

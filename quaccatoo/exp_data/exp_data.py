@@ -61,7 +61,8 @@ class ExpData:
     ) -> None:
         """
         Constructor of the ExpData class.
-        It loads experimental data from a file and sets the variable and results attributes according with the specified column arguments.
+        It loads experimental data from a file and sets the variable and results attributes
+        according with the specified column arguments.
 
         Parameters
         ----------
@@ -152,7 +153,8 @@ class ExpData:
         figtitle: str = "Subtracted Expt. Data",
     ) -> None:
         """
-        Overwrites the results attribute substracting the results of the negative column from the positive column.
+        Overwrites the results attribute substracting the results of the negative column from the
+        positive column.
 
         Parameters
         ----------
@@ -268,7 +270,8 @@ class ExpData:
     ) -> None:
         """
         Overwrites the results attribute performing a polynomial baseline correction.
-        The baseline is fitted to the data between x_start and x_end, representing the start and end of the xaxis index.
+        The baseline is fitted to the data between x_start and x_end, representing the start and end
+        of the xaxis index.
 
         Parameters
         ----------

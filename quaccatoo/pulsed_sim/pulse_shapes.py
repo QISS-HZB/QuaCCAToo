@@ -1,7 +1,8 @@
 # TODO: expand and test
 
 """
-This module contains pulse shape functions to be used in the PulsedSim classes as part of the QuaCAAToo package.
+This module contains pulse shape functions to be used in the PulsedSim classes as part of the
+QuaCAAToo package.
 """
 
 import numpy as np

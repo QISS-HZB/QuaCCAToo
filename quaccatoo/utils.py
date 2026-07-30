@@ -1,5 +1,6 @@
 """
-This module provides functions to save and load quaccatoo objects, such as instances from QSys, ExpData, Analysis and PulsedSim.
+This module provides functions to save and load quaccatoo objects, such as instances from QSys,
+ExpData, Analysis and PulsedSim.
 It also contains small internal helpers shared by the plotting methods of the other modules.
 """
 
@@ -58,7 +59,8 @@ def save_quaccatoo(obj_save, file_path):
     tmp_dir = "tmp"
 
     try:
-        # create a temporary directory to store files and get a list of all the attributes defined in the obj
+        # create a temporary directory to store files and get a list of all the attributes defined
+        # in the obj
         os.makedirs(tmp_dir, exist_ok=True)
         attributes = list(obj_save.__dict__.keys())
         py_attr = []

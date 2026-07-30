@@ -1,13 +1,22 @@
 """
-This module contains predefined basic pulsed experiments inheriting from the PulsedSim class as part of the QuaCCAToo package.
+This module contains predefined basic pulsed experiments inheriting from the PulsedSim class as part
+of the QuaCCAToo package.
 
 Classes
 -------
-- Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical transitions between the excited and ground states.
-- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is changed such that when it corresponds to a transition in the Hamiltonian of the system, the observable will be affected.
-- Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between states in the system which can be used for interferometry.
-- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
-- SpinLocking: spin locking experiment, composed by a pi/2-y pulse to drive the spin to the +X state followed by a pulse along x of varying duration. During the driving, the system is usually in an eigenstate of the driving Hamiltonian.
+- Rabi: resonant pulse of varying duration, such that the quantum system will undergo periodical
+  transitions between the excited and ground states.
+- PMR: Pulsed Magnetic Resonance (PMR) experiment, composed by a single pulse where the frequency is
+  changed such that when it corresponds to a transition in the Hamiltonian of the system, the
+  observable will be affected.
+- Ramsey: Ramsey experiment, consisting of a free evolution that causes a phase accumulation between
+  states in the system which can be used for interferometry.
+- Hahn: Hahn echo experiment, consisting of two free evolutions with a pi pulse in the middle, in
+  order to cancel out dephasings. The Hahn echo is usually used to measure the coherence time of a
+  quantum system, however it can also be used to sense coupled spins.
+- SpinLocking: spin locking experiment, composed by a pi/2-y pulse to drive the spin to the +X state
+  followed by a pulse along x of varying duration. During the driving, the system is usually in an
+  eigenstate of the driving Hamiltonian.
 """
 
 import copy
@@ -30,7 +39,8 @@ class Rabi(PulsedSim):
     A class containing Rabi experiments.
 
     A Rabi sequence is composed of a resonant pulse of varying duration,
-    such that the quantum system will undergo periodical transitions between the excited and ground states.
+    such that the quantum system will undergo periodical transitions between the excited and ground
+    states.
 
     Methods
     -------
@@ -59,15 +69,18 @@ class Rabi(PulsedSim):
         Parameters
         ----------
         pulse_duration : numpy.ndarray
-            Time array for the simulation representing the pulse duration to be used as the variable for the simulation.
+            Time array for the simulation representing the pulse duration to be used as the variable
+            for the simulation.
         system : QSys
-            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse
+            operators.
         h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         H2 : Qobj or list(Qobj)
             Time-dependent sensing Hamiltonian of the system.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         options : dict
@@ -105,10 +118,12 @@ class Rabi(PulsedSim):
 
     def run(self) -> None:
         """
-        Overwrites the run method of the parent class. Runs the simulation and stores the results in the results attribute.
+        Overwrites the run method of the parent class. Runs the simulation and stores the results in
+        the results attribute.
         If the system has no initial state, the propagator is calcualated.
         If an observable is given, the expectation values are stored in the results attribute.
-        For the Rabi sequence, the calculation is optimally performed sequentially instead of in parallel over the pulse lengths,
+        For the Rabi sequence, the calculation is optimally performed sequentially instead of in
+        parallel over the pulse lengths,
         thus the run method from the parent class is overwritten.
         """
         if self.system.rho0 is None:
@@ -138,12 +153,16 @@ class Rabi(PulsedSim):
 
 class PMR(PulsedSim):
     """
-    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the variable being changed.
+    A class containing Pulsed Magnetic Resonance (PMR) experiments where the frequency is the
+    variable being changed.
 
-    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency matches a resonance of the system,
+    The PMR consists of a single pulse of fixed length and changing frequency. If the frequency
+    matches a resonance of the system,
     it will undergo some transition which will affect the observable.
-    This way, the differences between energy levels can be determined with the linewidth usually limited by the pulse length.
-    Here we make reference to optical detection as it is the most common detection scheme of pulsed magnetic resonance in color centers,
+    This way, the differences between energy levels can be determined with the linewidth usually
+    limited by the pulse length.
+    Here we make reference to optical detection as it is the most common detection scheme of pulsed
+    magnetic resonance in color centers,
     however the method can be more general.
 
     Attributes
@@ -157,7 +176,8 @@ class PMR(PulsedSim):
         Defines the Pulsed Magnetic Resonance (PMR) sequence for a given frequency of the pulse.
         To be called by the parallel_map in run method.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
+        Overwrites the plot_pulses method of the parent class in order to first define a pulse
+        frequency to be plotted.
 
     Notes
     -----
@@ -185,7 +205,8 @@ class PMR(PulsedSim):
         frequencies : numpy.ndarray
             Array of frequencies to run the simulation.
         system : QSys
-            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse
+            operators.
         pulse_duration : float or int
             Duration of the pulse.
         h1 : Qobj or list(Qobj)
@@ -193,7 +214,8 @@ class PMR(PulsedSim):
         H2 : Qobj or list(Qobj)
             Time-dependent sensing Hamiltonian of the system.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -260,14 +282,16 @@ class PMR(PulsedSim):
         f_pulse: float | None = None,
     ):
         """
-        Overwrites the plot_pulses method of the parent class in order to first define a pulse frequency to be plotted.
+        Overwrites the plot_pulses method of the parent class in order to first define a pulse
+        frequency to be plotted.
 
         Parameters
         ----------
         f_pulse : float or int
             Frequency of the pulse to be plotted.
         """
-        # if f_pulse is None, assign the first element of the variable attribute to the pulse_params dictionary
+        # if f_pulse is None, assign the first element of the variable attribute to the pulse_params
+        # dictionary
         if f_pulse is None:
             self.pulse_params["f_pulse"] = self.variable[0]
         # if f_pulse is a float or an integer, assign it to the pulse_params dictionary
@@ -286,20 +310,23 @@ class Ramsey(PulsedSim):
     """
     A class containing Ramsey experiments.
 
-    The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization axis,
-    which causes a phase accumulation between states in the system which can be used for sensing.
+    The Ramsey sequence consists of a free evolution in the plane perpendicular to the quantization
+    axis, which causes a phase accumulation between states in the system which can be used for
+    sensing.
 
     Methods
     -------
     ramsey_sequence :
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
         The sequence is to be called by the parallel_map method of QuTip.
     _get_pulse_profiles :
         Generates the pulse profiles for the Ramsey sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the Ramsey sequence for a given tau and then plot them.
 
     Notes
     -----
@@ -331,11 +358,14 @@ class Ramsey(PulsedSim):
         Parameters
         ----------
         free_duration : numpy.ndarray
-            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
+            Time array for the simulation representing the free evolution time to be used as the
+            variable attribute for the simulation.
         system : QSys
-            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse
+            operators.
         pi_pulse_duration : float, int or 0
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list(Qobj)
             Control Hamiltonian of the system.
         Rx : Qobj or None
@@ -346,9 +376,11 @@ class Ramsey(PulsedSim):
             Time-dependent sensing Hamiltonian of the system.
         projection_pulse : bool
             Boolean to determine if the measurement is to be performed in the Sz basis or not.
-            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as for most color centers.
+            If True, a final pi/2 pulse is included in order to project the result into the Sz
+            basis, as for most color centers.
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -374,10 +406,13 @@ class Ramsey(PulsedSim):
 
     def ramsey_sequence(self, tau: float) -> Qobj:
         """
-        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes defined in the constructor.
+        Defines the Ramsey sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor.
         The sequence consists of an initial pi/2 pulse and a single free evolution.
-        If the projection_pulse is set to True, a final pi/2 pulse is included in order to project the result into the Sz basis.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        If the projection_pulse is set to True, a final pi/2 pulse is included in order to project
+        the result into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -446,12 +481,14 @@ class Ramsey(PulsedSim):
         tau: float | None = None,
     ) -> None:
         """
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Ramsey sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the Ramsey sequence for a given tau and then plot them.
 
         Parameters
         ----------
         tau : float
-            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free
+            evolution must be a single number in order to plot the pulse profiles.
         """
         # generate the pulse profiles for the Ramsey sequence for a given tau
         self._get_pulse_profiles(tau)
@@ -467,19 +504,23 @@ class Hahn(PulsedSim):
     """
     A class containing Hahn echo experiments.
 
-    The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order to cancel out dephasings.
-    The Hahn echo is usually used to measure the coherence time of a quantum system, however it can also be used to sense coupled spins.
+    The Hahn echo sequence consists of two free evolutions with a pi pulse in the middle, in order
+    to cancel out dephasings.
+    The Hahn echo is usually used to measure the coherence time of a quantum system, however it can
+    also be used to sense coupled spins.
 
     Methods
     -------
     hahn_sequence :
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor,
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor,
         returning the final state. The sequence is to be called by the parallel_map method of QuTip.
     _get_pulse_profiles :
         Generates the pulse profiles for the Hahn echo sequence for a given tau.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the Hahn echo sequence for a given tau and then plot them.
 
     Notes
     -----
@@ -506,16 +547,20 @@ class Hahn(PulsedSim):
         options: dict | None = None,
     ) -> None:
         """
-        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to run the simulation.
+        Constructor for the Hahn echo pulsed experiment class, taking a specific free_duration to
+        run the simulation.
 
         Parameters
         ----------
         free_duration : numpy.ndarray
-            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation.
+            Time array for the simulation representing the free evolution time to be used as the
+            variable attribute for the simulation.
         system : QSys
-            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse
+            operators.
         pi_pulse_duration : float, int or 0
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
@@ -524,9 +569,11 @@ class Hahn(PulsedSim):
             Time dependent sensing Hamiltonian of the system.
         projection_pulse : bool
             Boolean to determine if the measurement is to be performed in the Sz basis or not.
-            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
+            If True, a final pi/2 pulse is included in order to project the result into the Sz
+            basis, as done for the most color centers.
         pulse_shape : FunctionType or list of FunctionType
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -552,9 +599,12 @@ class Hahn(PulsedSim):
 
     def hahn_sequence(self, tau: float) -> Qobj:
         """
-        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        Defines the Hahn echo sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor.
+        The sequence consists of a pi/2 pulse, a free evolution time tau, a pi pulse and another
+        free evolution time tau followed by a pi/2 pulse, if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -645,12 +695,14 @@ class Hahn(PulsedSim):
         tau: float | None = None,
     ) -> None:
         """
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the Hahn echo sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the Hahn echo sequence for a given tau and then plot them.
 
         Parameters
         ----------
         tau : float
-            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free evolution must be a single number in order to plot the pulse profiles.
+            Free evolution time for the Hahn echo sequence. Contrary to the run method, the free
+            evolution must be a single number in order to plot the pulse profiles.
         """
         # generate the pulse profiles for the Hahn echo sequence for a given tau
         self._get_pulse_profiles(tau)
@@ -666,21 +718,26 @@ class SpinLocking(PulsedSim):
     """
     A class containing a spin locking experiment.
 
-    A spin locking is composed by a pi/2-y pulse to drive the spin to the +X state followed by a pulse along x of varying duration.
+    A spin locking is composed by a pi/2-y pulse to drive the spin to the +X state followed by a
+    pulse along x of varying duration.
     During the driving, the system is usually in an eigenstate of the driving Hamiltonian.
 
     Methods
     -------
     spin_locking_sequence :
-        Defines the spin locking sequence for a given pulse duration and the set of attributes defined in the constructor.
-        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final pi/2-y pulse if the projection pulse is set to True.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        Defines the spin locking sequence for a given pulse duration and the set of attributes
+        defined in the constructor.
+        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final
+        pi/2-y pulse if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
     _get_pulse_profiles :
         Generates the pulse profiles for the spin locking sequence for a given pulse duration.
         The pulse profiles are stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the spin locking sequence for a given pulse duration and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the spin locking sequence for a given pulse duration and then plot them.
 
     Notes
     -----
@@ -703,16 +760,20 @@ class SpinLocking(PulsedSim):
         options: dict | None = None,
     ) -> None:
         """
-        Constructor for the spin locking pulsed experiment class, taking a specific pulse_duration to run the simulation.
+        Constructor for the spin locking pulsed experiment class, taking a specific pulse_duration
+        to run the simulation.
 
         Parameters
         ----------
         pulse_duration : numpy.ndarray
-            Time array for the simulation representing the pulse duration to be used as the variable attribute for the simulation.
+            Time array for the simulation representing the pulse duration to be used as the variable
+            attribute for the simulation.
         system : QSys
-            Quantum system object containing the initial state, internal Hamiltonian and collapse operators.
+            Quantum system object containing the initial state, internal Hamiltonian and collapse
+            operators.
         pi_pulse_duration : float
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
             Control Hamiltonian of the system. Contrary to the other sequences, h1 is required
             even when pi_pulse_duration is 0, as it defines the locking Hamiltonian.
@@ -722,9 +783,11 @@ class SpinLocking(PulsedSim):
             Time dependent sensing Hamiltonian of the system.
         projection_pulse : bool
             Boolean to determine if the measurement is to be performed in the Sz basis or not.
-            If True, a final pi/2 pulse is included in order to project the result into the Sz basis, as done for the most color centers.
+            If True, a final pi/2 pulse is included in order to project the result into the Sz
+            basis, as done for the most color centers.
         pulse_shape : FunctionType or list of FunctionType
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1.
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1.
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions.
         time_steps : int
@@ -769,9 +832,12 @@ class SpinLocking(PulsedSim):
 
     def spin_locking_sequence(self, tp: float) -> Qobj:
         """
-        Defines the spin locking sequence for a given pulse duration and the set of attributes defined in the constructor.
-        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final pi/2-y pulse if the projection pulse is set to True.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        Defines the spin locking sequence for a given pulse duration and the set of attributes
+        defined in the constructor.
+        The sequence consists of a pi/2-y pulse, a pulse of varying duration along x and a final
+        pi/2-y pulse if the projection pulse is set to True.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -840,12 +906,14 @@ class SpinLocking(PulsedSim):
         tp: float | None = None,
     ) -> None:
         """
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the spin locking sequence for a given pulse duration and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the spin locking sequence for a given pulse duration and then plot them.
 
         Parameters
         ----------
         tp : float
-            Pulse duration. Contrary to the run method, the pulse duration must be a single number in order to plot the pulse profiles.
+            Pulse duration. Contrary to the run method, the pulse duration must be a single number
+            in order to plot the pulse profiles.
         """
         self._get_pulse_profiles(tp)
 

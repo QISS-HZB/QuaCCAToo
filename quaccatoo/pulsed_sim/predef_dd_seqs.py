@@ -1,5 +1,6 @@
 """
-This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending coherence of quantum systems.
+This module contains dynamical decoupling pulse sequences, used in quantum sensing and for extending
+coherence of quantum systems.
 """
 
 import warnings
@@ -22,17 +23,21 @@ class CPMG(PulsedSim):
     This class contains a Carr-Purcell-Meiboom-Gill sequence used in quantum sensing experiments.
 
     The CPMG sequence consists of a series of pi pulses and free evolution times,
-    such that these periodicals inversions will cancel out oscillating noises except for frequencies corresponding to the pulse separation.
+    such that these periodicals inversions will cancel out oscillating noises except for frequencies
+    corresponding to the pulse separation.
 
     Methods
     -------
     CPMG_sequence :
-        defines the Carr-Purcell-Meiboom-Gill sequence for a given free evolution time tau and the set of attributes defined in the constructor,
+        defines the Carr-Purcell-Meiboom-Gill sequence for a given free evolution time tau and the
+        set of attributes defined in the constructor,
         returning the final state. The sequence is to be called by the parallel_map method of QuTip.
     _get_pulse_profiles :
-        Generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+        Generates the pulse profiles for the CPMG sequence for a given tau. The pulse profiles are
+        stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the CPMG sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the CPMG sequence for a given tau and then plot them.
 
     Notes
     -----
@@ -66,13 +71,16 @@ class CPMG(PulsedSim):
         Parameters
         ----------
         free_duration : numpy array
-            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+            Time array for the simulation representing the free evolution time to be used as the
+            variable attribute for the simulation
         system : QSys
-            Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+            Quantum system object containing the initial state, internal time independent
+            Hamiltonian and collapse operators
         M : int
             Order of the CPMG sequence
         pi_pulse_duration : float, int or 0
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
@@ -82,9 +90,11 @@ class CPMG(PulsedSim):
         H2 : list(Qobj or function)
             Time dependent sensing Hamiltonian of the system
         projection_pulse : bool
-            Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
+            Boolean to determine if a final pi/2 pulse is to be included in order to project the
+            measurement into the Sz basis
         pulse_shape : FunctionType or list(FunctionType)
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1
         pulse_params : dict
             Dictionary of parameters for the pulse_shape functions
         time_steps : int
@@ -111,10 +121,14 @@ class CPMG(PulsedSim):
 
     def CPMG_sequence(self, tau: float) -> Qobj:
         """
-        Defines the CPMG sequence for a given free evolution time tau and the set of attributes defined in the constructor.
-        The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution time tau.
-        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        Defines the CPMG sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor.
+        The sequence consists of an initial pi/2 pulse, and M pi-pulses separated by free evolution
+        time tau.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to
+        project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -223,7 +237,8 @@ class CPMG(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, tau must be a single
+            number in order to plot the pulse profiles.
         """
         self._get_pulse_profiles(tau)
         # call the plot_pulses method of the parent class
@@ -238,18 +253,22 @@ class XY(PulsedSim):
     This class contains the XY-M pulse sequence.
 
     The sequence is composed of intercalated X and Y pi pulses and free evolutions repeated M times.
-    It acts similar to the CPMG sequence, but the alternation of the pulse improves noise suppression on different axis.
-    The initial and final pi/2 pulses are played on the Y axis, while the refocusing pi pulses alternate between X and Y.
+    It acts similar to the CPMG sequence, but the alternation of the pulse improves noise
+    suppression on different axis.
+    The initial and final pi/2 pulses are played on the Y axis, while the refocusing pi pulses
+    alternate between X and Y.
 
     Notes
     -----
     The XY sequence inherits the methods and attributes from the PulsedSim class.
 
     On the phase convention of the pi/2 pulses: contrary to the XY8 sequence implemented in this
-    module, which prepares and projects along X, the XY-M sequence here prepares and projects along Y.
-    This is deliberate and must not be "harmonized" with XY8. Differently from XY8, whose eight pulse
-    phase pattern is reproduced consistently across the literature, the plain XY-M sequence is not
-    standardized in the field, with the axis of the initial pi/2 pulse varying between references.
+    module, which prepares and projects along X, the XY-M sequence here prepares and projects along
+    Y.
+    This is deliberate and must not be "harmonized" with XY8. Differently from XY8, whose eight
+    pulse phase pattern is reproduced consistently across the literature, the plain XY-M sequence
+    is not standardized in the field, with the axis of the initial pi/2 pulse varying between
+    references.
     The convention used here is the one of the experimental setup the sequence was written for, and
     published results were obtained with it. The choice is not merely cosmetic, as the phase of the
     preparation pulse relative to the refocusing pulses determines whether the prepared state is
@@ -258,12 +277,15 @@ class XY(PulsedSim):
     Methods
     -------
     XY_sequence :
-        Defines the XY sequence for a given free evolution time tau and the set of attributes defined in the constructor,
-        returning the final state. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the XY sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor, returning the final state. The sequence is to be called by the
+        parallel_map method of QuTip.
     _get_pulse_profiles :
-        Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+        Generates the pulse profiles for the XY-M sequence for a given tau. The pulse profiles are
+        stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY-M sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the XY-M sequence for a given tau and then plot them.
     """
 
     # the sequence opens and closes with tau/2 around the pi pulses, therefore
@@ -293,13 +315,16 @@ class XY(PulsedSim):
         Parameters
         ----------
         free_duration : numpy array
-            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+            Time array for the simulation representing the free evolution time to be used as the
+            variable attribute for the simulation
         system : QSys
-            Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+            Quantum system object containing the initial state, internal time independent
+            Hamiltonian and collapse operators
         M : int
             Order of the XY sequence
         pi_pulse_duration : float, int or 0
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
@@ -309,7 +334,8 @@ class XY(PulsedSim):
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1
         pulse_params : dict, optional
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
@@ -338,10 +364,14 @@ class XY(PulsedSim):
 
     def XY_sequence(self, tau: float) -> Qobj:
         """
-        Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
-        The sequence starts with a pi/2 pulse on the Y axis, see the note on the phase convention in the class docstring.
-        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to project the measurement into the Sz basis.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        Defines the XY-M composed of intercalated pi pulses on X and Y axis with free evolutions of
+        time tau repeated M times.
+        The sequence starts with a pi/2 pulse on the Y axis, see the note on the phase convention in
+        the class docstring.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on Y axis to
+        project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -361,7 +391,8 @@ class XY(PulsedSim):
             self._delta_pulse(self.Ry_half)
             self._free_evolution(tau / 2, self.options)
 
-            # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
+            # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of
+            # ps
             for idx_M in range(self.M):
                 self._delta_pulse(self.Rx)
                 self._free_evolution(tau, self.options)
@@ -382,7 +413,8 @@ class XY(PulsedSim):
             self._pulse(self.Ht, self.pi_pulse_duration / 2, self.options, self.pulse_params[1])
             self._free_evolution(ps / 2 - self.pi_pulse_duration / 2, self.options)
 
-            # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of ps
+            # repeat M times the pi X pulse, free evolution of ps, pi Y pulse and free evolution of
+            # ps
             for idx_M in range(self.M):
                 self._pulse(self.Ht, self.pi_pulse_duration, self.options, self.pulse_params[0])
                 self._free_evolution(ps, self.options)
@@ -457,7 +489,8 @@ class XY(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, tau must be a single
+            number in order to plot the pulse profiles.
         """
         # generate the pulse profiles for the given tau
         self._get_pulse_profiles(tau)
@@ -473,18 +506,22 @@ class XY8(PulsedSim):
     """
     This contains the XY8-M sequence.
 
-    The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
+    The XY8-M is a further improvement from the XY-M sequence, where the X and Y pulses are group
+    antisymmetrically in pairs of 4 as X-Y-X-Y-Y-X-Y-X,
     in order to improve noise suppression and pulse errors.
 
     Methods
     -------
     XY_sequence :
-        Defines the XY8-M sequence for a given free evolution time tau and the set of attributes defined in the constructor,
-        returning the final state. The sequence is to be called by the parallel_map method of QuTip.
+        Defines the XY8-M sequence for a given free evolution time tau and the set of attributes
+        defined in the constructor, returning the final state. The sequence is to be called by the
+        parallel_map method of QuTip.
     _get_pulse_profiles :
-        Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are stored in the pulse_profiles attribute of the object.
+        Generates the pulse profiles for the XY8-M sequence for a given tau. The pulse profiles are
+        stored in the pulse_profiles attribute of the object.
     plot_pulses :
-        Overwrites the plot_pulses method of the parent class in order to first generate the pulse profiles for the XY8-M sequence for a given tau and then plot them.
+        Overwrites the plot_pulses method of the parent class in order to first generate the pulse
+        profiles for the XY8-M sequence for a given tau and then plot them.
 
     Notes
     -----
@@ -520,13 +557,16 @@ class XY8(PulsedSim):
         Parameters
         ----------
         free_duration : numpy array
-            Time array for the simulation representing the free evolution time to be used as the variable attribute for the simulation
+            Time array for the simulation representing the free evolution time to be used as the
+            variable attribute for the simulation
         system : QSys
-            Quantum system object containing the initial state, internal time independent Hamiltonian and collapse operators
+            Quantum system object containing the initial state, internal time independent
+            Hamiltonian and collapse operators
         M : int
             Order of the XY sequence
         pi_pulse_duration : float, int or 0
-            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+            Duration of the pi pulse. If set to 0, the pulses are perfect delta pulses and the
+            time-evolution is calculated with the rotation operator.
         h1 : Qobj or list of Qobj
             Control Hamiltonian of the system.
         Rx : Qobj or None
@@ -536,7 +576,8 @@ class XY8(PulsedSim):
         H2 : Qobj, list(Qobj), optional
             Time dependent sensing Hamiltonian of the system
         pulse_shape : FunctionType, list(FunctionType), optional
-            Pulse shape function or list of pulse shape functions representing the time modulation of h1
+            Pulse shape function or list of pulse shape functions representing the time modulation
+            of h1
         pulse_params : dict, optional
             Dictionary of parameters for the pulse_shape functions
         time_steps : int, optional
@@ -544,7 +585,8 @@ class XY8(PulsedSim):
         options : dict, optional
             Dictionary of solver options from Qutip
         projection_pulse : bool
-            Boolean to determine if a final pi/2 pulse is to be included in order to project the measurement into the Sz basis
+            Boolean to determine if a final pi/2 pulse is to be included in order to project the
+            measurement into the Sz basis
         RXY8 : bool
             Boolen to determine if a random phase is to be added to each XY8 block
         seed : int or None
@@ -585,7 +627,8 @@ class XY8(PulsedSim):
         else:
             random_phases = np.zeros(M)
 
-        # generate the pulse parameters for the XY8 sequence with the correct order of the x and y pulses
+        # generate the pulse parameters for the XY8 sequence with the correct order of the x and y
+        # pulses
         base_pulse = self.pulse_params.copy()
 
         self.pulse_params = []
@@ -602,10 +645,13 @@ class XY8(PulsedSim):
 
     def XY8_sequence(self, tau: float) -> Qobj:
         """
-        Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions of time tau repeated M times.
+        Defines the XY8-M composed of 8 intercalated pi pulses on X and Y axis with free evolutions
+        of time tau repeated M times.
         If random_phase is set to True, a random phase is added in each XY8 block.
-        If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to project the measurement into the Sz basis.
-        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the time-evolution is calculated with the rotation operator.
+        If projection_pulse is True, the sequence will include a final pi/2 pulse on X axis to
+        project the measurement into the Sz basis.
+        If the pi_pulse_duration is set to 0, the pulses are perfect delta pulses and the
+        time-evolution is calculated with the rotation operator.
         The sequence is to be called by the parallel_map method of QuTip.
 
         Parameters
@@ -727,7 +773,8 @@ class XY8(PulsedSim):
         Parameters
         ----------
         tau : float
-            Free evolution time for the  sequence. Contrary to the run method, tau must be a single number in order to plot the pulse profiles.
+            Free evolution time for the  sequence. Contrary to the run method, tau must be a single
+            number in order to plot the pulse profiles.
         """
         self._get_pulse_profiles(tau)
         # call the plot_pulses method of the parent class

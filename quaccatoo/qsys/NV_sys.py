@@ -53,11 +53,14 @@ class NV(QSys):
     Methods
     -------
     _rho0_T
-        Calculates the initial state of the system at low temperatures using the Boltzmann distribution
+        Calculates the initial state of the system at low temperatures using the Boltzmann
+        distribution
     _set_MW
-        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center corresponding to the electronic spin transitions
+        Sets the standard microwave Hamiltonian and pulse frequencies for the NV center
+        corresponding to the electronic spin transitions
     _set_RF
-        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to the nuclear spin transitions
+        Sets the standard RF Hamiltonian and pulse frequencies for the NV center corresponding to
+        the nuclear spin transitions
     zero_field
         Get the NV Hamiltonian term accounting for zero field splitting
     electron_zeeman
@@ -178,8 +181,10 @@ class NV(QSys):
 
     def _rho0_T(self) -> None:
         """
-        Calculates the initial state of the system at low temperatures using the Boltzmann distribution.
-        At room temperatures and moderate fields, the initial state of the nuclear spins is simply an identity matrix.
+        Calculates the initial state of the system at low temperatures using the Boltzmann
+        distribution.
+        At room temperatures and moderate fields, the initial state of the nuclear spins is simply
+        an identity matrix.
 
         Returns
         -------
@@ -193,7 +198,8 @@ class NV(QSys):
         index_1 = None
         index_2 = None
         index_3 = None
-        # iterates over all the eigenstates and find the one closest related to the |0,1/2> and |0,-1/2> states
+        # iterates over all the eigenstates and find the one closest related to the |0,1/2> and
+        # |0,-1/2> states
         for idx_eig, val_eig in enumerate(self.eigenstates):
             if self.N == 15:
                 proj_1 = np.abs(val_eig.overlap(basis(6, 2)))
@@ -204,7 +210,8 @@ class NV(QSys):
                 proj_2 = np.abs(val_eig.overlap(basis(9, 4)))
                 proj_3 = np.abs(val_eig.overlap(basis(9, 5)))
                 if proj_3 > max_3:
-                    # if the projection is higher than the previous maximum, update the maximum and the index
+                    # if the projection is higher than the previous maximum, update the maximum and
+                    # the index
                     max_3 = proj_3
                     index_3 = idx_eig
             else:
@@ -263,8 +270,10 @@ class NV(QSys):
 
     def _set_MW(self) -> None:
         """
-        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic spin transitions.
-        Sets the corresponding frequencies for microwave pulses with the transitions corresponding to the energy levels.
+        Sets the standard microwave Hamiltonian for the NV center corresponding to the electronic
+        spin transitions.
+        Sets the corresponding frequencies for microwave pulses with the transitions corresponding
+        to the energy levels.
         """
         Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
         Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
@@ -303,8 +312,10 @@ class NV(QSys):
 
     def _set_RF(self) -> None:
         """
-        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin transitions.
-        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the energy levels.
+        Sets the standard RF Hamiltonian for the NV center corresponding to the nuclear spin
+        transitions.
+        Sets the corresponding frequencies for RF pulses with the transitions corresponding to the
+        energy levels.
         """
         Rx_0 = Qobj([[1, 0, 0], [0, 0, 1], [0, 1, 0]])
         Rx_1 = Qobj([[0, 1, 0], [1, 0, 0], [0, 0, 1]])
@@ -327,7 +338,8 @@ class NV(QSys):
             self.RF_Rx = [tensor(qeye(3), Rx_0), tensor(qeye(3), Rx_1)]
             self.RF_Ry = [tensor(qeye(3), Ry_0), tensor(qeye(3), Ry_1)]
 
-            # for the 14N isotope, the RF frequencies are more complicated as they need to respect the selection rule of Delta mI = +-1
+            # for the 14N isotope, the RF frequencies are more complicated as they need to respect
+            # the selection rule of Delta mI = +-1
             # the order of the ms states changes above the GSLAC
             if self.B0 <= 102.5:
                 f1 = self.energy_levels[2] - self.energy_levels[1]  # 0 -> -1 at ms=0
@@ -358,8 +370,9 @@ class NV(QSys):
 
     def zero_field(self) -> Qobj:
         """Get the NV Hamiltonian term accounting for the zero field splitting.
-        If the temperature attribute is set to a value below 295 K, the D parameter is calculated using a
-        5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903 (2011).
+        If the temperature attribute is set to a value below 295 K, the D parameter is calculated
+        using a 5th order polynomial function from X. D. Chen et al. Appl. Phys. Lett. 99, 161903
+        (2011).
         Otherwise, if the temperature is above 295 K, a 3rd order polynomial function from
         D. M. Toyli et al. Phys. Rev. X 2, 031001 (2012) is used.
 
@@ -511,7 +524,8 @@ class NV(QSys):
     ) -> tuple[list[int], list[int]] | None:
         """
         Internal method calculating the indexes to be removed from the system and the dimensions
-        of the truncated objects, according to the selected mS and mI levels and the nitrogen isotope.
+        of the truncated objects, according to the selected mS and mI levels and the nitrogen
+        isotope.
 
         Parameters
         ----------
