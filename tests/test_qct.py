@@ -88,9 +88,9 @@ class TestQSys:
         trunc.truncate(0)
         assert trunc.H0.shape == (2, 2)
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError):  # noqa: PT011
             qsys.truncate(5)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError):  # noqa: PT011
             qsys.truncate([0, 7])
 
 
@@ -440,7 +440,8 @@ class TestPODMR:
         )
         assert np.isclose(
             podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
-        ) and np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
+        )
+        assert np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
 
 
 class TestExpData:
@@ -464,7 +465,8 @@ class TestExpData:
         rabi_analysis_exp = Analysis(rabi_sim_exp)
         exp_data.variable *= 1e6
         rabi_analysis_exp.compare_with(exp_data)
-        assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3) and np.isclose(
+        assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3)
+        assert np.isclose(
             rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3
         )
 
@@ -535,7 +537,8 @@ class TestP1:
         # drive at the beginning of the pulse enters through the counter rotating terms
         assert np.isclose(
             analysis.fit_params.best_values["gamma"], 3.0046, atol=1e-3
-        ) and np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
+        )
+        assert np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
 
 
 class TestSiBiFlux:
@@ -640,7 +643,7 @@ class TestPulseShapes:
 class TestPulsedSim:
     # the sensing Hamiltonian must stay a single term of Ht, also with several control Hamiltonians
     def test_H2(self, qsys):
-        def sensing(t, **kwargs):
+        def sensing(t, **kwargs):  # noqa: ARG001
             return np.cos(t)
 
         rabi_H2 = Rabi(
@@ -855,7 +858,8 @@ def test_add_free_evolution():
     )
     analysis = Analysis(custom_seq)
     analysis.run_fit(fit_model=RabiModel())
-    assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3) and np.isclose(
+    assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3)
+    assert np.isclose(
         analysis.fit_params.best_values["Tpi"], 0.714, atol=1e-3
     )
 
