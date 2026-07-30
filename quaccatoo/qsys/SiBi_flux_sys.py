@@ -1,3 +1,5 @@
+# TODO: add truncation method
+
 """
 This module contains a class for modelling a Bismuth atom coupled to a flux superconducting qubit being a subclass of QSys.
 
