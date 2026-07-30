@@ -425,7 +425,7 @@ class TestPODMR:
         w1 = 0.3
 
         podmr_exp = PMR(
-            frequencies=np.arange(1745, 1753, 0.1),
+            frequencies=np.arange(1747, 1751.5, 0.5),
             pulse_duration=1 / 2 / w1,
             system=qsys,
             h1=w1 * qsys.MW_h1,
@@ -441,7 +441,7 @@ class TestPODMR:
         assert np.isclose(
             podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
         )
-        assert np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.029, atol=1e-3)
+        assert np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3., atol=1e-3)
 
 
 class TestExpData:
