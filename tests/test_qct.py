@@ -438,10 +438,8 @@ class TestPODMR:
             fit_model=Model(fit_two_lorentz_sym),
             guess={"A": 0.5, "gamma": 0.2, "f_mean": 1749, "f_delta": 3, "C": 1},
         )
-        assert np.isclose(
-            podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3
-        )
-        assert np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3., atol=1e-3)
+        assert np.isclose(podmr_analysis.fit_params.best_values["f_mean"], 1.749e3, atol=1e-3)
+        assert np.isclose(podmr_analysis.fit_params.best_values["f_delta"], 3.0, atol=1e-3)
 
 
 class TestExpData:
@@ -466,9 +464,7 @@ class TestExpData:
         exp_data.variable *= 1e6
         rabi_analysis_exp.compare_with(exp_data)
         assert np.isclose(rabi_analysis_exp.pearson.slope, 2.5895, atol=1e-3)
-        assert np.isclose(
-            rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3
-        )
+        assert np.isclose(rabi_analysis_exp.pearson.intercept, -2.0453, atol=1e-3)
 
     def test_subtract(self):
         f = ExpData(file_path="./tests/data/xy82.dat", results_columns=[0, 1])
@@ -535,9 +531,7 @@ class TestP1:
         # the fitted gamma recovers the Rabi frequency w2. It moved from 3.003 to 3.0046 when the
         # PMR pulse was corrected to start at t=0 instead of at pulse_duration, as the phase of the
         # drive at the beginning of the pulse enters through the counter rotating terms
-        assert np.isclose(
-            analysis.fit_params.best_values["gamma"], 3.0046, atol=1e-3
-        )
+        assert np.isclose(analysis.fit_params.best_values["gamma"], 3.0046, atol=1e-3)
         assert np.isclose(analysis.fit_params.best_values["f0"], 1050.85, atol=1e-3)
 
 
@@ -859,9 +853,7 @@ def test_add_free_evolution():
     analysis = Analysis(custom_seq)
     analysis.run_fit(fit_model=RabiModel())
     assert np.isclose(analysis.fit_params.best_values["amp"], 0.000623, rtol=1e-3)
-    assert np.isclose(
-        analysis.fit_params.best_values["Tpi"], 0.714, atol=1e-3
-    )
+    assert np.isclose(analysis.fit_params.best_values["Tpi"], 0.714, atol=1e-3)
 
 
 def test_save_load(tmp_path):
