@@ -120,6 +120,7 @@ QuaCCAToo is an object-oriented package organized with the following classes:
 Featured In
 -----------
 
+- Nima Leclerc, et al. (2026). Beyond sensitivity: mechanism-resolved error budgets for designing quantum sensors. `arXiv:2608.28519 <https://arxiv.org/abs/2608.28519>`__.
 - L. Tsunaki, A. Singh, S. Trofimov, & B. Naydenov. (2025). Digital Twin Simulations Toolbox of the Nitrogen-Vacancy Center in Diamond. Advanced Quantum Technologies, e00691. doi: `10.1002/qute.202500691 <https://advanced.onlinelibrary.wiley.com/doi/10.1002/qute.202500691>`__.
 - L. Tsunaki, A. Singh, K. Volkova, S. Trofimov, T. Pregnolato, T. Schröder, & B. Naydenov. (2025). Ambiguous resonances in multipulse quantum sensing with nitrogen-vacancy centers. Physical Review A, 111(2), 022606. doi: `10.1103/PhysRevA.111.022606 <https://journals.aps.org/pra/abstract/10.1103/PhysRevA.111.022606>`__.
 - L. Tsunaki, M. Dotan, K. Volkova, & B. Naydenov. (2025). Quantum gates via dynamical decoupling of a central qubit on IBMQ and 15N-vacancy centers in diamond. doi: `Physical Review A: 10.1103/6st7-qh12 <https://journals.aps.org/pra/abstract/10.1103/6st7-qh12>`__.
