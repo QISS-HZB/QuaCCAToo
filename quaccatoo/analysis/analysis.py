@@ -751,7 +751,7 @@ def plot_histogram(
             zpos,
             dx,
             dy,
-            dz_comp,  # pylint: disable=used-before-assignment
+            dz_comp,  # pylint: disable=used-before-assignment,possibly-used-before-assignment
             edgecolor="k",
             linewidth=0.5,
             alpha=0,
