@@ -8,8 +8,8 @@ QuaCCAToo: Quantum Color Centers Analysis Toolbox
 
 .. image:: QuaCCAToo_logo.svg
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.19682839.svg
-   :target: https://doi.org/10.5281/zenodo.19682839
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.19596973.svg
+   :target: https://doi.org/10.5281/zenodo.19596973
    :alt: DOI
 
 .. image:: https://img.shields.io/badge/docs-online-blue?logo=readthedocs
