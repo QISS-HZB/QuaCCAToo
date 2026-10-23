@@ -1,7 +1,7 @@
 # Quantum Color Centers Analysis Toolbox
 ![Logo](./docs/QuaCCAToo_logo.svg)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19682839.svg)](https://doi.org/10.5281/zenodo.19682839)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19596973.svg)](https://doi.org/10.5281/zenodo.19596973)
 [![Documentation](https://img.shields.io/badge/docs-online-blue?logo=readthedocs)](https://qiss-hzb.github.io/QuaCCAToo/)
 [![PyPI](https://img.shields.io/pypi/v/quaccatoo?logo=pypi&logoColor=white)](https://pypi.org/project/quaccatoo/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/quaccatoo?logo=anaconda&logoColor=white)](https://anaconda.org/conda-forge/quaccatoo)
